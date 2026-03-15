@@ -73,6 +73,15 @@ When major product, contract-integration, or deployment-impacting changes are ma
 - No contract changes, no env vars added, no new dependencies.
 - All changes are frontend UI/UX only.
 
+## 2026-03-15 — Generic MCE Pre-Distribution Planning Template
+
+- Added a reusable, proposal-agnostic planning template:
+  - `docs/design/mce-pre-task-distribution-template.md`
+- Purpose:
+  - standardize what must be defined before MCE tasks are distributed
+  - enforce pre-launch go/no-go gates
+  - provide repeatable task packet + verification standards for any MCE type.
+
 ---
 
 ## Session 18 Summary (2026-03-11)
