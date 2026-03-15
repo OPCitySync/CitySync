@@ -82,6 +82,19 @@ When major product, contract-integration, or deployment-impacting changes are ma
   - enforce pre-launch go/no-go gates
   - provide repeatable task packet + verification standards for any MCE type.
 
+## 2026-03-15 — Issuer Committee MCE Selection Process (Top 5 from 9)
+
+- Added a dedicated governance process doc:
+  - `docs/design/mce-issuer-committee-selection-process.md`
+- Defines end-to-end selection flow:
+  - eligibility gate
+  - weighted blind scoring (MCDA)
+  - deliberation rules
+  - ranked ballot final vote
+  - quorum/conflict/tie-break protocols
+  - transparency publication requirements
+- Updated planning template to cross-link this process as the prerequisite step when multiple proposals compete for limited slots.
+
 ---
 
 ## Session 18 Summary (2026-03-11)

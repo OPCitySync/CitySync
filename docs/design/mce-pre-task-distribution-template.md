@@ -2,6 +2,9 @@
 
 Use this template before any tasks are issued for a Mass Coordination Event (MCE).
 
+Companion document:
+- `docs/design/mce-issuer-committee-selection-process.md` (use first when multiple MCE proposals compete for limited slots)
+
 Purpose:
 - Convert a proposal into an executable operating plan.
 - Identify constraints and dependencies early.
@@ -230,4 +233,3 @@ Carryover Opportunities:
 Recommended Task Catalog Updates:
 
 Next-Epoch Recommendations:
-
