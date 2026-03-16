@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-15 (Session 20)
+2026-03-15 (Session 21)
 
 ## Current Branch
 `main`
@@ -133,6 +133,17 @@ When major product, contract-integration, or deployment-impacting changes are ma
 - Updated committee selection process transparency language:
   - `docs/design/mce-issuer-committee-selection-process.md`
   - public non-selected rationale remains summary-level; proposer organizations get full criterion detail.
+
+## 2026-03-15 — MCE Page Copy Refinement + Demo Route Chrome Suppression
+
+- Updated MCE deep-dive opening hero copy to new coordination-focused goal statement.
+- Converted "Why City/Sync Uses MCEs" from highlighted bullets into a narrative paragraph format.
+- Updated global Scaffold wrapper behavior in:
+  - `packages/nextjs/components/ScaffoldEthAppWithProviders.tsx`
+- For all `/demo/*` routes, suppressed Scaffold-ETH chrome:
+  - top navigation (including Connect Wallet)
+  - footer (including block explorer link, ETH price, and theme toggle)
+- Result: current and future `/demo` pages render without Scaffold shell artifacts by default.
 
 ---
 

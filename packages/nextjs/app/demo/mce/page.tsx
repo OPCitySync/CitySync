@@ -159,8 +159,8 @@ export default function MCEDivePage() {
           <h1 style={h1Style}>Mass Coordination Events (MCE)</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
             MCEs are city-scale initiatives where civic priority setting, task execution, and redemption incentives are
-            coordinated into one operating cycle. The goal is not only to choose what a city should do, but to verify
-            that the selected work was actually completed and rewarded.
+            coordinated into one operating cycle. The goal is to create a repeatable cadence that enhances coordination
+            and communication among public-sector organizations around aligned goals and priorities.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
@@ -177,28 +177,14 @@ export default function MCEDivePage() {
 
         <section style={sectionCard}>
           <h2 style={h2Style}>Why City/Sync Uses MCEs</h2>
-          <ul style={ulStyle}>
-            <li>
-              <strong>Align city effort around shared priorities.</strong> MCEs focus attention on high-need outcomes
-              instead of scattering effort across disconnected initiatives.
-            </li>
-            <li>
-              <strong>Connect governance to execution.</strong> Proposals and votes are linked directly to task design,
-              verification, and measurable delivery.
-            </li>
-            <li>
-              <strong>Create visible public legitimacy.</strong> Residents can observe how community preference turns
-              into on-the-ground work.
-            </li>
-            <li>
-              <strong>Coordinate public and private participation.</strong> Issuers manage execution, while Redeemers
-              can provide supporting redemption incentives tied to specific proposals.
-            </li>
-            <li>
-              <strong>Improve system learning each epoch.</strong> MCEs provide structured feedback loops to adjust
-              rates, task standards, and operating processes.
-            </li>
-          </ul>
+          <p style={pStyle}>
+            City/Sync uses MCEs to align city effort around shared priorities so organizations focus on high-need
+            outcomes rather than fragmented activity, to connect governance directly to execution through proposal,
+            voting, task design, and verification workflows, to create visible public legitimacy by showing how
+            community preference becomes on-the-ground delivery, to coordinate public and private participation through
+            issuer execution and redeemer incentive commitments, and to improve system learning each epoch with
+            structured feedback loops that adjust rates, task standards, and operating processes.
+          </p>
         </section>
 
         <section style={sectionCard}>
