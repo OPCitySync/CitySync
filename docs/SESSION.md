@@ -106,6 +106,16 @@ When major product, contract-integration, or deployment-impacting changes are ma
   - rationale for each milestone (why each step exists)
   - standing rule for redeemer commitments across active MCE proposals.
 
+## 2026-03-15 — Dedicated MCE Deep-Dive Web Page (Unlinked)
+
+- Added standalone deep-dive page at:
+  - `packages/nextjs/app/demo/mce/page.tsx`
+- Scope:
+  - comprehensive explanation of MCE purpose, lifecycle, role responsibilities, epoch timing, and onchain/offchain model
+  - includes process structure from existing MCE docs in an application-facing format
+  - intentionally created without linking into app navigation yet (for review before exposure)
+- Includes an explicit "Open Policy Decisions to Finalize" section to capture unresolved governance details before publication.
+
 ---
 
 ## Session 18 Summary (2026-03-11)
