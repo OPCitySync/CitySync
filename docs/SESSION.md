@@ -95,6 +95,17 @@ When major product, contract-integration, or deployment-impacting changes are ma
   - transparency publication requirements
 - Updated planning template to cross-link this process as the prerequisite step when multiple proposals compete for limited slots.
 
+## 2026-03-15 — Epoch Cadence and Governance Schedule
+
+- Added:
+  - `docs/design/epoch-cadence-and-governance-schedule.md`
+- Includes:
+  - reworded 3-month epoch explanation
+  - normalized 12-week timeline
+  - week-by-week governance and operations milestones
+  - rationale for each milestone (why each step exists)
+  - standing rule for redeemer commitments across active MCE proposals.
+
 ---
 
 ## Session 18 Summary (2026-03-11)
