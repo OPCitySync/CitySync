@@ -425,6 +425,18 @@ export default function MCEDivePage() {
               consistent and documented.
             </li>
             <li>
+              <strong>Rejected submissions are non-appealable in MCE flows.</strong> Issuer decisions are final, but
+              participants are notified and credits are still distributed for the rejected instance.
+            </li>
+            <li>
+              <strong>Integrity incidents are silently tracked and trigger graduated sanctions.</strong> After repeated
+              incidents, claim restrictions are applied and progressively tightened to prevent abuse.
+            </li>
+            <li>
+              <strong>MCE execution must include redundancy.</strong> Critical work should have backup task coverage so
+              city outcomes are protected even when individual submissions fail quality checks.
+            </li>
+            <li>
               <strong>Redeemer commitments should remain stable for event duration.</strong> Predictability is essential
               for participant trust.
             </li>
@@ -453,16 +465,15 @@ export default function MCEDivePage() {
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Open Policy Decisions to Finalize</h2>
-          <p style={pStyle}>
-            Before this page is linked as canonical guidance, City/Sync should confirm a final policy position on:
-          </p>
+          <h2 style={h2Style}>Current Governance Defaults</h2>
+          <p style={pStyle}>The following defaults are now defined for current MCE operations:</p>
           <ul style={ulStyle}>
-            <li>Committee seat structure, quorum, and recusal enforcement mechanics.</li>
-            <li>Exact weighting model for top-5 proposal selection (and whether weights are fixed or adaptive).</li>
-            <li>Public transparency level for rejected proposals and committee scoring detail.</li>
-            <li>Standard verification SLA for completed MCE tasks.</li>
-            <li>Default participant dispute process for rejected submissions.</li>
+            <li>Top-5 proposal scoring weights are fixed for the full cycle.</li>
+            <li>Public transparency is summary-level; proposer organizations receive full scoring transparency.</li>
+            <li>Verification SLA is set by task type and deadline criticality.</li>
+            <li>Rejected submissions do not use an appeal process; participants are notified and still credited.</li>
+            <li>Repeated integrity incidents are silently tracked and handled through graduated restrictions.</li>
+            <li>MCE planning must include redundancy so core work remains covered.</li>
           </ul>
         </section>
       </div>

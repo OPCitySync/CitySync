@@ -107,8 +107,11 @@ After final selection, publish:
 - Final top 5 list
 - Aggregate score summary by criterion
 - One-paragraph rationale for each selected proposal
-- One-paragraph rationale for each non-selected proposal
+- Summary rationale for each non-selected proposal (public view)
 - Conflict disclosures and recusals
+
+Proposer visibility requirement:
+- Each proposer organization receives full criterion-level scoring detail for its own proposal (including non-selected proposals).
 
 This output should be archived and linked to the next-epoch task planning packet.
 
@@ -123,4 +126,3 @@ For each selected proposal:
 3. Approve task packet set before issuance
 
 No tasks should be distributed until the planning template reaches GO status.
-

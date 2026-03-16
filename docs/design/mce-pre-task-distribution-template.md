@@ -112,6 +112,9 @@ Every task must avoid:
 - Ambiguous success criteria
 - Unbounded scope ("help where needed")
 
+For MCE critical paths:
+- Build redundancy (backup slots, backup teams, or backup windows) so delivery does not fail if one participant no-shows or submits invalid evidence.
+
 ---
 
 ## 7) Task Packet Template (Copy per Task)
@@ -158,16 +161,19 @@ Dependencies:
 Verification Method:
 - What must be submitted?
 - Who verifies?
-- SLA for verification?
+- SLA for verification? (Set by task type and deadline criticality)
 
 Fraud / Abuse Controls:
 - Duplicate submission checks:
 - No-show handling:
 - Invalid evidence handling:
+- Silent integrity incident tracking:
+- Graduated sanctions after repeat incidents:
 
-Dispute Process:
-- Who adjudicates?
-- Timeline:
+Rejection / Appeal Policy:
+- Issuer rejection is final (no appeal for single-task MCE/CITY issuance outcomes):
+- Participant receives rejection notice but still receives credits for that instance:
+- Restriction thresholds and escalation path:
 
 ---
 
@@ -181,7 +187,8 @@ All items must be marked complete before task issuance:
 - [ ] Workstreams and owners assigned
 - [ ] Task packets completed for all launch tasks
 - [ ] Verification standards approved
-- [ ] No-show / dispute policy defined
+- [ ] No-show / integrity sanctions policy defined
+- [ ] Redundancy plan defined for critical workstreams
 - [ ] Communications plan prepared
 - [ ] Monitoring dashboard configured
 

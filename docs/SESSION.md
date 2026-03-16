@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-14 (Session 19)
+2026-03-15 (Session 20)
 
 ## Current Branch
 `main`
@@ -115,6 +115,24 @@ When major product, contract-integration, or deployment-impacting changes are ma
   - includes process structure from existing MCE docs in an application-facing format
   - intentionally created without linking into app navigation yet (for review before exposure)
 - Includes an explicit "Open Policy Decisions to Finalize" section to capture unresolved governance details before publication.
+
+## 2026-03-15 — MCE Policy Decisions Incorporated (No-Appeal + Sanctions + Redundancy)
+
+- Updated deep-dive page policy language:
+  - `packages/nextjs/app/demo/mce/page.tsx`
+- Replaced unresolved policy section with finalized defaults:
+  - fixed top-5 weighting
+  - public summary transparency + full proposer-level transparency
+  - verification SLA set by task type/deadline criticality
+  - no-appeal rejection model with participant notification and credit distribution
+  - silent incident tracking + graduated restrictions
+  - mandatory MCE redundancy planning
+- Updated planning template:
+  - `docs/design/mce-pre-task-distribution-template.md`
+  - added explicit redundancy requirement, integrity tracking fields, no-appeal policy fields, and updated readiness gates.
+- Updated committee selection process transparency language:
+  - `docs/design/mce-issuer-committee-selection-process.md`
+  - public non-selected rationale remains summary-level; proposer organizations get full criterion detail.
 
 ---
 
