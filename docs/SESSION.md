@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-15 (Session 21)
+2026-03-16 (Session 22)
 
 ## Current Branch
 `main`
@@ -144,6 +144,23 @@ When major product, contract-integration, or deployment-impacting changes are ma
   - top navigation (including Connect Wallet)
   - footer (including block explorer link, ETH price, and theme toggle)
 - Result: current and future `/demo` pages render without Scaffold shell artifacts by default.
+
+## 2026-03-16 — Public-Sector Economy Deep-Dive Page (Unlinked)
+
+- Added standalone public-sector economy explainer page:
+  - `packages/nextjs/app/demo/public-sector-economy/page.tsx`
+- Content scope:
+  - defines the City/Sync public-sector economy as a bounded coordination system
+  - explains the role loop (issue → execute → verify/mint → redeem → governance adjust)
+  - details pilot-first management posture and why launch starts with no issuance caps
+  - specifies initial cohort strategy:
+    - issuers with strong volunteer networks and task-management capability
+    - redeemers with sufficient capacity and participant growth intent
+  - emphasizes pilot KPIs:
+    - issuer network/function expansion
+    - consistent redemption utilization
+    - operational reliability of verification and redemption flow
+  - provides staged evolution path from baseline recognition to adaptive cap governance and service-backed scaling.
 
 ---
 
