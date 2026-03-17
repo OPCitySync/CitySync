@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 23)
+2026-03-17 (Session 24)
 
 ## Current Branch
 `main`
@@ -1158,3 +1158,21 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - City/Sync-led to committee-led transition
   - formal reporting and calibration ownership objective
   - long-term master-catalog interoperability goal.
+
+## 2026-03-17 — Redeemer Fit Public Page + Classification Framework Doc
+
+- Added public-facing Redeemer explainer page:
+  - `packages/nextjs/app/demo/redeemer-fit/page.tsx`
+- Public-page scope:
+  - what redeemers are and why they participate
+  - high-fit redeemer categories and poor-fit indicators
+  - pilot risk-management posture (rate tuning windows, capacity-aware commitments, epoch predictability)
+  - phased maturity path from pilot onboarding to committee-guided classification.
+- Added internal governance/reference doc:
+  - `docs/design/redeemer-classification-framework.md`
+- Framework scope:
+  - two-layer classification model (function type + operational profile)
+  - 1-5 scoring dimensions for behavior/risk anticipation
+  - Green/Yellow/Red risk tiers and decision outputs
+  - mitigation patterns for likely failure behaviors
+  - public-narrative mapping and pilot-to-maturity governance path.
