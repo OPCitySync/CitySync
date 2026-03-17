@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-16 (Session 22)
+2026-03-17 (Session 23)
 
 ## Current Branch
 `main`
@@ -161,6 +161,30 @@ When major product, contract-integration, or deployment-impacting changes are ma
     - consistent redemption utilization
     - operational reliability of verification and redemption flow
   - provides staged evolution path from baseline recognition to adaptive cap governance and service-backed scaling.
+
+## 2026-03-17 — Task Management Deep-Dive Page (Unlinked)
+
+- Added standalone task management explainer page:
+  - `packages/nextjs/app/demo/task-management/page.tsx`
+- Content scope:
+  - full task lifecycle map and decision rights by stage
+  - proposal → normalization → finalization flow with one-hour rate basis
+  - dual-catalog model:
+    - organizational catalog (issuer operational issuance layer)
+    - master catalog (cross-city source of truth and transparency layer)
+  - rationale for catalog governance over unrestricted task creation
+  - epoch rules:
+    - task rates locked for active epoch
+    - issuance parameters (date/time/location/hours/implementation detail) remain issuer-configurable
+  - open-pool and direct-issue behavior
+  - no-show and verification rejection handling:
+    - no-show only after scheduled time passes
+    - rejection notifies participant and still distributes credits
+    - infractions logged for graduated sanctions without immediate exclusion
+  - catalog governance evolution:
+    - City/Sync-led at start with issuer oversight
+    - transition to committee-led management
+    - new task proposal reviews at epoch midpoint and pre-next-epoch window.
 
 ---
 
