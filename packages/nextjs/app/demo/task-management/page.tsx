@@ -154,6 +154,43 @@ export default function TaskManagementPage() {
         </section>
 
         <section style={sectionCard}>
+          <h2 style={h2Style}>Pilot Program Task Rules (Current Non-Negotiables)</h2>
+          <ul style={ulStyle}>
+            <li>
+              <strong>Rule 1 — No labor displacement:</strong> approved tasks cannot replace existing paid functions of
+              issuer organizations.
+            </li>
+            <li>
+              <strong>Rule 2 — Public mission fit:</strong> approved tasks must facilitate delivery of a public good or
+              public service.
+            </li>
+            <li>
+              <strong>Rule 3 — Verifiability:</strong> tasks must include legible success criteria and evidence
+              expectations before issuance.
+            </li>
+            <li>
+              <strong>Rule 4 — Accessibility:</strong> task design should be understandable and executable by diverse
+              participant populations, with clear instructions and realistic requirements.
+            </li>
+            <li>
+              <strong>Rule 5 — Safety and credential matching:</strong> tasks with elevated risk or specialized scope
+              require explicit credential requirements and supervision standards.
+            </li>
+          </ul>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>Task Catalog Structure and Governance Intent</h2>
+          <p style={pStyle}>
+            The catalog is not just a list of tasks. It is a governance mechanism for consistency. Each approved task
+            type carries standardized metadata: scope, expected duration, civic benefit statement, success criteria,
+            rate per hour, and credential expectations where relevant. This structure allows City/Sync and issuers to
+            normalize similar work into similar rates, reserve categories for inclusion/equity priorities, and keep
+            issuance predictable enough for redemption planning.
+          </p>
+        </section>
+
+        <section style={sectionCard}>
           <h2 style={h2Style}>Task Lifecycle and Decision Space</h2>
           <div style={tableWrapStyle}>
             <table style={tableStyle}>
@@ -246,6 +283,10 @@ export default function TaskManagementPage() {
               New rate calibration occurs in epoch governance windows, including midpoint review and pre-next-epoch
               review.
             </li>
+            <li>
+              Catalog managers maintain a written rationale trail for normalization decisions to preserve transparency
+              and future auditability.
+            </li>
           </ul>
         </section>
 
@@ -311,6 +352,43 @@ export default function TaskManagementPage() {
             <li>
               <strong>Review cadence:</strong> new task proposals reviewed halfway through each epoch and again before
               each new epoch.
+            </li>
+            <li>
+              <strong>Expected evolution:</strong> as committee maturity improves, calibration shifts from
+              City/Sync-facilitated normalization toward committee-owned rate governance with formal reporting.
+            </li>
+            <li>
+              <strong>Long-term objective:</strong> the master catalog becomes cross-city standard infrastructure for
+              interoperable civic-labor classification and comparable pricing logic.
+            </li>
+          </ul>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>Additional Controls That Close Process Gaps</h2>
+          <ul style={ulStyle}>
+            <li>
+              <strong>Template before issuance:</strong> no task instance is issued unless it is tied to an approved
+              catalog template.
+            </li>
+            <li>
+              <strong>Mutable vs locked fields:</strong> issuers can modify schedule/location/implementation details at
+              issuance time, but not hourly rate during the active epoch.
+            </li>
+            <li>
+              <strong>Open-pool hygiene:</strong> unissue is limited to unclaimed tasks to avoid hidden cancellations of
+              active participant commitments.
+            </li>
+            <li>
+              <strong>No-show timing guard:</strong> no-show decisions are only valid after scheduled event time passes.
+            </li>
+            <li>
+              <strong>Graduated sanctions model:</strong> no-show and rejection events are logged as infractions for
+              potential restrictions, without immediate exclusion from participation.
+            </li>
+            <li>
+              <strong>Onchain/offchain split:</strong> template governance and review are policy workflows, while
+              issuance, claims, verification, and rewards are shared-state lifecycle events.
             </li>
           </ul>
         </section>

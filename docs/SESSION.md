@@ -1136,3 +1136,25 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - `packages/nextjs/app/demo/terms/page.tsx`
 - Route handlers now return self-contained `text/html; charset=utf-8` with no app layout/provider dependencies and explicit `HEAD` support.
 - Goal: satisfy Google OAuth consent-screen brand verification expectations for dedicated HTML legal-policy pages.
+
+## 2026-03-17 — Task Management Page: Pilot Rules + Logic Gap Pass
+
+- Expanded `packages/nextjs/app/demo/task-management/page.tsx` to explicitly include Pilot Program task rules:
+  - no replacement of paid functions
+  - must deliver public good/public service
+  - verifiability, accessibility, and credential/safety matching requirements.
+- Added task catalog structure rationale:
+  - standardized metadata expectations
+  - normalization intent
+  - equity/inclusion support through structured catalog governance.
+- Added process-integrity controls to close lifecycle logic gaps:
+  - template-first issuance requirement
+  - locked-vs-mutable field model (rate locked for epoch, schedule details mutable)
+  - open-pool unissue boundary (unclaimed only)
+  - no-show timing guard (post-event only)
+  - graduated sanctions tracking model
+  - onchain/offchain boundary clarification for governance vs lifecycle state.
+- Added governance-evolution detail:
+  - City/Sync-led to committee-led transition
+  - formal reporting and calibration ownership objective
+  - long-term master-catalog interoperability goal.
