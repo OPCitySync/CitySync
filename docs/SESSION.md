@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 27)
+2026-03-17 (Session 28)
 
 ## Current Branch
 `main`
@@ -1221,3 +1221,14 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - delegated verifier model (issuer-scoped authority)
   - task-based verification routing by task type/risk/assurance level
   - delegation controls (scope + expiry, fast revocation, expanded audit requirements).
+
+## 2026-03-17 — How Redemption Works Public Page (QR + POS Pragmatism)
+
+- Added standalone redemption explainer page:
+  - `packages/nextjs/app/demo/how-redemption-works/page.tsx`
+- Content scope:
+  - end-to-end redemption flow from offer commitment to burn confirmation at point of service
+  - QR issuance workflow for redeemers (generation, distribution kit, placement guidance)
+  - framing of QR as pragmatic first method that avoids heavy POS replacement
+  - POS integration ladder from manual confirm to native integration
+  - employee enablement guidance focused on minimal change management and frontline simplicity.
