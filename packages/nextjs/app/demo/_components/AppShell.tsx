@@ -60,6 +60,133 @@ interface AppShellProps {
   phoneFrame?: boolean;
 }
 
+type DeepDiveSection = {
+  title: string;
+  links: Array<{ label: string; href: string }>;
+};
+
+const DEEP_DIVE_SECTIONS: DeepDiveSection[] = [
+  {
+    title: "General Information",
+    links: [
+      { label: "About the Pilot Program", href: "/demo/about-pilot-program" },
+      { label: "Public-Sector Economy", href: "/demo/public-sector-economy" },
+      { label: "City/Sync Framework", href: "/demo/citysync-framework" },
+      { label: "MCE's", href: "/demo/mce" },
+      { label: "MyCity Feed", href: "/demo/mycity-feed" },
+    ],
+  },
+  {
+    title: "Civic Participants",
+    links: [
+      { label: "Onboarding Tasks", href: "/demo/onboarding-tasks" },
+      { label: "Civic Participant Growth", href: "/demo/civic-participant-growth" },
+      { label: "Civic Participant Voting", href: "/demo/civic-participant-voting" },
+      { label: "Graduated Sanctions", href: "/demo/graduate-sanctions" },
+    ],
+  },
+  {
+    title: "Issuers",
+    links: [
+      { label: "Issuer Organizations (issuer fit)", href: "/demo/issuer-fit" },
+      { label: "Task Management", href: "/demo/task-management" },
+      { label: "Task Verification", href: "/demo/task-verification" },
+    ],
+  },
+  {
+    title: "Redeemers",
+    links: [
+      { label: "Redeemer Organizations (redeemer fit)", href: "/demo/redeemer-fit" },
+      { label: "How Redemptions Work", href: "/demo/how-redemption-works" },
+      { label: "Capacity Optimization", href: "/demo/capacity-optimization" },
+    ],
+  },
+];
+
+function DeepDiveLinksColumn({ accentColor }: { accentColor: string }) {
+  return (
+    <div style={{ overflowY: "auto", paddingRight: 4 }}>
+      <div
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 16,
+          padding: "14px 14px 10px",
+          marginBottom: 12,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 11,
+            fontWeight: 800,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: accentColor,
+            marginBottom: 6,
+          }}
+        >
+          Deep Dives
+        </div>
+        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.62)", lineHeight: 1.55 }}>
+          Open topic pages in a new tab for full context.
+        </div>
+      </div>
+
+      {DEEP_DIVE_SECTIONS.map(section => (
+        <div
+          key={section.title}
+          style={{
+            background: "rgba(255,255,255,0.025)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 14,
+            padding: "12px 12px 10px",
+            marginBottom: 10,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.07em",
+              color: "rgba(255,255,255,0.72)",
+              marginBottom: 8,
+            }}
+          >
+            {section.title}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {section.links.map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                  fontSize: 12,
+                  color: "rgba(255,255,255,0.86)",
+                  textDecoration: "none",
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.07)",
+                  borderRadius: 10,
+                  padding: "7px 9px",
+                }}
+              >
+                <span>{link.label}</span>
+                <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 11 }}>↗</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─── Phone Status Bar ───────────────────────────────────────────────────────────
 
 function PhoneStatusBar({ accentColor }: { accentColor: string }) {
@@ -198,6 +325,27 @@ export default function AppShell({
     setSwitcherOpen(false);
     router.push(r.href);
   };
+
+  const learnMoreColumn = (
+    <div style={{ overflowY: "auto", paddingRight: 4 }}>
+      {leftPanel ?? (
+        <div
+          style={{
+            background: "rgba(255,255,255,0.025)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 16,
+            padding: 14,
+            fontSize: 12,
+            color: "rgba(255,255,255,0.62)",
+            lineHeight: 1.55,
+          }}
+        >
+          Use any <strong style={{ color: "rgba(255,255,255,0.85)" }}>Learn More</strong> link inside the app to add
+          contextual info cards here.
+        </div>
+      )}
+    </div>
+  );
 
   // ─── Phone inner content (shared between both modes) ───────────────────────
 
@@ -589,24 +737,23 @@ export default function AppShell({
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
-        {/* Left context panel */}
-        {leftPanel && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              right: "calc(50% + 230px)",
-              width: 280,
-              padding: "72px 20px 40px",
-              display: "flex",
-              flexDirection: "column",
-              overflowY: "auto",
-            }}
-          >
-            {leftPanel}
+        {/* Left context area (two columns) */}
+        <div
+          className="hidden xl:block"
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: "calc(50% + 230px)",
+            width: 560,
+            padding: "72px 16px 40px",
+          }}
+        >
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, height: "100%" }}>
+            <DeepDiveLinksColumn accentColor={accentColor} />
+            {learnMoreColumn}
           </div>
-        )}
+        </div>
 
         {/* Right context panel */}
         {rightPanel && (
@@ -732,24 +879,23 @@ export default function AppShell({
         {phoneInner}
       </div>
 
-      {/* Left context panel */}
-      {leftPanel && (
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: "calc(50% + 260px)",
-            width: 280,
-            padding: "72px 20px 40px",
-            display: "flex",
-            flexDirection: "column",
-            overflowY: "auto",
-          }}
-        >
-          {leftPanel}
+      {/* Left context area (two columns) */}
+      <div
+        className="hidden xl:block"
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          right: "calc(50% + 260px)",
+          width: 560,
+          padding: "72px 16px 40px",
+        }}
+      >
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, height: "100%" }}>
+          <DeepDiveLinksColumn accentColor={accentColor} />
+          {learnMoreColumn}
         </div>
-      )}
+      </div>
 
       {/* Right context panel */}
       {rightPanel && (
