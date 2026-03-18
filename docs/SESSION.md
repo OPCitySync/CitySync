@@ -12,10 +12,34 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-18 (Session 42)
+2026-03-18 (Session 43)
 
 ## Current Branch
 `main`
+
+## 2026-03-18 — MCE Page Content Revisions
+
+- Updated:
+  - `packages/nextjs/app/demo/mce/page.tsx`
+- Content updates made:
+  - revised opening MCE definition copy to emphasize:
+    - civic priority setting
+    - task planning
+    - redemption incentives
+    - repeatable coordination cadence across public-sector organizations.
+  - rewrote the "Why City/Sync Uses MCEs" narrative with updated legitimacy + iterative learning framing.
+  - adjusted "What an MCE Includes" table language for:
+    - Selection Layer
+    - Voting Layer
+    - Planning Layer
+    - Execution Layer (including `$MCE` distribution wording).
+  - adjusted "Role Responsibilities in an MCE" wording for:
+    - Redeemer organizations (special offerings commitments)
+    - Civic Participants (`$MCE` redemption phrasing).
+- Removed sections from page per request:
+  - `Current Governance Defaults`
+  - `Implementation Resources`
+  - `Epoch Timing Framework`
 
 ## 2026-03-18 — Verify UX Cleanup, MCE Proposal Persistence, Issuer Verify Sync Hardening
 

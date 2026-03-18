@@ -158,7 +158,7 @@ export default function MCEDivePage() {
           <div style={chipStyle}>MCE Deep Dive</div>
           <h1 style={h1Style}>Mass Coordination Events (MCE)</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            MCEs are city-scale initiatives where civic priority setting, task execution, and redemption incentives are
+            MCEs are city-scale initiatives where civic priority setting, task planning, and redemption incentives are
             coordinated into one operating cycle. The goal is to create a repeatable cadence that enhances coordination
             and communication among public-sector organizations around aligned goals and priorities.
           </p>
@@ -178,12 +178,14 @@ export default function MCEDivePage() {
         <section style={sectionCard}>
           <h2 style={h2Style}>Why City/Sync Uses MCEs</h2>
           <p style={pStyle}>
-            City/Sync uses MCEs to align city effort around shared priorities so organizations focus on high-need
-            outcomes rather than fragmented activity, to connect governance directly to execution through proposal,
-            voting, task design, and verification workflows, to create visible public legitimacy by showing how
-            community preference becomes on-the-ground delivery, to coordinate public and private participation through
-            issuer execution and redeemer incentive commitments, and to improve system learning each epoch with
-            structured feedback loops that adjust rates, task standards, and operating processes.
+            City/Sync uses MCEs to align city effort around shared priorities so organizations can learn to focus on
+            facilitating high-need outcomes in addition to their own priorities and mission. MCEs allow the protocol to
+            create visible public legitimacy by showing how community preferences can become on-the-ground service
+            delivery, and enables public and private participation through Issuer execution and Redeemer incentive
+            programs. Each Epoch provides an iterative approach toward creating a system of learning that offers
+            feedback loops to fine-tune the public economy, create standards for task issuance, establish new operating
+            processes, and develop a form of legitimacy that sets the foundation for future applications and
+            developments built on top of the public-sector economy.
           </p>
         </section>
 
@@ -206,23 +208,23 @@ export default function MCEDivePage() {
                 </tr>
                 <tr>
                   <td style={tdStyle}>Selection Layer</td>
-                  <td style={tdStyle}>Chooses a limited set of candidates for city-wide voting.</td>
+                  <td style={tdStyle}>Issuers choose a limited set of proposals for city-wide voting.</td>
                   <td style={tdStyle}>Top 5 proposal slate selected by Issuer Committee process.</td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>Voting Layer</td>
                   <td style={tdStyle}>Lets Civic Participants allocate VOTE to preferred outcomes.</td>
-                  <td style={tdStyle}>Ranked winner and public vote totals.</td>
+                  <td style={tdStyle}>Top voted proposal is selected for implementation.</td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>Planning Layer</td>
                   <td style={tdStyle}>Translates intent into executable workstreams and verifiable tasks.</td>
-                  <td style={tdStyle}>Task packets, verification standards, go or no-go launch gate.</td>
+                  <td style={tdStyle}>Task packets, verification standards, go/no-go launch gates.</td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>Execution Layer</td>
-                  <td style={tdStyle}>Issues tasks, tracks claims, and verifies completed work.</td>
-                  <td style={tdStyle}>Onchain task lifecycle records and reward distribution.</td>
+                  <td style={tdStyle}>Issuers manage tasks, track claims, and verify completed work.</td>
+                  <td style={tdStyle}>Onchain task lifecycle records and rewards through $MCE distribution.</td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>Closeout Layer</td>
@@ -257,14 +259,15 @@ export default function MCEDivePage() {
                 <tr>
                   <td style={tdStyle}>Redeemer Organizations</td>
                   <td style={tdStyle}>
-                    Commit offerings linked to active MCE proposals and honor commitments during the event period.
+                    Commit special offerings linked to active MCE proposals and honor commitments during the event
+                    period.
                   </td>
                   <td style={tdStyle}>Reliable redemption capacity and predictable participant value.</td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>Civic Participants</td>
                   <td style={tdStyle}>
-                    Vote on proposals, claim tasks, execute work, submit evidence, and redeem earned credits.
+                    Vote on proposals, claim tasks, execute work, submit evidence, and redeem earned $MCE credits.
                   </td>
                   <td style={tdStyle}>Verified completion volume and clear contribution-to-benefit experience.</td>
                 </tr>
@@ -341,24 +344,6 @@ export default function MCEDivePage() {
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Epoch Timing Framework</h2>
-          <p style={pStyle}>
-            City/Sync assumes a 3-month epoch (~12 weeks). This creates a stable operating window for voting, planning,
-            and execution while preserving room for parameter resets at cycle boundaries.
-          </p>
-          <ul style={ulStyle}>
-            <li>Week 1: Open voting starts.</li>
-            <li>Weeks 1-4: Open voting window.</li>
-            <li>Weeks 4-5: Redeemer rate-adjustment window.</li>
-            <li>Weeks 5-6: Closed voting and winner finalization.</li>
-            <li>Week 7: MCE planning begins.</li>
-            <li>Week 10: MCE tasks are finalized for distribution.</li>
-            <li>2 days before next epoch: Issuer Committee finalizes top 5 proposals for next cycle.</li>
-            <li>Day 1 of next epoch: Task distribution is live.</li>
-          </ul>
-        </section>
-
-        <section style={sectionCard}>
           <h2 style={h2Style}>Onchain vs Offchain Responsibilities</h2>
           <div style={tableWrapStyle}>
             <table style={tableStyle}>
@@ -430,36 +415,6 @@ export default function MCEDivePage() {
               <strong>Closeout reporting is part of execution.</strong> Every MCE should produce KPI outcomes and
               next-cycle recommendations.
             </li>
-          </ul>
-        </section>
-
-        <section style={sectionCard}>
-          <h2 style={h2Style}>Implementation Resources</h2>
-          <ul style={ulStyle}>
-            <li>
-              <strong>MCE Pre-Task Planning Template:</strong>{" "}
-              <code>docs/design/mce-pre-task-distribution-template.md</code>
-            </li>
-            <li>
-              <strong>Issuer Committee Selection Process:</strong>{" "}
-              <code>docs/design/mce-issuer-committee-selection-process.md</code>
-            </li>
-            <li>
-              <strong>Epoch Cadence Guide:</strong> <code>docs/design/epoch-cadence-and-governance-schedule.md</code>
-            </li>
-          </ul>
-        </section>
-
-        <section style={sectionCard}>
-          <h2 style={h2Style}>Current Governance Defaults</h2>
-          <p style={pStyle}>The following defaults are now defined for current MCE operations:</p>
-          <ul style={ulStyle}>
-            <li>Top-5 proposal scoring weights are fixed for the full cycle.</li>
-            <li>Public transparency is summary-level; proposer organizations receive full scoring transparency.</li>
-            <li>Verification SLA is set by task type and deadline criticality.</li>
-            <li>Rejected submissions do not use an appeal process; participants are notified and still credited.</li>
-            <li>Repeated integrity incidents are silently tracked and handled through graduated restrictions.</li>
-            <li>MCE planning must include redundancy so core work remains covered.</li>
           </ul>
         </section>
       </div>
