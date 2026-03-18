@@ -35,8 +35,13 @@ const IconClipboard = () => (
 
 const IconShieldCheck = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-    <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7l-9-5z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-    <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path
+      d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7l-9-5z"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinejoin="round"
+    />
+    <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -362,7 +367,11 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
-  const [noShowConfirmItem, setNoShowConfirmItem] = useState<{ taskId: string; claimant: `0x${string}`; title: string } | null>(null);
+  const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
+    taskId: string;
+    claimant: `0x${string}`;
+    title: string;
+  } | null>(null);
   const [epochCreditOffset, setEpochCreditOffset] = useState<number>(() => {
     if (typeof window === "undefined") return 0;
     try {
@@ -419,7 +428,6 @@ export default function IssuerApp() {
       }
     }, 250);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const catalogStorageKey = React.useMemo(
@@ -548,18 +556,35 @@ export default function IssuerApp() {
       return;
     }
 
+    const projectedCost = task.credits * slots;
+    const remainingBudget = Math.max(0, EPOCH1_CAP - creditsCommitted);
+    if (projectedCost > remainingBudget) {
+      const error = `Issuance exceeds remaining Epoch budget (${projectedCost} > ${remainingBudget} CITYx).`;
+      setTaskWriteStatus({ state: "failed", error });
+      setToast("Issuance blocked: exceeds remaining Epoch budget.");
+      return;
+    }
+
     setTaskWriteStatus({ state: "pending" });
     setIssueTaskId(null);
 
     let okCount = 0;
     let lastHash: `0x${string}` | undefined;
     let firstError: string | undefined;
+    let committedRunning = creditsCommitted;
 
     for (let i = 0; i < slots; i++) {
+      // Hard pre-write guard: avoid sending any write once local running budget is exhausted.
+      if (committedRunning + task.credits > EPOCH1_CAP) {
+        firstError = `Issuance exceeds remaining Epoch budget (${committedRunning + task.credits} > ${EPOCH1_CAP} CITYx).`;
+        break;
+      }
+
       const localId = `task-issued-${Date.now()}-${i + 1}`;
       const result = await issuerCreateTask({ ...task, id: localId, slots: 1, slotsRemaining: 1 });
       if (result.ok) {
         okCount += 1;
+        committedRunning += task.credits;
         if (result.hash) lastHash = result.hash;
       } else if (!firstError) {
         firstError = result.error;
@@ -707,6 +732,7 @@ export default function IssuerApp() {
             return task ? (
               <IssueTaskPopup
                 task={task}
+                creditsCommitted={creditsCommitted}
                 onClose={() => setIssueTaskId(null)}
                 onIssue={slots => handleIssueTask(task, slots)}
               />
@@ -806,7 +832,7 @@ function ProfileTab({
     } catch {
       // Ignore hydration failures.
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nameStorageKey]);
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -846,7 +872,11 @@ function ProfileTab({
   const saveEdit = () => {
     if (draft.trim()) {
       dispatch({ type: "ISSUER_REGISTER", orgName: draft.trim() });
-      try { window.localStorage.setItem(nameStorageKey, draft.trim()); } catch { /* ignore */ }
+      try {
+        window.localStorage.setItem(nameStorageKey, draft.trim());
+      } catch {
+        /* ignore */
+      }
     }
     setEditing(false);
   };
@@ -1959,21 +1989,49 @@ function CreateTaskSheet({
           to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
-      <div onClick={e => e.stopPropagation()} style={{
-        position: "fixed",
-        top: 112, left: 0, right: 0, bottom: 69,
-        zIndex: 221,
-        background: "#1E1E2C",
-        borderRadius: "12px 12px 0 0",
-        animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-        overflowY: "auto",
-        display: "flex",
-        flexDirection: "column",
-      }}>
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: "fixed",
+          top: 112,
+          left: 0,
+          right: 0,
+          bottom: 69,
+          zIndex: 221,
+          background: "#1E1E2C",
+          borderRadius: "12px 12px 0 0",
+          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {/* Sticky header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 20px 16px", borderBottom: "1px solid rgba(255,255,255,0.08)", flexShrink: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "20px 20px 16px",
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
+            flexShrink: 0,
+          }}
+        >
           <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Task Catalog</span>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
+          <button
+            onClick={onClose}
+            style={{
+              background: "none",
+              border: "none",
+              color: "rgba(255,255,255,0.4)",
+              cursor: "pointer",
+              padding: 4,
+              fontSize: 20,
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
         </div>
         {/* Scrollable content */}
         <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px" }}>
@@ -2146,21 +2204,49 @@ function ProposeTaskSheet({
           to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
-      <div onClick={e => e.stopPropagation()} style={{
-        position: "fixed",
-        top: 112, left: 0, right: 0, bottom: 69,
-        zIndex: 221,
-        background: "#1E1E2C",
-        borderRadius: "12px 12px 0 0",
-        animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-        overflowY: "auto",
-        display: "flex",
-        flexDirection: "column",
-      }}>
+      <div
+        onClick={e => e.stopPropagation()}
+        style={{
+          position: "fixed",
+          top: 112,
+          left: 0,
+          right: 0,
+          bottom: 69,
+          zIndex: 221,
+          background: "#1E1E2C",
+          borderRadius: "12px 12px 0 0",
+          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         {/* Sticky header */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 20px 16px", borderBottom: "1px solid rgba(255,255,255,0.08)", flexShrink: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "20px 20px 16px",
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
+            flexShrink: 0,
+          }}
+        >
           <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Propose New Task</span>
-          <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
+          <button
+            onClick={onClose}
+            style={{
+              background: "none",
+              border: "none",
+              color: "rgba(255,255,255,0.4)",
+              cursor: "pointer",
+              padding: 4,
+              fontSize: 20,
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
         </div>
         {/* Scrollable content */}
         <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px" }}>
@@ -2444,7 +2530,15 @@ function MyCityTab({
       </div>
 
       {/* Sort tabs */}
-      <div style={{ background: "rgba(255,255,255,0.04)", borderRadius: 14, display: "flex", marginBottom: 20, overflow: "hidden" }}>
+      <div
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          borderRadius: 14,
+          display: "flex",
+          marginBottom: 20,
+          overflow: "hidden",
+        }}
+      >
         {(["recent", "top"] as const).map((s, i) => (
           <button
             key={s}
@@ -2583,18 +2677,52 @@ function ComposePostSheet({
         }
       `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 69, background: "rgba(0,0,0,0.45)", pointerEvents: "auto" }} onClick={onClose} />
-        <div onClick={e => e.stopPropagation()} style={{
-          position: "absolute", left: 0, right: 0, bottom: 69,
-          maxHeight: "60%", zIndex: 1,
-          background: "#1E1E2C", borderRadius: "24px 24px 0 0",
-          boxShadow: "0 -8px 40px rgba(0,0,0,0.55)", padding: "20px 20px 24px",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          overflowY: "auto", pointerEvents: "auto",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 69,
+            background: "rgba(0,0,0,0.45)",
+            pointerEvents: "auto",
+          }}
+          onClick={onClose}
+        />
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 69,
+            maxHeight: "60%",
+            zIndex: 1,
+            background: "#1E1E2C",
+            borderRadius: "24px 24px 0 0",
+            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            padding: "20px 20px 24px",
+            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+            overflowY: "auto",
+            pointerEvents: "auto",
+          }}
+        >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
             <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>New Post</span>
-            <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
+            <button
+              onClick={onClose}
+              style={{
+                background: "none",
+                border: "none",
+                color: "rgba(255,255,255,0.4)",
+                cursor: "pointer",
+                padding: 4,
+                fontSize: 20,
+                lineHeight: 1,
+              }}
+            >
+              ×
+            </button>
           </div>
 
           {/* Category picker */}
@@ -2684,20 +2812,53 @@ function ComposePostSheet({
 
 // ─── Unissue Confirm Sheet ────────────────────────────────────────────────────
 
-function UnissueConfirmSheet({ taskId: _taskId, onConfirm, onCancel }: { taskId: string; onConfirm: () => void; onCancel: () => void }) {
+function UnissueConfirmSheet({
+  taskId: _taskId,
+  onConfirm,
+  onCancel,
+}: {
+  taskId: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
   return (
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 69, background: "rgba(0,0,0,0.45)", pointerEvents: "auto" }} onClick={onCancel} />
-        <div onClick={e => e.stopPropagation()} style={{
-          position: "absolute", left: 0, right: 0, bottom: 69, maxHeight: "32%", zIndex: 1,
-          background: "#1E1E2C", borderRadius: "24px 24px 0 0",
-          boxShadow: "0 -8px 40px rgba(0,0,0,0.55)", padding: "20px 24px 24px",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          display: "flex", flexDirection: "column", justifyContent: "center", gap: 16,
-          overflowY: "auto", pointerEvents: "auto",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 69,
+            background: "rgba(0,0,0,0.45)",
+            pointerEvents: "auto",
+          }}
+          onClick={onCancel}
+        />
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 69,
+            maxHeight: "32%",
+            zIndex: 1,
+            background: "#1E1E2C",
+            borderRadius: "24px 24px 0 0",
+            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            padding: "20px 24px 24px",
+            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 16,
+            overflowY: "auto",
+            pointerEvents: "auto",
+          }}
+        >
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: "white", marginBottom: 8 }}>Unissue Task?</div>
             <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
@@ -2705,8 +2866,38 @@ function UnissueConfirmSheet({ taskId: _taskId, onConfirm, onCancel }: { taskId:
             </div>
           </div>
           <div style={{ display: "flex", gap: 10 }}>
-            <button onClick={onCancel} style={{ flex: 1, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "white", borderRadius: 10, padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Cancel</button>
-            <button onClick={onConfirm} style={{ flex: 1, background: "#ff6b9d", border: "none", color: "white", borderRadius: 10, padding: "10px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Unissue Task</button>
+            <button
+              onClick={onCancel}
+              style={{
+                flex: 1,
+                background: "rgba(255,255,255,0.1)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "white",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              style={{
+                flex: 1,
+                background: "#ff6b9d",
+                border: "none",
+                color: "white",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Unissue Task
+            </button>
           </div>
         </div>
       </div>
@@ -2716,20 +2907,53 @@ function UnissueConfirmSheet({ taskId: _taskId, onConfirm, onCancel }: { taskId:
 
 // ─── No Show Confirm Sheet ────────────────────────────────────────────────────
 
-function NoShowConfirmSheet({ item: _item, onConfirm, onCancel }: { item: { taskId: string; claimant: `0x${string}`; title: string }; onConfirm: () => void; onCancel: () => void }) {
+function NoShowConfirmSheet({
+  item: _item,
+  onConfirm,
+  onCancel,
+}: {
+  item: { taskId: string; claimant: `0x${string}`; title: string };
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
   return (
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 69, background: "rgba(0,0,0,0.45)", pointerEvents: "auto" }} onClick={onCancel} />
-        <div onClick={e => e.stopPropagation()} style={{
-          position: "absolute", left: 0, right: 0, bottom: 69, maxHeight: "32%", zIndex: 1,
-          background: "#1E1E2C", borderRadius: "24px 24px 0 0",
-          boxShadow: "0 -8px 40px rgba(0,0,0,0.55)", padding: "20px 24px 24px",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          display: "flex", flexDirection: "column", justifyContent: "center", gap: 16,
-          overflowY: "auto", pointerEvents: "auto",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 69,
+            background: "rgba(0,0,0,0.45)",
+            pointerEvents: "auto",
+          }}
+          onClick={onCancel}
+        />
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 69,
+            maxHeight: "32%",
+            zIndex: 1,
+            background: "#1E1E2C",
+            borderRadius: "24px 24px 0 0",
+            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            padding: "20px 24px 24px",
+            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            gap: 16,
+            overflowY: "auto",
+            pointerEvents: "auto",
+          }}
+        >
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: "white", marginBottom: 8 }}>Mark as No-Show?</div>
             <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
@@ -2737,8 +2961,38 @@ function NoShowConfirmSheet({ item: _item, onConfirm, onCancel }: { item: { task
             </div>
           </div>
           <div style={{ display: "flex", gap: 10 }}>
-            <button onClick={onCancel} style={{ flex: 1, background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.2)", color: "white", borderRadius: 10, padding: "10px 14px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Cancel</button>
-            <button onClick={onConfirm} style={{ flex: 1, background: "#ff6b9d", border: "none", color: "white", borderRadius: 10, padding: "10px 14px", fontSize: 13, fontWeight: 700, cursor: "pointer" }}>Mark No-Show</button>
+            <button
+              onClick={onCancel}
+              style={{
+                flex: 1,
+                background: "rgba(255,255,255,0.1)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "white",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontSize: 13,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              style={{
+                flex: 1,
+                background: "#ff6b9d",
+                border: "none",
+                color: "white",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Mark No-Show
+            </button>
           </div>
         </div>
       </div>
@@ -3308,19 +3562,29 @@ function VerifyTab({
             <div
               onClick={() => setConfirmVerify(null)}
               style={{
-                position: "absolute", inset: 0, bottom: 69,
-                background: "rgba(0,0,0,0.55)", pointerEvents: "auto",
+                position: "absolute",
+                inset: 0,
+                bottom: 69,
+                background: "rgba(0,0,0,0.55)",
+                pointerEvents: "auto",
               }}
             />
             {/* sheet */}
-            <div style={{
-              position: "absolute", left: 0, right: 0, bottom: 69,
-              zIndex: 1,
-              background: "#1E1E2C", borderRadius: "24px 24px 0 0",
-              boxShadow: "0 -8px 40px rgba(0,0,0,0.55)", padding: "20px 20px 24px",
-              animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-              pointerEvents: "auto",
-            }}>
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 69,
+                zIndex: 1,
+                background: "#1E1E2C",
+                borderRadius: "24px 24px 0 0",
+                boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+                padding: "20px 20px 24px",
+                animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+                pointerEvents: "auto",
+              }}
+            >
               <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Confirm Verify & Mint</div>
               <div style={{ fontSize: 12, color: MUTED, marginBottom: 10 }}>{confirmVerify.title}</div>
               <textarea
@@ -3742,17 +4006,40 @@ function MCEsTab({
             }
           `}</style>
           <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-            <div onClick={e => e.stopPropagation()} style={{
-              position: "absolute", left: 0, right: 0, top: 112, bottom: 69,
-              zIndex: 1,
-              background: "#1E1E2C", borderRadius: "12px 12px 0 0",
-              boxShadow: "0 -8px 40px rgba(0,0,0,0.55)", padding: "20px 20px 24px",
-              animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-              overflowY: "auto", pointerEvents: "auto",
-            }}>
+            <div
+              onClick={e => e.stopPropagation()}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: 112,
+                bottom: 69,
+                zIndex: 1,
+                background: "#1E1E2C",
+                borderRadius: "12px 12px 0 0",
+                boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+                padding: "20px 20px 24px",
+                animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+                overflowY: "auto",
+                pointerEvents: "auto",
+              }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                 <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>New MCE Proposal</span>
-                <button onClick={() => setProposeOpen(false)} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
+                <button
+                  onClick={() => setProposeOpen(false)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "rgba(255,255,255,0.4)",
+                    cursor: "pointer",
+                    padding: 4,
+                    fontSize: 20,
+                    lineHeight: 1,
+                  }}
+                >
+                  ×
+                </button>
               </div>
               <div style={{ fontSize: 13, color: MUTED, marginBottom: 20, lineHeight: 1.5 }}>
                 Submit a proposal for community consideration. Strong proposals include clear goals and measurable
@@ -3855,10 +4142,12 @@ function MCEsTab({
 
 function IssueTaskPopup({
   task,
+  creditsCommitted,
   onClose,
   onIssue,
 }: {
   task: Task;
+  creditsCommitted: number;
   onClose: () => void;
   onIssue: (slots: number) => void | Promise<void>;
 }) {
@@ -3867,9 +4156,11 @@ function IssueTaskPopup({
   const [submitting, setSubmitting] = useState(false);
   const totalCity = slots * task.credits;
   const totalVote = slots * task.voteTokens;
+  const remainingBudget = Math.max(0, EPOCH1_CAP - creditsCommitted);
+  const wouldExceedBudget = totalCity > remainingBudget;
 
   const submitIssue = async () => {
-    if (submitting) return;
+    if (submitting || wouldExceedBudget) return;
     setSubmitting(true);
     try {
       await onIssue(slots);
@@ -3887,22 +4178,56 @@ function IssueTaskPopup({
         }
       `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 69, background: "rgba(0,0,0,0.45)", pointerEvents: "auto" }} onClick={onClose} />
-        <div onClick={e => e.stopPropagation()} style={{
-          position: "absolute", left: 0, right: 0, bottom: 69,
-          maxHeight: "65%", zIndex: 1,
-          background: "#1E1E2C", borderRadius: "24px 24px 0 0",
-          boxShadow: "0 -8px 40px rgba(0,0,0,0.55)", padding: "20px 20px 24px",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          overflowY: "auto", pointerEvents: "auto",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 69,
+            background: "rgba(0,0,0,0.45)",
+            pointerEvents: "auto",
+          }}
+          onClick={onClose}
+        />
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 69,
+            maxHeight: "65%",
+            zIndex: 1,
+            background: "#1E1E2C",
+            borderRadius: "24px 24px 0 0",
+            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            padding: "20px 20px 24px",
+            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+            overflowY: "auto",
+            pointerEvents: "auto",
+          }}
+        >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
             <div style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>Issue Task</div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ fontSize: 11, color: DIMMED, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                 {step === "select" ? "Step 1 of 2" : "Step 2 of 2"}
               </div>
-              <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
+              <button
+                onClick={onClose}
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "rgba(255,255,255,0.4)",
+                  cursor: "pointer",
+                  padding: 4,
+                  fontSize: 20,
+                  lineHeight: 1,
+                }}
+              >
+                ×
+              </button>
             </div>
           </div>
 
@@ -3920,6 +4245,26 @@ function IssueTaskPopup({
 
               <div style={{ fontSize: 12, color: MUTED, marginBottom: 10 }}>
                 How many task slots do you want to issue?
+              </div>
+              <div
+                style={{
+                  ...surfaceCard,
+                  marginBottom: 12,
+                  padding: "10px 12px",
+                  border: wouldExceedBudget ? "1px solid rgba(255,107,157,0.35)" : "1px solid rgba(255,255,255,0.08)",
+                  background: wouldExceedBudget ? "rgba(255,107,157,0.1)" : "rgba(255,255,255,0.03)",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: MUTED }}>
+                  <span>Epoch budget remaining</span>
+                  <span style={{ color: "#fff", fontWeight: 600 }}>{remainingBudget} CITYx</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginTop: 4 }}>
+                  <span style={{ color: wouldExceedBudget ? "#ff6b9d" : MUTED }}>Projected issuance</span>
+                  <span style={{ color: wouldExceedBudget ? "#ff6b9d" : "#fff", fontWeight: 700 }}>
+                    {totalCity} CITYx
+                  </span>
+                </div>
               </div>
               <div
                 style={{
@@ -3954,6 +4299,7 @@ function IssueTaskPopup({
                 </div>
                 <button
                   onClick={() => setSlots(s => s + 1)}
+                  disabled={(slots + 1) * task.credits > remainingBudget}
                   style={{
                     width: 46,
                     height: 46,
@@ -3962,7 +4308,8 @@ function IssueTaskPopup({
                     background: `${ACCENT}33`,
                     color: ACCENT,
                     fontSize: 24,
-                    cursor: "pointer",
+                    cursor: (slots + 1) * task.credits > remainingBudget ? "not-allowed" : "pointer",
+                    opacity: (slots + 1) * task.credits > remainingBudget ? 0.45 : 1,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -3971,6 +4318,18 @@ function IssueTaskPopup({
                   +
                 </button>
               </div>
+              {wouldExceedBudget && (
+                <div
+                  style={{
+                    fontSize: 11,
+                    color: "#ff6b9d",
+                    marginBottom: 8,
+                    lineHeight: 1.4,
+                  }}
+                >
+                  Issuance exceeds remaining Epoch budget. Reduce slots to continue.
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -4027,7 +4386,9 @@ function IssueTaskPopup({
               </button>
               <button
                 onClick={step === "select" ? () => setStep("confirm") : () => void submitIssue()}
-                disabled={submitting}
+                disabled={
+                  submitting || (step === "select" && wouldExceedBudget) || (step === "confirm" && wouldExceedBudget)
+                }
                 style={{
                   flex: 2,
                   background: ACCENT,
@@ -4037,12 +4398,14 @@ function IssueTaskPopup({
                   fontSize: 13,
                   fontWeight: 700,
                   color: BG,
-                  cursor: submitting ? "not-allowed" : "pointer",
-                  opacity: submitting ? 0.7 : 1,
+                  cursor: submitting || wouldExceedBudget ? "not-allowed" : "pointer",
+                  opacity: submitting || wouldExceedBudget ? 0.7 : 1,
                 }}
               >
                 {step === "select"
-                  ? "Continue"
+                  ? wouldExceedBudget
+                    ? "Exceeds Epoch Budget"
+                    : "Continue"
                   : submitting
                     ? "Submitting Onchain..."
                     : `Issue ${slots} Slot${slots !== 1 ? "s" : ""}`}
@@ -4100,18 +4463,52 @@ function ModifyTaskSheet({
         }
       `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 69, background: "rgba(0,0,0,0.45)", pointerEvents: "auto" }} onClick={onClose} />
-        <div onClick={e => e.stopPropagation()} style={{
-          position: "absolute", left: 0, right: 0, bottom: 69,
-          maxHeight: "55%", zIndex: 1,
-          background: "#1E1E2C", borderRadius: "24px 24px 0 0",
-          boxShadow: "0 -8px 40px rgba(0,0,0,0.55)", padding: "20px 20px 24px",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          overflowY: "auto", pointerEvents: "auto",
-        }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 69,
+            background: "rgba(0,0,0,0.45)",
+            pointerEvents: "auto",
+          }}
+          onClick={onClose}
+        />
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 69,
+            maxHeight: "55%",
+            zIndex: 1,
+            background: "#1E1E2C",
+            borderRadius: "24px 24px 0 0",
+            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            padding: "20px 20px 24px",
+            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+            overflowY: "auto",
+            pointerEvents: "auto",
+          }}
+        >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
             <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Modify Task</span>
-            <button onClick={onClose} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 4, fontSize: 20, lineHeight: 1 }}>×</button>
+            <button
+              onClick={onClose}
+              style={{
+                background: "none",
+                border: "none",
+                color: "rgba(255,255,255,0.4)",
+                cursor: "pointer",
+                padding: 4,
+                fontSize: 20,
+                lineHeight: 1,
+              }}
+            >
+              ×
+            </button>
           </div>
           <div style={{ fontSize: 13, color: MUTED, marginBottom: 6 }}>{task.title}</div>
           <div

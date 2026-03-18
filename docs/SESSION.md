@@ -12,10 +12,30 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 37)
+2026-03-18 (Session 38)
 
 ## Current Branch
 `main`
+
+## 2026-03-18 — Issuer Slot Issuance Budget Guard (UI + Preflight)
+
+- Updated issuer task issuance flow in:
+  - `packages/nextjs/app/demo/issuer/page.tsx`
+- Fix scope:
+  - prevents slot issuance from exceeding remaining epoch allocation before any write is attempted
+  - closes bug where multi-slot issuance could overrun budget in aggregate (e.g., per-slot loop writes)
+- Changes made:
+  - added hard preflight check in `handleIssueTask(...)`:
+    - computes projected slot issuance cost vs remaining epoch budget
+    - blocks issuance and surfaces clear error if projected exceeds remaining
+  - added per-iteration running-budget guard in issuance loop to avoid sending additional writes once local budget is exhausted
+  - updated `IssueTaskPopup` with live budget visibility:
+    - shows remaining epoch budget and projected issuance cost
+    - disables continue/submit while projected exceeds remaining budget
+    - disables slot increment when next slot would exceed remaining budget
+    - displays inline budget-exceeded warning guidance
+- Result:
+  - no onchain issuance write is attempted from UI when slot issuance exceeds remaining epoch budget.
 
 ## 2026-03-17 — Graduate Sanctions Deep-Dive Page (Unlinked)
 
