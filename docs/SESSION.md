@@ -1540,3 +1540,17 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
 - Added local score-impact audit logging for reject decisions:
   - stores `participant`, `taskId`, `feedback`, `issuer`, `decidedAt`, `decision` in
     `localStorage` key `citysync:demo:participant:score-impact:v1`.
+
+## 2026-03-18 — Left Panel Split: Deep Dives + Learn More
+
+- Refactored shared app shell side layout so the left context area is now two columns (desktop):
+  - **left-most column:** static deep-dive page index links grouped by section
+    - General Information
+    - Civic Participants
+    - Issuers
+    - Redeemers
+  - **adjacent column:** existing Learn More information cards opened from in-app Learn More links.
+- Implemented in:
+  - `packages/nextjs/app/demo/_components/AppShell.tsx`
+- Preserved right-side activity panel behavior:
+  - Issuer/Redeemer/Civic Participant onchain activity panels remain unchanged on the right side.
