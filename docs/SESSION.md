@@ -12,10 +12,44 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-18 (Session 40)
+2026-03-18 (Session 41)
 
 ## Current Branch
 `main`
+
+## 2026-03-18 — DB/RS Scoring Integration + Issuer/Participant Dashboards
+
+- Updated:
+  - `packages/nextjs/app/demo/_utils/participantScoring.ts` (new)
+  - `packages/nextjs/app/demo/issuer/page.tsx`
+  - `packages/nextjs/app/demo/participant/page.tsx`
+- What shipped:
+  - Added a shared participant scoring utility with persistent local storage model:
+    - DB (risk debt), RS (reliability score), sanction tier (Green/Yellow/Orange/Red)
+    - event weights:
+      - Verify & Mint: RS +0.5, DB -0.5 (floor at 0)
+      - Reject & Mint: RS -1.5, DB +2.0
+      - No-Show: RS -1.0, DB +1.0
+    - sanction policy helper for claim restrictions by tier.
+  - Wired issuer actions to scoring updates:
+    - `Verify & Mint` updates participant DB/RS.
+    - `Reject & Mint` updates participant DB/RS and still mints onchain.
+    - `No-Show` updates participant DB/RS when unissue succeeds.
+  - Added `Profile / Dashboard` section toggles in Issuer and Civic Participant profile tabs (matching Redeemer structure).
+  - Issuer dashboard now includes:
+    - task operations metrics
+    - epoch budget snapshot
+    - participant risk signal summary with top at-risk participants (DB/RS).
+  - Civic Participant dashboard now includes:
+    - positive activity metrics (tasks completed, CITY earned, VOTE earned, consecutive successes)
+    - DB/RS status + current sanction tier
+    - sanctions summary and link to `/demo/graduate-sanctions`
+    - completed-task history.
+  - Added sanctions-aware claim enforcement in participant task claiming:
+    - tier-based max active claims
+    - premium task blocking for restricted tiers
+    - max estimated task duration enforcement for higher-risk tiers.
+
 
 ## 2026-03-18 — Browse Tasks CITYx/hr Rate Consistency Fix
 

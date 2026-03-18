@@ -12,6 +12,12 @@ import { BASE_SEPOLIA_CONTRACTS } from "../_config/baseSepoliaContracts";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, PastRedemption, RedemptionOffer, Task, TaskCategory } from "../_data/mockData";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
+import {
+  PREMIUM_TASK_RATE_THRESHOLD,
+  getParticipantScoreSnapshot,
+  getSanctionPolicyForSnapshot,
+  type ParticipantScoreSnapshot,
+} from "../_utils/participantScoring";
 
 // ─── Brand ────────────────────────────────────────────────────────────────────
 
@@ -325,6 +331,23 @@ const cardPurple: React.CSSProperties = {
   ...card,
   borderLeft: "3px solid rgba(167,139,250,0.5)",
   paddingLeft: 13,
+};
+const miniMetricCardStyle: React.CSSProperties = {
+  background: "rgba(255,255,255,0.03)",
+  border: "1px solid rgba(255,255,255,0.08)",
+  borderRadius: 10,
+  padding: "10px 11px",
+};
+const miniMetricLabelStyle: React.CSSProperties = {
+  fontSize: 11,
+  color: "rgba(255,255,255,0.5)",
+};
+const miniMetricValueStyle: React.CSSProperties = {
+  fontSize: 20,
+  fontWeight: 700,
+  color: TEAL,
+  marginTop: 4,
+  lineHeight: 1.1,
 };
 
 // ─── Category pill colors ─────────────────────────────────────────────────────
@@ -1035,8 +1058,11 @@ function ProfileTab({
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [section, setSection] = useState<"overview" | "completed">("overview");
+  const [section, setSection] = useState<"profile" | "dashboard">("profile");
   const [localCompletedTasks, setLocalCompletedTasks] = useState<Array<Task & { completedAt: string }>>([]);
+  const [scoreSnapshot, setScoreSnapshot] = useState<ParticipantScoreSnapshot>(() =>
+    getParticipantScoreSnapshot(participantAddress),
+  );
 
   const photoStorageKey = `citysync:demo:profile:photo:participant:v1:${participantAddress.toLowerCase()}`;
   const nameStorageKey = `citysync:demo:participant:name:v1:${participantAddress.toLowerCase()}`;
@@ -1106,6 +1132,18 @@ function ProfileTab({
     }
   }, [participantAddress]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => setScoreSnapshot(getParticipantScoreSnapshot(participantAddress));
+    sync();
+    const id = window.setInterval(sync, 2500);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener("storage", sync);
+    };
+  }, [participantAddress]);
+
   const saveEdit = () => {
     const trimmed = nameInput.trim();
     if (trimmed) {
@@ -1166,255 +1204,20 @@ function ProfileTab({
     );
   }, [localCompletedTasks, p.completedTasks]);
 
+  const totalCityEarned = completedHistory.reduce((sum, task) => sum + task.credits, 0);
+  const totalVoteEarned = completedHistory.reduce((sum, task) => sum + task.voteTokens, 0);
+  const sanctionsPolicy = getSanctionPolicyForSnapshot(scoreSnapshot);
+  const tierColor =
+    scoreSnapshot.tier === "Green"
+      ? TEAL
+      : scoreSnapshot.tier === "Yellow"
+        ? "#ffad66"
+        : scoreSnapshot.tier === "Orange"
+          ? "#ff8f4d"
+          : "#ff6b9d";
+
   return (
     <div style={{ padding: "20px 16px 24px" }}>
-      {/* Profile card */}
-      <div
-        style={{
-          background: "linear-gradient(135deg, #0f1f42 0%, #1E1E2C 100%)",
-          border: "1px solid rgba(65,105,225,0.25)",
-          borderRadius: 20,
-          padding: "20px",
-          marginBottom: 14,
-          boxShadow: "0 2px 12px rgba(0,0,0,0.28)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 6,
-            marginBottom: 4,
-            flexWrap: "nowrap",
-          }}
-        >
-          <div
-            style={{
-              fontSize: 9,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              color: "rgba(65,105,225,0.75)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Civic Participant
-          </div>
-          <LearnMoreLink onClick={() => onLearnMore("profile-overview")} />
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-          <input
-            ref={photoInputRef}
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handlePhotoChange}
-          />
-          <button
-            onClick={() => photoInputRef.current?.click()}
-            title="Upload profile photo"
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 12,
-              background: photoUrl ? "transparent" : "rgba(65,105,225,0.15)",
-              border: `1px ${photoUrl ? "solid transparent" : "dashed rgba(65,105,225,0.4)"}`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: 20,
-              flexShrink: 0,
-              cursor: "pointer",
-              padding: 0,
-              overflow: "hidden",
-            }}
-          >
-            {photoUrl ? (
-              <img src={photoUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <span>👤</span>
-            )}
-          </button>
-          <div>
-            {editing ? (
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <input
-                  ref={inputRef}
-                  value={nameInput}
-                  onChange={e => setNameInput(e.target.value)}
-                  onKeyDown={e => {
-                    if (e.key === "Enter") saveEdit();
-                    if (e.key === "Escape") cancelEdit();
-                  }}
-                  style={{
-                    background: "rgba(255,255,255,0.08)",
-                    border: "1px solid rgba(65,105,225,0.5)",
-                    borderRadius: 8,
-                    padding: "6px 10px",
-                    color: "white",
-                    fontSize: 16,
-                    fontWeight: 700,
-                    outline: "none",
-                    width: 170,
-                  }}
-                />
-                <button
-                  onClick={saveEdit}
-                  style={{ background: "none", border: "none", color: TEAL, cursor: "pointer", padding: 0 }}
-                >
-                  <IconCheck size={16} />
-                </button>
-                <button
-                  onClick={cancelEdit}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "rgba(255,255,255,0.4)",
-                    cursor: "pointer",
-                    padding: 0,
-                  }}
-                >
-                  <IconXSmall size={16} />
-                </button>
-              </div>
-            ) : (
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span
-                  style={{ fontSize: 22, fontWeight: 700, color: p.citizenName ? "white" : "rgba(255,255,255,0.4)" }}
-                >
-                  {p.citizenName || "Set your name"}
-                </span>
-                <button
-                  onClick={() => {
-                    setNameInput(p.citizenName);
-                    setEditing(true);
-                  }}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "rgba(255,255,255,0.45)",
-                    padding: 4,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconPencil size={14} />
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div
-          style={{
-            fontFamily: "monospace",
-            fontSize: 11,
-            color: "rgba(255,255,255,0.35)",
-            marginBottom: 14,
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-          }}
-        >
-          <span>
-            {participantAddress.slice(0, 8)}...{participantAddress.slice(-6)}
-          </span>
-          <button
-            onClick={async () => {
-              try {
-                await navigator.clipboard.writeText(participantAddress);
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1200);
-              } catch {
-                /* ignore */
-              }
-            }}
-            style={{
-              background: "transparent",
-              border: "none",
-              color: copied ? TEAL : ACCENT,
-              cursor: "pointer",
-              fontSize: 13,
-              padding: "0 2px",
-              lineHeight: 1,
-              display: "flex",
-              alignItems: "center",
-            }}
-            title="Copy address"
-          >
-            {copied ? "✓" : "⧉"}
-          </button>
-          <a
-            href={`https://sepolia.basescan.org/address/${participantAddress}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              color: ACCENT,
-              fontSize: 11,
-              textDecoration: "none",
-              fontFamily: "system-ui, -apple-system, sans-serif",
-              fontWeight: 600,
-              letterSpacing: "0.02em",
-              padding: "0 2px",
-            }}
-            title="View on block explorer"
-          >
-            View Account ↗
-          </a>
-        </div>
-
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              background: "rgba(65,105,225,0.16)",
-              color: ACCENT,
-              borderRadius: 20,
-              padding: "3px 10px",
-              border: "1px solid rgba(65,105,225,0.3)",
-            }}
-          >
-            Civic Participant
-          </span>
-          <span
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              background: "rgba(255,255,255,0.06)",
-              color: "rgba(255,255,255,0.45)",
-              borderRadius: 20,
-              padding: "3px 10px",
-              border: "1px solid rgba(255,255,255,0.12)",
-            }}
-          >
-            Base Sepolia
-          </span>
-        </div>
-      </div>
-
-      <div
-        style={{
-          background: "rgba(65,105,225,0.08)",
-          border: "1px solid rgba(65,105,225,0.2)",
-          borderRadius: 14,
-          padding: "14px 16px",
-          marginBottom: 14,
-        }}
-      >
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>
-          Your Role as a Civic Participant
-        </div>
-        <p style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", lineHeight: 1.6, margin: 0 }}>
-          Civic Participants claim and execute tasks that support local priorities, then submit completion for issuer
-          verification. Verified contributions earn CITY and VOTE rewards onchain, creating a direct path from civic
-          action to governance influence and redemption utility.
-        </p>
-      </div>
-
       <div
         style={{
           display: "flex",
@@ -1426,8 +1229,8 @@ function ProfileTab({
       >
         {(
           [
-            { key: "overview" as const, label: "Overview", color: ACCENT },
-            { key: "completed" as const, label: `Completed Tasks (${completedHistory.length})`, color: TEAL },
+            { key: "profile" as const, label: "Profile", color: ACCENT },
+            { key: "dashboard" as const, label: "Dashboard", color: TEAL },
           ] as const
         ).map(({ key, label, color }) => (
           <button
@@ -1442,7 +1245,7 @@ function ProfileTab({
               fontSize: 13,
               fontWeight: 600,
               background: section === key ? color : "transparent",
-              color: section === key ? (key === "overview" ? "white" : "#15151E") : "rgba(255,255,255,0.45)",
+              color: section === key ? (key === "profile" ? "white" : "#15151E") : "rgba(255,255,255,0.45)",
             }}
           >
             {label}
@@ -1450,97 +1253,421 @@ function ProfileTab({
         ))}
       </div>
 
-      {section === "overview" ? (
-        <div style={{ ...card }}>
-          <SectionLabel text="Quick Actions" accentColor={ACCENT} />
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <button
-              onClick={() => onTabChange("explore")}
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 10,
-                padding: "12px 10px",
-                color: "white",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              Browse Tasks
-            </button>
-            <button
-              onClick={() => onTabChange("redeem")}
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
-                borderRadius: 10,
-                padding: "12px 10px",
-                color: "white",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              Browse Offerings
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div style={{ ...card }}>
-          <SectionLabel text="Completed Tasks" accentColor={TEAL} />
-          {completedHistory.length === 0 ? (
+      {section === "profile" && (
+        <>
+          <div
+            style={{
+              background: "linear-gradient(135deg, #0f1f42 0%, #1E1E2C 100%)",
+              border: "1px solid rgba(65,105,225,0.25)",
+              borderRadius: 20,
+              padding: "20px",
+              marginBottom: 14,
+              boxShadow: "0 2px 12px rgba(0,0,0,0.28)",
+            }}
+          >
             <div
               style={{
-                textAlign: "center",
-                padding: "14px 0 8px",
-                fontSize: 13,
-                color: "rgba(255,255,255,0.32)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 6,
+                marginBottom: 4,
+                flexWrap: "nowrap",
               }}
             >
-              No completed tasks yet.
-            </div>
-          ) : (
-            completedHistory.map((t, i) => (
               <div
-                key={t.key}
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingBottom: i < completedHistory.length - 1 ? 10 : 0,
-                  marginBottom: i < completedHistory.length - 1 ? 10 : 0,
-                  borderBottom: i < completedHistory.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                  fontSize: 9,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  color: "rgba(65,105,225,0.75)",
+                  whiteSpace: "nowrap",
                 }}
               >
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "white" }}>{t.title}</div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>
-                    {t.issuerName} · {fmtDateTime(t.completedAt)}
-                    {t.txHash ? (
-                      <>
-                        {" · "}
-                        <a
-                          href={`https://sepolia.basescan.org/tx/${t.txHash}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          style={{ color: ACCENT, textDecoration: "none" }}
-                        >
-                          tx
-                        </a>
-                      </>
-                    ) : null}
+                Civic Participant
+              </div>
+              <LearnMoreLink onClick={() => onLearnMore("profile-overview")} />
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handlePhotoChange}
+              />
+              <button
+                onClick={() => photoInputRef.current?.click()}
+                title="Upload profile photo"
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  background: photoUrl ? "transparent" : "rgba(65,105,225,0.15)",
+                  border: `1px ${photoUrl ? "solid transparent" : "dashed rgba(65,105,225,0.4)"}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 20,
+                  flexShrink: 0,
+                  cursor: "pointer",
+                  padding: 0,
+                  overflow: "hidden",
+                }}
+              >
+                {photoUrl ? (
+                  <img src={photoUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <span>👤</span>
+                )}
+              </button>
+              <div>
+                {editing ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <input
+                      ref={inputRef}
+                      value={nameInput}
+                      onChange={e => setNameInput(e.target.value)}
+                      onKeyDown={e => {
+                        if (e.key === "Enter") saveEdit();
+                        if (e.key === "Escape") cancelEdit();
+                      }}
+                      style={{
+                        background: "rgba(255,255,255,0.08)",
+                        border: "1px solid rgba(65,105,225,0.5)",
+                        borderRadius: 8,
+                        padding: "6px 10px",
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: 700,
+                        outline: "none",
+                        width: 170,
+                      }}
+                    />
+                    <button
+                      onClick={saveEdit}
+                      style={{ background: "none", border: "none", color: TEAL, cursor: "pointer", padding: 0 }}
+                    >
+                      <IconCheck size={16} />
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "rgba(255,255,255,0.4)",
+                        cursor: "pointer",
+                        padding: 0,
+                      }}
+                    >
+                      <IconXSmall size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span
+                      style={{
+                        fontSize: 22,
+                        fontWeight: 700,
+                        color: p.citizenName ? "white" : "rgba(255,255,255,0.4)",
+                      }}
+                    >
+                      {p.citizenName || "Set your name"}
+                    </span>
+                    <button
+                      onClick={() => {
+                        setNameInput(p.citizenName);
+                        setEditing(true);
+                      }}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        cursor: "pointer",
+                        color: "rgba(255,255,255,0.45)",
+                        padding: 4,
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <IconPencil size={14} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: 11,
+                color: "rgba(255,255,255,0.35)",
+                marginBottom: 14,
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <span>
+                {participantAddress.slice(0, 8)}...{participantAddress.slice(-6)}
+              </span>
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(participantAddress);
+                    setCopied(true);
+                    window.setTimeout(() => setCopied(false), 1200);
+                  } catch {
+                    // Ignore clipboard failures.
+                  }
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: copied ? TEAL : ACCENT,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  padding: "0 2px",
+                  lineHeight: 1,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                title="Copy address"
+              >
+                {copied ? "✓" : "⧉"}
+              </button>
+              <a
+                href={`https://sepolia.basescan.org/address/${participantAddress}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  color: ACCENT,
+                  fontSize: 11,
+                  textDecoration: "none",
+                  fontFamily: "system-ui, -apple-system, sans-serif",
+                  fontWeight: 600,
+                  letterSpacing: "0.02em",
+                  padding: "0 2px",
+                }}
+                title="View on block explorer"
+              >
+                View Account ↗
+              </a>
+            </div>
+
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  background: "rgba(65,105,225,0.16)",
+                  color: ACCENT,
+                  borderRadius: 20,
+                  padding: "3px 10px",
+                  border: "1px solid rgba(65,105,225,0.3)",
+                }}
+              >
+                Civic Participant
+              </span>
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  background: "rgba(255,255,255,0.06)",
+                  color: "rgba(255,255,255,0.45)",
+                  borderRadius: 20,
+                  padding: "3px 10px",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                }}
+              >
+                Base Sepolia
+              </span>
+            </div>
+          </div>
+
+          <div
+            style={{
+              background: "rgba(65,105,225,0.08)",
+              border: "1px solid rgba(65,105,225,0.2)",
+              borderRadius: 14,
+              padding: "14px 16px",
+              marginBottom: 14,
+            }}
+          >
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>
+              Your Role as a Civic Participant
+            </div>
+            <p style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", lineHeight: 1.6, margin: 0 }}>
+              Civic Participants claim and execute tasks that support local priorities, then submit completion for
+              issuer verification. Verified contributions earn CITY and VOTE rewards onchain, creating a direct path
+              from civic action to governance influence and redemption utility.
+            </p>
+          </div>
+
+          <div style={{ ...card }}>
+            <SectionLabel text="Quick Actions" accentColor={ACCENT} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <button
+                onClick={() => onTabChange("explore")}
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 10,
+                  padding: "12px 10px",
+                  color: "white",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Browse Tasks
+              </button>
+              <button
+                onClick={() => onTabChange("redeem")}
+                style={{
+                  background: "rgba(255,255,255,0.04)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: 10,
+                  padding: "12px 10px",
+                  color: "white",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
+              >
+                Browse Offerings
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {section === "dashboard" && (
+        <>
+          <div style={{ ...card, marginBottom: 12 }}>
+            <SectionLabel text="Positive Activity" accentColor={TEAL} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={miniMetricCardStyle}>
+                <div style={miniMetricLabelStyle}>Tasks Completed</div>
+                <div style={miniMetricValueStyle}>{completedHistory.length}</div>
+              </div>
+              <div style={miniMetricCardStyle}>
+                <div style={miniMetricLabelStyle}>CITY Earned</div>
+                <div style={miniMetricValueStyle}>{totalCityEarned}</div>
+              </div>
+              <div style={miniMetricCardStyle}>
+                <div style={miniMetricLabelStyle}>VOTE Earned</div>
+                <div style={miniMetricValueStyle}>{totalVoteEarned}</div>
+              </div>
+              <div style={miniMetricCardStyle}>
+                <div style={miniMetricLabelStyle}>Consecutive Successes</div>
+                <div style={miniMetricValueStyle}>{scoreSnapshot.consecutiveSuccesses}</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ ...card, marginBottom: 12 }}>
+            <SectionLabel text="DB / RS Status" accentColor={tierColor} />
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 10 }}>
+              <div style={miniMetricCardStyle}>
+                <div style={miniMetricLabelStyle}>DB</div>
+                <div style={{ ...miniMetricValueStyle, color: tierColor }}>{scoreSnapshot.db.toFixed(1)}</div>
+              </div>
+              <div style={miniMetricCardStyle}>
+                <div style={miniMetricLabelStyle}>RS</div>
+                <div style={{ ...miniMetricValueStyle, color: "#fff" }}>{scoreSnapshot.rs.toFixed(1)}</div>
+              </div>
+              <div style={miniMetricCardStyle}>
+                <div style={miniMetricLabelStyle}>Status</div>
+                <div style={{ ...miniMetricValueStyle, color: tierColor }}>{scoreSnapshot.tier}</div>
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: 10,
+                padding: "10px 12px",
+                marginBottom: 10,
+              }}
+            >
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Sanctions Summary</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.55 }}>
+                Verify & Mint improves score (RS +0.5, DB -0.5). Reject & Mint (RS -1.5, DB +2) and No-Show (RS -1, DB
+                +1) increase restrictions. Current policy: {sanctionsPolicy.summary}
+              </div>
+              <a
+                href="/demo/graduate-sanctions"
+                style={{
+                  display: "inline-block",
+                  marginTop: 8,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: ACCENT,
+                  textDecoration: "none",
+                }}
+              >
+                Read full Graduated Sanctions policy ↗
+              </a>
+            </div>
+          </div>
+
+          <div style={{ ...card }}>
+            <SectionLabel text="Completed Tasks" accentColor={TEAL} />
+            {completedHistory.length === 0 ? (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "14px 0 8px",
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.32)",
+                }}
+              >
+                No completed tasks yet.
+              </div>
+            ) : (
+              completedHistory.map((task, i) => (
+                <div
+                  key={task.key}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingBottom: i < completedHistory.length - 1 ? 10 : 0,
+                    marginBottom: i < completedHistory.length - 1 ? 10 : 0,
+                    borderBottom: i < completedHistory.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none",
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "white" }}>{task.title}</div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>
+                      {task.issuerName} · {fmtDateTime(task.completedAt)}
+                      {task.txHash ? (
+                        <>
+                          {" · "}
+                          <a
+                            href={`https://sepolia.basescan.org/tx/${task.txHash}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: ACCENT, textDecoration: "none" }}
+                          >
+                            tx
+                          </a>
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: TEAL }}>+{task.credits} CITYx</div>
+                    <div style={{ fontSize: 11, color: `${ACCENT}cc`, marginTop: 1 }}>+{task.voteTokens} VOTE</div>
                   </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: TEAL }}>+{t.credits} CITYx</div>
-                  <div style={{ fontSize: 11, color: `${ACCENT}cc`, marginTop: 1 }}>+{t.voteTokens} VOTE</div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
+              ))
+            )}
+          </div>
+        </>
       )}
     </div>
   );
@@ -1888,6 +2015,22 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
   const [unclaimConfirmTask, setUnclaimConfirmTask] = useState<Task | null>(null);
   const [expandedTaskGroups, setExpandedTaskGroups] = useState<Record<string, boolean>>({});
   const [claimNotice, setClaimNotice] = useState<{ message: string; type: "info" | "warn" } | null>(null);
+  const [scoreSnapshot, setScoreSnapshot] = useState<ParticipantScoreSnapshot>(() =>
+    getParticipantScoreSnapshot(address ?? FAKE_WALLETS.participant),
+  );
+
+  const parseEstimatedHours = React.useCallback((estimatedTime: string): number | null => {
+    const input = estimatedTime.toLowerCase();
+    const numericParts = input.match(/\d+(\.\d+)?/g)?.map(Number) ?? [];
+    if (numericParts.length === 0) return null;
+
+    const base =
+      input.includes("-") && numericParts.length >= 2 ? (numericParts[0] + numericParts[1]) / 2 : numericParts[0];
+    if (!Number.isFinite(base) || base <= 0) return null;
+
+    if (input.includes("min")) return base / 60;
+    return base;
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1948,6 +2091,18 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
   }, [address, pendingVerificationIds, localOnboardingClaimed, isOnboarded, pendingTaskSnapshots, completedTasks]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => setScoreSnapshot(getParticipantScoreSnapshot(address ?? FAKE_WALLETS.participant));
+    sync();
+    const id = window.setInterval(sync, 2500);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener("storage", sync);
+    };
+  }, [address]);
+
+  useEffect(() => {
     // Keep legacy participants with existing CITY balances unlocked.
     if (state.participant.cityBalance > 0 && !isOnboarded) {
       setIsOnboarded(true);
@@ -1974,18 +2129,6 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
         if (Number.isFinite(parsed) && parsed > 0) return parsed;
       }
       return null;
-    };
-    const parseEstimatedHours = (estimatedTime: string): number | null => {
-      const input = estimatedTime.toLowerCase();
-      const numericParts = input.match(/\d+(\.\d+)?/g)?.map(Number) ?? [];
-      if (numericParts.length === 0) return null;
-
-      const base =
-        input.includes("-") && numericParts.length >= 2 ? (numericParts[0] + numericParts[1]) / 2 : numericParts[0];
-      if (!Number.isFinite(base) || base <= 0) return null;
-
-      if (input.includes("min")) return base / 60;
-      return base;
     };
 
     const syncOnchainTasks = async () => {
@@ -2133,7 +2276,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
       cancelled = true;
       window.clearInterval(id);
     };
-  }, []);
+  }, [parseEstimatedHours]);
 
   const addressLower = address?.toLowerCase();
   const openOnchainTasks = onchainTasks.filter(t => {
@@ -2219,6 +2362,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
   );
   const onchainCompletedTasks = myTasksRaw.filter(t => t.completionStatus === 2);
   const myTaskIds = new Set(myTasks.map(t => t.id));
+  const sanctionsPolicy = getSanctionPolicyForSnapshot(scoreSnapshot);
 
   useEffect(() => {
     if (onchainCompletedTasks.length === 0) return;
@@ -2288,10 +2432,38 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
 
   const handleClaimConfirmed = async (task: Task) => {
     setClaimConfirmTask(null);
-    if (myTasks.length >= 2) {
-      setClaimNotice({ message: "Max 2 tasks can be claimed at a time", type: "warn" });
-      return;
+    if (!task.isOnboarding) {
+      if (myTasks.length >= sanctionsPolicy.maxActiveClaims) {
+        setClaimNotice({
+          message:
+            sanctionsPolicy.maxActiveClaims === 1
+              ? `Claim limited by ${scoreSnapshot.tier} status (max 1 active claim).`
+              : "Max task claim limit reached.",
+          type: "warn",
+        });
+        return;
+      }
+
+      if (sanctionsPolicy.blockPremiumTasks && task.creditRatePerHr > PREMIUM_TASK_RATE_THRESHOLD) {
+        setClaimNotice({
+          message: `Claim blocked: premium tasks above ${PREMIUM_TASK_RATE_THRESHOLD} CITYx/hr are restricted in ${scoreSnapshot.tier}.`,
+          type: "warn",
+        });
+        return;
+      }
+
+      if (sanctionsPolicy.maxEstimatedHours !== null) {
+        const estimatedHours = parseEstimatedHours(task.estimatedTime);
+        if (estimatedHours !== null && estimatedHours > sanctionsPolicy.maxEstimatedHours) {
+          setClaimNotice({
+            message: `Claim blocked: ${scoreSnapshot.tier} status allows tasks up to ${sanctionsPolicy.maxEstimatedHours} hour.`,
+            type: "warn",
+          });
+          return;
+        }
+      }
     }
+
     if (task.id === DEMO_LOCAL_ONBOARDING_TASK.id) {
       setLocalOnboardingClaimed(true);
       setClaimNotice({ message: `Claimed: ${task.title}`, type: "info" });
@@ -2551,6 +2723,25 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
           >
             ×
           </button>
+        </div>
+      )}
+
+      {scoreSnapshot.tier !== "Green" && (
+        <div
+          style={{
+            borderRadius: 12,
+            marginBottom: 12,
+            border: "1px solid rgba(255,173,102,0.35)",
+            background: "rgba(255,173,102,0.08)",
+            padding: "10px 12px",
+          }}
+        >
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", marginBottom: 4 }}>
+            Sanctions Active · {scoreSnapshot.tier}
+          </div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.86)", lineHeight: 1.45 }}>
+            {sanctionsPolicy.summary}
+          </div>
         </div>
       )}
 

@@ -11,6 +11,11 @@ import { BASE_SEPOLIA_CONTRACTS } from "../_config/baseSepoliaContracts";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, Task } from "../_data/mockData";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
+import {
+  applyParticipantScoreEvent,
+  getAllParticipantScoreSnapshots,
+  type ParticipantScoreSnapshot,
+} from "../_utils/participantScoring";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -486,24 +491,17 @@ export default function IssuerApp() {
     setVerifyWriteStatus({ state: "pending" });
     const result = await issuerVerifyCompletion(taskId, citizen);
     if (result.ok) {
-      if (decision === "reject" && typeof window !== "undefined") {
-        try {
-          const key = "citysync:demo:participant:score-impact:v1";
-          const raw = window.localStorage.getItem(key);
-          const current = raw ? (JSON.parse(raw) as Array<Record<string, unknown>>) : [];
-          current.unshift({
-            participant: citizen.toLowerCase(),
-            taskId,
-            feedback,
-            decision: "reject_mint",
-            decidedAt: new Date().toISOString(),
-            issuer: address.toLowerCase(),
-          });
-          window.localStorage.setItem(key, JSON.stringify(current.slice(0, 250)));
-        } catch {
-          // Ignore score-impact persistence failures.
-        }
-        setToast("Rejected & Minted. Participant score impact recorded.");
+      const scoreResult = applyParticipantScoreEvent({
+        participantAddress: citizen,
+        taskId,
+        type: decision === "reject" ? "reject_mint" : "verify_mint",
+        issuerAddress: address,
+        feedback,
+      });
+      if (decision === "reject" && scoreResult) {
+        setToast(`Rejected & Minted. DB ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
+      } else if (decision === "verify" && scoreResult) {
+        setToast(`Verified & Minted. DB ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
       }
       setVerifyWriteStatus({ state: "confirmed", hash: result.hash });
       return;
@@ -807,8 +805,21 @@ export default function IssuerApp() {
         {noShowConfirmItem && (
           <NoShowConfirmSheet
             item={noShowConfirmItem}
-            onConfirm={() => {
-              void handleUnissueTask(noShowConfirmItem.taskId);
+            onConfirm={async () => {
+              const target = noShowConfirmItem;
+              if (!target) return;
+              const result = await handleUnissueTask(target.taskId);
+              if (result.ok) {
+                const scoreResult = applyParticipantScoreEvent({
+                  participantAddress: target.claimant,
+                  taskId: target.taskId,
+                  type: "no_show",
+                  issuerAddress: address,
+                });
+                if (scoreResult) {
+                  setToast(`No-Show recorded. DB ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
+                }
+              }
               setNoShowConfirmItem(null);
             }}
             onCancel={() => setNoShowConfirmItem(null)}
@@ -832,16 +843,18 @@ function ProfileTab({
   creditsCommitted: number;
   onLearnMore: (key: IssuerLearnCardKey) => void;
 }) {
-  const { dispatch } = useDemo();
+  const { dispatch, state } = useDemo();
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(issuer.orgName);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [section, setSection] = useState<"profile" | "dashboard">("profile");
   const [showActiveTasks, setShowActiveTasks] = useState(false);
   const [activeTaskInstances, setActiveTaskInstances] = useState<
     Array<{ id: string; title: string; credits: number; status: "Open" | "Claimed" | "Pending Verification" }>
   >([]);
+  const [scoreSnapshots, setScoreSnapshots] = useState<ParticipantScoreSnapshot[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const issuerAddress = address ?? FAKE_WALLETS.issuer;
@@ -1008,321 +1021,510 @@ function ProfileTab({
     };
   }, [issuerAddress]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const sync = () => setScoreSnapshots(getAllParticipantScoreSnapshots());
+    sync();
+    const id = window.setInterval(sync, 3000);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.clearInterval(id);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
   return (
     <div style={{ padding: "24px 20px 100px" }}>
-      {/* Welcome banner */}
-      <div
-        style={{
-          background: "linear-gradient(145deg, #26200a 0%, #1f1d2b 55%, #151520 100%)",
-          border: "1px solid rgba(221,158,51,0.22)",
-          borderRadius: 20,
-          padding: "20px",
-          marginBottom: 20,
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {/* Subtle radial glow */}
-        <div
-          style={{
-            position: "absolute",
-            top: -30,
-            right: -30,
-            width: 140,
-            height: 140,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(221,158,51,0.12) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }}
-        />
-        <div
-          style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 4 }}
-        >
-          <div
+      <div style={{ background: SURFACE, borderRadius: 16, display: "flex", marginBottom: 20, overflow: "hidden" }}>
+        {(
+          [
+            { key: "profile" as const, label: "Profile", color: ACCENT },
+            { key: "dashboard" as const, label: "Dashboard", color: ACCENT_TEAL },
+          ] as const
+        ).map(({ key, label, color }, i) => (
+          <button
+            key={key}
+            onClick={() => setSection(key)}
             style={{
-              fontSize: 9,
+              flex: 1,
+              border: "none",
+              borderRadius: i === 0 ? "16px 0 0 16px" : "0 16px 16px 0",
+              padding: "9px 0",
+              fontSize: 13,
               fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              color: "rgba(221,158,51,0.6)",
-              whiteSpace: "nowrap",
+              cursor: "pointer",
+              transition: "all 0.2s",
+              background: section === key ? color : "transparent",
+              color: section === key ? BG : MUTED,
             }}
           >
-            Certified Issuer Organization
-          </div>
-          <LearnMoreLink onClick={() => onLearnMore("becoming-certified-issuer")} />
-        </div>
+            {label}
+          </button>
+        ))}
+      </div>
 
-        {editing ? (
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-            <input
-              ref={inputRef}
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === "Enter") saveEdit();
-                if (e.key === "Escape") setEditing(false);
-              }}
-              style={{
-                background: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(221,158,51,0.5)",
-                borderRadius: 8,
-                color: "#fff",
-                fontSize: 22,
-                fontWeight: 700,
-                padding: "4px 10px",
-                flex: 1,
-                outline: "none",
-              }}
-            />
-            <button
-              onClick={saveEdit}
-              style={{
-                background: ACCENT,
-                border: "none",
-                borderRadius: 8,
-                padding: "6px 10px",
-                cursor: "pointer",
-                color: BG,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <IconCheck />
-            </button>
-          </div>
-        ) : (
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-            {/* Logo upload */}
-            <input
-              ref={logoInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleLogoChange}
-              style={{ display: "none" }}
-            />
-            <button
-              onClick={() => logoInputRef.current?.click()}
-              title="Upload organization logo"
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 12,
-                background: logoUrl ? "transparent" : "rgba(221,158,51,0.12)",
-                border: `1px dashed ${logoUrl ? "transparent" : "rgba(221,158,51,0.4)"}`,
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: 0,
-                overflow: "hidden",
-                flexShrink: 0,
-              }}
-            >
-              {logoUrl ? (
-                <img src={logoUrl} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                <span style={{ fontSize: 18 }}>🏛</span>
-              )}
-            </button>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 22, fontWeight: 700, color: "#fff" }}>
-                {issuer.orgName || "Your Organization"}
-              </div>
-              <div style={{ fontSize: 10, color: "rgba(221,158,51,0.5)", marginTop: 1 }}>Tap icon to upload logo</div>
-            </div>
-            <button
-              onClick={startEdit}
-              style={{
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                color: MUTED,
-                padding: 4,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <IconPencil />
-            </button>
-          </div>
-        )}
-
-        <div
-          style={{
-            fontFamily: "monospace",
-            fontSize: 11,
-            color: "rgba(255,255,255,0.6)",
-            marginBottom: 14,
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            flexWrap: "wrap",
-          }}
-        >
-          <span>{shortAddress}</span>
-          <button
-            onClick={async () => {
-              try {
-                await navigator.clipboard.writeText(issuerAddress);
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1200);
-              } catch {
-                // Ignore copy failures.
-              }
-            }}
+      {section === "dashboard" ? (
+        <IssuerDashboardTab
+          creditsCommitted={creditsCommitted}
+          activeTaskInstances={activeTaskInstances}
+          totalTasksIssued={state.issuer.totalTasksIssued}
+          totalCreditsIssued={state.issuer.totalCreditsIssued}
+          scoreSnapshots={scoreSnapshots}
+        />
+      ) : (
+        <>
+          {/* Welcome banner */}
+          <div
             style={{
-              background: "transparent",
-              border: "none",
-              color: copied ? ACCENT_TEAL : ACCENT,
-              cursor: "pointer",
-              fontSize: 13,
-              padding: "0 2px",
-              lineHeight: 1,
+              background: "linear-gradient(145deg, #26200a 0%, #1f1d2b 55%, #151520 100%)",
+              border: "1px solid rgba(221,158,51,0.22)",
+              borderRadius: 20,
+              padding: "20px",
+              marginBottom: 20,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {/* Subtle radial glow */}
+            <div
+              style={{
+                position: "absolute",
+                top: -30,
+                right: -30,
+                width: 140,
+                height: 140,
+                borderRadius: "50%",
+                background: "radial-gradient(circle, rgba(221,158,51,0.12) 0%, transparent 70%)",
+                pointerEvents: "none",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+                marginBottom: 4,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: 9,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.08em",
+                  color: "rgba(221,158,51,0.6)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Certified Issuer Organization
+              </div>
+              <LearnMoreLink onClick={() => onLearnMore("becoming-certified-issuer")} />
+            </div>
+
+            {editing ? (
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                <input
+                  ref={inputRef}
+                  value={draft}
+                  onChange={e => setDraft(e.target.value)}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") saveEdit();
+                    if (e.key === "Escape") setEditing(false);
+                  }}
+                  style={{
+                    background: "rgba(255,255,255,0.08)",
+                    border: "1px solid rgba(221,158,51,0.5)",
+                    borderRadius: 8,
+                    color: "#fff",
+                    fontSize: 22,
+                    fontWeight: 700,
+                    padding: "4px 10px",
+                    flex: 1,
+                    outline: "none",
+                  }}
+                />
+                <button
+                  onClick={saveEdit}
+                  style={{
+                    background: ACCENT,
+                    border: "none",
+                    borderRadius: 8,
+                    padding: "6px 10px",
+                    cursor: "pointer",
+                    color: BG,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <IconCheck />
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                {/* Logo upload */}
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoChange}
+                  style={{ display: "none" }}
+                />
+                <button
+                  onClick={() => logoInputRef.current?.click()}
+                  title="Upload organization logo"
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: logoUrl ? "transparent" : "rgba(221,158,51,0.12)",
+                    border: `1px dashed ${logoUrl ? "transparent" : "rgba(221,158,51,0.4)"}`,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 0,
+                    overflow: "hidden",
+                    flexShrink: 0,
+                  }}
+                >
+                  {logoUrl ? (
+                    <img src={logoUrl} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <span style={{ fontSize: 18 }}>🏛</span>
+                  )}
+                </button>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "#fff" }}>
+                    {issuer.orgName || "Your Organization"}
+                  </div>
+                  <div style={{ fontSize: 10, color: "rgba(221,158,51,0.5)", marginTop: 1 }}>
+                    Tap icon to upload logo
+                  </div>
+                </div>
+                <button
+                  onClick={startEdit}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    color: MUTED,
+                    padding: 4,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <IconPencil />
+                </button>
+              </div>
+            )}
+
+            <div
+              style={{
+                fontFamily: "monospace",
+                fontSize: 11,
+                color: "rgba(255,255,255,0.6)",
+                marginBottom: 14,
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                flexWrap: "wrap",
+              }}
+            >
+              <span>{shortAddress}</span>
+              <button
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(issuerAddress);
+                    setCopied(true);
+                    window.setTimeout(() => setCopied(false), 1200);
+                  } catch {
+                    // Ignore copy failures.
+                  }
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  color: copied ? ACCENT_TEAL : ACCENT,
+                  cursor: "pointer",
+                  fontSize: 13,
+                  padding: "0 2px",
+                  lineHeight: 1,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                title="Copy address"
+              >
+                {copied ? "✓" : "⧉"}
+              </button>
+              <a
+                href={`https://sepolia.basescan.org/address/${issuerAddress}`}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: ACCENT, textDecoration: "none", fontSize: 11 }}
+              >
+                View Account ↗
+              </a>
+            </div>
+
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <StatusPill label="Verified Issuer" color={ACCENT} />
+              <StatusPill label="Base Sepolia" color={DIMMED} />
+            </div>
+          </div>
+
+          {/* Role description */}
+          <div
+            style={{
+              background: "rgba(221,158,51,0.06)",
+              border: "1px solid rgba(221,158,51,0.15)",
+              borderRadius: 14,
+              padding: "14px 16px",
+              marginBottom: 20,
+            }}
+          >
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>Your Role as an Issuer</div>
+            <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.6, margin: 0 }}>
+              Certified Issuer Organizations are able to publish civic tasks that expand their impact and mission. They
+              are also responsible for managing and verifying tasks completions. When an Issuer organization verifies
+              task completion, CITY and VOTE credits are distributed to participants onchain.
+            </p>
+          </div>
+
+          {/* Epoch 1 Issuance Allocation */}
+          <SectionLabel
+            text="Epoch 1 Issuance Allocation"
+            right={<LearnMoreLink onClick={() => onLearnMore("epoch-issuance")} />}
+          />
+          <div
+            style={{
+              ...surfaceCard,
+              marginBottom: 20,
+              background: "linear-gradient(135deg, #1a1a00 0%, #1E1E2C 100%)",
+              border: "1px solid rgba(221,158,51,0.2)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Jan 1, 2026 – Mar 31, 2026</div>
+                <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{EPOCH1_CAP} CITYx / month</div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 20, fontWeight: 700, color: ACCENT }}>{creditsCommitted}</div>
+                <div style={{ fontSize: 11, color: MUTED }}>of {EPOCH1_CAP} CITYx used</div>
+              </div>
+            </div>
+            {/* Progress bar */}
+            <div
+              style={{
+                height: 6,
+                borderRadius: 3,
+                background: "rgba(255,255,255,0.08)",
+                overflow: "hidden",
+                marginBottom: 8,
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${Math.min(100, Math.round((creditsCommitted / EPOCH1_CAP) * 100))}%`,
+                  background:
+                    creditsCommitted >= EPOCH1_CAP
+                      ? "#ff6b9d"
+                      : creditsCommitted / EPOCH1_CAP > 0.8
+                        ? "#f59e0b"
+                        : ACCENT,
+                  borderRadius: 3,
+                  transition: "width 0.4s ease",
+                }}
+              />
+            </div>
+            <div style={{ fontSize: 11, color: MUTED }}>
+              {EPOCH1_CAP - creditsCommitted > 0
+                ? `${EPOCH1_CAP - creditsCommitted} CITYx remaining this epoch`
+                : "Epoch allocation fully committed"}
+            </div>
+          </div>
+
+          {/* Active tasks quick view */}
+          <SectionLabel
+            text="Active Tasks"
+            right={<LearnMoreLink onClick={() => onLearnMore("active-tasks")} />}
+            accentColor={ACCENT_TEAL}
+          />
+          <button
+            onClick={() => setShowActiveTasks(prev => !prev)}
+            style={{
+              width: "100%",
+              marginBottom: 12,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 10,
+              padding: "10px 12px",
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
+              cursor: "pointer",
+              color: "#fff",
             }}
-            title="Copy address"
           >
-            {copied ? "✓" : "⧉"}
+            <span style={{ fontSize: 12, fontWeight: 700 }}>Active Tasks ({activeTaskInstances.length})</span>
+            <span style={{ fontSize: 14, color: MUTED }}>{showActiveTasks ? "▾" : "▸"}</span>
           </button>
-          <a
-            href={`https://sepolia.basescan.org/address/${issuerAddress}`}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: ACCENT, textDecoration: "none", fontSize: 11 }}
-          >
-            View Account ↗
-          </a>
-        </div>
+          {showActiveTasks &&
+            (activeTaskInstances.length > 0 ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+                {activeTaskInstances.map(t => (
+                  <div
+                    key={t.id}
+                    style={{
+                      ...accentCard,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "12px 13px",
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{t.title}</div>
+                      <div style={{ fontSize: 11, color: MUTED }}>{t.status}</div>
+                    </div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT }}>{t.credits} CITYx</div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ ...surfaceCard, marginBottom: 20, fontSize: 12, color: MUTED }}>
+                No active tasks yet. Issue tasks from the Tasks tab to populate this list.
+              </div>
+            ))}
+        </>
+      )}
+    </div>
+  );
+}
 
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <StatusPill label="Verified Issuer" color={ACCENT} />
-          <StatusPill label="Base Sepolia" color={DIMMED} />
-        </div>
-      </div>
+function IssuerDashboardTab({
+  creditsCommitted,
+  activeTaskInstances,
+  totalTasksIssued,
+  totalCreditsIssued,
+  scoreSnapshots,
+}: {
+  creditsCommitted: number;
+  activeTaskInstances: Array<{
+    id: string;
+    title: string;
+    credits: number;
+    status: "Open" | "Claimed" | "Pending Verification";
+  }>;
+  totalTasksIssued: number;
+  totalCreditsIssued: number;
+  scoreSnapshots: ParticipantScoreSnapshot[];
+}) {
+  const openCount = activeTaskInstances.filter(task => task.status === "Open").length;
+  const claimedCount = activeTaskInstances.filter(task => task.status === "Claimed").length;
+  const pendingVerificationCount = activeTaskInstances.filter(task => task.status === "Pending Verification").length;
+  const yellowOrWorse = scoreSnapshots.filter(snapshot => snapshot.tier !== "Green").length;
+  const redTierCount = scoreSnapshots.filter(snapshot => snapshot.tier === "Red").length;
+  const noShowEvents = scoreSnapshots.reduce((sum, snapshot) => sum + snapshot.noShows, 0);
+  const rejectEvents = scoreSnapshots.reduce((sum, snapshot) => sum + snapshot.rejectedVerifications, 0);
+  const topRiskParticipants = [...scoreSnapshots].sort((a, b) => b.db - a.db).slice(0, 5);
 
-      {/* Role description */}
-      <div
-        style={{
-          background: "rgba(221,158,51,0.06)",
-          border: "1px solid rgba(221,158,51,0.15)",
-          borderRadius: 14,
-          padding: "14px 16px",
-          marginBottom: 20,
-        }}
-      >
-        <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>Your Role as an Issuer</div>
-        <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.6, margin: 0 }}>
-          Certified Issuer Organizations are able to publish civic tasks that expand their impact and mission. They are
-          also responsible for managing and verifying tasks completions. When an Issuer organization verifies task
-          completion, CITY and VOTE credits are distributed to participants onchain.
-        </p>
-      </div>
+  const metricCardStyle: React.CSSProperties = {
+    background: "rgba(255,255,255,0.03)",
+    border: "1px solid rgba(255,255,255,0.08)",
+    borderRadius: 12,
+    padding: "12px 13px",
+  };
 
-      {/* Epoch 1 Issuance Allocation */}
-      <SectionLabel
-        text="Epoch 1 Issuance Allocation"
-        right={<LearnMoreLink onClick={() => onLearnMore("epoch-issuance")} />}
-      />
-      <div
-        style={{
-          ...surfaceCard,
-          marginBottom: 20,
-          background: "linear-gradient(135deg, #1a1a00 0%, #1E1E2C 100%)",
-          border: "1px solid rgba(221,158,51,0.2)",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Jan 1, 2026 – Mar 31, 2026</div>
-            <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{EPOCH1_CAP} CITYx / month</div>
+  return (
+    <div>
+      <div style={{ ...surfaceCard, marginBottom: 14 }}>
+        <SectionLabel text="Task Operations" accentColor={ACCENT_TEAL} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>Issued (Total)</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 2 }}>{totalTasksIssued}</div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 20, fontWeight: 700, color: ACCENT }}>{creditsCommitted}</div>
-            <div style={{ fontSize: 11, color: MUTED }}>of {EPOCH1_CAP} CITYx used</div>
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>Credits Verified</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: ACCENT, marginTop: 2 }}>{totalCreditsIssued}</div>
           </div>
-        </div>
-        {/* Progress bar */}
-        <div
-          style={{
-            height: 6,
-            borderRadius: 3,
-            background: "rgba(255,255,255,0.08)",
-            overflow: "hidden",
-            marginBottom: 8,
-          }}
-        >
-          <div
-            style={{
-              height: "100%",
-              width: `${Math.min(100, Math.round((creditsCommitted / EPOCH1_CAP) * 100))}%`,
-              background:
-                creditsCommitted >= EPOCH1_CAP ? "#ff6b9d" : creditsCommitted / EPOCH1_CAP > 0.8 ? "#f59e0b" : ACCENT,
-              borderRadius: 3,
-              transition: "width 0.4s ease",
-            }}
-          />
-        </div>
-        <div style={{ fontSize: 11, color: MUTED }}>
-          {EPOCH1_CAP - creditsCommitted > 0
-            ? `${EPOCH1_CAP - creditsCommitted} CITYx remaining this epoch`
-            : "Epoch allocation fully committed"}
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>Open Tasks</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 2 }}>{openCount}</div>
+          </div>
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>Claimed / Pending</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 2 }}>
+              {claimedCount} / {pendingVerificationCount}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Active tasks quick view */}
-      <SectionLabel
-        text="Active Tasks"
-        right={<LearnMoreLink onClick={() => onLearnMore("active-tasks")} />}
-        accentColor={ACCENT_TEAL}
-      />
-      <button
-        onClick={() => setShowActiveTasks(prev => !prev)}
-        style={{
-          width: "100%",
-          marginBottom: 12,
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          borderRadius: 10,
-          padding: "10px 12px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          cursor: "pointer",
-          color: "#fff",
-        }}
-      >
-        <span style={{ fontSize: 12, fontWeight: 700 }}>Active Tasks ({activeTaskInstances.length})</span>
-        <span style={{ fontSize: 14, color: MUTED }}>{showActiveTasks ? "▾" : "▸"}</span>
-      </button>
-      {showActiveTasks &&
-        (activeTaskInstances.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
-            {activeTaskInstances.map(t => (
+      <div style={{ ...surfaceCard, marginBottom: 14 }}>
+        <SectionLabel text="Epoch Budget" accentColor={ACCENT} />
+        <div style={{ fontSize: 30, fontWeight: 800, color: ACCENT, lineHeight: 1 }}>{creditsCommitted}</div>
+        <div style={{ fontSize: 12, color: MUTED, marginTop: 6 }}>of {EPOCH1_CAP} CITYx committed in current epoch</div>
+      </div>
+
+      <div style={{ ...surfaceCard }}>
+        <SectionLabel text="Participant Risk Signals (DB/RS)" accentColor={"#ff6b9d"} />
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>Participants Tracked</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginTop: 2 }}>{scoreSnapshots.length}</div>
+          </div>
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>At Risk (Yellow+)</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#ffad66", marginTop: 2 }}>{yellowOrWorse}</div>
+          </div>
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>Red Tier</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#ff6b9d", marginTop: 2 }}>{redTierCount}</div>
+          </div>
+          <div style={metricCardStyle}>
+            <div style={{ fontSize: 11, color: MUTED }}>No-Show / Reject Events</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginTop: 2 }}>
+              {noShowEvents} / {rejectEvents}
+            </div>
+          </div>
+        </div>
+
+        {topRiskParticipants.length === 0 ? (
+          <div style={{ fontSize: 12, color: MUTED }}>No participant score events yet.</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            {topRiskParticipants.map(snapshot => (
               <div
-                key={t.id}
+                key={snapshot.participantAddress}
                 style={{
-                  ...accentCard,
+                  ...metricCardStyle,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  padding: "12px 13px",
+                  padding: "10px 12px",
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{t.title}</div>
-                  <div style={{ fontSize: 11, color: MUTED }}>{t.status}</div>
+                  <div style={{ fontSize: 12, color: "#fff", fontFamily: "monospace" }}>
+                    {snapshot.participantAddress.slice(0, 8)}...{snapshot.participantAddress.slice(-6)}
+                  </div>
+                  <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>
+                    Tier {snapshot.tier} · {snapshot.totalEvents} scored events
+                  </div>
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT }}>{t.credits} CITYx</div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>DB {snapshot.db.toFixed(1)}</div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>RS {snapshot.rs.toFixed(1)}</div>
+                </div>
               </div>
             ))}
           </div>
-        ) : (
-          <div style={{ ...surfaceCard, marginBottom: 20, fontSize: 12, color: MUTED }}>
-            No active tasks yet. Issue tasks from the Tasks tab to populate this list.
-          </div>
-        ))}
+        )}
+      </div>
     </div>
   );
 }
