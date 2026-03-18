@@ -2538,35 +2538,27 @@ function MyCityTab({
       </div>
 
       {/* Sort tabs */}
-      <div
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          borderRadius: 14,
-          display: "flex",
-          marginBottom: 20,
-          overflow: "hidden",
-        }}
-      >
-        {(["recent", "top"] as const).map((s, i) => (
-          <button
-            key={s}
-            onClick={() => setSort(s)}
-            style={{
-              flex: 1,
-              border: "none",
-              borderRadius: i === 0 ? "14px 0 0 14px" : "0 14px 14px 0",
-              padding: "8px 0",
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              transition: "all 0.18s",
-              background: sort === s ? ACCENT : "transparent",
-              color: sort === s ? BG : MUTED,
-            }}
-          >
-            {s === "recent" ? "Recent" : "Top"}
-          </button>
-        ))}
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: 20 }}>
+        <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
+          {(["recent", "top"] as const).map(s => (
+            <button
+              key={s}
+              onClick={() => setSort(s)}
+              style={{
+                padding: "6px 14px",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+                fontSize: 12,
+                fontWeight: 600,
+                background: sort === s ? "rgba(255,255,255,0.1)" : "transparent",
+                color: sort === s ? "white" : "rgba(255,255,255,0.45)",
+              }}
+            >
+              {s === "recent" ? "Recent" : "Top"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Posts */}

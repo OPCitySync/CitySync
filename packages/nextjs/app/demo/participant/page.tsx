@@ -836,14 +836,14 @@ function RedeemModal({
       `}</style>
       {/* Overlay wrapper — fixed so sheet doesn't scroll with page content */}
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        {/* Sheet — full height from top to BottomNav */}
+        {/* Sheet — constrained to app content area between nav bar and bottom tabs */}
         <div
           onClick={e => e.stopPropagation()}
           style={{
             position: "absolute",
             left: 0,
             right: 0,
-            top: 0,
+            top: 112,
             bottom: 69,
             zIndex: 1,
             background: "rgb(26, 29, 50)",

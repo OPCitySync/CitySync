@@ -1300,6 +1300,8 @@ function OfferingsTab({
   onLearnMore: (key: RedeemerLearnCardKey) => void;
 }) {
   const [view, setView] = useState<"committed" | "mce">("committed");
+  const [showActiveCommitted, setShowActiveCommitted] = useState(false);
+  const [showActiveMce, setShowActiveMce] = useState(false);
   const [pendingCommittedCatalogCommitId, setPendingCommittedCatalogCommitId] = useState<string | null>(null);
   const [pendingMceCatalogCommitId, setPendingMceCatalogCommitId] = useState<string | null>(null);
   const explorerHref = offerWriteStatus.hash ? `https://sepolia.basescan.org/tx/${offerWriteStatus.hash}` : null;
@@ -1490,119 +1492,140 @@ function OfferingsTab({
             </div>
           )}
 
-          <SectionLabel text={`Active Committed Offerings (${committedOfferings.length})`} accentColor={ACCENT} />
+          <button
+            onClick={() => setShowActiveCommitted(prev => !prev)}
+            style={{
+              width: "100%",
+              marginBottom: 12,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 10,
+              padding: "10px 12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              cursor: "pointer",
+              color: "#fff",
+            }}
+          >
+            <span style={{ fontSize: 12, fontWeight: 700 }}>
+              Active Committed Offerings ({committedOfferings.length})
+            </span>
+            <span style={{ fontSize: 14, color: MUTED }}>{showActiveCommitted ? "▾" : "▸"}</span>
+          </button>
 
-          {committedOfferings.length === 0 ? (
-            <EmptyState
-              emoji="🏪"
-              title="No committed offerings yet"
-              desc="Issue from your committed catalog to activate offerings for participants this Epoch."
-            />
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
-              {committedOfferings.map(offering => (
-                <div
-                  key={offering.id}
-                  style={{
-                    ...accentCard,
-                    border: "1px solid rgba(52,238,182,0.15)",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
-                    <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 12,
-                        background: "rgba(52,238,182,0.1)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 22,
-                        flexShrink: 0,
-                      }}
-                    >
-                      🏪
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{offering.name}</div>
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 3,
-                            fontSize: 10,
-                            fontWeight: 600,
-                            background: "rgba(52,238,182,0.1)",
-                            color: ACCENT,
-                            borderRadius: 20,
-                            padding: "1px 7px",
-                          }}
-                        >
-                          <IconLock /> Epoch Locked
-                        </span>
+          {showActiveCommitted &&
+            (committedOfferings.length === 0 ? (
+              <EmptyState
+                emoji="🏪"
+                title="No committed offerings yet"
+                desc="Issue from your committed catalog to activate offerings for participants this Epoch."
+              />
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
+                {committedOfferings.map(offering => (
+                  <div
+                    key={offering.id}
+                    style={{
+                      ...accentCard,
+                      border: "1px solid rgba(52,238,182,0.15)",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 12,
+                          background: "rgba(52,238,182,0.1)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 22,
+                          flexShrink: 0,
+                        }}
+                      >
+                        🏪
                       </div>
-                      {offering.stipulations && (
-                        <div style={{ fontSize: 11, color: DIMMED, marginBottom: 4, lineHeight: 1.4 }}>
-                          {offering.stipulations}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{offering.name}</div>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 3,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              background: "rgba(52,238,182,0.1)",
+                              color: ACCENT,
+                              borderRadius: 20,
+                              padding: "1px 7px",
+                            }}
+                          >
+                            <IconLock /> Epoch Locked
+                          </span>
                         </div>
-                      )}
-                      <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT }}>{offering.costCity} CITYx</div>
+                        {offering.stipulations && (
+                          <div style={{ fontSize: 11, color: DIMMED, marginBottom: 4, lineHeight: 1.4 }}>
+                            {offering.stipulations}
+                          </div>
+                        )}
+                        <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT }}>{offering.costCity} CITYx</div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        onClick={() =>
+                          onShowQR({
+                            id: offering.id,
+                            name: offering.name,
+                            costCity: offering.costCity,
+                            orgName,
+                          })
+                        }
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
+                          background: "rgba(52,238,182,0.1)",
+                          border: "none",
+                          borderRadius: 10,
+                          padding: "9px 0",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: ACCENT,
+                          cursor: "pointer",
+                        }}
+                      >
+                        <IconQR /> Show QR
+                      </button>
+                      <button
+                        onClick={() => onRemoveAttempt(offering.id)}
+                        style={{
+                          background: "rgba(255,255,255,0.05)",
+                          border: "1px solid rgba(255,255,255,0.1)",
+                          borderRadius: 10,
+                          padding: "9px 14px",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: MUTED,
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                      >
+                        <IconLock /> Remove
+                      </button>
                     </div>
                   </div>
-
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button
-                      onClick={() =>
-                        onShowQR({
-                          id: offering.id,
-                          name: offering.name,
-                          costCity: offering.costCity,
-                          orgName,
-                        })
-                      }
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 6,
-                        background: "rgba(52,238,182,0.1)",
-                        border: "none",
-                        borderRadius: 10,
-                        padding: "9px 0",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: ACCENT,
-                        cursor: "pointer",
-                      }}
-                    >
-                      <IconQR /> Show QR
-                    </button>
-                    <button
-                      onClick={() => onRemoveAttempt(offering.id)}
-                      style={{
-                        background: "rgba(255,255,255,0.05)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: 10,
-                        padding: "9px 14px",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: MUTED,
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                      }}
-                    >
-                      <IconLock /> Remove
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            ))}
 
           {pendingCommittedCatalogCommitId && (
             <ConfirmDialog
@@ -1714,117 +1737,136 @@ function OfferingsTab({
             </div>
           )}
 
-          <SectionLabel text={`Active MCE Offerings (${mceOfferings.length})`} accentColor={ACCENT_GOLD} />
+          <button
+            onClick={() => setShowActiveMce(prev => !prev)}
+            style={{
+              width: "100%",
+              marginBottom: 12,
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: 10,
+              padding: "10px 12px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              cursor: "pointer",
+              color: "#fff",
+            }}
+          >
+            <span style={{ fontSize: 12, fontWeight: 700 }}>Active MCE Offerings ({mceOfferings.length})</span>
+            <span style={{ fontSize: 14, color: MUTED }}>{showActiveMce ? "▾" : "▸"}</span>
+          </button>
 
-          {mceOfferings.length === 0 ? (
-            <EmptyState
-              emoji="⚡"
-              title="No MCE offerings yet"
-              desc="Issue from your MCE catalog to activate event-linked offerings."
-            />
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {mceOfferings.map(offering => (
-                <div
-                  key={offering.id}
-                  style={{
-                    ...goldCard,
-                    border: "1px solid rgba(221,158,51,0.2)",
-                    background: "rgba(221,158,51,0.03)",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
-                    <div
-                      style={{
-                        width: 44,
-                        height: 44,
-                        borderRadius: 12,
-                        background: "rgba(221,158,51,0.12)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 22,
-                        flexShrink: 0,
-                      }}
-                    >
-                      ⚡
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{offering.name}</div>
-                        <span
-                          style={{
-                            fontSize: 10,
-                            fontWeight: 600,
-                            background: "rgba(221,158,51,0.2)",
-                            color: "#DD9E33",
-                            borderRadius: 20,
-                            padding: "1px 6px",
-                          }}
-                        >
-                          MCE
-                        </span>
+          {showActiveMce &&
+            (mceOfferings.length === 0 ? (
+              <EmptyState
+                emoji="⚡"
+                title="No MCE offerings yet"
+                desc="Issue from your MCE catalog to activate event-linked offerings."
+              />
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {mceOfferings.map(offering => (
+                  <div
+                    key={offering.id}
+                    style={{
+                      ...goldCard,
+                      border: "1px solid rgba(221,158,51,0.2)",
+                      background: "rgba(221,158,51,0.03)",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          borderRadius: 12,
+                          background: "rgba(221,158,51,0.12)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 22,
+                          flexShrink: 0,
+                        }}
+                      >
+                        ⚡
                       </div>
-                      <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6 }}>
-                        Events: {offering.mceNames.join(", ")}
-                      </div>
-                      {offering.stipulations && (
-                        <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6, lineHeight: 1.4 }}>
-                          {offering.stipulations}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{offering.name}</div>
+                          <span
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 600,
+                              background: "rgba(221,158,51,0.2)",
+                              color: "#DD9E33",
+                              borderRadius: 20,
+                              padding: "1px 6px",
+                            }}
+                          >
+                            MCE
+                          </span>
                         </div>
-                      )}
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#DD9E33" }}>{offering.costCity} CITYx</div>
+                        <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6 }}>
+                          Events: {offering.mceNames.join(", ")}
+                        </div>
+                        {offering.stipulations && (
+                          <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6, lineHeight: 1.4 }}>
+                            {offering.stipulations}
+                          </div>
+                        )}
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#DD9E33" }}>{offering.costCity} CITYx</div>
+                      </div>
                     </div>
-                  </div>
 
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button
-                      onClick={() =>
-                        onShowQR({
-                          id: offering.id,
-                          name: offering.name,
-                          costCity: offering.costCity,
-                          orgName,
-                        })
-                      }
-                      style={{
-                        flex: 1,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 6,
-                        background: "rgba(221,158,51,0.1)",
-                        border: "none",
-                        borderRadius: 10,
-                        padding: "9px 0",
-                        fontSize: 12,
-                        fontWeight: 600,
-                        color: "#DD9E33",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <IconQR /> Show QR
-                    </button>
-                    <div
-                      style={{
-                        background: "rgba(221,158,51,0.08)",
-                        borderRadius: 10,
-                        padding: "9px 14px",
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: "#DD9E33",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 4,
-                      }}
-                    >
-                      <IconLock /> Locked
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        onClick={() =>
+                          onShowQR({
+                            id: offering.id,
+                            name: offering.name,
+                            costCity: offering.costCity,
+                            orgName,
+                          })
+                        }
+                        style={{
+                          flex: 1,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 6,
+                          background: "rgba(221,158,51,0.1)",
+                          border: "none",
+                          borderRadius: 10,
+                          padding: "9px 0",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: "#DD9E33",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <IconQR /> Show QR
+                      </button>
+                      <div
+                        style={{
+                          background: "rgba(221,158,51,0.08)",
+                          borderRadius: 10,
+                          padding: "9px 14px",
+                          fontSize: 11,
+                          fontWeight: 600,
+                          color: "#DD9E33",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                      >
+                        <IconLock /> Locked
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            ))}
 
           {pendingMceCatalogCommitId && (
             <ConfirmDialog
@@ -2687,52 +2729,53 @@ function MyCityTab({
 
   return (
     <div style={{ paddingBottom: 20 }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>MyCity Feed</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <LearnMoreLink onClick={() => onLearnMore("mycity-feed")} />
-          <button
-            onClick={onCompose}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              background: ACCENT,
-              border: "none",
-              borderRadius: 10,
-              padding: "8px 14px",
-              fontSize: 12,
-              fontWeight: 700,
-              color: BG,
-              cursor: "pointer",
-            }}
-          >
-            <IconPlus /> New Post
-          </button>
-        </div>
+      {/* Header controls */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
+        <LearnMoreLink onClick={() => onLearnMore("mycity-feed")} />
       </div>
+      <button
+        onClick={onCompose}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+          background: ACCENT,
+          border: "none",
+          borderRadius: 10,
+          padding: "8px 14px",
+          fontSize: 12,
+          fontWeight: 700,
+          color: BG,
+          cursor: "pointer",
+          marginBottom: 12,
+        }}
+      >
+        <IconPlus /> New Post
+      </button>
 
       {/* Sort */}
-      <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-        {(["recent", "top"] as const).map(s => (
-          <button
-            key={s}
-            onClick={() => setSort(s)}
-            style={{
-              border: "none",
-              borderRadius: 20,
-              padding: "6px 16px",
-              fontSize: 12,
-              fontWeight: 600,
-              cursor: "pointer",
-              background: sort === s ? ACCENT : "rgba(255,255,255,0.07)",
-              color: sort === s ? BG : MUTED,
-            }}
-          >
-            {s === "recent" ? "Recent" : "Top"}
-          </button>
-        ))}
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: 20 }}>
+        <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
+          {(["recent", "top"] as const).map(s => (
+            <button
+              key={s}
+              onClick={() => setSort(s)}
+              style={{
+                padding: "6px 14px",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+                fontSize: 12,
+                fontWeight: 600,
+                background: sort === s ? "rgba(255,255,255,0.1)" : "transparent",
+                color: sort === s ? "white" : "rgba(255,255,255,0.45)",
+              }}
+            >
+              {s === "recent" ? "Recent" : "Top"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Posts */}
@@ -3061,7 +3104,7 @@ function DashboardTab({
         </div>
         <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
           <div style={{ fontSize: 24, fontWeight: 700, color: "#a78bfa" }}>{totalCityxBurned.toLocaleString()}</div>
-          <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>Your CITYx Burned</div>
+          <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>CITYx Burned</div>
         </div>
       </div>
 
@@ -3133,27 +3176,6 @@ function DashboardTab({
           desc="Add committed or MCE offerings to start tracking redemptions and CITYx burned per offering."
         />
       )}
-
-      {/* How it works */}
-      <SectionLabel text="How Redemption Works" accentColor={ACCENT} />
-      <div style={{ ...surfaceCard, display: "flex", flexDirection: "column", gap: 14 }}>
-        {(
-          [
-            ["1️⃣", "Create offerings", "Add committed or MCE offerings with your CITYx pricing."],
-            ["2️⃣", "Show QR code", "Participants scan your QR in person to initiate a redemption."],
-            ["3️⃣", "Confirm in queue", "Redemption appears in your queue — review and process it."],
-            ["4️⃣", "CITYx burned", "CITYx is burned from the citizen's wallet, reducing total supply."],
-          ] as [string, string, string][]
-        ).map(([num, title, desc]) => (
-          <div key={title} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-            <span style={{ fontSize: 18 }}>{num}</span>
-            <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 2 }}>{title}</div>
-              <div style={{ fontSize: 12, color: MUTED }}>{desc}</div>
-            </div>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
