@@ -2992,9 +2992,7 @@ function VoteTab({ onLearnMore: _onLearnMore }: { onLearnMore?: (key: Participan
 
   const totalAllocated = Object.values(p.mceVoteAllocations).reduce((a, b) => a + b, 0);
   const remaining = p.voteBalance - totalAllocated;
-  const epoch1Mces = [...state.mces.filter(m => m.status === "Voting")].sort(
-    (a, b) => b.votesFor + (p.mceVoteAllocations[b.id] ?? 0) - (a.votesFor + (p.mceVoteAllocations[a.id] ?? 0)),
-  );
+  const epoch1Mces = state.mces.filter(m => m.status === "Voting");
   const STEP = 1;
 
   const adjust = (mceId: string, delta: number) => {

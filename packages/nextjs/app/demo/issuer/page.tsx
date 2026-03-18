@@ -3789,7 +3789,7 @@ function MCEsTab({
     setProposeOpen(false);
   };
 
-  const epoch1Mces = [...state.mces.filter(m => m.status === "Voting")].sort((a, b) => b.votesFor - a.votesFor);
+  const epoch1Mces = state.mces.filter(m => m.status === "Voting");
   const totalVotesCast = Math.max(
     epoch1Mces.reduce((sum, m) => sum + m.votesFor, 0),
     1,

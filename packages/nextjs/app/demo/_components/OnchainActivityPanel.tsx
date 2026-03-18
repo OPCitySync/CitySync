@@ -27,6 +27,7 @@ const FRIENDLY_LABELS: Record<string, string> = {
   unclaimOpportunity: "Task Unclaimed",
   submitCompletion: "Completion Submitted",
   verifyCompletion: "Completion Verified → CITY Minted",
+  setOpportunityActive: "Task Unissued",
   // Redemption events
   CityOfferPurchased: "CITY Redeemed",
   MCEOfferPurchased: "MCE Credits Redeemed",
@@ -48,6 +49,7 @@ const FRIENDLY_LABELS: Record<string, string> = {
   OpportunityUnclaimed: "Task Unclaimed",
   CompletionSubmitted: "Completion Submitted",
   CompletionVerified: "Completion Verified → CITY Minted",
+  OpportunityStatusSet: "Task Status Updated",
   TaskProposed: "Task Proposed",
   TaskApproved: "Task Approved",
 };
@@ -474,7 +476,7 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
         const ISSUER_ABI_BY_ADDRESS: Record<string, { abi: readonly unknown[]; relevant: Set<string> }> = {
           [BASE_SEPOLIA_CONTRACTS.OpportunityManager.address.toLowerCase()]: {
             abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-            relevant: new Set(["OpportunityCreated", "CompletionVerified"]),
+            relevant: new Set(["OpportunityCreated", "CompletionVerified", "OpportunityStatusSet"]),
           },
           [BASE_SEPOLIA_CONTRACTS.TaskProposalRegistry.address.toLowerCase()]: {
             abi: BASE_SEPOLIA_CONTRACTS.TaskProposalRegistry.abi,
@@ -503,6 +505,7 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
 
             let eventName = "";
             let issuerAddress: string | undefined;
+            let opportunityActive: boolean | undefined;
             try {
               const decoded = decodeEventLog({
                 abi: contractInfo.abi as any,
@@ -516,6 +519,8 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
                 issuerAddress = decoded.args.proposer;
               } else if (eventName === "TaskApproved" && typeof decoded.args.approver === "string") {
                 issuerAddress = decoded.args.approver;
+              } else if (eventName === "OpportunityStatusSet" && typeof decoded.args.active === "boolean") {
+                opportunityActive = decoded.args.active;
               }
             } catch {
               continue;
@@ -530,7 +535,10 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
                 `${issuerAddress.slice(0, 6)}...${issuerAddress.slice(-4)}`;
             }
 
-            if (eventName === "CompletionVerified" && actorLabel === "Issuer Network") {
+            if (
+              (eventName === "CompletionVerified" || eventName === "OpportunityStatusSet") &&
+              actorLabel === "Issuer Network"
+            ) {
               try {
                 const tx = await baseSepoliaPublicClient.getTransaction({ hash });
                 const fromAddr = tx.from.toLowerCase();
@@ -540,7 +548,12 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
               }
             }
 
-            const action = friendlyLabel(eventName);
+            const action =
+              eventName === "OpportunityStatusSet"
+                ? opportunityActive === false
+                  ? "Task Unissued"
+                  : "Task Reissued"
+                : friendlyLabel(eventName);
             const key = `${hash}:${action}`;
             if (seen.has(key)) continue;
             seen.add(key);
