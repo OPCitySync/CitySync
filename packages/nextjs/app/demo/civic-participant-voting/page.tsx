@@ -136,9 +136,9 @@ export default function CivicParticipantVotingPage() {
           <div style={chipStyle}>Civic Participant Voting</div>
           <h1 style={h1Style}>How MCE Voting Works and Where VOTE Goes Next</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            Civic Participants use `VOTE` to signal which Mass Coordination Event (MCE) proposals should become city
-            execution priorities. This voting process is the first governance layer in City/Sync, and it establishes how
-            participant voice can shape public-sector action.
+            During the pilot, Civic Participants use $VOTE to signal which Mass Coordination Event (MCE) proposals
+            should become city execution priorities. This voting process is the first governance layer in City/Sync, and
+            it establishes how participant voice can shape public-sector activity.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
@@ -206,17 +206,13 @@ export default function CivicParticipantVotingPage() {
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>How Participants Gain VOTE</h2>
+          <h2 style={h2Style}>How Civic Participants earn VOTE</h2>
           <p style={pStyle}>
-            In the pilot model, participants receive `VOTE` when verified civic work is completed. This aligns
-            governance influence with real participation in public-service activity rather than speculative purchase
-            behavior.
+            In the pilot, participants receive VOTE 1:1 with the CITY they earn through verified civic work. This aligns
+            governance influence with real participation in public-service activity. Users execute verified civic tasks,
+            receive CITY and VOTE through issuance workflows, and use accumulated VOTE to influence MCE direction. Like
+            CITY, participants VOTE tokens are non-transferrable.
           </p>
-          <ul style={ulStyle}>
-            <li>Execute verified civic tasks.</li>
-            <li>Receive CITY and VOTE through issuance workflow.</li>
-            <li>Use accumulated VOTE to influence MCE direction.</li>
-          </ul>
         </section>
 
         <section style={sectionCard}>
@@ -254,6 +250,20 @@ export default function CivicParticipantVotingPage() {
                   <td style={tdStyle}>Feedback Weighting</td>
                   <td style={tdStyle}>Priority ranking of participant feedback signals.</td>
                   <td style={tdStyle}>Higher quality operational adjustments and accountability.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>dPAN Management</td>
+                  <td style={tdStyle}>Influence future application on the City/Sync Framework.</td>
+                  <td style={tdStyle}>Modular governance over public-service delivery.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Participatory Budgeting</td>
+                  <td style={tdStyle}>
+                    Integration with local governments could include opportunities to influence real policy decisions.
+                  </td>
+                  <td style={tdStyle}>
+                    Expanded influence and engagement from local citizens through direct democracy.
+                  </td>
                 </tr>
               </tbody>
             </table>
