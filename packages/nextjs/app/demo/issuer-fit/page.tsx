@@ -134,7 +134,7 @@ export default function IssuerFitPage() {
 
         <section style={heroCard}>
           <div style={chipStyle}>Issuer Organizations</div>
-          <h1 style={h1Style}>Who Is a Good Fit and Why They Participate</h1>
+          <h1 style={h1Style}>Who is a Good Fit</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
             Issuers are the work-design layer of the protocol. They identify civic needs, define and issue tasks, verify
             outcomes, and distribute CITY and VOTE to participants. Strong issuers are organizations that can manage
