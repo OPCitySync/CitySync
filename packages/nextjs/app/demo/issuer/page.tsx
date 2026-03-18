@@ -121,6 +121,33 @@ const BG = "#15151E";
 const MUTED = "rgba(255,255,255,0.45)";
 const DIMMED = "rgba(255,255,255,0.25)";
 
+type OpportunityRaw = readonly [
+  issuer: `0x${string}`,
+  metadataURI: string,
+  rewardCity: bigint,
+  rewardVote: bigint,
+  eligibilityHook: `0x${string}`,
+  mode: number,
+  maxCompletions: bigint,
+  expiresAt: bigint,
+  cooldownSeconds: bigint,
+  active: boolean,
+  verifiedCount: number,
+];
+
+async function multicallInChunks(contracts: any[], chunkSize = 200) {
+  const all: any[] = [];
+  for (let i = 0; i < contracts.length; i += chunkSize) {
+    const chunk = contracts.slice(i, i + chunkSize);
+    const results = await baseSepoliaPublicClient.multicall({
+      contracts: chunk as any,
+      allowFailure: true,
+    });
+    all.push(...results);
+  }
+  return all;
+}
+
 // ─── Panel helpers ────────────────────────────────────────────────────────────
 
 function getIssuerRightPanel(_activeTab: string): React.ReactNode {
@@ -948,35 +975,47 @@ function ProfileTab({
           credits: number;
           status: "Open" | "Claimed" | "Pending Verification";
         }> = [];
-        for (let id = 0n; id < nextId; id++) {
-          const opp = (await baseSepoliaPublicClient.readContract({
+        const ids = Array.from({ length: Number(nextId) }, (_, i) => BigInt(i));
+        const issuerLower = issuerAddress.toLowerCase();
+
+        const opportunityResults = await multicallInChunks(
+          ids.map(id => ({
             address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
             abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
             functionName: "opportunities",
             args: [id],
-          })) as readonly [
-            `0x${string}`,
-            string,
-            bigint,
-            bigint,
-            `0x${string}`,
-            number,
-            bigint,
-            bigint,
-            bigint,
-            boolean,
-            number,
-          ];
+          })),
+        );
 
-          if (!opp[9]) continue;
-          if (opp[0].toLowerCase() !== issuerAddress.toLowerCase()) continue;
+        const filtered: Array<{ id: bigint; opp: OpportunityRaw }> = [];
+        opportunityResults.forEach((result, idx) => {
+          if (result.status !== "success") return;
+          const opp = result.result as OpportunityRaw;
+          if (!opp[9]) return;
+          if (opp[0].toLowerCase() !== issuerLower) return;
+          filtered.push({ id: ids[idx], opp });
+        });
 
-          const claimant = (await baseSepoliaPublicClient.readContract({
+        if (filtered.length === 0) {
+          if (!cancelled) setActiveTaskInstances([]);
+          return;
+        }
+
+        const claimantResults = await multicallInChunks(
+          filtered.map(({ id }) => ({
             address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
             abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
             functionName: "claimedBy",
             args: [id],
-          })) as `0x${string}`;
+          })),
+        );
+
+        const completionTargets: Array<{ id: bigint; claimant: `0x${string}` }> = [];
+
+        filtered.forEach(({ id, opp }, idx) => {
+          const claimantResult = claimantResults[idx];
+          if (!claimantResult || claimantResult.status !== "success") return;
+          const claimant = claimantResult.result as `0x${string}`;
 
           const metadata = parseMetadata(opp[1]);
           const base = {
@@ -987,20 +1026,38 @@ function ProfileTab({
 
           if (claimant === "0x0000000000000000000000000000000000000000") {
             items.push({ ...base, status: "Open" });
-            continue;
+            return;
           }
 
-          const completion = (await baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-            functionName: "completions",
-            args: [id, claimant],
-          })) as readonly [`0x${string}`, bigint, bigint, number];
+          completionTargets.push({ id, claimant });
+          items.push({ ...base, status: "Claimed" });
+        });
 
-          if (completion[2] > 0n || completion[3] === 2) continue;
-          items.push({
-            ...base,
-            status: completion[1] > 0n || completion[3] === 1 ? "Pending Verification" : "Claimed",
+        if (completionTargets.length > 0) {
+          const completionResults = await multicallInChunks(
+            completionTargets.map(({ id, claimant }) => ({
+              address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+              abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+              functionName: "completions",
+              args: [id, claimant],
+            })),
+          );
+
+          completionTargets.forEach((target, completionIdx) => {
+            const result = completionResults[completionIdx];
+            if (!result || result.status !== "success") return;
+            const completion = result.result as readonly [`0x${string}`, bigint, bigint, number];
+            if (completion[2] > 0n || completion[3] === 2) {
+              const id = `task-${target.id.toString()}`;
+              const itemIdx = items.findIndex(item => item.id === id);
+              if (itemIdx >= 0) items.splice(itemIdx, 1);
+              return;
+            }
+            if (completion[1] > 0n || completion[3] === 1) {
+              const id = `task-${target.id.toString()}`;
+              const item = items.find(item => item.id === id);
+              if (item) item.status = "Pending Verification";
+            }
           });
         }
 
@@ -1616,47 +1673,45 @@ function TasksTab({
           claimedBy?: `0x${string}`;
           active: boolean;
         }> = [];
-        for (let id = 0n; id < nextId; id++) {
-          let opp:
-            | readonly [
-                issuer: `0x${string}`,
-                metadataURI: string,
-                rewardCity: bigint,
-                rewardVote: bigint,
-                eligibilityHook: `0x${string}`,
-                mode: number,
-                maxCompletions: bigint,
-                expiresAt: bigint,
-                cooldownSeconds: bigint,
-                active: boolean,
-                verifiedCount: number,
-              ]
-            | undefined;
-          try {
-            opp = (await baseSepoliaPublicClient.readContract({
-              address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-              abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-              functionName: "opportunities",
-              args: [id],
-            })) as any;
-          } catch {
-            continue;
-          }
-          if (!opp) continue;
-          if (opp[0].toLowerCase() !== address.toLowerCase()) continue;
-          if (!opp[9]) continue;
+        const ids = Array.from({ length: Number(nextId) }, (_, i) => BigInt(i));
+        const addressLower = address.toLowerCase();
 
-          const claimedBy = (await baseSepoliaPublicClient.readContract({
+        const opportunityResults = await multicallInChunks(
+          ids.map(id => ({
+            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+            functionName: "opportunities",
+            args: [id],
+          })),
+        );
+
+        const filtered: Array<{ id: bigint; opp: OpportunityRaw }> = [];
+        opportunityResults.forEach((result, idx) => {
+          if (result.status !== "success") return;
+          const opp = result.result as OpportunityRaw;
+          if (opp[0].toLowerCase() !== addressLower) return;
+          if (!opp[9]) return;
+          filtered.push({ id: ids[idx], opp });
+        });
+
+        const claimedByResults = await multicallInChunks(
+          filtered.map(({ id }) => ({
             address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
             abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
             functionName: "claimedBy",
             args: [id],
-          })) as `0x${string}`;
+          })),
+        );
+
+        filtered.forEach(({ id, opp }, idx) => {
+          const claimedByResult = claimedByResults[idx];
+          if (!claimedByResult || claimedByResult.status !== "success") return;
+          const claimedBy = claimedByResult.result as `0x${string}`;
 
           const metadata = parseMetadata(opp[1]);
           const rewardCity = opp[2];
           const rewardVote = opp[3] === 0n ? opp[2] : opp[3];
-          const task = {
+          tasks.push({
             id: `task-${id.toString()}`,
             title: metadata.title || `Opportunity #${id.toString()}`,
             category: metadata.category || "Community",
@@ -1667,9 +1722,8 @@ function TasksTab({
             verifiedCount: Number(opp[10]),
             claimedBy,
             active: Boolean(opp[9]),
-          };
-          tasks.push(task);
-        }
+          });
+        });
 
         tasks.sort((a, b) => Number(b.id.match(/(\d+)$/)?.[1] ?? "0") - Number(a.id.match(/(\d+)$/)?.[1] ?? "0"));
         if (!cancelled) {
@@ -3297,98 +3351,90 @@ function VerifyTab({
         const issued: OnchainVerifyItem[] = [];
         const claimed: OnchainVerifyItem[] = [];
         const completed: OnchainVerifyItem[] = [];
+        const ids = Array.from({ length: Number(nextId) }, (_, i) => BigInt(i));
+        const addressLower = address.toLowerCase();
 
-        for (let id = 0n; id < nextId; id++) {
-          let oppRaw:
-            | readonly [
-                issuer: `0x${string}`,
-                metadataURI: string,
-                rewardCity: bigint,
-                rewardVote: bigint,
-                eligibilityHook: `0x${string}`,
-                mode: number,
-                maxCompletions: bigint,
-                expiresAt: bigint,
-                cooldownSeconds: bigint,
-                active: boolean,
-                verifiedCount: number,
-              ]
-            | undefined;
-          try {
-            oppRaw = (await baseSepoliaPublicClient.readContract({
-              address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-              abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-              functionName: "opportunities",
-              args: [id],
-            })) as any;
-          } catch {
-            continue;
-          }
-          if (!oppRaw) continue;
+        const opportunityResults = await multicallInChunks(
+          ids.map(id => ({
+            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+            functionName: "opportunities",
+            args: [id],
+          })),
+        );
 
-          const issuer = oppRaw[0];
-          if (issuer.toLowerCase() !== address.toLowerCase()) continue;
+        const issuerItems: Array<{ id: bigint; opp: OpportunityRaw; itemBase: OnchainVerifyItem }> = [];
+        opportunityResults.forEach((result, idx) => {
+          if (result.status !== "success") return;
+          const opp = result.result as OpportunityRaw;
+          if (opp[0].toLowerCase() !== addressLower) return;
 
-          const metadata = parseMetadata(oppRaw[1]);
-          const rewardCity = oppRaw[2];
-          const rewardVote = oppRaw[3];
-          const itemBase: OnchainVerifyItem = {
-            taskId: `task-${id.toString()}`,
-            opportunityId: id,
-            title: metadata.title || `Opportunity #${id.toString()}`,
-            estimatedTime: metadata.estimatedTime || "TBD",
-            taskDate: metadata.taskDate || "TBD",
-            credits: Math.floor(Number(formatUnits(rewardCity, 18))),
-            voteTokens: Math.floor(Number(formatUnits(rewardVote === 0n ? rewardCity : rewardVote, 18))),
-          };
+          const id = ids[idx];
+          const metadata = parseMetadata(opp[1]);
+          const rewardCity = opp[2];
+          const rewardVote = opp[3];
+          issuerItems.push({
+            id,
+            opp,
+            itemBase: {
+              taskId: `task-${id.toString()}`,
+              opportunityId: id,
+              title: metadata.title || `Opportunity #${id.toString()}`,
+              estimatedTime: metadata.estimatedTime || "TBD",
+              taskDate: metadata.taskDate || "TBD",
+              credits: Math.floor(Number(formatUnits(rewardCity, 18))),
+              voteTokens: Math.floor(Number(formatUnits(rewardVote === 0n ? rewardCity : rewardVote, 18))),
+            },
+          });
+        });
 
-          let claimant: `0x${string}` = "0x0000000000000000000000000000000000000000";
-          try {
-            claimant = (await baseSepoliaPublicClient.readContract({
-              address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-              abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-              functionName: "claimedBy",
-              args: [id],
-            })) as `0x${string}`;
-          } catch {
-            // Skip this opportunity if claim state cannot be read right now.
-            continue;
-          }
+        const claimantResults = await multicallInChunks(
+          issuerItems.map(({ id }) => ({
+            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+            functionName: "claimedBy",
+            args: [id],
+          })),
+        );
 
+        const completionTargets: Array<{ itemBase: OnchainVerifyItem; id: bigint; claimant: `0x${string}` }> = [];
+        issuerItems.forEach(({ id, itemBase }, idx) => {
+          const claimantResult = claimantResults[idx];
+          if (!claimantResult || claimantResult.status !== "success") return;
+          const claimant = claimantResult.result as `0x${string}`;
           if (claimant === "0x0000000000000000000000000000000000000000") {
             issued.push(itemBase);
-            continue;
+            return;
           }
+          completionTargets.push({ itemBase, id, claimant });
+        });
 
-          let completionRaw: readonly [
-            proofHash: `0x${string}`,
-            submittedAt: bigint,
-            verifiedAt: bigint,
-            status: number,
-          ];
-          try {
-            completionRaw = (await baseSepoliaPublicClient.readContract({
+        if (completionTargets.length > 0) {
+          const completionResults = await multicallInChunks(
+            completionTargets.map(({ id, claimant }) => ({
               address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
               abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
               functionName: "completions",
               args: [id, claimant],
-            })) as readonly [proofHash: `0x${string}`, submittedAt: bigint, verifiedAt: bigint, status: number];
-          } catch {
-            // Skip this opportunity if completion state cannot be read right now.
-            continue;
-          }
-          const completion = {
-            submittedAt: completionRaw[1],
-            verifiedAt: completionRaw[2],
-            status: completionRaw[3],
-          };
+            })),
+          );
 
-          if (completion.verifiedAt > 0n || completion.status === 2) continue;
-          if (completion.submittedAt > 0n || completion.status === 1) {
-            completed.push({ ...itemBase, claimant, submittedAt: completion.submittedAt });
-          } else {
-            claimed.push({ ...itemBase, claimant });
-          }
+          completionTargets.forEach((target, idx) => {
+            const result = completionResults[idx];
+            if (!result || result.status !== "success") return;
+            const completionRaw = result.result as readonly [
+              proofHash: `0x${string}`,
+              submittedAt: bigint,
+              verifiedAt: bigint,
+              status: number,
+            ];
+            if (completionRaw[2] > 0n || completionRaw[3] === 2) return;
+            if (completionRaw[1] > 0n || completionRaw[3] === 1) {
+              completed.push({ ...target.itemBase, claimant: target.claimant, submittedAt: completionRaw[1] });
+              return;
+            }
+            claimed.push({ ...target.itemBase, claimant: target.claimant });
+          });
         }
 
         const sortByIdDesc = (a: OnchainVerifyItem, b: OnchainVerifyItem) =>

@@ -180,6 +180,19 @@ const parseOnchainOfferId = (id: string): { redeemer: `0x${string}`; offerId: bi
   }
 };
 
+const multicallInChunks = async (contracts: any[], chunkSize = 200) => {
+  const all: any[] = [];
+  for (let i = 0; i < contracts.length; i += chunkSize) {
+    const chunk = contracts.slice(i, i + chunkSize);
+    const results = await baseSepoliaPublicClient.multicall({
+      contracts: chunk as any,
+      allowFailure: true,
+    });
+    all.push(...results);
+  }
+  return all;
+};
+
 // ─── Issuer org name generator ────────────────────────────────────────────────
 
 const PREFIXES = ["Metro", "Civic", "Urban", "Green", "Public", "Community", "City", "Open"];
@@ -774,8 +787,13 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         },
       } as any);
       if (typeof window !== "undefined") {
-        window.setTimeout(() => {
+        const w = window as typeof window & { __citysyncActivityRefreshTimer?: number };
+        if (w.__citysyncActivityRefreshTimer) {
+          window.clearTimeout(w.__citysyncActivityRefreshTimer);
+        }
+        w.__citysyncActivityRefreshTimer = window.setTimeout(() => {
           window.dispatchEvent(new Event("citysync:activity-refresh"));
+          w.__citysyncActivityRefreshTimer = undefined;
         }, 5000);
       }
       return result;
@@ -942,38 +960,42 @@ export function DemoProvider({ children }: { children: ReactNode }) {
 
     const syncState = async () => {
       try {
-        const [cityRaw, voteRaw, mceRaw, issuerRegistered, redeemerRegistered] = await Promise.all([
-          baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.CityToken.address,
-            abi: BASE_SEPOLIA_CONTRACTS.CityToken.abi,
-            functionName: "balanceOf",
-            args: [address],
-          }),
-          baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.VoteToken.address,
-            abi: BASE_SEPOLIA_CONTRACTS.VoteToken.abi,
-            functionName: "balanceOf",
-            args: [address],
-          }),
-          baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.MCECredit.address,
-            abi: BASE_SEPOLIA_CONTRACTS.MCECredit.abi,
-            functionName: "balanceOf",
-            args: [address],
-          }),
-          baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.IssuerRegistryDemo.address,
-            abi: BASE_SEPOLIA_CONTRACTS.IssuerRegistryDemo.abi,
-            functionName: "isActiveIssuer",
-            args: [address],
-          }),
-          baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.address,
-            abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi,
-            functionName: "isActiveRedeemer",
-            args: [address],
-          }),
-        ]);
+        const [cityRaw, voteRaw, mceRaw, issuerRegistered, redeemerRegistered] =
+          await baseSepoliaPublicClient.multicall({
+            allowFailure: false,
+            contracts: [
+              {
+                address: BASE_SEPOLIA_CONTRACTS.CityToken.address,
+                abi: BASE_SEPOLIA_CONTRACTS.CityToken.abi,
+                functionName: "balanceOf",
+                args: [address],
+              },
+              {
+                address: BASE_SEPOLIA_CONTRACTS.VoteToken.address,
+                abi: BASE_SEPOLIA_CONTRACTS.VoteToken.abi,
+                functionName: "balanceOf",
+                args: [address],
+              },
+              {
+                address: BASE_SEPOLIA_CONTRACTS.MCECredit.address,
+                abi: BASE_SEPOLIA_CONTRACTS.MCECredit.abi,
+                functionName: "balanceOf",
+                args: [address],
+              },
+              {
+                address: BASE_SEPOLIA_CONTRACTS.IssuerRegistryDemo.address,
+                abi: BASE_SEPOLIA_CONTRACTS.IssuerRegistryDemo.abi,
+                functionName: "isActiveIssuer",
+                args: [address],
+              },
+              {
+                address: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.address,
+                abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi,
+                functionName: "isActiveRedeemer",
+                args: [address],
+              },
+            ],
+          });
 
         if (cancelled) return;
 
@@ -1018,49 +1040,92 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         args: [],
       })) as `0x${string}`[];
 
-      const discovered: RedemptionOffer[] = [];
-
-      for (const redeemer of redeemers) {
-        const profile = (await baseSepoliaPublicClient.readContract({
+      const profileResults = await multicallInChunks(
+        redeemers.map(redeemer => ({
           address: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.address,
           abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi,
           functionName: "getProfile",
           args: [redeemer],
-        })) as { orgName: string; registeredAt: bigint; active: boolean; acceptsMCECredits: boolean };
+        })),
+      );
 
-        if (!profile.active || profile.registeredAt === 0n) continue;
+      const activeRedeemers: Array<{
+        redeemer: `0x${string}`;
+        profile: { orgName: string; registeredAt: bigint; active: boolean; acceptsMCECredits: boolean };
+      }> = [];
+      profileResults.forEach((result, idx) => {
+        if (!result || result.status !== "success") return;
+        const profile = result.result as {
+          orgName: string;
+          registeredAt: bigint;
+          active: boolean;
+          acceptsMCECredits: boolean;
+        };
+        if (!profile.active || profile.registeredAt === 0n) return;
+        activeRedeemers.push({ redeemer: redeemers[idx], profile });
+      });
 
-        const nextOfferId = (await baseSepoliaPublicClient.readContract({
+      const nextOfferResults = await multicallInChunks(
+        activeRedeemers.map(({ redeemer }) => ({
           address: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.address,
           abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi,
           functionName: "nextOfferId",
           args: [redeemer],
-        })) as bigint;
+        })),
+      );
 
+      const offerLookups: Array<{
+        redeemer: `0x${string}`;
+        offerId: bigint;
+        profile: { orgName: string; registeredAt: bigint; active: boolean; acceptsMCECredits: boolean };
+      }> = [];
+      nextOfferResults.forEach((result, idx) => {
+        if (!result || result.status !== "success") return;
+        const nextOfferId = result.result as bigint;
         for (let i = 1n; i <= nextOfferId; i++) {
-          const offer = (await baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.address,
-            abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi,
-            functionName: "getOffer",
-            args: [redeemer, i],
-          })) as { name: string; description: string; costCity: bigint; active: boolean; mceOnly: boolean };
-
-          if (!offer.active || !offer.name) continue;
-
-          discovered.push({
-            id: `onchain:${redeemer}:${i.toString()}`,
-            redeemerName: profile.orgName || `${redeemer.slice(0, 6)}...${redeemer.slice(-4)}`,
-            redeemerId: redeemer,
-            offerTitle: offer.name,
-            description: offer.description,
-            costCity: Math.floor(Number(formatUnits(offer.costCity, 18))),
-            acceptsMCE: profile.acceptsMCECredits,
-            mceOnly: offer.mceOnly,
-            category: offer.mceOnly ? "Culture" : "Essentials",
-            emoji: offer.mceOnly ? "🏆" : "🛒",
+          offerLookups.push({
+            redeemer: activeRedeemers[idx].redeemer,
+            offerId: i,
+            profile: activeRedeemers[idx].profile,
           });
         }
-      }
+      });
+
+      const offerResults = await multicallInChunks(
+        offerLookups.map(({ redeemer, offerId }) => ({
+          address: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.address,
+          abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi,
+          functionName: "getOffer",
+          args: [redeemer, offerId],
+        })),
+      );
+
+      const discovered: RedemptionOffer[] = [];
+      offerResults.forEach((result, idx) => {
+        if (!result || result.status !== "success") return;
+        const offer = result.result as {
+          name: string;
+          description: string;
+          costCity: bigint;
+          active: boolean;
+          mceOnly: boolean;
+        };
+        if (!offer.active || !offer.name) return;
+
+        const lookup = offerLookups[idx];
+        discovered.push({
+          id: `onchain:${lookup.redeemer}:${lookup.offerId.toString()}`,
+          redeemerName: lookup.profile.orgName || `${lookup.redeemer.slice(0, 6)}...${lookup.redeemer.slice(-4)}`,
+          redeemerId: lookup.redeemer,
+          offerTitle: offer.name,
+          description: offer.description,
+          costCity: Math.floor(Number(formatUnits(offer.costCity, 18))),
+          acceptsMCE: lookup.profile.acceptsMCECredits,
+          mceOnly: offer.mceOnly,
+          category: offer.mceOnly ? "Culture" : "Essentials",
+          emoji: offer.mceOnly ? "🏆" : "🛒",
+        });
+      });
 
       dispatch({ type: "SYNC_ONCHAIN_OFFERS", offers: discovered });
     } catch {

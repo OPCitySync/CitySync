@@ -73,6 +73,33 @@ const PARTICIPANT_LEARN_CARDS: Record<ParticipantLearnCardKey, LearnInfoCard> = 
   },
 };
 
+type OpportunityRaw = readonly [
+  issuer: `0x${string}`,
+  metadataURI: string,
+  rewardCity: bigint,
+  rewardVote: bigint,
+  eligibilityHook: `0x${string}`,
+  mode: number,
+  maxCompletions: bigint,
+  expiresAt: bigint,
+  cooldownSeconds: bigint,
+  active: boolean,
+  verifiedCount: number,
+];
+
+async function multicallInChunks(contracts: any[], chunkSize = 200) {
+  const all: any[] = [];
+  for (let i = 0; i < contracts.length; i += chunkSize) {
+    const chunk = contracts.slice(i, i + chunkSize);
+    const results = await baseSepoliaPublicClient.multicall({
+      contracts: chunk as any,
+      allowFailure: true,
+    });
+    all.push(...results);
+  }
+  return all;
+}
+
 // ─── Micro-components ─────────────────────────────────────────────────────────
 
 function SectionLabel({
@@ -2145,119 +2172,121 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
           return;
         }
 
-        const taskPromises: Promise<OnchainTask | null>[] = [];
-        for (let id = 0n; id < nextId; id++) {
-          taskPromises.push(
-            (async () => {
-              let oppRaw: readonly [
-                issuer: `0x${string}`,
-                metadataURI: string,
-                rewardCity: bigint,
-                rewardVote: bigint,
-                eligibilityHook: `0x${string}`,
-                mode: number,
-                maxCompletions: bigint,
-                expiresAt: bigint,
-                cooldownSeconds: bigint,
-                active: boolean,
-                verifiedCount: number,
-              ];
-              try {
-                oppRaw = (await baseSepoliaPublicClient.readContract({
-                  address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-                  abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-                  functionName: "opportunities",
-                  args: [id],
-                })) as unknown as typeof oppRaw;
-              } catch {
-                // Skip missing/sparse IDs without failing the full sync.
-                return null;
-              }
+        const ids = Array.from({ length: Number(nextId) }, (_, i) => BigInt(i));
+        const nowMs = Date.now();
+        const opportunityResults = await multicallInChunks(
+          ids.map(id => ({
+            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+            functionName: "opportunities",
+            args: [id],
+          })),
+        );
 
-              const opp = {
-                issuer: oppRaw[0],
-                metadataURI: oppRaw[1],
-                rewardCity: oppRaw[2],
-                rewardVote: oppRaw[3],
-                maxCompletions: oppRaw[6],
-                expiresAt: oppRaw[7],
-                active: oppRaw[9],
-                verifiedCount: oppRaw[10],
-              };
+        const activeItems: Array<{ id: bigint; opp: OpportunityRaw }> = [];
+        opportunityResults.forEach((result, idx) => {
+          if (result.status !== "success") return;
+          const opp = result.result as OpportunityRaw;
+          if (!opp[9]) return;
+          if (opp[7] > 0n && Number(opp[7]) * 1000 < nowMs) return;
+          activeItems.push({ id: ids[idx], opp });
+        });
 
-              if (!opp.active) return null;
-              if (opp.expiresAt > 0n && Number(opp.expiresAt) * 1000 < Date.now()) return null;
+        const claimedByResults = await multicallInChunks(
+          activeItems.map(({ id }) => ({
+            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+            functionName: "claimedBy",
+            args: [id],
+          })),
+        );
 
-              const claimedBy = (await baseSepoliaPublicClient.readContract({
-                address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-                abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-                functionName: "claimedBy",
-                args: [id],
-              })) as `0x${string}`;
-              let completionStatus = 0;
-              if (claimedBy && claimedBy !== "0x0000000000000000000000000000000000000000") {
-                try {
-                  const completion = (await baseSepoliaPublicClient.readContract({
-                    address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-                    abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-                    functionName: "completions",
-                    args: [id, claimedBy],
-                  })) as readonly [proofHash: `0x${string}`, submittedAt: bigint, verifiedAt: bigint, status: number];
-                  completionStatus = Number(completion[3] ?? 0);
-                } catch {
-                  completionStatus = 0;
-                }
-              }
+        const completionTargets: Array<{ id: bigint; claimant: `0x${string}` }> = [];
+        const completionStatusById = new Map<string, number>();
+        activeItems.forEach(({ id }, idx) => {
+          const result = claimedByResults[idx];
+          if (!result || result.status !== "success") return;
+          const claimedBy = result.result as `0x${string}`;
+          if (claimedBy && claimedBy !== "0x0000000000000000000000000000000000000000") {
+            completionTargets.push({ id, claimant: claimedBy });
+          }
+        });
 
-              const metadata = parseMetadata(opp.metadataURI);
-              const slots = opp.maxCompletions === 0n ? 9_999 : Number(opp.maxCompletions);
-              const verified = Number(opp.verifiedCount ?? 0);
-              const credits = Math.floor(Number(formatUnits(opp.rewardCity, 18)));
-              const estimatedTime = metadata.estimatedTime || "TBD";
-              const directRate =
-                parsePositiveNumber((metadata as Record<string, unknown>).creditRatePerHr) ??
-                parsePositiveNumber((metadata as Record<string, unknown>).creditRate);
-              const derivedRateFromTime = (() => {
-                if (credits <= 0) return 0;
-                const hours = parseEstimatedHours(estimatedTime);
-                if (!hours) return null;
-                return Math.round((credits / hours) * 10) / 10;
-              })();
-              const normalizedRate = credits <= 0 ? 0 : (directRate ?? derivedRateFromTime ?? credits);
-
-              return {
-                id: `task-${id.toString()}`,
-                title: metadata.title || `Opportunity #${id.toString()}`,
-                description: metadata.description || "Onchain issuer opportunity",
-                category: (metadata.category as TaskCategory) || "Community",
-                credits,
-                voteTokens: Math.floor(
-                  Number(formatUnits(opp.rewardVote === 0n ? opp.rewardCity : opp.rewardVote, 18)),
-                ),
-                estimatedTime,
-                location: metadata.location || "TBD",
-                slots,
-                slotsRemaining: Math.max(0, slots - verified),
-                issuerName: `${opp.issuer.slice(0, 6)}...${opp.issuer.slice(-4)}`,
-                issuerId: opp.issuer,
-                tags: metadata.tags || ["onchain"],
-                isMCE: false,
-                isOnboarding:
-                  typeof metadata.isOnboarding === "boolean"
-                    ? metadata.isOnboarding
-                    : (metadata.category as TaskCategory) === "Onboarding" || opp.rewardCity === 0n,
-                taskDate: metadata.taskDate || "TBD",
-                successCriteria: metadata.successCriteria || "Complete and submit proof for verification.",
-                creditRatePerHr: normalizedRate,
-                credentials: metadata.credentials || "None",
-                claimedBy,
-                completionStatus,
-              };
-            })(),
+        if (completionTargets.length > 0) {
+          const completionResults = await multicallInChunks(
+            completionTargets.map(({ id, claimant }) => ({
+              address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+              abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+              functionName: "completions",
+              args: [id, claimant],
+            })),
           );
+          completionTargets.forEach((target, idx) => {
+            const result = completionResults[idx];
+            if (!result || result.status !== "success") return;
+            const completion = result.result as readonly [
+              proofHash: `0x${string}`,
+              submittedAt: bigint,
+              verifiedAt: bigint,
+              status: number,
+            ];
+            completionStatusById.set(target.id.toString(), Number(completion[3] ?? 0));
+          });
         }
 
-        const all = (await Promise.all(taskPromises)).filter(Boolean) as OnchainTask[];
+        const all = activeItems
+          .map(({ id, opp }, idx) => {
+            const claimedByResult = claimedByResults[idx];
+            const claimedBy =
+              claimedByResult && claimedByResult.status === "success"
+                ? (claimedByResult.result as `0x${string}`)
+                : ("0x0000000000000000000000000000000000000000" as `0x${string}`);
+            const completionStatus = completionStatusById.get(id.toString()) ?? 0;
+
+            const metadata = parseMetadata(opp[1]);
+            const slots = opp[6] === 0n ? 9_999 : Number(opp[6]);
+            const verified = Number(opp[10] ?? 0);
+            const credits = Math.floor(Number(formatUnits(opp[2], 18)));
+            const estimatedTime = metadata.estimatedTime || "TBD";
+            const directRate =
+              parsePositiveNumber((metadata as Record<string, unknown>).creditRatePerHr) ??
+              parsePositiveNumber((metadata as Record<string, unknown>).creditRate);
+            const derivedRateFromTime = (() => {
+              if (credits <= 0) return 0;
+              const hours = parseEstimatedHours(estimatedTime);
+              if (!hours) return null;
+              return Math.round((credits / hours) * 10) / 10;
+            })();
+            const normalizedRate = credits <= 0 ? 0 : (directRate ?? derivedRateFromTime ?? credits);
+
+            return {
+              id: `task-${id.toString()}`,
+              title: metadata.title || `Opportunity #${id.toString()}`,
+              description: metadata.description || "Onchain issuer opportunity",
+              category: (metadata.category as TaskCategory) || "Community",
+              credits,
+              voteTokens: Math.floor(Number(formatUnits(opp[3] === 0n ? opp[2] : opp[3], 18))),
+              estimatedTime,
+              location: metadata.location || "TBD",
+              slots,
+              slotsRemaining: Math.max(0, slots - verified),
+              issuerName: `${opp[0].slice(0, 6)}...${opp[0].slice(-4)}`,
+              issuerId: opp[0],
+              tags: metadata.tags || ["onchain"],
+              isMCE: false,
+              isOnboarding:
+                typeof metadata.isOnboarding === "boolean"
+                  ? metadata.isOnboarding
+                  : (metadata.category as TaskCategory) === "Onboarding" || opp[2] === 0n,
+              taskDate: metadata.taskDate || "TBD",
+              successCriteria: metadata.successCriteria || "Complete and submit proof for verification.",
+              creditRatePerHr: normalizedRate,
+              credentials: metadata.credentials || "None",
+              claimedBy,
+              completionStatus,
+            } as OnchainTask;
+          })
+          .filter(Boolean);
         all.sort((a, b) => {
           const aId = Number((a.id.match(/(\d+)$/)?.[1] ?? "0").toString());
           const bId = Number((b.id.match(/(\d+)$/)?.[1] ?? "0").toString());
