@@ -1311,7 +1311,7 @@ function TasksTab({
   onUnissueConfirm: (taskId: string) => void;
 }) {
   const { address } = useAccount({ type: "ModularAccountV2" });
-  const [view, setView] = useState<"issue" | "catalog">("issue");
+  const [view, setView] = useState<"issue" | "catalog">("catalog");
   const [onchainTasks, setOnchainTasks] = useState<
     Array<{
       id: string;
@@ -1499,12 +1499,12 @@ function TasksTab({
           overflow: "hidden",
         }}
       >
-        {(["issue", "catalog"] as const).map((v, i) => {
+        {(["catalog", "issue"] as const).map((v, i) => {
           const labels: Record<string, string> = {
-            issue: `Issue (${onchainTasks.length})`,
-            catalog: `Catalog (${approvedCatalogTasks.length})`,
+            issue: `Issue Task (${onchainTasks.length})`,
+            catalog: `Task Catalog (${approvedCatalogTasks.length})`,
           };
-          const segAccent = v === "catalog" ? ACCENT_PURPLE : ACCENT;
+          const segAccent = v === "issue" ? ACCENT : ACCENT_PURPLE;
           return (
             <button
               key={v}
