@@ -134,11 +134,11 @@ export default function HowRedemptionWorksPage() {
 
         <section style={heroCard}>
           <div style={chipStyle}>How Redemption Works</div>
-          <h1 style={h1Style}>QR-Based Burn at the Point of Service</h1>
+          <h1 style={h1Style}>QR Based Point of Sale Systems</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            Redemption is finalized when CITY is burned for a specific offering amount. The QR flow is the most
-            pragmatic starting method because it works with existing point-of-service behavior and avoids heavy system
-            replacement for redeemer organizations.
+            Redemption is finalized when CITY is burned for a specific offering at the rate that offering is priced. The
+            QR flow is the most pragmatic starting method because it works with existing point of sale behaviors and
+            avoids heavy system replacement and training for Redeemer organizations.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
@@ -168,12 +168,12 @@ export default function HowRedemptionWorksPage() {
                 <tr>
                   <td style={tdStyle}>1. Offer Commitment</td>
                   <td style={tdStyle}>Redeemer</td>
-                  <td style={tdStyle}>Redeemer commits an offering with a defined CITY redemption amount.</td>
+                  <td style={tdStyle}>Redeemer commits offering(s) with defined CITY redemption amounts.</td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>2. Selection</td>
                   <td style={tdStyle}>Participant</td>
-                  <td style={tdStyle}>Participant selects the offering at point-of-service.</td>
+                  <td style={tdStyle}>Participant selects the offering at point-of-sale system.</td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>3. QR Scan</td>
@@ -183,7 +183,10 @@ export default function HowRedemptionWorksPage() {
                 <tr>
                   <td style={tdStyle}>4. Burn Call</td>
                   <td style={tdStyle}>Participant wallet flow</td>
-                  <td style={tdStyle}>Protocol calls burn for the offering amount and records redemption.</td>
+                  <td style={tdStyle}>
+                    Protocol calls burn for the offering amount and records redemption. Visible/Audible cues provide
+                    verification.
+                  </td>
                 </tr>
                 <tr>
                   <td style={tdStyle}>5. Confirmation</td>
