@@ -136,9 +136,9 @@ export default function PublicSectorEconomyPage() {
           <div style={chipStyle}>Public-Sector Economy</div>
           <h1 style={h1Style}>How It Works and How It Is Managed</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            City/Sync treats civic contribution as an economic signal. Issuers publish verifiable civic work,
-            participants execute it, and redeemers convert earned credits into access to real goods and services. The
-            management goal is to keep this loop useful, fair, and operationally stable while it grows.
+            City/Sync seeks to turn civic contributions into an economic signal. In the public-sector economy, Issuers
+            publish verifiable civic work, participants execute it, and redeemers convert earned credits into access for
+            real goods and services. The purpose is to keep this loop useful and operationally stable while it grows.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
@@ -154,13 +154,13 @@ export default function PublicSectorEconomyPage() {
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>What This Economy Is</h2>
+          <h2 style={h2Style}>What is the Public-Sector Economy?</h2>
           <p style={pStyle}>
-            The City/Sync public-sector economy is a bounded coordination economy, not a speculative market. It exists
-            to recognize civic-labor that markets routinely underprice, route that recognition into a usable credit
-            system, and strengthen the public-service institutions that communities depend on. It is intentionally
-            designed to coexist with private markets while giving public-sector contribution its own legible operating
-            logic.
+            The City/Sync framework proposes a public-sector economy that serves as a bounded coordination economy. It
+            exists to recognize civic-labor that markets routinely fail to price, and route that recognition into a
+            usable credit system that strengthens the public-service institutions that communities depend on. It is
+            intentionally designed to coexist with private markets while giving the public-sector its own legible
+            operating logic that operationalizes our cities abundant civic capacity.
           </p>
         </section>
 
@@ -233,12 +233,13 @@ export default function PublicSectorEconomyPage() {
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>How It Is Managed During Pilot</h2>
+          <h2 style={h2Style}>Pilot Management</h2>
           <p style={pStyle}>
-            Management focuses on throughput and reliability first, not monetary optimization. The priority is to prove
-            that existing volunteer work can be recognized, redeemed, and governed without creating institutional
-            friction. Issuers are coached to grow both volunteer participation and available task functions over time,
-            while redeemers tune rates according to redemption demand and capacity metrics.
+            The management of the public-sector economy during the pilot focuses on throughput and reliability first and
+            foremost. The priority is to prove that existing volunteer work can be recognized and rewarded without
+            creating institutional friction. Issuers will be coached to grow both volunteer participation and available
+            task functions over time, while redeemers will learn to tune rates according to redemption demand and
+            capacity metrics.
           </p>
           <ul style={ulStyle}>
             <li>
