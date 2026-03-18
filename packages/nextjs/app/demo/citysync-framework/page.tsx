@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "The City/Sync Framework — City/Sync Demo",
   description:
-    "How the pilot validates the City/Sync base mechanism and unlocks a broader framework for decentralized public administration networks.",
+    "Comprehensive overview of the City/Sync Framework: pilot validation, base mechanism, dPAN development, local-chain architecture, and global replication pathway.",
 };
 
 const pageStyle: React.CSSProperties = {
@@ -114,15 +114,6 @@ const tdStyle: React.CSSProperties = {
   verticalAlign: "top",
 };
 
-const stageLabel: React.CSSProperties = {
-  fontSize: 12,
-  fontWeight: 700,
-  color: "rgba(127,166,255,0.95)",
-  textTransform: "uppercase",
-  letterSpacing: 0.4,
-  marginBottom: 6,
-};
-
 export default function CitySyncFrameworkPage() {
   return (
     <main style={pageStyle}>
@@ -143,73 +134,102 @@ export default function CitySyncFrameworkPage() {
 
         <section style={heroCard}>
           <div style={chipStyle}>The City/Sync Framework</div>
-          <h1 style={h1Style}>From Pilot Validation to a Global Public Coordination Stack</h1>
+          <h1 style={h1Style}>A Replicable Framework for Decentralized Public Administration</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            The pilot is the procedural artifact that tests whether this model can reliably convert civic contribution
-            into verifiable public value. If the pilot works, City/Sync is not just a demo outcome. It becomes a
-            reusable framework for decentralized public administration that other cities can adopt, adapt, and extend.
+            City/Sync is not just a pilot product. It is a framework for transforming how cities coordinate civic
+            capacity, allocate public attention, and execute service delivery. The pilot is the first procedural
+            artifact: a real-world validation of the base mechanism that future applications, local chains, and dPANs
+            can be built on top of.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
-              Local-First
+              Pilot as Artifact
             </span>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(221,158,51,0.4)", color: "#DD9E33" }}>
-              Procedural Validation
+              Local-First Governance
             </span>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(65,105,225,0.5)", color: "#7fa6ff" }}>
-              Replicable by Design
+              dPAN Expansion Path
             </span>
           </div>
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Why the Pilot Matters</h2>
+          <h2 style={h2Style}>What the Framework Is</h2>
           <p style={pStyle}>
-            City/Sync is built on a core thesis: public administration can evolve from centralized, opaque process
-            control into transparent, participatory coordination without collapsing institutional stability. The pilot
-            exists to prove this thesis through operating evidence, not theory alone. It tests whether local
-            organizations can issue public tasks, participants can execute them, verifiers can validate outcomes, and
-            redemption systems can convert civic work into real utility in a way that is auditable, governable, and
-            socially legible.
+            The City/Sync Framework is a method for introducing programmable public coordination into real institutional
+            environments without collapsing governance legitimacy. It combines role-based operations, transparent
+            lifecycle state, bounded civic economics, and committee-governed adaptation into one coherent system. The
+            objective is to make public coordination measurable, auditable, and replicable across cities with different
+            political and administrative contexts.
           </p>
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>The Base Mechanism (What Gets Validated)</h2>
+          <h2 style={h2Style}>Why the Pilot Is Foundational</h2>
+          <p style={pStyle}>
+            The pilot exists to answer one core question: can a city run a civic contribution system that is operational
+            under real constraints, not ideal theory. If yes, the result is bigger than one deployment. It creates a
+            transferable operating pattern that other jurisdictions can adopt with confidence.
+          </p>
+          <ul style={ulStyle}>
+            <li>
+              <strong>Procedural output:</strong> onboarding, governance, and workflow standards that can be reused.
+            </li>
+            <li>
+              <strong>Economic output:</strong> observable earn-to-burn behavior grounded in service capacity.
+            </li>
+            <li>
+              <strong>Governance output:</strong> role accountability and committee decision rights under live
+              conditions.
+            </li>
+            <li>
+              <strong>Replication output:</strong> documented model cities can deploy without reinventing the stack.
+            </li>
+          </ul>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>The Base Mechanism (What Must Be Validated)</h2>
           <div style={tableWrapStyle}>
             <table style={tableStyle}>
               <thead>
                 <tr>
-                  <th style={thStyle}>Layer</th>
-                  <th style={thStyle}>Function</th>
-                  <th style={thStyle}>Pilot Validation Question</th>
+                  <th style={thStyle}>Mechanism</th>
+                  <th style={thStyle}>Why It Matters</th>
+                  <th style={thStyle}>Pilot Validation Signal</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style={tdStyle}>Role Infrastructure</td>
-                  <td style={tdStyle}>Issuer, Redeemer, and Civic Participant workflows.</td>
-                  <td style={tdStyle}>Can each role perform reliably with clear responsibilities and low friction?</td>
+                  <td style={tdStyle}>Role Coordination (Issuer, Redeemer, Civic Participant)</td>
+                  <td style={tdStyle}>Defines who does what, with clear rights and responsibilities.</td>
+                  <td style={tdStyle}>Low-friction workflow execution across all three roles.</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Task Coordination Loop</td>
-                  <td style={tdStyle}>Issue → claim → execute → verify/mint lifecycle.</td>
-                  <td style={tdStyle}>Can civic work be converted into verifiable outcomes at repeatable scale?</td>
+                  <td style={tdStyle}>Task Lifecycle (Issue → Claim → Execute → Verify)</td>
+                  <td style={tdStyle}>Converts civic effort into legible public-service activity.</td>
+                  <td style={tdStyle}>Reliable movement through lifecycle states with shared visibility.</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Public-Sector Economy</td>
-                  <td style={tdStyle}>Budget-bounded issuance and redemption throughput.</td>
-                  <td style={tdStyle}>Can credits retain practical value without speculative drift?</td>
+                  <td style={tdStyle}>Verification and Distribution</td>
+                  <td style={tdStyle}>Protects trust between execution claims and reward distribution.</td>
+                  <td style={tdStyle}>Consistent verification quality and accountable decision records.</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Governance Signaling</td>
-                  <td style={tdStyle}>VOTE-driven preference expression for MCE pathways.</td>
-                  <td style={tdStyle}>Can contribution and decision influence remain credibly linked?</td>
+                  <td style={tdStyle}>Redemption Continuity</td>
+                  <td style={tdStyle}>Ensures earned credits remain materially meaningful.</td>
+                  <td style={tdStyle}>Redeemer stability with manageable service throughput.</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Shared Transparency</td>
-                  <td style={tdStyle}>Onchain visibility for execution and accountability events.</td>
-                  <td style={tdStyle}>Can stakeholders audit what happened without relying on trust claims alone?</td>
+                  <td style={tdStyle}>Governance Signaling (VOTE)</td>
+                  <td style={tdStyle}>Links participation to decision influence in MCE direction.</td>
+                  <td style={tdStyle}>Stable voting participation and coherent selection outcomes.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Administrative Legibility</td>
+                  <td style={tdStyle}>Allows oversight without opaque discretionary bottlenecks.</td>
+                  <td style={tdStyle}>Stakeholders can audit activity and understand decisions.</td>
                 </tr>
               </tbody>
             </table>
@@ -217,121 +237,164 @@ export default function CitySyncFrameworkPage() {
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Pilot as Procedural Artifact</h2>
-          <p style={pStyle}>
-            The pilot is not only a product test. It is a standards test. It yields the operating playbooks, policy
-            boundaries, and governance procedures that define how future deployments should launch. In this sense, the
-            pilot becomes the first procedural artifact of the City/Sync Framework: a documented method for onboarding
-            institutions, managing risk, defining role accountability, and running measurable civic coordination cycles
-            inside real communities.
-          </p>
+          <h2 style={h2Style}>The City/Sync Stack</h2>
           <ul style={ulStyle}>
             <li>
-              <strong>Institutional onboarding method:</strong> how cities and organizations activate safely.
+              <strong>Coordination Role Layer:</strong> clearly bounded participation roles and governance rights.
             </li>
             <li>
-              <strong>Operational standards:</strong> task legibility, verification integrity, and redemption rules.
+              <strong>Public-Sector Economy Layer:</strong> CITY and VOTE as bounded civic coordination assets.
             </li>
             <li>
-              <strong>Governance cadence:</strong> epoch timing, proposal flow, and committee responsibilities.
+              <strong>Workflow Layer:</strong> issuance, verification, and redemption processes with shared state.
             </li>
             <li>
-              <strong>Economic guardrails:</strong> issuance and redemption balancing with transparent adjustment rules.
+              <strong>Application Layer:</strong> Volunteer Network dApp first, domain-specific dPANs next.
+            </li>
+            <li>
+              <strong>Replication Layer:</strong> governance templates, operating standards, and deployment playbooks.
             </li>
           </ul>
+          <p style={{ ...pStyle, marginTop: 12 }}>
+            The strategic point is continuity: each layer should reinforce the others so that local deployments produce
+            durable institutional learning rather than one-off experimentation.
+          </p>
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Framework Evolution Path</h2>
-          <div style={{ display: "grid", gap: 12 }}>
-            <div>
-              <div style={stageLabel}>Stage 1</div>
-              <p style={pStyle}>
-                <strong>Validated Local Pilot.</strong> One city proves that the base loop is functionally stable and
-                socially understandable.
-              </p>
-            </div>
-            <div>
-              <div style={stageLabel}>Stage 2</div>
-              <p style={pStyle}>
-                <strong>Multi-City Replication.</strong> Additional cities reuse the same procedural stack while tuning
-                policy parameters to local needs.
-              </p>
-            </div>
-            <div>
-              <div style={stageLabel}>Stage 3</div>
-              <p style={pStyle}>
-                <strong>dPAN Expansion.</strong> Beyond volunteer coordination, cities begin deploying new decentralized
-                public administration applications for specific service domains.
-              </p>
-            </div>
-            <div>
-              <div style={stageLabel}>Stage 4</div>
-              <p style={pStyle}>
-                <strong>Interoperable Local Chains.</strong> Civic reputation, participation history, and governance
-                contribution become portable between compatible city networks.
-              </p>
-            </div>
-            <div>
-              <div style={stageLabel}>Stage 5</div>
-              <p style={pStyle}>
-                <strong>Framework Economy.</strong> A global ecosystem emerges where cities can adopt tested governance
-                and service-delivery models rather than reinventing them from scratch.
-              </p>
-            </div>
+          <h2 style={h2Style}>dPAN Development Path</h2>
+          <div style={tableWrapStyle}>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Stage</th>
+                  <th style={thStyle}>Primary Focus</th>
+                  <th style={thStyle}>Governance Requirement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={tdStyle}>Stage 1: Core Pilot Reliability</td>
+                  <td style={tdStyle}>Make base task/redemption loop dependable in real operations.</td>
+                  <td style={tdStyle}>Tight role controls and explicit committee oversight.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Stage 2: Domain Packet Design</td>
+                  <td style={tdStyle}>Define specific service domains suitable for dPAN implementation.</td>
+                  <td style={tdStyle}>Published criteria for inclusion, risk, and feasibility.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Stage 3: dPAN Prototyping</td>
+                  <td style={tdStyle}>Ship narrow-scope apps with clear administrative boundaries.</td>
+                  <td style={tdStyle}>Role-specific accountability and auditable routing logic.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Stage 4: Multi-dPAN Governance</td>
+                  <td style={tdStyle}>Operate parallel applications under one coordination framework.</td>
+                  <td style={tdStyle}>Committee maturity and policy synchronization mechanisms.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Stage 5: Cross-City Portability</td>
+                  <td style={tdStyle}>Enable reuse of validated dPAN designs in new jurisdictions.</td>
+                  <td style={tdStyle}>Standardized compliance packets and adaptation protocols.</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>What Could Be Built After Validation</h2>
+          <h2 style={h2Style}>Local-Chain Infrastructure and Interoperability</h2>
           <p style={pStyle}>
-            Once the base mechanism is validated, City/Sync can move from a single pilot into a framework economy of
-            civic coordination infrastructure. This is where the long-term upside becomes transformative. Cities,
-            cooperatives, institutions, and developers can build on a shared protocol layer while preserving local
-            governance autonomy.
+            Local chains are not cosmetic infrastructure. They are the administrative substrate for coordination
+            credibility. A local chain model allows each city to maintain governance autonomy while still participating
+            in shared standards for portability, auditing, and model reuse.
           </p>
           <ul style={ulStyle}>
             <li>
-              <strong>dPAN Application Libraries:</strong> reusable modules for public works, service verification,
-              youth programs, sanitation campaigns, and neighborhood safety coordination.
+              <strong>Local autonomy:</strong> each jurisdiction governs participation and policy boundaries locally.
             </li>
             <li>
-              <strong>Local Chain Deployment Kits:</strong> standardized launch packages for municipal and community-led
-              validator cohorts with known governance safeguards.
+              <strong>Common standards:</strong> shared interfaces for task, verification, and redemption records.
             </li>
             <li>
-              <strong>Civic Model Marketplaces:</strong> exportable policy and operations templates where one city can
-              adopt a proven task or redemption model from another.
+              <strong>Portable civic history:</strong> contribution records can become interoperable across deployments.
             </li>
             <li>
-              <strong>Public-Service Delivery Benchmarks:</strong> transparent cross-city metrics on participation
-              throughput, verification quality, and budget efficiency.
-            </li>
-            <li>
-              <strong>Participatory Budget Engines:</strong> vote-weighted allocation systems that connect contribution
-              history to local spending influence.
-            </li>
-            <li>
-              <strong>Portable Civic Identity Rails:</strong> long-lived contribution records that travel across
-              interoperable city networks.
+              <strong>Reduced implementation risk:</strong> validated templates lower uncertainty for new adopters.
             </li>
           </ul>
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Toward Decentralized Public Administration</h2>
+          <h2 style={h2Style}>Toward a Market for Civic Models</h2>
           <p style={pStyle}>
-            The City/Sync Framework is not pursuing disruption for its own sake. It is pursuing a managed transition:
-            from brittle centralized administration to resilient coordination systems that communities can see, shape,
-            and trust. If the pilot proves the mechanism, what follows is a decade-scale opportunity to build a new
-            public infrastructure layer where local experimentation, transparent governance, and shared procedural
-            knowledge compound globally.
+            After validation, City/Sync can support a new type of exchange: a market for tested civic models and
+            service-delivery methods. Instead of every city rebuilding coordination logic from zero, jurisdictions can
+            adopt, adapt, and improve validated models from peers.
           </p>
-          <p style={{ ...pStyle, marginTop: 12 }}>
-            In that future, cities do not compete only on tax incentives or private investment capture. They also
-            compete on their ability to coordinate public value creation with precision, legitimacy, and civic
-            participation. That is the strategic promise of the framework: a world where better governance models can be
-            built, validated, and exported as openly as software.
+          <div style={tableWrapStyle}>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Exportable Asset</th>
+                  <th style={thStyle}>What Gets Shared</th>
+                  <th style={thStyle}>Why It Matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={tdStyle}>Task Model Libraries</td>
+                  <td style={tdStyle}>Standardized civic-labor templates and rate logic patterns.</td>
+                  <td style={tdStyle}>Faster rollout with stronger comparability across cities.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Verification Packets</td>
+                  <td style={tdStyle}>Assurance pathways, evidence standards, and rejection policies.</td>
+                  <td style={tdStyle}>Improves trust and consistency in completion decisions.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Redemption Architectures</td>
+                  <td style={tdStyle}>Capacity strategies, pricing frameworks, and POS workflows.</td>
+                  <td style={tdStyle}>Supports sustainable service access and burn continuity.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Governance Blueprints</td>
+                  <td style={tdStyle}>Committee structures, voting gates, and escalation controls.</td>
+                  <td style={tdStyle}>Creates legitimacy and reduces political adoption friction.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>dPAN Modules</td>
+                  <td style={tdStyle}>Domain-specific decentralized public administration applications.</td>
+                  <td style={tdStyle}>Transforms local administrative innovation into reusable infrastructure.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>Governance Posture: Polycentric and Transitional</h2>
+          <p style={pStyle}>
+            Governance in this framework is intentionally transitional. City/Sync helps establish standards and
+            procedural discipline early, then authority progressively shifts to role-based committees as operational
+            maturity increases. This is how control is decentralized without sacrificing administrative reliability.
+          </p>
+          <ul style={ulStyle}>
+            <li>Early phase: tighter safeguards, explicit policy defaults, and strong process monitoring.</li>
+            <li>Middle phase: committee-led adaptation with transparent rationale and published rule changes.</li>
+            <li>Mature phase: polycentric governance where each application is governed in its own bounded context.</li>
+          </ul>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>Strategic Direction</h2>
+          <p style={pStyle}>
+            The framework ambition is straightforward: prove that civic coordination can become a durable administrative
+            capability, then make that capability exportable. If the pilot validates the base mechanism, City/Sync can
+            help move public administration from static bureaucracy toward living coordination infrastructure that is
+            auditable, participatory, and continuously improvable. This is the pathway for decentralized public
+            administration to move from theory into global practice.
           </p>
         </section>
       </div>
