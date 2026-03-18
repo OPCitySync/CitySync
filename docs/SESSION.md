@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 32)
+2026-03-17 (Session 33)
 
 ## Current Branch
 `main`
@@ -1279,3 +1279,19 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - additional expansion levers beyond phase 2 (referrals, institutional channels, MCE funnels, neighborhood pods, retention journeys)
   - participant lifecycle targets (acquisition, activation, utility adoption, recurrence, governance participation)
   - KPI stack for evaluating growth conversion and retention quality over time.
+
+## 2026-03-17 — About the Pilot Program Public Page (Essay + Official Deployment Doc)
+
+- Added standalone pilot program explainer page:
+  - `packages/nextjs/app/demo/about-pilot-program/page.tsx`
+- Sources used:
+  - `docs/references/01-pilot-program.md`
+  - `/Users/nathansuits/Downloads/OFFICIAL_Pilot Deployment.docx`
+- Content scope:
+  - pilot purpose and cross-governance context (Berkeley + Mexico City)
+  - four deployment objectives (procedural, economic, social, governance)
+  - role model including issuers, redeemers, civic participants, validators
+  - detailed rollout architecture (phase-by-phase deployment sequence)
+  - dual-market coordination engine explanation
+  - governance/economic operating posture and bounded adaptability
+  - success criteria oriented toward replication readiness.
