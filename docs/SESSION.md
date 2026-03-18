@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 30)
+2026-03-17 (Session 31)
 
 ## Current Branch
 `main`
@@ -1257,3 +1257,14 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - framing that MCE voting is the first governance layer, not the final one
   - expansion pathways for VOTE influence in public-sector decision-making
   - governance expansion principles (gradual rollout, transparency boundaries, anti-capture safeguards).
+
+## 2026-03-17 — Capacity Optimization for Redeemers Public Page
+
+- Added standalone redeemer capacity optimization explainer page:
+  - `packages/nextjs/app/demo/capacity-optimization/page.tsx`
+- Content scope:
+  - framework for lowering CITY redemption costs during non-peak windows
+  - time-banded pricing model (peak / shoulder / off-peak)
+  - redeemer configuration workflow and operational guardrails
+  - employee enablement approach focused on minimal process change
+  - KPI framework for utilization lift, spillover reduction, fulfillment quality, and staff friction.
