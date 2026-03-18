@@ -252,6 +252,75 @@ export default function GraduateSanctionsPage() {
         </section>
 
         <section style={sectionCard}>
+          <h2 style={h2Style}>Task Commitment Abuse Controls (Claim and Unclaim Attacks)</h2>
+          <p style={pStyle}>
+            To prevent participants from reserving tasks and dropping them right before start time, unclaim behavior is
+            treated as time-sensitive risk. Earlier exits remain flexible, while late exits are scored as reliability
+            violations.
+          </p>
+          <div style={tableWrapStyle}>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Cancellation Timing</th>
+                  <th style={thStyle}>RS Change</th>
+                  <th style={thStyle}>RD Change</th>
+                  <th style={thStyle}>Rule</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={tdStyle}>Within 30 minutes of claim</td>
+                  <td style={tdStyle}>0</td>
+                  <td style={tdStyle}>0</td>
+                  <td style={tdStyle}>Grace unclaim window; no penalty.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>More than 72 hours before start</td>
+                  <td style={tdStyle}>0</td>
+                  <td style={tdStyle}>0</td>
+                  <td style={tdStyle}>Early release is acceptable.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>72 to 24 hours before start</td>
+                  <td style={tdStyle}>-0.5</td>
+                  <td style={tdStyle}>+0.5</td>
+                  <td style={tdStyle}>Mild reliability penalty.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>24 to 6 hours before start</td>
+                  <td style={tdStyle}>-1.0</td>
+                  <td style={tdStyle}>+1.0</td>
+                  <td style={tdStyle}>Late cancellation treated as no-show equivalent risk.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Less than 6 hours before start</td>
+                  <td style={tdStyle}>-1.5</td>
+                  <td style={tdStyle}>+2.0</td>
+                  <td style={tdStyle}>High-severity reliability breach.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <ul style={ulStyle}>
+            <li>Self-unclaim is disabled inside T-24h unless emergency exception is granted.</li>
+            <li>Emergency exception is limited (example: one per epoch) and must include a reason code.</li>
+            <li>Near-date cap: within 48h of start, participant can hold at most one active claim.</li>
+            <li>Standby queue auto-fills released slots to minimize disruption.</li>
+          </ul>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>Why This Model Does Not Need RFS</h2>
+          <p style={pStyle}>
+            RFS (red-flag streak) is optional when RD is calibrated correctly. RD already captures immediate risk and
+            escalates quickly on repeated harmful behavior. RS captures longer-term rehabilitation direction. Using RD +
+            RS keeps the control model simpler and easier to explain:{" "}
+            <strong>RD controls permissions; RS informs recovery quality and governance reporting.</strong>
+          </p>
+        </section>
+
+        <section style={sectionCard}>
           <h2 style={h2Style}>Sanction Tiers (RD-Driven)</h2>
           <div style={tableWrapStyle}>
             <table style={tableStyle}>

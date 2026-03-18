@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 36)
+2026-03-17 (Session 37)
 
 ## Current Branch
 `main`
@@ -30,6 +30,11 @@ When major product, contract-integration, or deployment-impacting changes are ma
   - defines RD-driven sanction tiers (Green/Yellow/Orange/Red) with claim restrictions
   - adds recovery gates requiring sustained successful completions to lift restrictions
   - includes anti-gaming example where small successful tasks cannot neutralize repeated high-severity abuse
+  - adds anti-task-hoarding controls for claim/unclaim attacks:
+    - time-bounded cancellation penalties
+    - T-24h self-unclaim cutoff with emergency exception pathway
+    - near-date active-claim cap and standby queue expectations
+  - documents why RFS is optional and not required when RD is calibrated as the primary risk control
   - documents epoch rollover behavior and governance oversight responsibilities for sanctions calibration.
 
 ## 2026-03-17 — Role Governance Deep-Dive Page (Unlinked)
