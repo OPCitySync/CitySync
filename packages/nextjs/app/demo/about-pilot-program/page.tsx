@@ -12,6 +12,115 @@ export const metadata: Metadata = {
 const pilotProgramPath = path.join(process.cwd(), "app/demo/about-pilot-program/pilot-program.txt");
 const pilotProgramText = readFileSync(pilotProgramPath, "utf8").trim();
 
+type PilotBlock =
+  | { type: "heading"; text: string }
+  | { type: "paragraph"; text: string }
+  | { type: "list"; items: string[] };
+
+const sectionHeadingSet = new Set([
+  "A Deployment Model for Programmable Public Coordination",
+  "Procedural Implementation",
+  "Roles",
+  "Deployment Models as Instruments of Administrative Change",
+  "Objectives of the City/Sync Pilot",
+  "Cross-Governance Deployment",
+  "The Dual-Market Coordination Engine",
+  "Issuer Onboarding as Infrastructure",
+  "Redemption Architecture",
+  "Designing for Replication",
+  "Governance of the Pilot",
+  "What Success Looks Like",
+  "The Direction of Public Coordination",
+]);
+
+const normalizePilotText = (rawText: string) =>
+  rawText
+    .replace(/\r\n?/g, "\n")
+    .replace(/[\u2028\u2029]/g, "\n")
+    .replace(/\u00A0/g, " ")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+const isLikelyHeading = (line: string) => {
+  if (!line || line.length > 80) {
+    return false;
+  }
+  if (/[.:;!?]$/.test(line)) {
+    return false;
+  }
+  if (/^\d+[\).]/.test(line)) {
+    return false;
+  }
+  const words = line.split(" ");
+  if (words.length > 10) {
+    return false;
+  }
+  return /^[A-Z0-9]/.test(line);
+};
+
+const parsePilotBlocks = (rawText: string): PilotBlock[] => {
+  const normalized = normalizePilotText(rawText);
+  const lines = normalized.split("\n");
+
+  if (lines[0]?.trim() === "The City/Sync Pilot Framework") {
+    lines.shift();
+  }
+
+  const blocks: PilotBlock[] = [];
+  const paragraphBuffer: string[] = [];
+  const listBuffer: string[] = [];
+
+  const flushParagraph = () => {
+    if (!paragraphBuffer.length) {
+      return;
+    }
+    blocks.push({ type: "paragraph", text: paragraphBuffer.join(" ").trim() });
+    paragraphBuffer.length = 0;
+  };
+
+  const flushList = () => {
+    if (!listBuffer.length) {
+      return;
+    }
+    blocks.push({ type: "list", items: [...listBuffer] });
+    listBuffer.length = 0;
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/\t+/g, " ").replace(/\s+/g, " ").trim();
+
+    if (!line) {
+      flushParagraph();
+      flushList();
+      continue;
+    }
+
+    if (/^[•*-]\s+/.test(line)) {
+      flushParagraph();
+      listBuffer.push(line.replace(/^[•*-]\s+/, "").trim());
+      continue;
+    }
+
+    if (sectionHeadingSet.has(line) || isLikelyHeading(line)) {
+      flushParagraph();
+      flushList();
+      blocks.push({ type: "heading", text: line });
+      continue;
+    }
+
+    flushList();
+    paragraphBuffer.push(line);
+  }
+
+  flushParagraph();
+  flushList();
+
+  return blocks;
+};
+
+const pilotBlocks = parsePilotBlocks(pilotProgramText);
+
 const pageStyle: React.CSSProperties = {
   minHeight: "100vh",
   background: "linear-gradient(180deg, #0D0D14 0%, #121227 40%, #0D0D14 100%)",
@@ -63,20 +172,45 @@ const h1Style: React.CSSProperties = {
   letterSpacing: -0.4,
 };
 
-const pStyle: React.CSSProperties = {
-  margin: 0,
-  color: "rgba(245,245,247,0.84)",
+const docHeadingStyle: React.CSSProperties = {
+  margin: "14px 0 8px",
+  color: "#ffffff",
+  fontSize: 22,
+  lineHeight: 1.35,
+  fontWeight: 800,
+  letterSpacing: -0.2,
+};
+
+const docParagraphStyle: React.CSSProperties = {
+  margin: "0 0 12px",
+  color: "rgba(245,245,247,0.9)",
+  fontSize: 15,
+  lineHeight: 1.78,
+};
+
+const docListStyle: React.CSSProperties = {
+  margin: "2px 0 12px 0",
+  paddingLeft: 22,
+  color: "rgba(245,245,247,0.9)",
   fontSize: 15,
   lineHeight: 1.72,
 };
 
-const documentStyle: React.CSSProperties = {
-  margin: 0,
-  color: "rgba(245,245,247,0.9)",
-  fontSize: 15,
-  lineHeight: 1.75,
-  whiteSpace: "pre-wrap",
-  overflowWrap: "anywhere",
+const docListItemStyle: React.CSSProperties = {
+  marginBottom: 8,
+};
+
+const renderParagraph = (text: string) => {
+  const labelMatch = text.match(/^([A-Za-z0-9$()/&,'’ -]{3,60}:)\s*(.+)$/);
+  if (labelMatch && labelMatch[1].split(" ").length <= 8) {
+    return (
+      <p style={docParagraphStyle}>
+        <strong>{labelMatch[1]}</strong> {labelMatch[2]}
+      </p>
+    );
+  }
+
+  return <p style={docParagraphStyle}>{text}</p>;
 };
 
 export default function AboutPilotProgramPage() {
@@ -100,13 +234,32 @@ export default function AboutPilotProgramPage() {
         <section style={heroCard}>
           <div style={chipStyle}>About the Pilot Program</div>
           <h1 style={h1Style}>The City/Sync Pilot Framework</h1>
-          <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            The content below is copied directly from your official pilot deployment document.
-          </p>
         </section>
 
         <section style={sectionCard}>
-          <p style={documentStyle}>{pilotProgramText}</p>
+          {pilotBlocks.map((block, index) => {
+            if (block.type === "heading") {
+              return (
+                <h2 key={`heading-${index}`} style={docHeadingStyle}>
+                  {block.text}
+                </h2>
+              );
+            }
+
+            if (block.type === "list") {
+              return (
+                <ul key={`list-${index}`} style={docListStyle}>
+                  {block.items.map((item, itemIndex) => (
+                    <li key={`item-${itemIndex}`} style={docListItemStyle}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              );
+            }
+
+            return <div key={`paragraph-${index}`}>{renderParagraph(block.text)}</div>;
+          })}
         </section>
       </div>
     </main>
