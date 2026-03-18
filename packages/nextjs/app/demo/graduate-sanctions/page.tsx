@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Graduate Sanctions — City/Sync Demo",
+  title: "Graduated Sanctions — City/Sync Demo",
   description:
     "Internal control framework for graduated sanctions using Reliability Score (RS) and Risk Debt (RD) without permanent bans.",
 };
@@ -142,7 +142,7 @@ export default function GraduateSanctionsPage() {
         </div>
 
         <section style={heroCard}>
-          <div style={chipStyle}>Graduate Sanctions</div>
+          <div style={chipStyle}>Graduated Sanctions</div>
           <h1 style={h1Style}>A Recovery-First Internal Control System for Participant Abuse Risk</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
             City/Sync uses graduated sanctions to manage abuse while preserving access. Participants are never
@@ -424,7 +424,7 @@ export default function GraduateSanctionsPage() {
         <section style={sectionCard}>
           <h2 style={h2Style}>Policy Summary</h2>
           <p style={pStyle}>
-            Graduate Sanctions is designed to preserve trust without excluding people from participation. Participants
+            Graduated Sanctions is designed to preserve trust without excluding people from participation. Participants
             who create risk are routed into progressively narrower claim windows, while repeated quality execution
             restores full access over time. The system is strict on behavior, flexible on recovery, and always keeps a
             pathway forward.
