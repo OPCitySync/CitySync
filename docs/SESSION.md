@@ -12,10 +12,32 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 34)
+2026-03-17 (Session 35)
 
 ## Current Branch
 `main`
+
+## 2026-03-17 — Role Governance Deep-Dive Page (Unlinked)
+
+- Added standalone governance explainer page:
+  - `packages/nextjs/app/demo/role-governance/page.tsx`
+- Content scope:
+  - opens with a polycentric governance preface and why distributed authority is required
+  - maps role-level decision rights across:
+    - Representative Issuer Committee
+    - Representative Redeemer Committee
+    - Representative Civic Committee
+    - City/Sync early-stage stewardship
+  - defines governance operations:
+    - intake/scoping
+    - deliberation
+    - decision publication
+    - epoch review loop
+    - incident escalation path
+  - includes explicit governance principles:
+    - polycentrism, subsidiarity, transparency, non-coercion, bounded authority, adaptation, contribution-linked voice
+  - formalizes maturity transition from City/Sync-led bootstrapping to committee-led governance
+  - explains VOTE expansion in the dPAN era with app-scoped governance and role-isolated decision domains.
 
 ## 2026-03-17 — The City/Sync Framework Deep-Dive Page (Unlinked)
 
