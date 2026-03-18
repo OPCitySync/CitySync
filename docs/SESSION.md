@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 31)
+2026-03-17 (Session 32)
 
 ## Current Branch
 `main`
@@ -1268,3 +1268,14 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - redeemer configuration workflow and operational guardrails
   - employee enablement approach focused on minimal process change
   - KPI framework for utilization lift, spillover reduction, fulfillment quality, and staff friction.
+
+## 2026-03-17 — Civic Participant Growth Public Page
+
+- Added standalone civic participant growth roadmap page:
+  - `packages/nextjs/app/demo/civic-participant-growth/page.tsx`
+- Content scope:
+  - phased growth model starting with existing volunteers in active issuer orgs
+  - next-phase expansion to active redeemer users who do not yet volunteer often
+  - additional expansion levers beyond phase 2 (referrals, institutional channels, MCE funnels, neighborhood pods, retention journeys)
+  - participant lifecycle targets (acquisition, activation, utility adoption, recurrence, governance participation)
+  - KPI stack for evaluating growth conversion and retention quality over time.
