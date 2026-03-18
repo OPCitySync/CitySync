@@ -1014,10 +1014,8 @@ function ProfileTab({
     };
 
     void sync();
-    const id = window.setInterval(() => void sync(), 7000);
     return () => {
       cancelled = true;
-      window.clearInterval(id);
     };
   }, [issuerAddress]);
 
@@ -1685,12 +1683,10 @@ function TasksTab({
     };
 
     void sync();
-    const id = window.setInterval(() => void sync(), 7000);
     return () => {
       cancelled = true;
-      window.clearInterval(id);
     };
-  }, [address]);
+  }, [address, taskWriteStatus.hash, taskWriteStatus.state, proposeWriteStatus.hash, proposeWriteStatus.state]);
 
   return (
     <div style={{ padding: "24px 20px 100px" }}>
@@ -3262,7 +3258,6 @@ function VerifyTab({
   const [claimedItems, setClaimedItems] = useState<OnchainVerifyItem[]>([]);
   const [completedItems, setCompletedItems] = useState<OnchainVerifyItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [expandedClaimed, setExpandedClaimed] = useState<Record<string, boolean>>({});
   const [confirmVerify, setConfirmVerify] = useState<{
     taskId: string;
@@ -3290,7 +3285,7 @@ function VerifyTab({
     };
 
     const syncIssuerTasks = async () => {
-      if (!hasLoadedOnce) setLoading(true);
+      setLoading(true);
       try {
         const nextId = (await baseSepoliaPublicClient.readContract({
           address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
@@ -3402,7 +3397,6 @@ function VerifyTab({
           setIssuedItems(issued.sort(sortByIdDesc));
           setClaimedItems(claimed.sort(sortByIdDesc));
           setCompletedItems(completed.sort(sortByIdDesc));
-          setHasLoadedOnce(true);
         }
       } catch {
         // Keep last successful snapshot to avoid empty flicker on transient RPC failures.
@@ -3412,12 +3406,17 @@ function VerifyTab({
     };
 
     void syncIssuerTasks();
-    const id = window.setInterval(() => void syncIssuerTasks(), 7000);
     return () => {
       cancelled = true;
-      window.clearInterval(id);
     };
-  }, [address, hasLoadedOnce]);
+  }, [
+    address,
+    verifyWriteStatus.hash,
+    verifyWriteStatus.state,
+    unissueWriteStatus.hash,
+    unissueWriteStatus.state,
+    hiddenTaskIds,
+  ]);
 
   const hiddenTaskIdSet = new Set(hiddenTaskIds);
   const claimedOrCompletedIdSet = new Set([

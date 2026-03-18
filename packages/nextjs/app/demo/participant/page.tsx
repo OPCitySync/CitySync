@@ -2271,12 +2271,10 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
     };
 
     void syncOnchainTasks();
-    const id = window.setInterval(() => void syncOnchainTasks(), 7000);
     return () => {
       cancelled = true;
-      window.clearInterval(id);
     };
-  }, [parseEstimatedHours]);
+  }, [parseEstimatedHours, taskWriteStatus.hash, taskWriteStatus.state]);
 
   const addressLower = address?.toLowerCase();
   const openOnchainTasks = onchainTasks.filter(t => {

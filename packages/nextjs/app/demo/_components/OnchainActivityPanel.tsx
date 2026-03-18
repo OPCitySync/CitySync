@@ -119,12 +119,10 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
     };
 
     void refreshBlock();
-    const id = window.setInterval(() => void refreshBlock(), 7000);
     return () => {
       cancelled = true;
-      window.clearInterval(id);
     };
-  }, []);
+  }, [role]);
 
   useEffect(() => {
     if (role !== "participant") return;

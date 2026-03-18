@@ -984,16 +984,24 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    void syncState();
-    const id = window.setInterval(() => {
+    const refresh = () => {
+      if (cancelled) return;
       void syncState();
-    }, 6000);
+    };
+    const onFocus = () => refresh();
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
 
+    refresh();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibilityChange);
     return () => {
       cancelled = true;
-      window.clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [address]);
+  }, [address, state.role]);
 
   const syncOnchainOffers = useCallback(async () => {
     try {
@@ -1055,6 +1063,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (state.role !== "participant" && state.role !== "redeemer") return;
     let cancelled = false;
 
     const syncOffers = async () => {
@@ -1066,16 +1075,24 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    void syncOffers();
-    const id = window.setInterval(() => {
+    const refresh = () => {
+      if (cancelled) return;
       void syncOffers();
-    }, 10000);
+    };
+    const onFocus = () => refresh();
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") refresh();
+    };
 
+    refresh();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibilityChange);
     return () => {
       cancelled = true;
-      window.clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
-  }, [syncOnchainOffers]);
+  }, [state.role, syncOnchainOffers]);
 
   const setRole = useCallback(
     (role: Role) => {
