@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Capacity Optimization for Redeemers — City/Sync Demo",
+  title: "Capacity Optimization — City/Sync Demo",
   description:
-    "Framework for redeemers to optimize off-peak capacity by offering lower CITY redemption costs during non-peak windows.",
+    "Why capacity optimization matters for redeemers, and how dynamic CITY pricing could improve redemption utilization after the pilot.",
 };
 
 const pageStyle: React.CSSProperties = {
@@ -133,65 +133,120 @@ export default function CapacityOptimizationPage() {
         </div>
 
         <section style={heroCard}>
-          <div style={chipStyle}>Capacity Optimization for Redeemers</div>
-          <h1 style={h1Style}>Lower CITY Costs During Non-Peak Hours</h1>
+          <div style={chipStyle}>Capacity Optimization</div>
+          <h1 style={h1Style}>Capacity Optimization</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            This framework helps redeemers fill off-time capacity by lowering CITY redemption costs during non-peak
-            windows. The objective is simple: move demand into underused hours without forcing major operational changes
-            to point-of-service workflows.
+            This is an aspirational, iterative development goal for City/Sync. During the pilot, dynamic CITY pricing
+            will not be implemented. The long-term objective is to design a mechanism that helps Redeemers satisfy
+            capacity more consistently across their full operating hours by adjusting redemption costs over time.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
-              Off-Peak Fill
+              Post-Pilot Goal
             </span>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(221,158,51,0.4)", color: "#DD9E33" }}>
-              Time-Banded Pricing
+              Dynamic CITY Pricing
             </span>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(65,105,225,0.5)", color: "#7fa6ff" }}>
-              Minimal Operational Change
+              Redeemer Stability
             </span>
           </div>
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Program Premise</h2>
+          <h2 style={h2Style}>Problem Statement</h2>
           <p style={pStyle}>
-            Redeemers set a base CITY cost for each offering, then define lower-cost windows for non-peak times. Civic
-            participants receive better redemption value when they redeem during those windows. This creates demand
-            shaping without adding bonus systems or complex incentives.
+            Many Redeemers face uneven demand across the day. At some hours, capacity goes unused; at others, demand
+            exceeds what can be served smoothly. This creates operational stress, inconsistent participant experience,
+            and missed opportunities to deliver public goods/services at times when organizations could actually serve
+            more people.
           </p>
+          <ul style={ulStyle}>
+            <li>Underutilized hours produce avoidable idle capacity.</li>
+            <li>Peak-time congestion creates service strain and staff pressure.</li>
+            <li>Static redemption pricing does not help redistribute demand over time.</li>
+          </ul>
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>Pricing Framework</h2>
+          <h2 style={h2Style}>Why Solving This Matters</h2>
+          <p style={pStyle}>
+            Capacity optimization is important because Redeemers are critical service endpoints in the public-sector
+            economy. If Redeemers cannot absorb demand reliably, redemption value weakens and participant trust falls.
+            Solving this problem supports stronger service delivery, better predictability, and healthier earn-to-burn
+            circulation.
+          </p>
+          <ul style={ulStyle}>
+            <li>
+              <strong>For public-good/service providers:</strong> better alignment between mission delivery and real
+              operating capacity.
+            </li>
+            <li>
+              <strong>For high-capacity organizations:</strong> improved utilization of underused hours without
+              overwhelming peak periods.
+            </li>
+            <li>
+              <strong>For participants:</strong> clearer redemption options and more reliable access to offerings.
+            </li>
+          </ul>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>What City/Sync Is Trying to Build (After Pilot)</h2>
+          <p style={pStyle}>
+            The target mechanism is dynamic CITY pricing for redemption windows. Instead of one static cost throughout
+            the day, approved offerings could use policy-bounded rate adjustments to shift demand toward underused hours
+            and reduce peak stress. This is not a live pilot feature; it is a research-and-development direction.
+          </p>
+          <ul style={ulStyle}>
+            <li>
+              <strong>Bounded dynamic pricing:</strong> rates move only within governance-approved ranges.
+            </li>
+            <li>
+              <strong>Time-aware redemption windows:</strong> pricing responds to predictable demand patterns.
+            </li>
+            <li>
+              <strong>Operational simplicity:</strong> staff workflows should remain straightforward at point of
+              service.
+            </li>
+            <li>
+              <strong>Transparency by default:</strong> participants can see current redemption cost before they
+              confirm.
+            </li>
+          </ul>
+        </section>
+
+        <section style={sectionCard}>
+          <h2 style={h2Style}>Implications If Capacity Optimization Works</h2>
           <div style={tableWrapStyle}>
             <table style={tableStyle}>
               <thead>
                 <tr>
-                  <th style={thStyle}>Band</th>
-                  <th style={thStyle}>Time Window</th>
-                  <th style={thStyle}>CITY Cost Strategy</th>
-                  <th style={thStyle}>Intent</th>
+                  <th style={thStyle}>Domain</th>
+                  <th style={thStyle}>Implication</th>
+                  <th style={thStyle}>Public-Sector Effect</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td style={tdStyle}>Peak</td>
-                  <td style={tdStyle}>High-demand hours</td>
-                  <td style={tdStyle}>Base cost</td>
-                  <td style={tdStyle}>Protect core capacity and maintain service balance.</td>
+                  <td style={tdStyle}>Redeemer Operations</td>
+                  <td style={tdStyle}>More even demand distribution and fewer overload windows.</td>
+                  <td style={tdStyle}>Higher service reliability and reduced operational friction.</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Shoulder</td>
-                  <td style={tdStyle}>Moderate-demand hours</td>
-                  <td style={tdStyle}>Small discount vs base</td>
-                  <td style={tdStyle}>Smooth demand before/after peak periods.</td>
+                  <td style={tdStyle}>Participant Experience</td>
+                  <td style={tdStyle}>More usable redemption opportunities across the day.</td>
+                  <td style={tdStyle}>Stronger trust in CITY as a practical civic reward.</td>
                 </tr>
                 <tr>
-                  <td style={tdStyle}>Off-Peak</td>
-                  <td style={tdStyle}>Low-demand hours</td>
-                  <td style={tdStyle}>Largest discount</td>
-                  <td style={tdStyle}>Fill underused capacity and increase utilization.</td>
+                  <td style={tdStyle}>Protocol Economics</td>
+                  <td style={tdStyle}>Healthier and more predictable burn behavior.</td>
+                  <td style={tdStyle}>Improved stability of the public-sector economy loop.</td>
+                </tr>
+                <tr>
+                  <td style={tdStyle}>Mission Outcomes</td>
+                  <td style={tdStyle}>Better utilization for organizations delivering public goods/services.</td>
+                  <td style={tdStyle}>Greater capacity to serve community needs without expansion shock.</td>
                 </tr>
               </tbody>
             </table>
@@ -199,81 +254,17 @@ export default function CapacityOptimizationPage() {
         </section>
 
         <section style={sectionCard}>
-          <h2 style={h2Style}>How Redeemers Configure It</h2>
-          <ul style={ulStyle}>
-            <li>Select offerings eligible for time-banded pricing.</li>
-            <li>Define peak, shoulder, and off-peak windows by day and hour.</li>
-            <li>Set discounted CITY amounts per window.</li>
-            <li>Set optional capacity limits for each discounted window.</li>
-            <li>Publish schedule for the current epoch and follow update policy windows.</li>
-          </ul>
-        </section>
-
-        <section style={sectionCard}>
-          <h2 style={h2Style}>Operational Guardrails</h2>
-          <ul style={ulStyle}>
-            <li>Use canonical server/chain time for window enforcement.</li>
-            <li>Display active redemption cost clearly before participant confirms.</li>
-            <li>Apply per-window redemption caps for constrained services.</li>
-            <li>Keep staff flow simple: scan, confirm cost, provide service.</li>
-            <li>Restrict frequent ad hoc price changes to preserve participant trust.</li>
-          </ul>
-        </section>
-
-        <section style={sectionCard}>
-          <h2 style={h2Style}>Employee Enablement (Meet Staff Where They Are)</h2>
+          <h2 style={h2Style}>Pilot Boundary and Development Posture</h2>
           <p style={pStyle}>
-            The program should feel like a pricing schedule, not a new software system. Staff should not need to learn a
-            complex new workflow to process redemptions.
+            Capacity optimization is not a pilot deliverable. The pilot is focused on proving reliable task issuance,
+            verification, and redemption operations first. Dynamic pricing is a later-stage capability that should only
+            be introduced after baseline reliability, policy clarity, and governance controls are established.
           </p>
           <ul style={ulStyle}>
-            <li>Use one-page quick guides with active window examples.</li>
-            <li>Keep a single service script for redemption confirmation.</li>
-            <li>Provide fallback escalation steps for ambiguous transactions.</li>
-            <li>Run short refreshers after any schedule change.</li>
+            <li>Pilot now: prove stable workflows and trusted redemption execution.</li>
+            <li>Next phase: model demand patterns and define bounded pricing rules.</li>
+            <li>Later phase: deploy and tune dynamic pricing with committee oversight.</li>
           </ul>
-        </section>
-
-        <section style={sectionCard}>
-          <h2 style={h2Style}>Measurement and Optimization KPIs</h2>
-          <div style={tableWrapStyle}>
-            <table style={tableStyle}>
-              <thead>
-                <tr>
-                  <th style={thStyle}>KPI</th>
-                  <th style={thStyle}>What It Measures</th>
-                  <th style={thStyle}>Decision Use</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={tdStyle}>Off-Peak Utilization Lift</td>
-                  <td style={tdStyle}>Change in redemption volume during discounted windows.</td>
-                  <td style={tdStyle}>Increase/decrease discount depth.</td>
-                </tr>
-                <tr>
-                  <td style={tdStyle}>Peak Spillover Reduction</td>
-                  <td style={tdStyle}>Whether demand shifts out of congested peak windows.</td>
-                  <td style={tdStyle}>Tune shoulder/off-peak schedule boundaries.</td>
-                </tr>
-                <tr>
-                  <td style={tdStyle}>Redemption Fulfillment Quality</td>
-                  <td style={tdStyle}>On-time, accurate service delivery after redemption confirmation.</td>
-                  <td style={tdStyle}>Adjust staffing and cap strategy.</td>
-                </tr>
-                <tr>
-                  <td style={tdStyle}>Staff Friction Rate</td>
-                  <td style={tdStyle}>Checkout confusion and escalation incidence.</td>
-                  <td style={tdStyle}>Improve training and simplify rules.</td>
-                </tr>
-                <tr>
-                  <td style={tdStyle}>Participant Repeat Redemption</td>
-                  <td style={tdStyle}>Return usage in discounted windows.</td>
-                  <td style={tdStyle}>Validate whether pricing is both clear and attractive.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </section>
       </div>
     </main>
