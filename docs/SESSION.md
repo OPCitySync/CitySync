@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 24)
+2026-03-17 (Session 25)
 
 ## Current Branch
 `main`
@@ -1176,3 +1176,22 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - Green/Yellow/Red risk tiers and decision outputs
   - mitigation patterns for likely failure behaviors
   - public-narrative mapping and pilot-to-maturity governance path.
+
+## 2026-03-17 — Issuer Fit Public Page + Classification Framework Doc
+
+- Added public-facing Issuer explainer page:
+  - `packages/nextjs/app/demo/issuer-fit/page.tsx`
+- Public-page scope:
+  - why issuers participate and what strong issuer fit looks like
+  - pilot eligibility baseline from pilot design assumptions
+  - high-fit issuer categories and poor-fit indicators
+  - pilot risk-management posture for task rules, catalog discipline, and verification quality
+  - phased maturity path from onboarding reliability to committee-guided governance.
+- Added internal governance/reference doc:
+  - `docs/design/issuer-classification-framework.md`
+- Framework scope:
+  - two-layer classification model (function type + operational profile)
+  - 1-5 issuer scoring dimensions (mission fit, task design, verification reliability, safety/credential controls, etc.)
+  - Green/Yellow/Red risk tiers and decision outputs
+  - behavior anticipation/mitigation patterns
+  - pilot rules pass/fail gate and pilot-to-maturity transition model.
