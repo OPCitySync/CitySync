@@ -3262,6 +3262,7 @@ function VerifyTab({
   const [claimedItems, setClaimedItems] = useState<OnchainVerifyItem[]>([]);
   const [completedItems, setCompletedItems] = useState<OnchainVerifyItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [expandedClaimed, setExpandedClaimed] = useState<Record<string, boolean>>({});
   const [confirmVerify, setConfirmVerify] = useState<{
     taskId: string;
@@ -3289,7 +3290,7 @@ function VerifyTab({
     };
 
     const syncIssuerTasks = async () => {
-      setLoading(true);
+      if (!hasLoadedOnce) setLoading(true);
       try {
         const nextId = (await baseSepoliaPublicClient.readContract({
           address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
@@ -3346,24 +3347,41 @@ function VerifyTab({
             voteTokens: Math.floor(Number(formatUnits(rewardVote === 0n ? rewardCity : rewardVote, 18))),
           };
 
-          const claimant = (await baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-            functionName: "claimedBy",
-            args: [id],
-          })) as `0x${string}`;
+          let claimant: `0x${string}` = "0x0000000000000000000000000000000000000000";
+          try {
+            claimant = (await baseSepoliaPublicClient.readContract({
+              address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+              abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+              functionName: "claimedBy",
+              args: [id],
+            })) as `0x${string}`;
+          } catch {
+            // Skip this opportunity if claim state cannot be read right now.
+            continue;
+          }
 
           if (claimant === "0x0000000000000000000000000000000000000000") {
             issued.push(itemBase);
             continue;
           }
 
-          const completionRaw = (await baseSepoliaPublicClient.readContract({
-            address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
-            abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
-            functionName: "completions",
-            args: [id, claimant],
-          })) as readonly [proofHash: `0x${string}`, submittedAt: bigint, verifiedAt: bigint, status: number];
+          let completionRaw: readonly [
+            proofHash: `0x${string}`,
+            submittedAt: bigint,
+            verifiedAt: bigint,
+            status: number,
+          ];
+          try {
+            completionRaw = (await baseSepoliaPublicClient.readContract({
+              address: BASE_SEPOLIA_CONTRACTS.OpportunityManager.address,
+              abi: BASE_SEPOLIA_CONTRACTS.OpportunityManager.abi,
+              functionName: "completions",
+              args: [id, claimant],
+            })) as readonly [proofHash: `0x${string}`, submittedAt: bigint, verifiedAt: bigint, status: number];
+          } catch {
+            // Skip this opportunity if completion state cannot be read right now.
+            continue;
+          }
           const completion = {
             submittedAt: completionRaw[1],
             verifiedAt: completionRaw[2],
@@ -3384,13 +3402,10 @@ function VerifyTab({
           setIssuedItems(issued.sort(sortByIdDesc));
           setClaimedItems(claimed.sort(sortByIdDesc));
           setCompletedItems(completed.sort(sortByIdDesc));
+          setHasLoadedOnce(true);
         }
       } catch {
-        if (!cancelled) {
-          setIssuedItems([]);
-          setClaimedItems([]);
-          setCompletedItems([]);
-        }
+        // Keep last successful snapshot to avoid empty flicker on transient RPC failures.
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -3402,7 +3417,7 @@ function VerifyTab({
       cancelled = true;
       window.clearInterval(id);
     };
-  }, [address]);
+  }, [address, hasLoadedOnce]);
 
   const hiddenTaskIdSet = new Set(hiddenTaskIds);
   const claimedOrCompletedIdSet = new Set([
@@ -4039,11 +4054,13 @@ function MCEsTab({
   orgName: string;
   onLearnMore: (key: IssuerLearnCardKey) => void;
 }) {
+  const { address } = useAccount({ type: "ModularAccountV2" });
   const [section, setSection] = useState<"epoch1" | "epoch2">("epoch1");
   const [proposeOpen, setProposeOpen] = useState(false);
   const [localProposals, setLocalProposals] = useState<
     Array<{ id: string; title: string; description: string; goals: string; benefits: string; tags: string[] }>
   >([]);
+  const localProposalStorageKey = `citysync:demo:issuer:mce-proposals:v1:${(address ?? FAKE_WALLETS.issuer).toLowerCase()}`;
 
   // MCE proposal form state
   const [mceTitle, setMceTitle] = useState("");
@@ -4053,6 +4070,34 @@ function MCEsTab({
   const [mceTags, setMceTags] = useState<string[]>([]);
 
   const MCE_TAGS = ["Environment", "Infrastructure", "Education", "Health", "Community", "Safety", "Economy"];
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(localProposalStorageKey);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Array<{
+        id: string;
+        title: string;
+        description: string;
+        goals: string;
+        benefits: string;
+        tags: string[];
+      }>;
+      if (Array.isArray(parsed)) setLocalProposals(parsed);
+    } catch {
+      // Ignore hydration failures.
+    }
+  }, [localProposalStorageKey]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(localProposalStorageKey, JSON.stringify(localProposals));
+    } catch {
+      // Ignore persistence failures.
+    }
+  }, [localProposalStorageKey, localProposals]);
 
   const toggleMceTag = (tag: string) => {
     setMceTags(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));

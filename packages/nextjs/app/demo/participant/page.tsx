@@ -2399,7 +2399,6 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
           });
           return next;
         });
-        setToast("Task verified by issuer.");
       }
 
       const next = prev.filter(id => claimedIds.has(id));

@@ -12,10 +12,29 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-18 (Session 41)
+2026-03-18 (Session 42)
 
 ## Current Branch
 `main`
+
+## 2026-03-18 — Verify UX Cleanup, MCE Proposal Persistence, Issuer Verify Sync Hardening
+
+- Updated:
+  - `packages/nextjs/app/demo/participant/page.tsx`
+  - `packages/nextjs/app/demo/issuer/page.tsx`
+  - `packages/nextjs/app/demo/redeemer/page.tsx`
+- Changes:
+  - Removed the Civic Participant toast popup `"Task verified by issuer."` after verification resolution.
+  - Added local persistence for new Epoch 2 MCE proposals created from:
+    - Issuer role `+Create New MCE Proposal`
+    - Redeemer role `+Create New MCE Proposal`
+  - Proposal persistence is wallet-scoped and survives reload/session via localStorage keys:
+    - `citysync:demo:issuer:mce-proposals:v1:<address>`
+    - `citysync:demo:redeemer:mce-proposals:v1:<address>`
+  - Hardened Issuer `Verify` onchain sync loop:
+    - avoids clearing Issued/Claimed/Completed lists on transient RPC errors
+    - catches per-opportunity claim/completion read failures and continues processing remaining records
+    - loading indicator now primarily reflects initial load rather than every poll cycle (reduces constant sync churn perception).
 
 ## 2026-03-18 — DB/RS Scoring Integration + Issuer/Participant Dashboards
 

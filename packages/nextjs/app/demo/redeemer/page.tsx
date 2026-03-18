@@ -3527,11 +3527,13 @@ function MCEsTab({
   orgName: string;
   onLearnMore: (key: RedeemerLearnCardKey) => void;
 }) {
+  const { address } = useAccount({ type: "ModularAccountV2" });
   const [section, setSection] = useState<"epoch1" | "epoch2">("epoch1");
   const [proposeOpen, setProposeOpen] = useState(false);
   const [localProposals, setLocalProposals] = useState<
     Array<{ id: string; title: string; description: string; goals: string; benefits: string; tags: string[] }>
   >([]);
+  const localProposalStorageKey = `citysync:demo:redeemer:mce-proposals:v1:${(address ?? FAKE_WALLETS.redeemer).toLowerCase()}`;
 
   const [mceTitle, setMceTitle] = useState("");
   const [mceDesc, setMceDesc] = useState("");
@@ -3540,6 +3542,34 @@ function MCEsTab({
   const [mceTags, setMceTags] = useState<string[]>([]);
 
   const MCE_TAGS = ["Environment", "Infrastructure", "Education", "Health", "Community", "Safety", "Economy"];
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(localProposalStorageKey);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as Array<{
+        id: string;
+        title: string;
+        description: string;
+        goals: string;
+        benefits: string;
+        tags: string[];
+      }>;
+      if (Array.isArray(parsed)) setLocalProposals(parsed);
+    } catch {
+      // Ignore hydration failures.
+    }
+  }, [localProposalStorageKey]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(localProposalStorageKey, JSON.stringify(localProposals));
+    } catch {
+      // Ignore persistence failures.
+    }
+  }, [localProposalStorageKey, localProposals]);
 
   const toggleMceTag = (tag: string) => {
     setMceTags(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
