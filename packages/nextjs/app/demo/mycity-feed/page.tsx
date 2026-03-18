@@ -241,16 +241,6 @@ export default function MyCityFeedPage() {
             </table>
           </div>
         </section>
-
-        <section style={sectionCard}>
-          <h2 style={h2Style}>Operational Path to Integrate Local News</h2>
-          <ul style={ulStyle}>
-            <li>Start with open visibility and citation workflows for active posts.</li>
-            <li>Add structured feed tags for local-news relevance (events, alerts, opportunities, outcomes).</li>
-            <li>Introduce editorial guidance so news usage preserves context and avoids misinterpretation.</li>
-            <li>Explore API/read-only channels for vetted local media partners in mature phases.</li>
-          </ul>
-        </section>
       </div>
     </main>
   );
