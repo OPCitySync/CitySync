@@ -68,16 +68,7 @@ const parsePilotBlocks = (rawText: string): PilotBlock[] => {
   }
 
   const blocks: PilotBlock[] = [];
-  const paragraphBuffer: string[] = [];
   const listBuffer: string[] = [];
-
-  const flushParagraph = () => {
-    if (!paragraphBuffer.length) {
-      return;
-    }
-    blocks.push({ type: "paragraph", text: paragraphBuffer.join(" ").trim() });
-    paragraphBuffer.length = 0;
-  };
 
   const flushList = () => {
     if (!listBuffer.length) {
@@ -91,29 +82,25 @@ const parsePilotBlocks = (rawText: string): PilotBlock[] => {
     const line = rawLine.replace(/\t+/g, " ").replace(/\s+/g, " ").trim();
 
     if (!line) {
-      flushParagraph();
       flushList();
       continue;
     }
 
     if (/^[•*-]\s+/.test(line)) {
-      flushParagraph();
       listBuffer.push(line.replace(/^[•*-]\s+/, "").trim());
       continue;
     }
 
     if (sectionHeadingSet.has(line) || isLikelyHeading(line)) {
-      flushParagraph();
       flushList();
       blocks.push({ type: "heading", text: line });
       continue;
     }
 
     flushList();
-    paragraphBuffer.push(line);
+    blocks.push({ type: "paragraph", text: line });
   }
 
-  flushParagraph();
   flushList();
 
   return blocks;
@@ -191,6 +178,7 @@ const docParagraphStyle: React.CSSProperties = {
 const docListStyle: React.CSSProperties = {
   margin: "2px 0 12px 0",
   paddingLeft: 22,
+  listStyleType: "disc",
   color: "rgba(245,245,247,0.9)",
   fontSize: 15,
   lineHeight: 1.72,
