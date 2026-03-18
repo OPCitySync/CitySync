@@ -2814,7 +2814,7 @@ function MyCityTab({
       </button>
 
       {/* Sort */}
-      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: 20 }}>
         <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
           {(["recent", "top"] as const).map(s => (
             <button
