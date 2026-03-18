@@ -111,7 +111,6 @@ const EPOCH_RESET_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
 const ACCENT_TEAL = "#34eeb6"; // teal — verify / success states
-const ACCENT_BLUE = "#7eb3ff"; // blue — informational / stats
 const SURFACE = "#1E1E2C";
 const BG = "#15151E";
 const MUTED = "rgba(255,255,255,0.45)";
@@ -459,10 +458,8 @@ export default function IssuerApp() {
   }, [approvedCatalogTasks, catalogStorageKey]);
 
   const allPosts = [...localPosts, ...state.posts];
-  const totalPending = issuer.tasks.reduce((n, t) => n + t.pendingCompletions.length, 0);
   const allTimeCredits = issuer.tasks.reduce((sum, t) => sum + t.credits, 0);
   const creditsCommitted = Math.max(0, allTimeCredits - epochCreditOffset);
-  const creditsIssued = issuer.tasks.reduce((sum, t) => sum + t.verifiedCount * t.credits, 0);
 
   const handleVerify = async (taskId: string, citizen: string) => {
     if (!address) {
@@ -673,13 +670,7 @@ export default function IssuerApp() {
           </div>
         )}
         {activeTab === "profile" && (
-          <ProfileTab
-            issuer={issuer}
-            totalPending={totalPending}
-            creditsCommitted={creditsCommitted}
-            creditsIssued={creditsIssued}
-            onLearnMore={openLearnMore}
-          />
+          <ProfileTab issuer={issuer} creditsCommitted={creditsCommitted} onLearnMore={openLearnMore} />
         )}
         {activeTab === "tasks" && (
           <TasksTab
@@ -801,15 +792,11 @@ export default function IssuerApp() {
 
 function ProfileTab({
   issuer,
-  totalPending,
   creditsCommitted,
-  creditsIssued,
   onLearnMore,
 }: {
   issuer: ReturnType<typeof useDemo>["state"]["issuer"];
-  totalPending: number;
   creditsCommitted: number;
-  creditsIssued: number;
   onLearnMore: (key: IssuerLearnCardKey) => void;
 }) {
   const { dispatch } = useDemo();
@@ -818,6 +805,7 @@ function ProfileTab({
   const [draft, setDraft] = useState(issuer.orgName);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showActiveTasks, setShowActiveTasks] = useState(false);
   const [activeTaskInstances, setActiveTaskInstances] = useState<
     Array<{ id: string; title: string; credits: number; status: "Open" | "Claimed" | "Pending Verification" }>
   >([]);
@@ -1199,31 +1187,6 @@ function ProfileTab({
         </p>
       </div>
 
-      {/* Stats */}
-      <SectionLabel
-        text="Issuance Stats"
-        right={<LearnMoreLink onClick={() => onLearnMore("activity-stats")} />}
-        accentColor={ACCENT_BLUE}
-      />
-      <div
-        style={{
-          ...surfaceCard,
-          padding: 0,
-          marginBottom: 20,
-          overflow: "hidden",
-          background: "linear-gradient(135deg, #1e1c2e 0%, #1E1E2C 100%)",
-        }}
-      >
-        <StatRow label="Tasks Created" value={issuer.totalTasksIssued} accentColor={ACCENT_BLUE} />
-        <StatRow label="Credits Issued" value={creditsIssued} suffix="CITYx" border accentColor={ACCENT} />
-        <StatRow
-          label="Pending Verifications"
-          value={totalPending}
-          border
-          accentColor={totalPending > 0 ? ACCENT_TEAL : undefined}
-        />
-      </div>
-
       {/* Epoch 1 Issuance Allocation */}
       <SectionLabel
         text="Epoch 1 Issuance Allocation"
@@ -1276,13 +1239,32 @@ function ProfileTab({
       </div>
 
       {/* Active tasks quick view */}
-      {activeTaskInstances.length > 0 && (
-        <>
-          <SectionLabel
-            text="Active Tasks"
-            right={<LearnMoreLink onClick={() => onLearnMore("active-tasks")} />}
-            accentColor={ACCENT_TEAL}
-          />
+      <SectionLabel
+        text="Active Tasks"
+        right={<LearnMoreLink onClick={() => onLearnMore("active-tasks")} />}
+        accentColor={ACCENT_TEAL}
+      />
+      <button
+        onClick={() => setShowActiveTasks(prev => !prev)}
+        style={{
+          width: "100%",
+          marginBottom: 12,
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: 10,
+          padding: "10px 12px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          cursor: "pointer",
+          color: "#fff",
+        }}
+      >
+        <span style={{ fontSize: 12, fontWeight: 700 }}>Active Tasks ({activeTaskInstances.length})</span>
+        <span style={{ fontSize: 14, color: MUTED }}>{showActiveTasks ? "▾" : "▸"}</span>
+      </button>
+      {showActiveTasks &&
+        (activeTaskInstances.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
             {activeTaskInstances.map(t => (
               <div
@@ -1303,16 +1285,11 @@ function ProfileTab({
               </div>
             ))}
           </div>
-        </>
-      )}
-
-      {activeTaskInstances.length === 0 && (
-        <EmptyState
-          emoji="📋"
-          title="Ready to create tasks?"
-          desc="Head to the Tasks tab to browse the admin-approved catalog and post your first opportunity."
-        />
-      )}
+        ) : (
+          <div style={{ ...surfaceCard, marginBottom: 20, fontSize: 12, color: MUTED }}>
+            No active tasks yet. Issue tasks from the Tasks tab to populate this list.
+          </div>
+        ))}
     </div>
   );
 }
@@ -4713,42 +4690,6 @@ function StatusPill({ label, color }: { label: string; color: string }) {
       <span style={{ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0 }} />
       {label}
     </span>
-  );
-}
-
-function StatRow({
-  label,
-  value,
-  suffix,
-  border,
-  accent,
-  accentColor,
-}: {
-  label: string;
-  value: number;
-  suffix?: string;
-  border?: boolean;
-  /** @deprecated use accentColor instead */
-  accent?: boolean;
-  accentColor?: string;
-}) {
-  const color = accentColor ?? (accent ? ACCENT : "#fff");
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "13px 16px",
-        borderTop: border ? "1px solid rgba(255,255,255,0.05)" : undefined,
-      }}
-    >
-      <span style={{ fontSize: 13, color: MUTED }}>{label}</span>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
-        <span style={{ fontSize: 15, fontWeight: 700, color }}>{value.toLocaleString()}</span>
-        {suffix && <span style={{ fontSize: 11, color: DIMMED }}>{suffix}</span>}
-      </div>
-    </div>
   );
 }
 

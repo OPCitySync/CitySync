@@ -194,6 +194,26 @@ type QROfferingData = {
 
 type CatalogEditorState = { type: "committed"; editId?: string } | { type: "mce"; editId?: string } | null;
 
+const normalizeOfferText = (value: string) => value.trim().toLowerCase().replace(/\s+/g, " ");
+const normalizeMceIds = (ids: string[]) => Array.from(new Set(ids)).sort().join("|");
+
+const isSameCommittedOfferState = (
+  a: Pick<CustomOffering, "name" | "costCity" | "stipulations">,
+  b: Pick<CustomOffering, "name" | "costCity" | "stipulations">,
+) =>
+  a.costCity === b.costCity &&
+  normalizeOfferText(a.name) === normalizeOfferText(b.name) &&
+  normalizeOfferText(a.stipulations || "") === normalizeOfferText(b.stipulations || "");
+
+const isSameMceOfferState = (
+  a: Pick<MCECustomOffering, "name" | "costCity" | "stipulations" | "mceIds">,
+  b: Pick<MCECustomOffering, "name" | "costCity" | "stipulations" | "mceIds">,
+) =>
+  a.costCity === b.costCity &&
+  normalizeOfferText(a.name) === normalizeOfferText(b.name) &&
+  normalizeOfferText(a.stipulations || "") === normalizeOfferText(b.stipulations || "") &&
+  normalizeMceIds(a.mceIds || []) === normalizeMceIds(b.mceIds || []);
+
 // ─── Toast ────────────────────────────────────────────────────────────────────
 
 function Toast({ message, onDone }: { message: string; onDone: () => void }) {
@@ -516,6 +536,14 @@ export default function RedeemerApp() {
     const template = committedCatalog.find(item => item.id === catalogId);
     if (!template) return;
 
+    const duplicateCommitted = committedOfferings.some(existing => isSameCommittedOfferState(existing, template));
+    if (duplicateCommitted) {
+      const message = "This offering is already committed with the same rate/state.";
+      setOfferWriteStatus({ state: "failed", error: message });
+      setToast("Already committed. Modify rate to commit a new offering state.");
+      return;
+    }
+
     const onchainOffer: RedemptionOffer = {
       id: `offer-${Date.now()}`,
       redeemerName: redeemer.orgName || "Redeemer",
@@ -580,6 +608,14 @@ export default function RedeemerApp() {
 
     const template = mceCatalog.find(item => item.id === catalogId);
     if (!template) return;
+
+    const duplicateMce = mceOfferings.some(existing => isSameMceOfferState(existing, template));
+    if (duplicateMce) {
+      const message = "This MCE offering is already committed with the same rate/state.";
+      setOfferWriteStatus({ state: "failed", error: message });
+      setToast("Already committed. Modify rate to commit a new MCE offering state.");
+      return;
+    }
 
     const onchainOffer: RedemptionOffer = {
       id: `offer-${Date.now()}`,
@@ -1118,7 +1154,7 @@ function ProfileTab({
             <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.6, margin: 0 }}>
               Accept CITYx credits from civic participants in exchange for goods and services. Create committed
               offerings for the current Epoch and MCE-linked offerings for city events. Generate QR codes for in-person
-              redemption and process incoming requests from your queue.
+              redemption.
             </p>
           </div>
 
@@ -1437,58 +1473,65 @@ function OfferingsTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
-              {committedCatalog.map(item => (
-                <div
-                  key={item.id}
-                  style={{
-                    ...accentCard,
-                    border: "1px solid rgba(52,238,182,0.2)",
-                    background: "rgba(52,238,182,0.04)",
-                  }}
-                >
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{item.name}</div>
-                  {item.stipulations && (
-                    <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6, lineHeight: 1.45 }}>
-                      {item.stipulations}
+              {committedCatalog.map(item => {
+                const duplicateCommittedState = committedOfferings.some(existing =>
+                  isSameCommittedOfferState(existing, item),
+                );
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      ...accentCard,
+                      border: "1px solid rgba(52,238,182,0.2)",
+                      background: "rgba(52,238,182,0.04)",
+                    }}
+                  >
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{item.name}</div>
+                    {item.stipulations && (
+                      <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6, lineHeight: 1.45 }}>
+                        {item.stipulations}
+                      </div>
+                    )}
+                    <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT, marginBottom: 8 }}>
+                      {item.costCity} CITYx
                     </div>
-                  )}
-                  <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT, marginBottom: 8 }}>
-                    {item.costCity} CITYx
+                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 8 }}>
+                      <button
+                        onClick={() => onModifyCommitted(item.id)}
+                        style={{
+                          background: "rgba(255,255,255,0.08)",
+                          border: "1px solid rgba(255,255,255,0.14)",
+                          borderRadius: 10,
+                          padding: "8px 12px",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: "#fff",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Modify Offering
+                      </button>
+                      <button
+                        onClick={() => setPendingCommittedCatalogCommitId(item.id)}
+                        disabled={duplicateCommittedState}
+                        style={{
+                          background: duplicateCommittedState ? "rgba(255,255,255,0.1)" : ACCENT,
+                          border: "none",
+                          borderRadius: 10,
+                          padding: "8px 12px",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: duplicateCommittedState ? MUTED : BG,
+                          cursor: duplicateCommittedState ? "not-allowed" : "pointer",
+                        }}
+                        title={duplicateCommittedState ? "Already committed with the same rate/state" : undefined}
+                      >
+                        {duplicateCommittedState ? "Already Committed" : "Commit Offering"}
+                      </button>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 8 }}>
-                    <button
-                      onClick={() => onModifyCommitted(item.id)}
-                      style={{
-                        background: "rgba(255,255,255,0.08)",
-                        border: "1px solid rgba(255,255,255,0.14)",
-                        borderRadius: 10,
-                        padding: "8px 12px",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: "#fff",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Modify Offering
-                    </button>
-                    <button
-                      onClick={() => setPendingCommittedCatalogCommitId(item.id)}
-                      style={{
-                        background: ACCENT,
-                        border: "none",
-                        borderRadius: 10,
-                        padding: "8px 12px",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: BG,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Commit Offering
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -1677,63 +1720,68 @@ function OfferingsTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
-              {mceCatalog.map(item => (
-                <div
-                  key={item.id}
-                  style={{
-                    ...goldCard,
-                    border: "1px solid rgba(221,158,51,0.22)",
-                    background: "rgba(221,158,51,0.04)",
-                  }}
-                >
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{item.name}</div>
-                  {item.mceNames.length > 0 && (
-                    <div style={{ fontSize: 11, color: DIMMED, marginBottom: 4 }}>
-                      Events: {item.mceNames.join(", ")}
+              {mceCatalog.map(item => {
+                const duplicateMceState = mceOfferings.some(existing => isSameMceOfferState(existing, item));
+                return (
+                  <div
+                    key={item.id}
+                    style={{
+                      ...goldCard,
+                      border: "1px solid rgba(221,158,51,0.22)",
+                      background: "rgba(221,158,51,0.04)",
+                    }}
+                  >
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{item.name}</div>
+                    {item.mceNames.length > 0 && (
+                      <div style={{ fontSize: 11, color: DIMMED, marginBottom: 4 }}>
+                        Events: {item.mceNames.join(", ")}
+                      </div>
+                    )}
+                    {item.stipulations && (
+                      <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6, lineHeight: 1.45 }}>
+                        {item.stipulations}
+                      </div>
+                    )}
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#DD9E33", marginBottom: 8 }}>
+                      {item.costCity} CITYx
                     </div>
-                  )}
-                  {item.stipulations && (
-                    <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6, lineHeight: 1.45 }}>
-                      {item.stipulations}
+                    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 8 }}>
+                      <button
+                        onClick={() => onModifyMCE(item.id)}
+                        style={{
+                          background: "rgba(255,255,255,0.08)",
+                          border: "1px solid rgba(255,255,255,0.14)",
+                          borderRadius: 10,
+                          padding: "8px 12px",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: "#fff",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Modify Offering
+                      </button>
+                      <button
+                        onClick={() => setPendingMceCatalogCommitId(item.id)}
+                        disabled={duplicateMceState}
+                        style={{
+                          background: duplicateMceState ? "rgba(255,255,255,0.1)" : "#DD9E33",
+                          border: "none",
+                          borderRadius: 10,
+                          padding: "8px 12px",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: duplicateMceState ? MUTED : BG,
+                          cursor: duplicateMceState ? "not-allowed" : "pointer",
+                        }}
+                        title={duplicateMceState ? "Already committed with the same rate/state" : undefined}
+                      >
+                        {duplicateMceState ? "Already Committed" : "Commit Offering"}
+                      </button>
                     </div>
-                  )}
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "#DD9E33", marginBottom: 8 }}>
-                    {item.costCity} CITYx
                   </div>
-                  <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 8 }}>
-                    <button
-                      onClick={() => onModifyMCE(item.id)}
-                      style={{
-                        background: "rgba(255,255,255,0.08)",
-                        border: "1px solid rgba(255,255,255,0.14)",
-                        borderRadius: 10,
-                        padding: "8px 12px",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: "#fff",
-                        cursor: "pointer",
-                      }}
-                    >
-                      Modify Offering
-                    </button>
-                    <button
-                      onClick={() => setPendingMceCatalogCommitId(item.id)}
-                      style={{
-                        background: "#DD9E33",
-                        border: "none",
-                        borderRadius: 10,
-                        padding: "8px 12px",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        color: BG,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Commit Offering
-                    </button>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
 
@@ -1925,6 +1973,7 @@ function AddOfferingSheet({
     type === "committed" ? (initialCommitted?.stipulations ?? "") : (initialMCE?.stipulations ?? ""),
   );
   const [selectedMceIds, setSelectedMceIds] = useState(type === "mce" ? (initialMCE?.mceIds ?? []) : []);
+  const isEditing = Boolean(initialCommitted || initialMCE);
 
   const activeMces = mces.filter(m => m.status === "Active" || m.status === "Voting");
 
@@ -2037,13 +2086,23 @@ function AddOfferingSheet({
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {/* Offering Name */}
             <div>
-              <label style={labelStyle}>Offering Name *</label>
+              <label style={labelStyle}>{isEditing ? "Offering Name (Locked)" : "Offering Name *"}</label>
               <input
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="e.g. 10% Grocery Discount"
-                style={inputStyle}
+                disabled={isEditing}
+                style={{
+                  ...inputStyle,
+                  opacity: isEditing ? 0.65 : 1,
+                  cursor: isEditing ? "not-allowed" : "text",
+                }}
               />
+              {isEditing && (
+                <div style={{ fontSize: 11, color: DIMMED, marginTop: 6 }}>
+                  Offering name is fixed after creation. Modify the CITYx rate instead.
+                </div>
+              )}
             </div>
 
             {/* Cost */}
