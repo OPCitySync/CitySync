@@ -134,7 +134,7 @@ export default function RedeemerFitPage() {
 
         <section style={heroCard}>
           <div style={chipStyle}>Redeemer Organizations</div>
-          <h1 style={h1Style}>Who Is a Good Fit and Why They Participate</h1>
+          <h1 style={h1Style}>Who is a Good Fit</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
             Redeemers are the service side of the civic-credit loop. They accept CITY credits for goods or services and
             make civic work feel real in everyday life. The strongest redeemers are organizations that can absorb
