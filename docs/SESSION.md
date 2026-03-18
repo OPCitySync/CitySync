@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 29)
+2026-03-17 (Session 30)
 
 ## Current Branch
 `main`
@@ -1246,3 +1246,14 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - expansion path for local news network engagement:
     - activity monitoring, issue amplification, contextual reporting, accountability signaling
     - operational path for tags, editorial guidance, and potential API/read-only integration.
+
+## 2026-03-17 — Civic Participant Voting Public Page (MCE + VOTE Expansion)
+
+- Added standalone civic voting explainer page:
+  - `packages/nextjs/app/demo/civic-participant-voting/page.tsx`
+- Content scope:
+  - current MCE voting process for civic participants (proposal slate, open window, close, planning, distribution)
+  - why MCE voting exists and how participants gain VOTE through verified contribution
+  - framing that MCE voting is the first governance layer, not the final one
+  - expansion pathways for VOTE influence in public-sector decision-making
+  - governance expansion principles (gradual rollout, transparency boundaries, anti-capture safeguards).
