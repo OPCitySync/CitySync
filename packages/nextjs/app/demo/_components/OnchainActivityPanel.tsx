@@ -118,9 +118,15 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
       }
     };
 
+    const onActivityRefresh = () => {
+      void refreshBlock();
+    };
+
     void refreshBlock();
+    window.addEventListener("citysync:activity-refresh", onActivityRefresh);
     return () => {
       cancelled = true;
+      window.removeEventListener("citysync:activity-refresh", onActivityRefresh);
     };
   }, [role]);
 

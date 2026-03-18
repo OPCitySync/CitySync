@@ -766,13 +766,19 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         functionName: params.functionName as any,
         args: params.args as any,
       });
-      return sendUserOperationAsync({
+      const result = await sendUserOperationAsync({
         uo: {
           target: params.address,
           data,
           value: 0n,
         },
       } as any);
+      if (typeof window !== "undefined") {
+        window.setTimeout(() => {
+          window.dispatchEvent(new Event("citysync:activity-refresh"));
+        }, 5000);
+      }
+      return result;
     },
     [client, sendUserOperationAsync],
   );
