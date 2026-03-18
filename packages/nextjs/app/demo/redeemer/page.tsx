@@ -173,6 +173,8 @@ type CustomOffering = {
   costCity: number;
   stipulations: string;
   createdAt: string;
+  catalogId?: string;
+  onchainOfferId?: string;
 };
 
 type MCECustomOffering = {
@@ -183,6 +185,8 @@ type MCECustomOffering = {
   mceIds: string[];
   mceNames: string[];
   createdAt: string;
+  catalogId?: string;
+  onchainOfferId?: string;
 };
 
 type QROfferingData = {
@@ -196,6 +200,33 @@ type CatalogEditorState = { type: "committed"; editId?: string } | { type: "mce"
 
 const normalizeOfferText = (value: string) => value.trim().toLowerCase().replace(/\s+/g, " ");
 const normalizeMceIds = (ids: string[]) => Array.from(new Set(ids)).sort().join("|");
+const DEFAULT_STIPULATIONS = "No additional stipulations";
+
+const parseOnchainOfferNumericId = (id: string | undefined): string | null => {
+  if (!id) return null;
+  if (/^\d+$/.test(id)) return id;
+  const match = id.match(/^onchain:0x[a-fA-F0-9]{40}:(\d+)$/);
+  return match?.[1] ?? null;
+};
+
+const pickHighestNumericId = (ids: string[]): string | undefined => {
+  let best: string | undefined;
+  for (const id of ids) {
+    if (!best || BigInt(id) > BigInt(best)) best = id;
+  }
+  return best;
+};
+
+const isSameStipulationText = (a: string, b: string) => {
+  const left = normalizeOfferText(a || "");
+  const right = normalizeOfferText(b || "");
+  if (left === right) return true;
+  const leftEmpty = left.length === 0;
+  const rightEmpty = right.length === 0;
+  if (leftEmpty && right === normalizeOfferText(DEFAULT_STIPULATIONS)) return true;
+  if (rightEmpty && left === normalizeOfferText(DEFAULT_STIPULATIONS)) return true;
+  return false;
+};
 
 const isSameCommittedOfferState = (
   a: Pick<CustomOffering, "name" | "costCity" | "stipulations">,
@@ -358,7 +389,7 @@ const REDEEMER_LEARN_CARDS: Record<RedeemerLearnCardKey, LearnInfoCard> = {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function RedeemerApp() {
-  const { state, setRole, redeemerAddOffer, dispatch } = useDemo();
+  const { state, setRole, redeemerAddOffer, redeemerUpdateOfferRate, dispatch } = useDemo();
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const [catalogEditor, setCatalogEditor] = useState<CatalogEditorState>(null);
@@ -509,6 +540,108 @@ export default function RedeemerApp() {
     }
   }, [activeMceStorageKey, mceOfferings]);
 
+  const resolveOnchainOfferId = React.useCallback(
+    (params: { name: string; stipulations: string; mceOnly: boolean; costCity?: number }) => {
+      if (!address) return undefined;
+      const owner = address.toLowerCase();
+
+      const matchCandidates = (requireCost: boolean): string[] =>
+        state.offers
+          .filter(offer => {
+            const parsed = parseOnchainOfferNumericId(offer.id);
+            if (!parsed) return false;
+            if ((offer.redeemerId ?? "").toLowerCase() !== owner) return false;
+            if (Boolean(offer.mceOnly) !== params.mceOnly) return false;
+            if (normalizeOfferText(offer.offerTitle) !== normalizeOfferText(params.name)) return false;
+            if (!isSameStipulationText(offer.description || "", params.stipulations || "")) return false;
+            if (requireCost && typeof params.costCity === "number" && offer.costCity !== params.costCity) return false;
+            return true;
+          })
+          .map(offer => parseOnchainOfferNumericId(offer.id))
+          .filter((id): id is string => Boolean(id));
+
+      const exact = matchCandidates(true);
+      if (exact.length > 0) return pickHighestNumericId(exact);
+
+      const loose = matchCandidates(false);
+      return pickHighestNumericId(loose);
+    },
+    [address, state.offers],
+  );
+
+  React.useEffect(() => {
+    setCommittedOfferings(prev => {
+      let changed = false;
+      const next = prev.map(existing => {
+        let catalogId = existing.catalogId;
+        if (!catalogId) {
+          const candidates = committedCatalog.filter(
+            item =>
+              normalizeOfferText(item.name) === normalizeOfferText(existing.name) &&
+              isSameStipulationText(item.stipulations || "", existing.stipulations || ""),
+          );
+          if (candidates.length === 1) {
+            catalogId = candidates[0].id;
+          }
+        }
+
+        const normalizedOnchainId = parseOnchainOfferNumericId(existing.onchainOfferId ?? undefined);
+        const onchainOfferId =
+          normalizedOnchainId ??
+          resolveOnchainOfferId({
+            name: existing.name,
+            stipulations: existing.stipulations,
+            mceOnly: false,
+            costCity: existing.costCity,
+          });
+
+        const didChange = catalogId !== existing.catalogId || onchainOfferId !== existing.onchainOfferId;
+        if (didChange) {
+          changed = true;
+          return { ...existing, catalogId, onchainOfferId };
+        }
+        return existing;
+      });
+      return changed ? next : prev;
+    });
+
+    setMceOfferings(prev => {
+      let changed = false;
+      const next = prev.map(existing => {
+        let catalogId = existing.catalogId;
+        if (!catalogId) {
+          const candidates = mceCatalog.filter(
+            item =>
+              normalizeOfferText(item.name) === normalizeOfferText(existing.name) &&
+              isSameStipulationText(item.stipulations || "", existing.stipulations || "") &&
+              normalizeMceIds(item.mceIds || []) === normalizeMceIds(existing.mceIds || []),
+          );
+          if (candidates.length === 1) {
+            catalogId = candidates[0].id;
+          }
+        }
+
+        const normalizedOnchainId = parseOnchainOfferNumericId(existing.onchainOfferId ?? undefined);
+        const onchainOfferId =
+          normalizedOnchainId ??
+          resolveOnchainOfferId({
+            name: existing.name,
+            stipulations: existing.stipulations,
+            mceOnly: true,
+            costCity: existing.costCity,
+          });
+
+        const didChange = catalogId !== existing.catalogId || onchainOfferId !== existing.onchainOfferId;
+        if (didChange) {
+          changed = true;
+          return { ...existing, catalogId, onchainOfferId };
+        }
+        return existing;
+      });
+      return changed ? next : prev;
+    });
+  }, [committedCatalog, mceCatalog, resolveOnchainOfferId]);
+
   const handleCreateCommittedOffering = async (data: { name: string; costCity: number; stipulations: string }) => {
     const catalogId = catalogEditor?.type === "committed" ? catalogEditor.editId : undefined;
     const catalogItem: CustomOffering = {
@@ -536,11 +669,57 @@ export default function RedeemerApp() {
     const template = committedCatalog.find(item => item.id === catalogId);
     if (!template) return;
 
-    const duplicateCommitted = committedOfferings.some(existing => isSameCommittedOfferState(existing, template));
-    if (duplicateCommitted) {
-      const message = "This offering is already committed with the same rate/state.";
-      setOfferWriteStatus({ state: "failed", error: message });
-      setToast("Already committed. Modify rate to commit a new offering state.");
+    const existingOffering =
+      committedOfferings.find(existing => existing.catalogId === catalogId) ??
+      committedOfferings.find(
+        existing =>
+          normalizeOfferText(existing.name) === normalizeOfferText(template.name) &&
+          isSameStipulationText(existing.stipulations || "", template.stipulations || ""),
+      );
+
+    if (existingOffering) {
+      if (existingOffering.costCity === template.costCity) {
+        const message = "This offering is already committed with the same rate/state.";
+        setOfferWriteStatus({ state: "failed", error: message });
+        setToast("Already committed. Modify rate to commit a new offering state.");
+        return;
+      }
+
+      const resolvedOnchainOfferId =
+        existingOffering.onchainOfferId ??
+        resolveOnchainOfferId({
+          name: existingOffering.name,
+          stipulations: existingOffering.stipulations,
+          mceOnly: false,
+          costCity: existingOffering.costCity,
+        });
+
+      if (!resolvedOnchainOfferId) {
+        const message = "Active offering exists, but its onchain offer ID could not be resolved.";
+        setOfferWriteStatus({ state: "failed", error: message });
+        setToast("Unable to update rate in place. Recommit after onchain sync finishes.");
+        return;
+      }
+
+      setOfferWriteStatus({ state: "pending" });
+      const result = await redeemerUpdateOfferRate(BigInt(resolvedOnchainOfferId), template.costCity);
+      if (result.ok) {
+        setCommittedOfferings(prev =>
+          prev.map(existing =>
+            existing.id === existingOffering.id
+              ? {
+                  ...existing,
+                  costCity: template.costCity,
+                  catalogId,
+                  onchainOfferId: resolvedOnchainOfferId,
+                }
+              : existing,
+          ),
+        );
+        setOfferWriteStatus({ state: "confirmed", hash: result.hash });
+      } else {
+        setOfferWriteStatus({ state: "failed", error: result.error });
+      }
       return;
     }
 
@@ -566,6 +745,8 @@ export default function RedeemerApp() {
         costCity: template.costCity,
         stipulations: template.stipulations,
         createdAt: new Date().toISOString(),
+        catalogId,
+        onchainOfferId: result.offerId?.toString(),
       };
       setCommittedOfferings(prev => [offering, ...prev]);
       setOfferWriteStatus({ state: "confirmed", hash: result.hash });
@@ -609,11 +790,58 @@ export default function RedeemerApp() {
     const template = mceCatalog.find(item => item.id === catalogId);
     if (!template) return;
 
-    const duplicateMce = mceOfferings.some(existing => isSameMceOfferState(existing, template));
-    if (duplicateMce) {
-      const message = "This MCE offering is already committed with the same rate/state.";
-      setOfferWriteStatus({ state: "failed", error: message });
-      setToast("Already committed. Modify rate to commit a new MCE offering state.");
+    const existingOffering =
+      mceOfferings.find(existing => existing.catalogId === catalogId) ??
+      mceOfferings.find(
+        existing =>
+          normalizeOfferText(existing.name) === normalizeOfferText(template.name) &&
+          isSameStipulationText(existing.stipulations || "", template.stipulations || "") &&
+          normalizeMceIds(existing.mceIds || []) === normalizeMceIds(template.mceIds || []),
+      );
+
+    if (existingOffering) {
+      if (existingOffering.costCity === template.costCity) {
+        const message = "This MCE offering is already committed with the same rate/state.";
+        setOfferWriteStatus({ state: "failed", error: message });
+        setToast("Already committed. Modify rate to commit a new MCE offering state.");
+        return;
+      }
+
+      const resolvedOnchainOfferId =
+        existingOffering.onchainOfferId ??
+        resolveOnchainOfferId({
+          name: existingOffering.name,
+          stipulations: existingOffering.stipulations,
+          mceOnly: true,
+          costCity: existingOffering.costCity,
+        });
+
+      if (!resolvedOnchainOfferId) {
+        const message = "Active MCE offering exists, but its onchain offer ID could not be resolved.";
+        setOfferWriteStatus({ state: "failed", error: message });
+        setToast("Unable to update MCE rate in place. Recommit after onchain sync finishes.");
+        return;
+      }
+
+      setOfferWriteStatus({ state: "pending" });
+      const result = await redeemerUpdateOfferRate(BigInt(resolvedOnchainOfferId), template.costCity);
+      if (result.ok) {
+        setMceOfferings(prev =>
+          prev.map(existing =>
+            existing.id === existingOffering.id
+              ? {
+                  ...existing,
+                  costCity: template.costCity,
+                  catalogId,
+                  onchainOfferId: resolvedOnchainOfferId,
+                }
+              : existing,
+          ),
+        );
+        setOfferWriteStatus({ state: "confirmed", hash: result.hash });
+      } else {
+        setOfferWriteStatus({ state: "failed", error: result.error });
+      }
       return;
     }
 
@@ -641,6 +869,8 @@ export default function RedeemerApp() {
         mceIds: template.mceIds,
         mceNames: template.mceNames,
         createdAt: new Date().toISOString(),
+        catalogId,
+        onchainOfferId: result.offerId?.toString(),
       };
       setMceOfferings(prev => [offering, ...prev]);
       setOfferWriteStatus({ state: "confirmed", hash: result.hash });
@@ -1474,9 +1704,23 @@ function OfferingsTab({
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
               {committedCatalog.map(item => {
-                const duplicateCommittedState = committedOfferings.some(existing =>
-                  isSameCommittedOfferState(existing, item),
-                );
+                const committedForCatalog =
+                  committedOfferings.find(existing => existing.catalogId === item.id) ??
+                  committedOfferings.find(
+                    existing =>
+                      normalizeOfferText(existing.name) === normalizeOfferText(item.name) &&
+                      isSameStipulationText(existing.stipulations || "", item.stipulations || ""),
+                  );
+                const duplicateCommittedState = committedForCatalog
+                  ? committedForCatalog.costCity === item.costCity
+                  : committedOfferings.some(existing => isSameCommittedOfferState(existing, item));
+                const commitLabel = committedForCatalog
+                  ? duplicateCommittedState
+                    ? "Already Committed"
+                    : "Update Rate"
+                  : duplicateCommittedState
+                    ? "Already Committed"
+                    : "Commit Offering";
                 return (
                   <div
                     key={item.id}
@@ -1526,7 +1770,7 @@ function OfferingsTab({
                         }}
                         title={duplicateCommittedState ? "Already committed with the same rate/state" : undefined}
                       >
-                        {duplicateCommittedState ? "Already Committed" : "Commit Offering"}
+                        {commitLabel}
                       </button>
                     </div>
                   </div>
@@ -1721,7 +1965,24 @@ function OfferingsTab({
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
               {mceCatalog.map(item => {
-                const duplicateMceState = mceOfferings.some(existing => isSameMceOfferState(existing, item));
+                const mceForCatalog =
+                  mceOfferings.find(existing => existing.catalogId === item.id) ??
+                  mceOfferings.find(
+                    existing =>
+                      normalizeOfferText(existing.name) === normalizeOfferText(item.name) &&
+                      isSameStipulationText(existing.stipulations || "", item.stipulations || "") &&
+                      normalizeMceIds(existing.mceIds || []) === normalizeMceIds(item.mceIds || []),
+                  );
+                const duplicateMceState = mceForCatalog
+                  ? mceForCatalog.costCity === item.costCity
+                  : mceOfferings.some(existing => isSameMceOfferState(existing, item));
+                const commitLabel = mceForCatalog
+                  ? duplicateMceState
+                    ? "Already Committed"
+                    : "Update Rate"
+                  : duplicateMceState
+                    ? "Already Committed"
+                    : "Commit Offering";
                 return (
                   <div
                     key={item.id}
@@ -1776,7 +2037,7 @@ function OfferingsTab({
                         }}
                         title={duplicateMceState ? "Already committed with the same rate/state" : undefined}
                       >
-                        {duplicateMceState ? "Already Committed" : "Commit Offering"}
+                        {commitLabel}
                       </button>
                     </div>
                   </div>
@@ -1981,6 +2242,7 @@ function AddOfferingSheet({
   const canSubmitMCE = name.trim() && parseInt(costCity) > 0 && selectedMceIds.length > 0;
 
   const toggleMce = (id: string) => {
+    if (isEditing) return;
     setSelectedMceIds(prev => (prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]));
   };
 
@@ -2122,8 +2384,9 @@ function AddOfferingSheet({
               <div>
                 <label style={labelStyle}>Select MCE Events (choose all that apply) *</label>
                 <div style={{ fontSize: 11, color: DIMMED, marginBottom: 8, lineHeight: 1.4 }}>
-                  Select the MCE proposals you would create this offering for. Your selection signals influence on
-                  voting.
+                  {isEditing
+                    ? "MCE event scope is fixed after creation. Modify the CITYx rate only."
+                    : "Select the MCE proposals you would create this offering for. Your selection signals influence on voting."}
                 </div>
                 {activeMces.length === 0 ? (
                   <div
@@ -2145,6 +2408,7 @@ function AddOfferingSheet({
                           key={mce.id}
                           type="button"
                           onClick={() => toggleMce(mce.id)}
+                          disabled={isEditing}
                           style={{
                             display: "flex",
                             alignItems: "center",
@@ -2153,8 +2417,9 @@ function AddOfferingSheet({
                             borderRadius: 10,
                             border: checked ? "1px solid rgba(221,158,51,0.5)" : "1px solid rgba(255,255,255,0.1)",
                             background: checked ? "rgba(221,158,51,0.08)" : "rgba(255,255,255,0.04)",
-                            cursor: "pointer",
+                            cursor: isEditing ? "not-allowed" : "pointer",
                             textAlign: "left",
+                            opacity: isEditing ? 0.75 : 1,
                           }}
                         >
                           {/* Checkbox indicator */}
@@ -2197,14 +2462,26 @@ function AddOfferingSheet({
 
             {/* Stipulations / Notes */}
             <div>
-              <label style={labelStyle}>Stipulations / Notes</label>
+              <label style={labelStyle}>{isEditing ? "Stipulations / Notes (Locked)" : "Stipulations / Notes"}</label>
               <textarea
                 value={stipulations}
                 onChange={e => setStipulations(e.target.value)}
                 placeholder="e.g. Valid Mon–Fri only, not during peak hours, one redemption per visit..."
                 rows={3}
-                style={{ ...inputStyle, resize: "none", lineHeight: 1.55 }}
+                disabled={isEditing}
+                style={{
+                  ...inputStyle,
+                  resize: "none",
+                  lineHeight: 1.55,
+                  opacity: isEditing ? 0.65 : 1,
+                  cursor: isEditing ? "not-allowed" : "text",
+                }}
               />
+              {isEditing && (
+                <div style={{ fontSize: 11, color: DIMMED, marginTop: 6 }}>
+                  Notes are fixed after creation. Modify the CITYx rate instead.
+                </div>
+              )}
             </div>
           </div>
 

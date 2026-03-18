@@ -112,6 +112,16 @@ export const BASE_SEPOLIA_CONTRACTS = {
       },
       {
         type: "function",
+        name: "updateOfferRate",
+        stateMutability: "nonpayable",
+        inputs: [
+          { name: "offerId", type: "uint256", internalType: "uint256" },
+          { name: "newCost", type: "uint256", internalType: "uint256" },
+        ],
+        outputs: [],
+      },
+      {
+        type: "function",
         name: "removeOffer",
         stateMutability: "nonpayable",
         inputs: [{ name: "offerId", type: "uint256", internalType: "uint256" }],
@@ -197,6 +207,15 @@ export const BASE_SEPOLIA_CONTRACTS = {
         inputs: [
           { name: "redeemer", type: "address", indexed: true, internalType: "address" },
           { name: "offerId", type: "uint256", indexed: true, internalType: "uint256" },
+        ],
+      },
+      {
+        type: "event",
+        name: "OfferRateUpdated",
+        inputs: [
+          { name: "redeemer", type: "address", indexed: true, internalType: "address" },
+          { name: "offerId", type: "uint256", indexed: true, internalType: "uint256" },
+          { name: "newCost", type: "uint256", indexed: false, internalType: "uint256" },
         ],
       },
       {

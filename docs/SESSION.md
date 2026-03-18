@@ -1417,4 +1417,35 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - detailed rollout architecture (phase-by-phase deployment sequence)
   - dual-market coordination engine explanation
   - governance/economic operating posture and bounded adaptability
-  - success criteria oriented toward replication readiness.
+- success criteria oriented toward replication readiness.
+
+## 2026-03-18 — Redeemer Offer Rate Reissue Strategy (Update In Place)
+
+- Implemented consistent onchain strategy for modified + reissued offerings:
+  - update existing active offer in place using `updateOfferRate(offerId, newCost)`
+  - avoid remove-and-replace for normal rate updates.
+- Added missing DemoRedeemerRegistry ABI items in frontend config:
+  - function: `updateOfferRate(uint256 offerId, uint256 newCost)`
+  - event: `OfferRateUpdated(address redeemer, uint256 offerId, uint256 newCost)`.
+- Extended demo context write API:
+  - `redeemerAddOffer` now returns parsed `offerId` from `OfferCreated` receipt logs
+  - new `redeemerUpdateOfferRate(offerId, newCostCity)` write helper
+  - both paths trigger onchain-offer resync after success.
+- Updated redeemer offering commit logic:
+  - active offering instances now persist `catalogId` + `onchainOfferId`
+  - if catalog item already has an active committed instance:
+    - same rate: block as duplicate state
+    - changed rate: call `updateOfferRate` on the same onchain `offerId`
+  - first-time commit still uses `createOffer`.
+- Added migration-safe fallback for legacy local entries:
+  - resolves missing `onchainOfferId` from synced onchain offers by owner + name + stipulations + mode.
+- UI behavior updated to match strategy:
+  - catalog commit buttons now surface `Update Rate` when an active instance exists with a changed rate
+  - retains `Already Committed` when state is unchanged.
+- Activity panel support:
+  - redeemer role now recognizes and labels `OfferRateUpdated` events as `Offer Rate Updated`.
+- Editing constraints tightened:
+  - after creation, redeemer offering edits are rate-only:
+    - offering name locked
+    - stipulations/notes locked
+    - MCE event selection locked for MCE offerings.

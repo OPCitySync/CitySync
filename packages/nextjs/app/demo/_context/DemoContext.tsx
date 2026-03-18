@@ -640,7 +640,16 @@ interface DemoContextValue {
     active: boolean,
   ) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
   redeemerToggleMCE: () => void;
-  redeemerAddOffer: (offer: RedemptionOffer) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
+  redeemerAddOffer: (offer: RedemptionOffer) => Promise<{
+    ok: boolean;
+    hash?: `0x${string}`;
+    offerId?: bigint;
+    error?: string;
+  }>;
+  redeemerUpdateOfferRate: (
+    offerId: bigint,
+    newCostCity: number,
+  ) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
   redeemerRemoveOffer: (offerId: string) => void;
   redeemerProcessRedemption: (queueId: string) => void;
   dispatch: React.Dispatch<Action>;
@@ -796,6 +805,30 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       }
     } catch {
       // Ignore receipt parsing errors and fallback to local ID.
+    }
+    return undefined;
+  }, []);
+
+  const getRedeemerOfferIdFromReceipt = useCallback(async (hash?: `0x${string}`): Promise<bigint | undefined> => {
+    if (!hash) return undefined;
+    try {
+      const receipt = await baseSepoliaPublicClient.getTransactionReceipt({ hash });
+      for (const log of receipt.logs) {
+        try {
+          const decoded = decodeEventLog({
+            abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi as any,
+            data: log.data,
+            topics: log.topics,
+            eventName: "OfferCreated",
+          });
+          const maybeId = (decoded.args as { offerId?: bigint }).offerId;
+          if (typeof maybeId === "bigint") return maybeId;
+        } catch {
+          // Ignore non-matching logs.
+        }
+      }
+    } catch {
+      // Ignore receipt parsing errors.
     }
     return undefined;
   }, []);
@@ -1580,14 +1613,43 @@ export function DemoProvider({ children }: { children: ReactNode }) {
             offer.mceOnly,
           ],
         });
+        const hash = getResultHash(result);
+        const offerId = await getRedeemerOfferIdFromReceipt(hash);
         void syncOnchainOffers();
-        return { ok: true, hash: getResultHash(result) };
+        return { ok: true, hash, offerId };
       } catch (error) {
         const message = normalizeWriteError(error, "Offer creation failed");
         return { ok: false, error: message };
       }
     },
-    [address, getResultHash, normalizeWriteError, state.redeemer.acceptsMCE, syncOnchainOffers, writeContractAsync],
+    [
+      address,
+      getRedeemerOfferIdFromReceipt,
+      getResultHash,
+      normalizeWriteError,
+      state.redeemer.acceptsMCE,
+      syncOnchainOffers,
+      writeContractAsync,
+    ],
+  );
+
+  const redeemerUpdateOfferRate = useCallback(
+    async (offerId: bigint, newCostCity: number) => {
+      try {
+        const result = await writeContractAsync({
+          address: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.address,
+          abi: BASE_SEPOLIA_CONTRACTS.DemoRedeemerRegistry.abi,
+          functionName: "updateOfferRate",
+          args: [offerId, parseUnits(String(Math.max(0, newCostCity)), 18)],
+        });
+        void syncOnchainOffers();
+        return { ok: true, hash: getResultHash(result) };
+      } catch (error) {
+        const message = normalizeWriteError(error, "Offer rate update failed");
+        return { ok: false, error: message };
+      }
+    },
+    [getResultHash, normalizeWriteError, syncOnchainOffers, writeContractAsync],
   );
 
   const redeemerRemoveOffer = useCallback(
@@ -1632,6 +1694,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         issuerSetTaskActive,
         redeemerToggleMCE,
         redeemerAddOffer,
+        redeemerUpdateOfferRate,
         redeemerRemoveOffer,
         redeemerProcessRedemption,
         dispatch,

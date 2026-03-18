@@ -37,10 +37,12 @@ const FRIENDLY_LABELS: Record<string, string> = {
   approveTask: "Task Approved",
   // DemoRedeemerRegistry events
   OfferCreated: "Offer Created",
+  OfferRateUpdated: "Offer Rate Updated",
   OfferRemoved: "Offer Removed",
   RedeemerRegistered: "Org Registered",
   // DemoRedeemerRegistry functions (fallback)
   createOffer: "Offer Created",
+  updateOfferRate: "Offer Rate Updated",
   removeOffer: "Offer Removed",
   register: "Org Registered",
   // Events (from decodeEventLog)
@@ -668,6 +670,7 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
 
         const redeemerRelevant = new Set([
           "OfferCreated",
+          "OfferRateUpdated",
           "OfferRemoved",
           "RedeemerRegistered",
           "CityOfferPurchased",
