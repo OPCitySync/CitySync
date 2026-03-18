@@ -137,8 +137,8 @@ export default function TaskManagementPage() {
           <h1 style={h1Style}>Task Lifecycle, Decision Space, and Catalog Governance</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
             City/Sync tasks are managed as civic infrastructure. Issuers define and propose task functions, City/Sync
-            and participating issuers normalize rates, and approved task types enter catalog systems that separate local
-            issuing flexibility from protocol-wide transparency and standardization.
+            and participating issuers work together to normalize issuance rates, and approved task types enter catalog
+            systems that separate local issuing flexibility from protocol-wide transparency and standardization.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
@@ -254,19 +254,20 @@ export default function TaskManagementPage() {
           <h2 style={h2Style}>The Two Catalogs and Why Both Exist</h2>
           <ul style={ulStyle}>
             <li>
-              <strong>Organizational Task Catalog:</strong> each issuer operational library of approved task types that
-              can be rapidly issued during an epoch.
+              <strong>Organizational Task Catalogs:</strong> each Issuer has their own operational library of
+              approved/standardized tasks that can be rapidly issued during each Epoch.
             </li>
             <li>
-              <strong>Master Task Catalog:</strong> protocol-level registry of all approved task types across issuers
-              and cities, managed by City/Sync as the source of truth for transparency and rate logic.
+              <strong>City/Sync Task Catalog:</strong> protocol-level registry of all approved task types across Issuers
+              and Cities, managed by City/Sync as the source of truth for transparency and the evolution of rate logic
+              and task equity and distribution.
             </li>
           </ul>
           <p style={{ ...pStyle, marginTop: 12 }}>
             Issuers are not allowed to create tasks at will because unrestricted creation would produce inconsistent
             rates, ambiguous task definitions, low comparability across organizations, and reduced public trust in
-            issuance quality. The catalog layer creates governance memory: task types become legible, repeatable,
-            auditable, and calibratable over time.
+            issuance quality. The catalog layer creates governance memory as task types will become legible, repeatable,
+            auditable, and calibrated over time.
           </p>
         </section>
 
