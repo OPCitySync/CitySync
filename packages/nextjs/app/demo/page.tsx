@@ -175,13 +175,20 @@ const ECONOMY_CARDS = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+const GUEST_KEY = "citysync:demo:guestMode";
+
 export default function DemoHome() {
   const { setRole } = useDemo();
   const { isConnected } = useSignerStatus();
   const { logout } = useLogout();
+  const [guestMode, setGuestMode] = React.useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(GUEST_KEY) === "1";
+  });
   const orderedRoles = [...ROLES].sort((a, b) => ROLE_ORDER[a.key] - ROLE_ORDER[b.key]);
 
-  if (!isConnected) return <LoginScreen />;
+  if (!isConnected && !guestMode)
+    return <LoginScreen onGuest={() => { window.localStorage.setItem(GUEST_KEY, "1"); setGuestMode(true); }} />;
 
   return (
     <div
@@ -206,7 +213,11 @@ export default function DemoHome() {
 
         <div className="flex items-center gap-4">
           <button
-            onClick={() => logout()}
+            onClick={() => {
+              window.localStorage.removeItem(GUEST_KEY);
+              setGuestMode(false);
+              if (isConnected) logout();
+            }}
             className="rounded-xl px-4 py-2 text-sm font-medium transition-opacity hover:opacity-80"
             style={{
               background: "rgba(255,255,255,0.08)",
@@ -214,7 +225,7 @@ export default function DemoHome() {
               color: "rgba(255,255,255,0.7)",
             }}
           >
-            Sign Out
+            {guestMode ? "Sign In" : "Sign Out"}
           </button>
         </div>
       </header>

@@ -4,7 +4,7 @@ import { useAuthModal, useSignerStatus } from "@account-kit/react";
 import Image from "next/image";
 import Link from "next/link";
 
-export function LoginScreen() {
+export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
   const { openAuthModal } = useAuthModal();
   const { isAuthenticating } = useSignerStatus();
 
@@ -109,6 +109,24 @@ export function LoginScreen() {
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginTop: 16 }}>
           Sign in with email, passkey, or Google. No wallet or ETH required.
         </p>
+
+        {onGuest && (
+          <button
+            onClick={onGuest}
+            style={{
+              marginTop: 16,
+              background: "none",
+              border: "none",
+              color: "rgba(255,255,255,0.3)",
+              fontSize: 12,
+              cursor: "pointer",
+              textDecoration: "underline",
+              padding: 0,
+            }}
+          >
+            Continue as Guest (demo only, no wallet)
+          </button>
+        )}
       </div>
 
       {/* Footer */}
