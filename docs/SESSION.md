@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 25)
+2026-03-17 (Session 26)
 
 ## Current Branch
 `main`
@@ -1195,3 +1195,14 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - Green/Yellow/Red risk tiers and decision outputs
   - behavior anticipation/mitigation patterns
   - pilot rules pass/fail gate and pilot-to-maturity transition model.
+
+## 2026-03-17 — Onboarding Tasks Public Page (Civic Participants)
+
+- Added standalone onboarding explainer page:
+  - `packages/nextjs/app/demo/onboarding-tasks/page.tsx`
+- Content scope:
+  - why onboarding tasks exist as an entry and quality-control layer
+  - how issuers issue and facilitate recurring onboarding tasks
+  - design requirements for onboarding tasks (low complexity, clear verification, high accessibility)
+  - lifecycle map from publish → claim/execute → completion check → activation
+  - long-term role of onboarding templates in network consistency and readiness as scale increases.
