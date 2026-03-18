@@ -12,10 +12,25 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 35)
+2026-03-17 (Session 36)
 
 ## Current Branch
 `main`
+
+## 2026-03-17 — Graduate Sanctions Deep-Dive Page (Unlinked)
+
+- Added standalone policy explainer page:
+  - `packages/nextjs/app/demo/graduate-sanctions/page.tsx`
+- Content scope:
+  - defines graduated sanctions as a recovery-first control system (no permanent bans)
+  - introduces dual internal controls:
+    - Reliability Score (RS) as behavior trend signal
+    - Risk Debt (RD) as primary permissions control
+  - formalizes event weights for successful completion, no-show, and rejected verification
+  - defines RD-driven sanction tiers (Green/Yellow/Orange/Red) with claim restrictions
+  - adds recovery gates requiring sustained successful completions to lift restrictions
+  - includes anti-gaming example where small successful tasks cannot neutralize repeated high-severity abuse
+  - documents epoch rollover behavior and governance oversight responsibilities for sanctions calibration.
 
 ## 2026-03-17 — Role Governance Deep-Dive Page (Unlinked)
 
