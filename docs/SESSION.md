@@ -12,10 +12,36 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-18 (Session 39)
+2026-03-18 (Session 40)
 
 ## Current Branch
 `main`
+
+## 2026-03-18 — Browse Tasks CITYx/hr Rate Consistency Fix
+
+- Updated:
+  - `packages/nextjs/app/demo/participant/page.tsx`
+  - `packages/nextjs/app/demo/_context/DemoContext.tsx`
+- Fix scope:
+  - ensures CITYx/hr displays consistently across Browse Tasks cards and expanded detail views
+  - normalizes rate values for onchain tasks even when older metadata is incomplete
+- Participant-side changes:
+  - added robust onchain task rate normalization with fallback order:
+    1) metadata `creditRatePerHr`
+    2) metadata `creditRate`
+    3) derived from `credits / estimatedTime`
+    4) fallback to `credits` when needed
+  - updated Browse Task card summaries (including grouped headers) to display `CITYx/hr`
+    consistently with detail panels.
+- Issuer-side metadata changes:
+  - enriched `issuerCreateTask` metadata payload to include:
+    - `estimatedTime`
+    - `successCriteria`
+    - `creditRatePerHr`
+    - `credentials`
+    - `tags`
+    - `isOnboarding`
+  - improves future onchain task fidelity so participant views receive complete rate context by default.
 
 ## 2026-03-18 — Civic Participant Browse Tasks Grouping (Accordion Instances)
 

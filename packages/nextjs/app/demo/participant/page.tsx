@@ -1661,7 +1661,7 @@ function TaskCard({
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: TEAL }}>{task.credits}</div>
-          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>CITYx</div>
+          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>{task.creditRatePerHr} CITYx/hr</div>
         </div>
       </div>
 
@@ -1965,6 +1965,28 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
         return {};
       }
     };
+    const parsePositiveNumber = (value: unknown): number | null => {
+      if (typeof value === "number" && Number.isFinite(value) && value > 0) return value;
+      if (typeof value === "string") {
+        const match = value.match(/\d+(\.\d+)?/);
+        if (!match) return null;
+        const parsed = Number(match[0]);
+        if (Number.isFinite(parsed) && parsed > 0) return parsed;
+      }
+      return null;
+    };
+    const parseEstimatedHours = (estimatedTime: string): number | null => {
+      const input = estimatedTime.toLowerCase();
+      const numericParts = input.match(/\d+(\.\d+)?/g)?.map(Number) ?? [];
+      if (numericParts.length === 0) return null;
+
+      const base =
+        input.includes("-") && numericParts.length >= 2 ? (numericParts[0] + numericParts[1]) / 2 : numericParts[0];
+      if (!Number.isFinite(base) || base <= 0) return null;
+
+      if (input.includes("min")) return base / 60;
+      return base;
+    };
 
     const syncOnchainTasks = async () => {
       try {
@@ -2047,17 +2069,29 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
               const metadata = parseMetadata(opp.metadataURI);
               const slots = opp.maxCompletions === 0n ? 9_999 : Number(opp.maxCompletions);
               const verified = Number(opp.verifiedCount ?? 0);
+              const credits = Math.floor(Number(formatUnits(opp.rewardCity, 18)));
+              const estimatedTime = metadata.estimatedTime || "TBD";
+              const directRate =
+                parsePositiveNumber((metadata as Record<string, unknown>).creditRatePerHr) ??
+                parsePositiveNumber((metadata as Record<string, unknown>).creditRate);
+              const derivedRateFromTime = (() => {
+                if (credits <= 0) return 0;
+                const hours = parseEstimatedHours(estimatedTime);
+                if (!hours) return null;
+                return Math.round((credits / hours) * 10) / 10;
+              })();
+              const normalizedRate = credits <= 0 ? 0 : (directRate ?? derivedRateFromTime ?? credits);
 
               return {
                 id: `task-${id.toString()}`,
                 title: metadata.title || `Opportunity #${id.toString()}`,
                 description: metadata.description || "Onchain issuer opportunity",
                 category: (metadata.category as TaskCategory) || "Community",
-                credits: Math.floor(Number(formatUnits(opp.rewardCity, 18))),
+                credits,
                 voteTokens: Math.floor(
                   Number(formatUnits(opp.rewardVote === 0n ? opp.rewardCity : opp.rewardVote, 18)),
                 ),
-                estimatedTime: metadata.estimatedTime || "TBD",
+                estimatedTime,
                 location: metadata.location || "TBD",
                 slots,
                 slotsRemaining: Math.max(0, slots - verified),
@@ -2071,7 +2105,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
                     : (metadata.category as TaskCategory) === "Onboarding" || opp.rewardCity === 0n,
                 taskDate: metadata.taskDate || "TBD",
                 successCriteria: metadata.successCriteria || "Complete and submit proof for verification.",
-                creditRatePerHr: metadata.creditRatePerHr || 0,
+                creditRatePerHr: normalizedRate,
                 credentials: metadata.credentials || "None",
                 claimedBy,
                 completionStatus,
@@ -2665,7 +2699,9 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
                     </div>
                     <div style={{ textAlign: "right", flexShrink: 0 }}>
                       <div style={{ fontSize: 16, fontWeight: 700, color: TEAL }}>{task.credits}</div>
-                      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>CITYx</div>
+                      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>
+                        {task.creditRatePerHr} CITYx/hr
+                      </div>
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>

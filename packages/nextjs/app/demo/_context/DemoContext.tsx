@@ -1405,6 +1405,12 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         taskDate: task.taskDate,
         location: task.location,
         category: task.category,
+        estimatedTime: task.estimatedTime,
+        successCriteria: task.successCriteria,
+        creditRatePerHr: task.creditRatePerHr,
+        credentials: task.credentials,
+        tags: task.tags,
+        isOnboarding: task.isOnboarding,
       });
 
       if (!address) {
