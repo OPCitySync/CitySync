@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 26)
+2026-03-17 (Session 27)
 
 ## Current Branch
 `main`
@@ -1206,3 +1206,18 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - design requirements for onboarding tasks (low complexity, clear verification, high accessibility)
   - lifecycle map from publish → claim/execute → completion check → activation
   - long-term role of onboarding templates in network consistency and readiness as scale increases.
+
+## 2026-03-17 — Task Verification Public Page (Including Delegated Evolution)
+
+- Added standalone verification explainer page:
+  - `packages/nextjs/app/demo/task-verification/page.tsx`
+- Content scope:
+  - verification design principles and assurance-level model
+  - outline of verification pathways (issuer attestation, evidence checklist, witness co-sign, check-in, QR/NFC, multi-signal, audits)
+  - lifecycle map from pre-issuance criteria through decision and integrity monitoring
+  - guardrails for common failure modes.
+- Added explicit evolution path:
+  - issuer-only verification (pilot baseline)
+  - delegated verifier model (issuer-scoped authority)
+  - task-based verification routing by task type/risk/assurance level
+  - delegation controls (scope + expiry, fast revocation, expanded audit requirements).
