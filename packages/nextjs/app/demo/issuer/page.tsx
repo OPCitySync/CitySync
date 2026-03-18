@@ -337,6 +337,8 @@ type TaskWriteStatus = {
   error?: string;
 };
 
+type VerifyDecision = "verify" | "reject";
+
 export default function IssuerApp() {
   const {
     state,
@@ -461,7 +463,19 @@ export default function IssuerApp() {
   const allTimeCredits = issuer.tasks.reduce((sum, t) => sum + t.credits, 0);
   const creditsCommitted = Math.max(0, allTimeCredits - epochCreditOffset);
 
-  const handleVerify = async (taskId: string, citizen: string) => {
+  const handleVerify = async (
+    taskId: string,
+    citizen: string,
+    options?: { decision?: VerifyDecision; feedback?: string },
+  ) => {
+    const decision = options?.decision ?? "verify";
+    const feedback = options?.feedback?.trim() ?? "";
+    if (decision === "reject" && feedback.length === 0) {
+      setVerifyWriteStatus({ state: "failed", error: "Feedback is required for Reject & Mint." });
+      setToast("Reject & Mint requires feedback.");
+      return;
+    }
+
     if (!address) {
       setVerifyWriteStatus({ state: "failed", error: "Session not ready. Finish sign-in and retry Verify & Mint." });
       if (!isAuthenticating) openAuthModal();
@@ -472,6 +486,25 @@ export default function IssuerApp() {
     setVerifyWriteStatus({ state: "pending" });
     const result = await issuerVerifyCompletion(taskId, citizen);
     if (result.ok) {
+      if (decision === "reject" && typeof window !== "undefined") {
+        try {
+          const key = "citysync:demo:participant:score-impact:v1";
+          const raw = window.localStorage.getItem(key);
+          const current = raw ? (JSON.parse(raw) as Array<Record<string, unknown>>) : [];
+          current.unshift({
+            participant: citizen.toLowerCase(),
+            taskId,
+            feedback,
+            decision: "reject_mint",
+            decidedAt: new Date().toISOString(),
+            issuer: address.toLowerCase(),
+          });
+          window.localStorage.setItem(key, JSON.stringify(current.slice(0, 250)));
+        } catch {
+          // Ignore score-impact persistence failures.
+        }
+        setToast("Rejected & Minted. Participant score impact recorded.");
+      }
       setVerifyWriteStatus({ state: "confirmed", hash: result.hash });
       return;
     }
@@ -3004,7 +3037,11 @@ function VerifyTab({
   onUnissueConfirm,
   onNoShowConfirm,
 }: {
-  onVerify: (taskId: string, citizen: string) => Promise<void>;
+  onVerify: (
+    taskId: string,
+    citizen: string,
+    options?: { decision?: VerifyDecision; feedback?: string },
+  ) => Promise<void>;
   onSetTaskActive: (taskId: string, active: boolean) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
   onUnissueTask: (taskId: string) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
   verifyWriteStatus: TaskWriteStatus;
@@ -3024,9 +3061,12 @@ function VerifyTab({
   const [completedItems, setCompletedItems] = useState<OnchainVerifyItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedClaimed, setExpandedClaimed] = useState<Record<string, boolean>>({});
-  const [confirmVerify, setConfirmVerify] = useState<{ taskId: string; claimant: `0x${string}`; title: string } | null>(
-    null,
-  );
+  const [confirmVerify, setConfirmVerify] = useState<{
+    taskId: string;
+    claimant: `0x${string}`;
+    title: string;
+    decision: VerifyDecision;
+  } | null>(null);
 
   useEffect(() => {
     if (!address) {
@@ -3494,7 +3534,7 @@ function VerifyTab({
                       : "rgba(65,105,225,0.08)",
               }}
             >
-              <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Verify & Mint Write</div>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Verify / Reject & Mint Write</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
                 {verifyWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
                 {verifyWriteStatus.state === "confirmed" && "Confirmed onchain"}
@@ -3581,26 +3621,60 @@ function VerifyTab({
                       </span>
                     </div>
 
-                    <button
-                      onClick={async () => {
-                        if (!task.claimant) return;
-                        setConfirmVerify({ taskId: task.taskId, claimant: task.claimant, title: task.title });
-                      }}
-                      disabled={!task.claimant}
-                      style={{
-                        width: "100%",
-                        background: task.claimant ? ACCENT : "rgba(255,255,255,0.1)",
-                        border: "none",
-                        borderRadius: 12,
-                        padding: "11px 0",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        color: task.claimant ? BG : MUTED,
-                        cursor: task.claimant ? "pointer" : "not-allowed",
-                      }}
-                    >
-                      Verify & Mint Credits
-                    </button>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        onClick={async () => {
+                          if (!task.claimant) return;
+                          setConfirmVerify({
+                            taskId: task.taskId,
+                            claimant: task.claimant,
+                            title: task.title,
+                            decision: "verify",
+                          });
+                        }}
+                        disabled={!task.claimant}
+                        style={{
+                          flex: 1,
+                          background: task.claimant ? ACCENT : "rgba(255,255,255,0.1)",
+                          border: "none",
+                          borderRadius: 12,
+                          padding: "11px 0",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: task.claimant ? BG : MUTED,
+                          cursor: task.claimant ? "pointer" : "not-allowed",
+                        }}
+                      >
+                        Verify & Mint
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!task.claimant) return;
+                          setConfirmVerify({
+                            taskId: task.taskId,
+                            claimant: task.claimant,
+                            title: task.title,
+                            decision: "reject",
+                          });
+                        }}
+                        disabled={!task.claimant}
+                        style={{
+                          flex: 1,
+                          background: task.claimant ? "rgba(255,107,157,0.18)" : "rgba(255,255,255,0.1)",
+                          border: task.claimant
+                            ? "1px solid rgba(255,107,157,0.45)"
+                            : "1px solid rgba(255,255,255,0.08)",
+                          borderRadius: 12,
+                          padding: "11px 0",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: task.claimant ? "#ff6b9d" : MUTED,
+                          cursor: task.claimant ? "pointer" : "not-allowed",
+                        }}
+                      >
+                        Reject & Mint
+                      </button>
+                    </div>
                   </div>
                 );
               })}
@@ -3611,96 +3685,141 @@ function VerifyTab({
 
       {confirmVerify && (
         <>
-          <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
-          <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-            {/* backdrop */}
-            <div
-              onClick={() => setConfirmVerify(null)}
-              style={{
-                position: "absolute",
-                inset: 0,
-                bottom: 69,
-                background: "rgba(0,0,0,0.55)",
-                pointerEvents: "auto",
-              }}
-            />
-            {/* sheet */}
-            <div
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                bottom: 69,
-                zIndex: 1,
-                background: "#1E1E2C",
-                borderRadius: "24px 24px 0 0",
-                boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
-                padding: "20px 20px 24px",
-                animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-                pointerEvents: "auto",
-              }}
-            >
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Confirm Verify & Mint</div>
-              <div style={{ fontSize: 12, color: MUTED, marginBottom: 10 }}>{confirmVerify.title}</div>
-              <textarea
-                placeholder="Optional feedback on task execution…"
-                value={feedbackMap[confirmVerify.taskId] ?? ""}
-                onChange={e => setFeedbackMap(prev => ({ ...prev, [confirmVerify.taskId]: e.target.value }))}
-                rows={3}
-                style={{
-                  width: "100%",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: 10,
-                  color: "#fff",
-                  fontSize: 12,
-                  padding: "8px 12px",
-                  outline: "none",
-                  resize: "none",
-                  boxSizing: "border-box",
-                  marginBottom: 12,
-                  lineHeight: 1.5,
-                }}
-              />
-              <div style={{ display: "flex", gap: 8 }}>
-                <button
-                  onClick={() => setConfirmVerify(null)}
-                  style={{
-                    flex: 1,
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    borderRadius: 10,
-                    padding: "10px 0",
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: MUTED,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={async () => {
-                    await onVerify(confirmVerify.taskId, confirmVerify.claimant);
-                    setConfirmVerify(null);
-                  }}
-                  style={{
-                    flex: 1,
-                    background: ACCENT,
-                    border: "none",
-                    borderRadius: 10,
-                    padding: "10px 0",
-                    fontSize: 12,
-                    fontWeight: 700,
-                    color: BG,
-                    cursor: "pointer",
-                  }}
-                >
-                  Confirm Verify & Mint
-                </button>
-              </div>
-            </div>
-          </div>
+          {(() => {
+            const feedbackValue = feedbackMap[confirmVerify.taskId] ?? "";
+            const needsFeedback = confirmVerify.decision === "reject";
+            const canConfirm = !needsFeedback || feedbackValue.trim().length > 0;
+            return (
+              <>
+                <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
+                <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+                  {/* backdrop */}
+                  <div
+                    onClick={() => setConfirmVerify(null)}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      bottom: 69,
+                      background: "rgba(0,0,0,0.55)",
+                      pointerEvents: "auto",
+                    }}
+                  />
+                  {/* sheet */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: 0,
+                      right: 0,
+                      bottom: 69,
+                      zIndex: 1,
+                      background: "#1E1E2C",
+                      borderRadius: "24px 24px 0 0",
+                      boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+                      padding: "20px 20px 24px",
+                      animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
+                      pointerEvents: "auto",
+                    }}
+                  >
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 8 }}>
+                      {confirmVerify.decision === "reject" ? "Confirm Reject & Mint" : "Confirm Verify & Mint"}
+                    </div>
+                    <div style={{ fontSize: 12, color: MUTED, marginBottom: 10 }}>{confirmVerify.title}</div>
+                    {confirmVerify.decision === "reject" && (
+                      <div
+                        style={{
+                          background: "rgba(255,107,157,0.1)",
+                          border: "1px solid rgba(255,107,157,0.3)",
+                          borderRadius: 10,
+                          padding: "8px 10px",
+                          fontSize: 11,
+                          color: "rgba(255,255,255,0.85)",
+                          marginBottom: 10,
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        Reject & Mint will still mint and distribute CITY/VOTE, and it will impact this Civic
+                        Participant&apos;s score.
+                      </div>
+                    )}
+                    <textarea
+                      placeholder={
+                        confirmVerify.decision === "reject"
+                          ? "Required: explain why this completion was rejected…"
+                          : "Optional feedback on task execution…"
+                      }
+                      value={feedbackMap[confirmVerify.taskId] ?? ""}
+                      onChange={e => setFeedbackMap(prev => ({ ...prev, [confirmVerify.taskId]: e.target.value }))}
+                      rows={3}
+                      style={{
+                        width: "100%",
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                        borderRadius: 10,
+                        color: "#fff",
+                        fontSize: 12,
+                        padding: "8px 12px",
+                        outline: "none",
+                        resize: "none",
+                        boxSizing: "border-box",
+                        marginBottom: 12,
+                        lineHeight: 1.5,
+                      }}
+                    />
+                    {confirmVerify.decision === "reject" && !canConfirm && (
+                      <div style={{ fontSize: 11, color: "#ff6b9d", marginBottom: 10 }}>Feedback is required.</div>
+                    )}
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        onClick={() => setConfirmVerify(null)}
+                        style={{
+                          flex: 1,
+                          background: "rgba(255,255,255,0.06)",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          borderRadius: 10,
+                          padding: "10px 0",
+                          fontSize: 12,
+                          fontWeight: 600,
+                          color: MUTED,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (confirmVerify.decision === "reject" && !canConfirm) return;
+                          await onVerify(confirmVerify.taskId, confirmVerify.claimant, {
+                            decision: confirmVerify.decision,
+                            feedback: feedbackValue.trim(),
+                          });
+                          setConfirmVerify(null);
+                        }}
+                        style={{
+                          flex: 1,
+                          background:
+                            confirmVerify.decision === "reject"
+                              ? canConfirm
+                                ? "#ff6b9d"
+                                : "rgba(255,255,255,0.08)"
+                              : ACCENT,
+                          border: confirmVerify.decision === "reject" ? "1px solid rgba(255,107,157,0.35)" : "none",
+                          borderRadius: 10,
+                          padding: "10px 0",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: confirmVerify.decision === "reject" ? (canConfirm ? "#fff" : MUTED) : BG,
+                          cursor: canConfirm ? "pointer" : "not-allowed",
+                        }}
+                        disabled={!canConfirm}
+                      >
+                        {confirmVerify.decision === "reject" ? "Confirm Reject & Mint" : "Confirm Verify & Mint"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            );
+          })()}
         </>
       )}
     </div>

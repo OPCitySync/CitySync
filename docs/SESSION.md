@@ -1449,3 +1449,17 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
     - offering name locked
     - stipulations/notes locked
     - MCE event selection locked for MCE offerings.
+
+## 2026-03-18 — Issuer Verify Tab: Reject & Mint Flow
+
+- Updated `Issuer > Verify > Completed` task cards to include a second action:
+  - `Reject & Mint` next to `Verify & Mint`.
+- Both actions now share the same onchain verification/mint path (`verifyCompletion`) so reward mint/distribution behavior remains unchanged.
+- Added decision-aware confirmation sheet:
+  - `Verify & Mint`: feedback optional
+  - `Reject & Mint`: explicit warning that participant score is impacted, and feedback is required before confirm is enabled.
+- Updated verify status box label to reflect both actions:
+  - `Last Verify / Reject & Mint Write`.
+- Added local score-impact audit logging for reject decisions:
+  - stores `participant`, `taskId`, `feedback`, `issuer`, `decidedAt`, `decision` in
+    `localStorage` key `citysync:demo:participant:score-impact:v1`.
