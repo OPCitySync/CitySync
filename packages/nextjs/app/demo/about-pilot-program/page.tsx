@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import path from "node:path";
 
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
   description: "Direct text of the official City/Sync Pilot Deployment framework document.",
 };
 
-const pilotProgramText = readFileSync(new URL("./pilot-program.txt", import.meta.url), "utf8").trim();
+const pilotProgramPath = path.join(process.cwd(), "app/demo/about-pilot-program/pilot-program.txt");
+const pilotProgramText = readFileSync(pilotProgramPath, "utf8").trim();
 
 const pageStyle: React.CSSProperties = {
   minHeight: "100vh",
