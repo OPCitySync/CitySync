@@ -64,7 +64,7 @@ const parsePilotBlocks = (rawText: string): PilotBlock[] => {
   const normalized = normalizePilotText(rawText);
   const lines = normalized.split("\n");
 
-  if (lines[0]?.trim() === "The City/Sync Pilot Framework") {
+  if (["The City/Sync Pilot Framework", "The City/Sync Pilot Program"].includes(lines[0]?.trim() ?? "")) {
     lines.shift();
   }
 
@@ -248,7 +248,7 @@ export default function AboutPilotProgramPage() {
 
         <section style={heroCard}>
           <div style={chipStyle}>About the Pilot Program</div>
-          <h1 style={h1Style}>The City/Sync Pilot Framework</h1>
+          <h1 style={h1Style}>The City/Sync Pilot Program</h1>
         </section>
 
         {pilotSections.map((section, sectionIndex) => (
