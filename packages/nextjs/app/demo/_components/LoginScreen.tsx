@@ -1,12 +1,23 @@
 "use client";
 
-import { useAuthModal, useSignerStatus } from "@account-kit/react";
+import { useAuthModal, useLogout, useSignerStatus } from "@account-kit/react";
 import Image from "next/image";
 import Link from "next/link";
 
 export function LoginScreen() {
   const { openAuthModal } = useAuthModal();
+  const { logout } = useLogout();
   const { isAuthenticating, error } = useSignerStatus();
+
+  const resetSignInState = async () => {
+    try {
+      await logout();
+    } catch {
+      // best effort: if logout throws, we still force a clean reload
+    } finally {
+      window.location.reload();
+    }
+  };
 
   return (
     <div
@@ -89,7 +100,6 @@ export function LoginScreen() {
 
         <button
           onClick={openAuthModal}
-          disabled={isAuthenticating}
           style={{
             width: "100%",
             padding: "14px 0",
@@ -99,7 +109,7 @@ export function LoginScreen() {
             fontSize: 15,
             fontWeight: 700,
             border: "none",
-            cursor: isAuthenticating ? "not-allowed" : "pointer",
+            cursor: "pointer",
             transition: "opacity 0.15s",
           }}
         >
@@ -121,6 +131,22 @@ export function LoginScreen() {
             Auth error: {error.message}
           </p>
         ) : null}
+        {(isAuthenticating || error?.message) && (
+          <button
+            onClick={resetSignInState}
+            style={{
+              marginTop: 10,
+              fontSize: 11,
+              color: "rgba(255,255,255,0.75)",
+              background: "transparent",
+              border: "none",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
+            Reset sign-in state
+          </button>
+        )}
       </div>
 
       {/* Footer */}

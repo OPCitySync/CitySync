@@ -16,7 +16,7 @@ export const accountKitConfig = createConfig(
   {
     auth: {
       sections: [
-        [{ type: "email" as const, emailMode: "otp" as const }],
+        [{ type: "email" as const }],
         [
           { type: "passkey" as const },
           { type: "social" as const, authProviderId: "google" as const, mode: "popup" as const },
