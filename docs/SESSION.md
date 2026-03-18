@@ -12,10 +12,28 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 33)
+2026-03-17 (Session 34)
 
 ## Current Branch
 `main`
+
+## 2026-03-17 — The City/Sync Framework Deep-Dive Page (Unlinked)
+
+- Added standalone framework explainer page:
+  - `packages/nextjs/app/demo/citysync-framework/page.tsx`
+- Page purpose:
+  - explain the pilot as a procedural artifact that validates the City/Sync base mechanism
+  - connect pilot validation to the longer-term framework trajectory
+  - describe how local pilots can scale into interoperable local chains and dPAN expansion
+- Content emphasis:
+  - procedural validation of role infra, task lifecycle, governance signaling, and shared onchain transparency
+  - transition path from single-city pilot to multi-city replication
+  - detailed, aspirational section on post-pilot buildout:
+    - dPAN app libraries
+    - local chain deployment kits
+    - civic model marketplaces
+    - portable civic identity rails
+    - decentralized public administration as an exportable framework
 
 ## Session 19 Summary (2026-03-14)
 
