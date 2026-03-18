@@ -1554,3 +1554,13 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - `packages/nextjs/app/demo/_components/AppShell.tsx`
 - Preserved right-side activity panel behavior:
   - Issuer/Redeemer/Civic Participant onchain activity panels remain unchanged on the right side.
+
+## 2026-03-18 — Left Panel Visibility Fix
+
+- Fixed regression where the new two-column left context area could render off-screen on typical laptop widths.
+- Updated positioning math in shared shell:
+  - switched from fixed `right + width` placement to responsive `left + width` constraints
+  - width now clamps to available space left of the phone container.
+- Relaxed visibility breakpoint from `xl` to `lg` so side context columns appear reliably on desktop/laptop layouts.
+- Updated file:
+  - `packages/nextjs/app/demo/_components/AppShell.tsx`
