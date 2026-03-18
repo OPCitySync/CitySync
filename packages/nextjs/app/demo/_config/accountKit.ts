@@ -1,9 +1,13 @@
 import { cookieStorage, createConfig } from "@account-kit/react";
 import { alchemy, baseSepolia } from "@account-kit/infra";
+import { DEFAULT_ALCHEMY_API_KEY } from "../../../scaffold.config";
+
+// Use a demo-scoped key first so auth remains available even if the main app key is throttled.
+const demoAlchemyApiKey = process.env.NEXT_PUBLIC_DEMO_ALCHEMY_API_KEY?.trim() || DEFAULT_ALCHEMY_API_KEY;
 
 export const accountKitConfig = createConfig(
   {
-    transport: alchemy({ apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY! }),
+    transport: alchemy({ apiKey: demoAlchemyApiKey }),
     chain: baseSepolia,
     ssr: true,
     storage: cookieStorage,
