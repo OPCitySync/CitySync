@@ -134,11 +134,11 @@ export default function TaskVerificationPage() {
 
         <section style={heroCard}>
           <div style={chipStyle}>Task Verification</div>
-          <h1 style={h1Style}>How Completion Can Be Verified</h1>
+          <h1 style={h1Style}>How Tasks are Verified</h1>
           <p style={{ ...pStyle, marginTop: 14, fontSize: 16 }}>
-            Verification is the trust layer between task execution and reward distribution. City/Sync can support
-            multiple verification pathways depending on task risk, complexity, and operational capacity, while keeping
-            the final verification decision accountable to issuer governance.
+            Verification is the trust layer between task execution and reward distribution. The City/Sync framework can
+            support multiple verification pathways depending on task complexity and operational capacity, while keeping
+            the final verification decision accountable to Issuer governance.
           </p>
           <div style={{ marginTop: 14, display: "flex", gap: 8, flexWrap: "wrap" }}>
             <span style={{ ...chipStyle, marginBottom: 0, borderColor: "rgba(52,238,182,0.4)", color: "#34eeb6" }}>
