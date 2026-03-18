@@ -499,9 +499,9 @@ export default function IssuerApp() {
         feedback,
       });
       if (decision === "reject" && scoreResult) {
-        setToast(`Rejected & Minted. DB ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
+        setToast(`Rejected & Minted. RD ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
       } else if (decision === "verify" && scoreResult) {
-        setToast(`Verified & Minted. DB ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
+        setToast(`Verified & Minted. RD ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
       }
       setVerifyWriteStatus({ state: "confirmed", hash: result.hash });
       return;
@@ -817,7 +817,7 @@ export default function IssuerApp() {
                   issuerAddress: address,
                 });
                 if (scoreResult) {
-                  setToast(`No-Show recorded. DB ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
+                  setToast(`No-Show recorded. RD ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
                 }
               }
               setNoShowConfirmItem(null);
@@ -1471,7 +1471,7 @@ function IssuerDashboardTab({
       </div>
 
       <div style={{ ...surfaceCard }}>
-        <SectionLabel text="Participant Risk Signals (DB/RS)" accentColor={"#ff6b9d"} />
+        <SectionLabel text="Participant Risk Signals (RD/RS)" accentColor={"#ff6b9d"} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Participants Tracked</div>
@@ -1517,7 +1517,7 @@ function IssuerDashboardTab({
                   </div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>DB {snapshot.db.toFixed(1)}</div>
+                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>RD {snapshot.db.toFixed(1)}</div>
                   <div style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>RS {snapshot.rs.toFixed(1)}</div>
                 </div>
               </div>

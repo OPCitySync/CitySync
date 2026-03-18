@@ -1568,10 +1568,10 @@ function ProfileTab({
           </div>
 
           <div style={{ ...card, marginBottom: 12 }}>
-            <SectionLabel text="DB / RS Status" accentColor={tierColor} />
+            <SectionLabel text="RD / RS Status" accentColor={tierColor} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 10 }}>
               <div style={miniMetricCardStyle}>
-                <div style={miniMetricLabelStyle}>DB</div>
+                <div style={miniMetricLabelStyle}>RD</div>
                 <div style={{ ...miniMetricValueStyle, color: tierColor }}>{scoreSnapshot.db.toFixed(1)}</div>
               </div>
               <div style={miniMetricCardStyle}>
@@ -1595,7 +1595,7 @@ function ProfileTab({
             >
               <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Sanctions Summary</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.55 }}>
-                Verify & Mint improves score (RS +0.5, DB -0.5). Reject & Mint (RS -1.5, DB +2) and No-Show (RS -1, DB
+                Verify & Mint improves score (RS +0.5, RD -0.5). Reject & Mint (RS -1.5, RD +2) and No-Show (RS -1, RD
                 +1) increase restrictions. Current policy: {sanctionsPolicy.summary}
               </div>
               <a
