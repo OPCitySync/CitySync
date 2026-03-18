@@ -356,7 +356,10 @@ function ClaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConfir
         <div
           style={{
             position: "absolute",
-            top: 0, left: 0, right: 0, bottom: 69,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 69,
             background: "rgba(0,0,0,0.45)",
             pointerEvents: "auto",
           }}
@@ -438,7 +441,15 @@ function ClaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConfir
 
 // ─── Unclaim Confirmation Sheet ────────────────────────────────────────────────
 
-function UnclaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConfirm: () => void; onCancel: () => void }) {
+function UnclaimConfirmSheet({
+  task,
+  onConfirm,
+  onCancel,
+}: {
+  task: Task;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
   return (
     <>
       <style>{`
@@ -454,7 +465,10 @@ function UnclaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConf
         <div
           style={{
             position: "absolute",
-            top: 0, left: 0, right: 0, bottom: 69,
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 69,
             background: "rgba(0,0,0,0.45)",
             pointerEvents: "auto",
           }}
@@ -490,7 +504,8 @@ function UnclaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConf
               Unclaim &quot;{task.title}&quot;?
             </div>
             <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
-              If you are unclaiming close to the date of task execution, please message the Issuer Organization directly.
+              If you are unclaiming close to the date of task execution, please message the Issuer Organization
+              directly.
             </div>
           </div>
 
@@ -564,7 +579,10 @@ function ExecuteModal({ task, onConfirm, onClose }: { task: Task; onConfirm: () 
         onClick={e => e.stopPropagation()}
         style={{
           position: "fixed",
-          top: 112, left: 0, right: 0, bottom: 69,
+          top: 112,
+          left: 0,
+          right: 0,
+          bottom: 69,
           zIndex: 221,
           background: "#14172e",
           borderRadius: "12px 12px 0 0",
@@ -588,7 +606,13 @@ function ExecuteModal({ task, onConfirm, onClose }: { task: Task; onConfirm: () 
           <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Submit for Verification</span>
           <button
             onClick={onClose}
-            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 4 }}
+            style={{
+              background: "none",
+              border: "none",
+              color: "rgba(255,255,255,0.4)",
+              cursor: "pointer",
+              padding: 4,
+            }}
           >
             <IconXSmall size={18} />
           </button>
@@ -904,7 +928,7 @@ function RedeemModal({
               borderRadius: 12,
               fontWeight: 700,
               fontSize: 15,
-              cursor: (pending || confirmed) ? "not-allowed" : "pointer",
+              cursor: pending || confirmed ? "not-allowed" : "pointer",
               opacity: pending ? 0.8 : 1,
               transition: "background 0.3s ease",
             }}
@@ -1029,7 +1053,7 @@ function ProfileTab({
     } catch {
       // Ignore hydration failures.
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nameStorageKey]);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1086,7 +1110,11 @@ function ProfileTab({
     const trimmed = nameInput.trim();
     if (trimmed) {
       setCitizenName(trimmed);
-      try { window.localStorage.setItem(nameStorageKey, trimmed); } catch { /* ignore */ }
+      try {
+        window.localStorage.setItem(nameStorageKey, trimmed);
+      } catch {
+        /* ignore */
+      }
     }
     setEditing(false);
   };
@@ -1831,6 +1859,11 @@ function TaskCard({
 
 function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey) => void }) {
   type OnchainTask = Task & { claimedBy?: `0x${string}`; completionStatus?: number };
+  type BrowseTaskGroup = {
+    key: string;
+    representative: OnchainTask;
+    instances: OnchainTask[];
+  };
   const { state, claimTask, unclaimTask, startVerify } = useDemo();
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [view, setView] = useState<"browse" | "claimed">("browse");
@@ -1853,6 +1886,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
   }>({ state: "idle" });
   const [claimConfirmTask, setClaimConfirmTask] = useState<Task | null>(null);
   const [unclaimConfirmTask, setUnclaimConfirmTask] = useState<Task | null>(null);
+  const [expandedTaskGroups, setExpandedTaskGroups] = useState<Record<string, boolean>>({});
   const [claimNotice, setClaimNotice] = useState<{ message: string; type: "info" | "warn" } | null>(null);
 
   useEffect(() => {
@@ -2106,6 +2140,30 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
     }
     return sorted;
   }, [filteredOpenTasks]);
+  const groupedBrowseTasks = React.useMemo<BrowseTaskGroup[]>(() => {
+    const groups = new Map<string, BrowseTaskGroup>();
+    const makeGroupKey = (task: OnchainTask) =>
+      [
+        task.isOnboarding ? "onboarding" : "standard",
+        task.title.trim().toLowerCase(),
+        task.issuerId?.toLowerCase?.() ?? task.issuerName.trim().toLowerCase(),
+        String(task.credits),
+        String(task.voteTokens),
+        String(task.creditRatePerHr),
+        task.category,
+      ].join("|");
+
+    for (const task of sortedOpenTasks) {
+      const key = makeGroupKey(task);
+      const existing = groups.get(key);
+      if (existing) {
+        existing.instances.push(task);
+      } else {
+        groups.set(key, { key, representative: task, instances: [task] });
+      }
+    }
+    return Array.from(groups.values());
+  }, [sortedOpenTasks]);
   const myTasksRaw = React.useMemo(
     () =>
       onchainTasks.filter(
@@ -2179,6 +2237,16 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
       return prev.filter(id => myClaimed.has(id));
     });
   }, [addressLower, onchainTasks]);
+
+  useEffect(() => {
+    if (view !== "browse") return;
+    const validKeys = new Set(groupedBrowseTasks.map(group => group.key));
+    setExpandedTaskGroups(prev => {
+      const next = Object.fromEntries(Object.entries(prev).filter(([key]) => validKeys.has(key)));
+      if (Object.keys(next).length === Object.keys(prev).length) return prev;
+      return next;
+    });
+  }, [groupedBrowseTasks, view]);
 
   const handleClaim = async (task: Task) => {
     setClaimConfirmTask(task);
@@ -2422,10 +2490,8 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
             borderRadius: 12,
             marginBottom: 12,
             position: "relative",
-            border:
-              claimNotice.type === "warn" ? "1px solid rgba(255,198,77,0.4)" : "1px solid rgba(52,238,182,0.35)",
-            background:
-              claimNotice.type === "warn" ? "rgba(255,198,77,0.08)" : "rgba(52,238,182,0.08)",
+            border: claimNotice.type === "warn" ? "1px solid rgba(255,198,77,0.4)" : "1px solid rgba(52,238,182,0.35)",
+            background: claimNotice.type === "warn" ? "rgba(255,198,77,0.08)" : "rgba(52,238,182,0.08)",
             padding: "12px 36px 12px 14px",
           }}
         >
@@ -2519,22 +2585,119 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
 
       {/* Task list */}
       {view === "browse" ? (
-        filteredOpenTasks.length === 0 ? (
+        groupedBrowseTasks.length === 0 ? (
           <div style={{ textAlign: "center", padding: "48px 0", color: "rgba(255,255,255,0.3)", fontSize: 14 }}>
             No tasks in this category
           </div>
         ) : (
-          sortedOpenTasks.map(task => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              isClaimed={myTaskIds.has(task.id)}
-              locked={!isOnboarded && !task.isOnboarding}
-              showClaimButton
-              onClaim={() => handleClaim(task)}
-              onExecute={() => setExecuteTask(task)}
-            />
-          ))
+          groupedBrowseTasks.map(group => {
+            const task = group.representative;
+            const isExpanded = !!expandedTaskGroups[group.key];
+            const catColor = CAT_COLORS[task.category] ?? "#666";
+            return (
+              <div
+                key={group.key}
+                style={{
+                  ...card,
+                  marginBottom: 10,
+                  borderLeft: task.isMCE ? "3px solid rgba(221,158,51,0.45)" : "3px solid rgba(52,238,182,0.45)",
+                  paddingLeft: 13,
+                }}
+              >
+                <button
+                  onClick={() =>
+                    setExpandedTaskGroups(prev => ({
+                      ...prev,
+                      [group.key]: !prev[group.key],
+                    }))
+                  }
+                  style={{
+                    width: "100%",
+                    background: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    textAlign: "left",
+                    padding: 0,
+                    color: "inherit",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "space-between",
+                      marginBottom: 8,
+                      gap: 10,
+                    }}
+                  >
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 5, flexWrap: "wrap" }}>
+                        <span
+                          style={{
+                            fontSize: 11,
+                            fontWeight: 700,
+                            padding: "2px 8px",
+                            borderRadius: 20,
+                            background: `${catColor}22`,
+                            color: catColor,
+                            border: `1px solid ${catColor}44`,
+                          }}
+                        >
+                          {task.category}
+                        </span>
+                        {task.isMCE && (
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 700,
+                              padding: "2px 8px",
+                              borderRadius: 20,
+                              background: "rgba(221,158,51,0.15)",
+                              color: GOLD,
+                              border: "1px solid rgba(221,158,51,0.3)",
+                            }}
+                          >
+                            MCE
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.3 }}>{task.title}</div>
+                    </div>
+                    <div style={{ textAlign: "right", flexShrink: 0 }}>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: TEAL }}>{task.credits}</div>
+                      <div style={{ fontSize: 10, color: "rgba(255,255,255,0.4)" }}>CITYx</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.55)" }}>🏢 {task.issuerName}</span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>⏱ {task.estimatedTime}</span>
+                    <span style={{ fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
+                      {group.instances.length} open instance{group.instances.length === 1 ? "" : "s"}
+                    </span>
+                    <span style={{ fontSize: 12, color: ACCENT }}>
+                      {isExpanded ? "Hide instances ▲" : "Show instances ▼"}
+                    </span>
+                  </div>
+                </button>
+
+                {isExpanded && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 2 }}>
+                    {group.instances.map(instance => (
+                      <TaskCard
+                        key={instance.id}
+                        task={instance}
+                        isClaimed={myTaskIds.has(instance.id)}
+                        locked={!isOnboarded && !instance.isOnboarding}
+                        showClaimButton
+                        onClaim={() => handleClaim(instance)}
+                        onExecute={() => setExecuteTask(instance)}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })
         )
       ) : myTasks.length === 0 ? (
         <div style={{ textAlign: "center", padding: "48px 0" }}>
@@ -3111,7 +3274,6 @@ function VoteTab({ onLearnMore: _onLearnMore }: { onLearnMore?: (key: Participan
           })}
         </>
       )}
-
     </div>
   );
 }

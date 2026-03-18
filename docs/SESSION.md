@@ -12,10 +12,27 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-18 (Session 38)
+2026-03-18 (Session 39)
 
 ## Current Branch
 `main`
+
+## 2026-03-18 — Civic Participant Browse Tasks Grouping (Accordion Instances)
+
+- Updated browse experience in:
+  - `packages/nextjs/app/demo/participant/page.tsx`
+- UX change:
+  - open tasks are grouped by task type in Browse Tasks to reduce repeated-card clutter
+  - each group card now displays:
+    - task summary
+    - issuer
+    - per-group open instance count
+    - expand/collapse affordance
+  - individual task instances render only when a group is expanded
+- Behavior details:
+  - groups are collapsed by default
+  - onboarding stays naturally prioritized via existing upstream task ordering logic
+  - claim flow remains unchanged; claims still execute on individual task instances when expanded.
 
 ## 2026-03-18 — Issuer Slot Issuance Budget Guard (UI + Preflight)
 
