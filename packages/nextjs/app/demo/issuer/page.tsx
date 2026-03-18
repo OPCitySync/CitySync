@@ -364,7 +364,9 @@ export default function IssuerApp() {
   const [toast, setToast] = useState<string | null>(null);
   const [taskWriteStatus, setTaskWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [verifyWriteStatus, setVerifyWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
+  const [unissueWriteStatus, setUnissueWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
+  const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
@@ -622,14 +624,17 @@ export default function IssuerApp() {
 
   const handleUnissueTask = React.useCallback(
     async (taskId: string) => {
-      setTaskWriteStatus({ state: "pending" });
+      setUnissueWriteStatus({ state: "pending" });
+      setOptimisticHiddenVerifyTaskIds(prev => (prev.includes(taskId) ? prev : [...prev, taskId]));
       const result = await issuerSetTaskActive(taskId, false);
       if (!result.ok) {
-        setTaskWriteStatus({ state: "failed", error: result.error ?? "Unissue failed." });
-        return;
+        setOptimisticHiddenVerifyTaskIds(prev => prev.filter(id => id !== taskId));
+        setUnissueWriteStatus({ state: "failed", error: result.error ?? "Unissue failed." });
+        return result;
       }
       dispatch({ type: "ISSUER_REMOVE_TASK", taskId });
-      setTaskWriteStatus({ state: "confirmed", hash: result.hash });
+      setUnissueWriteStatus({ state: "confirmed", hash: result.hash });
+      return result;
     },
     [issuerSetTaskActive, dispatch],
   );
@@ -700,6 +705,9 @@ export default function IssuerApp() {
             onUnissueTask={handleUnissueTask}
             verifyWriteStatus={verifyWriteStatus}
             onDismissVerifyWrite={() => setVerifyWriteStatus({ state: "idle" })}
+            unissueWriteStatus={unissueWriteStatus}
+            onDismissUnissueWrite={() => setUnissueWriteStatus({ state: "idle" })}
+            hiddenTaskIds={optimisticHiddenVerifyTaskIds}
             onLearnMore={openLearnMore}
             onUnissueConfirm={setUnissueConfirmId}
             onNoShowConfirm={setNoShowConfirmItem}
@@ -3020,15 +3028,21 @@ function VerifyTab({
   onUnissueTask: _onUnissueTask,
   verifyWriteStatus,
   onDismissVerifyWrite,
+  unissueWriteStatus,
+  onDismissUnissueWrite,
+  hiddenTaskIds,
   onLearnMore,
   onUnissueConfirm,
   onNoShowConfirm,
 }: {
   onVerify: (taskId: string, citizen: string) => Promise<void>;
   onSetTaskActive: (taskId: string, active: boolean) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
-  onUnissueTask: (taskId: string) => Promise<void>;
+  onUnissueTask: (taskId: string) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
   verifyWriteStatus: TaskWriteStatus;
   onDismissVerifyWrite: () => void;
+  unissueWriteStatus: TaskWriteStatus;
+  onDismissUnissueWrite: () => void;
+  hiddenTaskIds: string[];
   onLearnMore: (key: IssuerLearnCardKey) => void;
   onUnissueConfirm: (taskId: string) => void;
   onNoShowConfirm: (item: { taskId: string; claimant: `0x${string}`; title: string }) => void;
@@ -3179,10 +3193,21 @@ function VerifyTab({
     };
   }, [address]);
 
+  const hiddenTaskIdSet = new Set(hiddenTaskIds);
+  const claimedOrCompletedIdSet = new Set([
+    ...claimedItems.map(item => item.taskId),
+    ...completedItems.map(item => item.taskId),
+  ]);
+  const visibleIssuedItems = issuedItems.filter(
+    item => !hiddenTaskIdSet.has(item.taskId) && !claimedOrCompletedIdSet.has(item.taskId),
+  );
+  const visibleClaimedItems = claimedItems.filter(item => !hiddenTaskIdSet.has(item.taskId));
+  const visibleCompletedItems = completedItems.filter(item => !hiddenTaskIdSet.has(item.taskId));
+
   const TOGGLE_OPTIONS = [
-    { key: "issued", label: `Issued (${issuedItems.length})` },
-    { key: "claimed", label: `Claimed (${claimedItems.length})` },
-    { key: "completed", label: `Completed (${completedItems.length})` },
+    { key: "issued", label: `Issued (${visibleIssuedItems.length})` },
+    { key: "claimed", label: `Claimed (${visibleClaimedItems.length})` },
+    { key: "completed", label: `Completed (${visibleCompletedItems.length})` },
   ] as const;
 
   return (
@@ -3223,11 +3248,72 @@ function VerifyTab({
       </div>
 
       {loading && <div style={{ fontSize: 11, color: MUTED, marginBottom: 10 }}>Syncing onchain issuer tasks...</div>}
+      {unissueWriteStatus.state !== "idle" && (
+        <div
+          style={{
+            ...surfaceCard,
+            position: "relative",
+            marginBottom: 12,
+            border:
+              unissueWriteStatus.state === "confirmed"
+                ? "1px solid rgba(221,158,51,0.35)"
+                : unissueWriteStatus.state === "failed"
+                  ? "1px solid rgba(255,107,157,0.35)"
+                  : "1px solid rgba(65,105,225,0.35)",
+            background:
+              unissueWriteStatus.state === "confirmed"
+                ? "rgba(221,158,51,0.08)"
+                : unissueWriteStatus.state === "failed"
+                  ? "rgba(255,107,157,0.08)"
+                  : "rgba(65,105,225,0.08)",
+          }}
+        >
+          <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Unissue Task Write</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+            {unissueWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
+            {unissueWriteStatus.state === "confirmed" && "Confirmed onchain"}
+            {unissueWriteStatus.state === "failed" && "Failed onchain"}
+          </div>
+          {unissueWriteStatus.error && (
+            <div style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", lineHeight: 1.4 }}>
+              {unissueWriteStatus.error}
+            </div>
+          )}
+          {unissueWriteStatus.hash && (
+            <a
+              href={`https://sepolia.basescan.org/tx/${unissueWriteStatus.hash}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{ display: "inline-block", marginTop: 6, fontSize: 12, color: ACCENT, textDecoration: "none" }}
+            >
+              View on Base Sepolia Explorer ↗
+            </a>
+          )}
+          <button
+            onClick={onDismissUnissueWrite}
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 10,
+              background: "none",
+              border: "none",
+              color: "rgba(255,255,255,0.3)",
+              cursor: "pointer",
+              fontSize: 16,
+              padding: 0,
+              lineHeight: 1,
+            }}
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       {/* ── Issued Instances ── */}
       {view === "issued" && (
         <>
-          {issuedItems.length === 0 ? (
+          {visibleIssuedItems.length === 0 ? (
             <EmptyState
               emoji="📋"
               title="No issued tasks"
@@ -3235,7 +3321,7 @@ function VerifyTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {issuedItems.map(task => {
+              {visibleIssuedItems.map(task => {
                 return (
                   <div key={task.taskId} style={{ ...accentCard }}>
                     <div
@@ -3299,7 +3385,7 @@ function VerifyTab({
       {/* ── Claimed Instances ── */}
       {view === "claimed" && (
         <>
-          {claimedItems.length === 0 ? (
+          {visibleClaimedItems.length === 0 ? (
             <EmptyState
               emoji="👤"
               title="No claimed tasks"
@@ -3307,7 +3393,7 @@ function VerifyTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {claimedItems.map(task => {
+              {visibleClaimedItems.map(task => {
                 return (
                   <div key={task.taskId} style={{ ...accentCard }}>
                     <div
@@ -3481,7 +3567,7 @@ function VerifyTab({
             </div>
           )}
 
-          {completedItems.length === 0 ? (
+          {visibleCompletedItems.length === 0 ? (
             <EmptyState
               emoji="🎉"
               title="Nothing to verify yet"
@@ -3489,7 +3575,7 @@ function VerifyTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {completedItems.map(task => {
+              {visibleCompletedItems.map(task => {
                 return (
                   <div
                     key={`${task.taskId}-${task.claimant ?? "none"}`}
