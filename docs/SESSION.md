@@ -1572,3 +1572,12 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - lowered breakpoint again from `lg` to `md` for broader laptop visibility.
 - Updated file:
   - `packages/nextjs/app/demo/_components/AppShell.tsx`
+
+## 2026-03-18 — Left Panel Geometry Reset (Match Legacy Positioning)
+
+- Reset left context area to legacy fixed-slot geometry after continued visibility issues:
+  - Learn More column restored to exact prior fixed position/width used by legacy single-column left panel
+  - Added new deep-dive index as a second fixed 280px column immediately to the left of the Learn More column.
+- Removed responsive fluid width logic from left columns for this layout path.
+- Updated file:
+  - `packages/nextjs/app/demo/_components/AppShell.tsx`

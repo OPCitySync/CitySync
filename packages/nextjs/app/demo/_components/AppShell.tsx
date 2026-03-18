@@ -737,22 +737,38 @@ export default function AppShell({
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
-        {/* Left context area (two columns) */}
+        {/* Left-most index column */}
         <div
-          className="hidden md:block"
           style={{
             position: "absolute",
             top: 0,
             bottom: 0,
-            left: 12,
-            right: "calc(50% + 230px)",
-            padding: "72px 16px 40px",
+            right: "calc(50% + 526px)",
+            width: 280,
+            padding: "72px 20px 40px",
+            display: "flex",
+            flexDirection: "column",
+            overflowY: "auto",
           }}
         >
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, height: "100%" }}>
-            <DeepDiveLinksColumn accentColor={accentColor} />
-            {learnMoreColumn}
-          </div>
+          <DeepDiveLinksColumn accentColor={accentColor} />
+        </div>
+
+        {/* Learn More column (same fixed slot as previous left panel) */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: "calc(50% + 230px)",
+            width: 280,
+            padding: "72px 20px 40px",
+            display: "flex",
+            flexDirection: "column",
+            overflowY: "auto",
+          }}
+        >
+          {learnMoreColumn}
         </div>
 
         {/* Right context panel */}
@@ -879,22 +895,38 @@ export default function AppShell({
         {phoneInner}
       </div>
 
-      {/* Left context area (two columns) */}
+      {/* Left-most index column */}
       <div
-        className="hidden md:block"
         style={{
           position: "absolute",
           top: 0,
           bottom: 0,
-          left: 12,
-          right: "calc(50% + 260px)",
-          padding: "72px 16px 40px",
+          right: "calc(50% + 556px)",
+          width: 280,
+          padding: "72px 20px 40px",
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
         }}
       >
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, height: "100%" }}>
-          <DeepDiveLinksColumn accentColor={accentColor} />
-          {learnMoreColumn}
-        </div>
+        <DeepDiveLinksColumn accentColor={accentColor} />
+      </div>
+
+      {/* Learn More column (same fixed slot as previous left panel) */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          bottom: 0,
+          right: "calc(50% + 260px)",
+          width: 280,
+          padding: "72px 20px 40px",
+          display: "flex",
+          flexDirection: "column",
+          overflowY: "auto",
+        }}
+      >
+        {learnMoreColumn}
       </div>
 
       {/* Right context panel */}
