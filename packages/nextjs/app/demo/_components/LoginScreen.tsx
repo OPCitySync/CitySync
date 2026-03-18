@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export function LoginScreen() {
   const { openAuthModal } = useAuthModal();
-  const { isAuthenticating } = useSignerStatus();
+  const { isAuthenticating, error } = useSignerStatus();
 
   return (
     <div
@@ -109,6 +109,18 @@ export function LoginScreen() {
         <p style={{ fontSize: 11, color: "rgba(255,255,255,0.25)", marginTop: 16 }}>
           Sign in with email, passkey, or Google. No wallet or ETH required.
         </p>
+        {error?.message ? (
+          <p
+            style={{
+              marginTop: 10,
+              fontSize: 11,
+              lineHeight: 1.4,
+              color: "#ffb4b4",
+            }}
+          >
+            Auth error: {error.message}
+          </p>
+        ) : null}
       </div>
 
       {/* Footer */}
