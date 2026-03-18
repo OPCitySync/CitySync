@@ -12,7 +12,7 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-17 (Session 28)
+2026-03-17 (Session 29)
 
 ## Current Branch
 `main`
@@ -1232,3 +1232,17 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
   - framing of QR as pragmatic first method that avoids heavy POS replacement
   - POS integration ladder from manual confirm to native integration
   - employee enablement guidance focused on minimal change management and frontline simplicity.
+
+## 2026-03-17 — MyCity Feed Public Page (Active-Status Posting + Local News Potential)
+
+- Added standalone MyCity feed explainer page:
+  - `packages/nextjs/app/demo/mycity-feed/page.tsx`
+- Content scope:
+  - MyCity Feed purpose as outreach + community update layer
+  - active-status posting rule:
+    - issuers/redeemers must have current-epoch task/offering issuance to post
+    - inactive organizations lose posting access until activity resumes
+  - rationale for active-only posting to protect feed integrity and trust
+  - expansion path for local news network engagement:
+    - activity monitoring, issue amplification, contextual reporting, accountability signaling
+    - operational path for tags, editorial guidance, and potential API/read-only integration.
