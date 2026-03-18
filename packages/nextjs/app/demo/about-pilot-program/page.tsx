@@ -16,6 +16,7 @@ type PilotBlock =
   | { type: "heading"; text: string }
   | { type: "paragraph"; text: string }
   | { type: "list"; items: string[] };
+type PilotSection = { heading?: string; blocks: Exclude<PilotBlock, { type: "heading" }>[] };
 
 const sectionHeadingSet = new Set([
   "A Deployment Model for Programmable Public Coordination",
@@ -107,6 +108,32 @@ const parsePilotBlocks = (rawText: string): PilotBlock[] => {
 };
 
 const pilotBlocks = parsePilotBlocks(pilotProgramText);
+const pilotSections = (() => {
+  const sections: PilotSection[] = [];
+  let currentSection: PilotSection | null = null;
+
+  for (const block of pilotBlocks) {
+    if (block.type === "heading") {
+      if (currentSection) {
+        sections.push(currentSection);
+      }
+      currentSection = { heading: block.text, blocks: [] };
+      continue;
+    }
+
+    if (!currentSection) {
+      currentSection = { blocks: [] };
+    }
+
+    currentSection.blocks.push(block);
+  }
+
+  if (currentSection) {
+    sections.push(currentSection);
+  }
+
+  return sections;
+})();
 
 const pageStyle: React.CSSProperties = {
   minHeight: "100vh",
@@ -160,7 +187,7 @@ const h1Style: React.CSSProperties = {
 };
 
 const docHeadingStyle: React.CSSProperties = {
-  margin: "14px 0 8px",
+  margin: "0 0 10px",
   color: "#ffffff",
   fontSize: 22,
   lineHeight: 1.35,
@@ -224,31 +251,26 @@ export default function AboutPilotProgramPage() {
           <h1 style={h1Style}>The City/Sync Pilot Framework</h1>
         </section>
 
-        <section style={sectionCard}>
-          {pilotBlocks.map((block, index) => {
-            if (block.type === "heading") {
-              return (
-                <h2 key={`heading-${index}`} style={docHeadingStyle}>
-                  {block.text}
-                </h2>
-              );
-            }
+        {pilotSections.map((section, sectionIndex) => (
+          <section key={`section-${sectionIndex}`} style={sectionCard}>
+            {section.heading ? <h2 style={docHeadingStyle}>{section.heading}</h2> : null}
+            {section.blocks.map((block, blockIndex) => {
+              if (block.type === "list") {
+                return (
+                  <ul key={`list-${sectionIndex}-${blockIndex}`} style={docListStyle}>
+                    {block.items.map((item, itemIndex) => (
+                      <li key={`item-${sectionIndex}-${blockIndex}-${itemIndex}`} style={docListItemStyle}>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                );
+              }
 
-            if (block.type === "list") {
-              return (
-                <ul key={`list-${index}`} style={docListStyle}>
-                  {block.items.map((item, itemIndex) => (
-                    <li key={`item-${itemIndex}`} style={docListItemStyle}>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              );
-            }
-
-            return <div key={`paragraph-${index}`}>{renderParagraph(block.text)}</div>;
-          })}
-        </section>
+              return <div key={`paragraph-${sectionIndex}-${blockIndex}`}>{renderParagraph(block.text)}</div>;
+            })}
+          </section>
+        ))}
       </div>
     </main>
   );
