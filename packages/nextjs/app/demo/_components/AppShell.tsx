@@ -739,13 +739,13 @@ export default function AppShell({
       >
         {/* Left context area (two columns) */}
         <div
-          className="hidden lg:block"
+          className="hidden md:block"
           style={{
             position: "absolute",
             top: 0,
             bottom: 0,
-            left: "max(12px, calc(50% - 660px))",
-            width: "min(520px, calc(50% - 260px - 24px))",
+            left: 12,
+            right: "calc(50% + 230px)",
             padding: "72px 16px 40px",
           }}
         >
@@ -881,13 +881,13 @@ export default function AppShell({
 
       {/* Left context area (two columns) */}
       <div
-        className="hidden lg:block"
+        className="hidden md:block"
         style={{
           position: "absolute",
           top: 0,
           bottom: 0,
-          left: "max(12px, calc(50% - 660px))",
-          width: "min(520px, calc(50% - 260px - 24px))",
+          left: 12,
+          right: "calc(50% + 260px)",
           padding: "72px 16px 40px",
         }}
       >

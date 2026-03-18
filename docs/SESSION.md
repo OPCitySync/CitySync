@@ -1564,3 +1564,11 @@ CitySync acts as its own Issuer, offering public tasks and issuing civic credits
 - Relaxed visibility breakpoint from `xl` to `lg` so side context columns appear reliably on desktop/laptop layouts.
 - Updated file:
   - `packages/nextjs/app/demo/_components/AppShell.tsx`
+
+## 2026-03-18 — Left Panel Visibility Fix (Follow-Up)
+
+- Applied a second layout hardening pass after reports of no visible left columns:
+  - replaced complex `min/max/calc` width formulas with simple `left + right` absolute bounds
+  - lowered breakpoint again from `lg` to `md` for broader laptop visibility.
+- Updated file:
+  - `packages/nextjs/app/demo/_components/AppShell.tsx`
