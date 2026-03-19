@@ -1267,6 +1267,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         });
         return { ok: true, hash: getResultHash(result) };
       } catch (error) {
+        // Roll back optimistic local claim when onchain write fails.
+        dispatch({ type: "UNCLAIM_TASK", taskId });
         const message = normalizeWriteError(error, "Claim failed");
         return { ok: false, error: message };
       }
@@ -1290,6 +1292,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         });
         return { ok: true, hash: getResultHash(result) };
       } catch (error) {
+        // Roll back optimistic local unclaim when onchain write fails.
+        dispatch({ type: "CLAIM_TASK", taskId });
         const message = normalizeWriteError(error, "Unclaim failed");
         return { ok: false, error: message };
       }

@@ -2503,7 +2503,10 @@ function ExploreTab({
     const claimedBy = t.claimedBy?.toLowerCase();
     const isUnclaimed = !claimedBy || claimedBy === "0x0000000000000000000000000000000000000000";
     const optimisticUnclaimedByMe = !!addressLower && claimedBy === addressLower && optimisticUnclaimIds.includes(t.id);
-    return isUnclaimed || optimisticUnclaimedByMe;
+    if (optimisticUnclaimedByMe) return true;
+    if (!isUnclaimed) return false;
+    // Exclude exhausted opportunities from Browse even if reads are briefly stale.
+    return t.isOnboarding || t.slotsRemaining > 0;
   });
   const nonOnboardingOpenOnchainTasks = openOnchainTasks.filter(t => !t.isOnboarding);
   const openTasks = !isOnboarded
@@ -2580,8 +2583,12 @@ function ExploreTab({
     () => [...localClaimedTasks, ...myTasksRaw.filter(t => t.completionStatus !== 2)],
     [localClaimedTasks, myTasksRaw],
   );
+  const localClaimedTaskIdSet = React.useMemo(
+    () => new Set(state.participant.claimedTaskIds),
+    [state.participant.claimedTaskIds],
+  );
   const onchainCompletedTasks = myTasksRaw.filter(t => t.completionStatus === 2);
-  const myTaskIds = new Set(myTasks.map(t => t.id));
+  const myTaskIds = React.useMemo(() => new Set(myTasks.map(t => t.id)), [myTasks]);
   const tutorialBrowseGroupKeySet = React.useMemo(() => {
     const keys = new Set<string>();
     for (const group of groupedBrowseTasks) {
@@ -2605,12 +2612,22 @@ function ExploreTab({
     if (tutorialStep !== "box11") return undefined;
     for (const group of orderedBrowseTaskGroups) {
       const nextInstance = group.instances.find(
-        instance => tutorialTaskIdSet.has(instance.id) && !myTaskIds.has(instance.id),
+        instance =>
+          tutorialTaskIdSet.has(instance.id) && !myTaskIds.has(instance.id) && !localClaimedTaskIdSet.has(instance.id),
       );
       if (nextInstance) return nextInstance.id;
     }
     return undefined;
-  }, [myTaskIds, orderedBrowseTaskGroups, tutorialStep, tutorialTaskIdSet]);
+  }, [localClaimedTaskIdSet, myTaskIds, orderedBrowseTaskGroups, tutorialStep, tutorialTaskIdSet]);
+  const tutorialClaimedCount = React.useMemo(() => {
+    if (tutorialStep !== "box11") return tutorialClaimedTasks.length;
+    const claimedUnion = new Set<string>([...myTasks.map(task => task.id), ...state.participant.claimedTaskIds]);
+    let count = 0;
+    tutorialTaskIdSet.forEach(id => {
+      if (claimedUnion.has(id)) count += 1;
+    });
+    return count;
+  }, [myTasks, state.participant.claimedTaskIds, tutorialClaimedTasks.length, tutorialStep, tutorialTaskIdSet]);
   const orderedClaimedTasks = React.useMemo(() => {
     if (tutorialStep !== "box13") return myTasks;
     const sorted = [...myTasks];
@@ -2650,7 +2667,7 @@ function ExploreTab({
       }
       return next;
     });
-    if (tutorialClaimedTasks.length >= 2) {
+    if (tutorialClaimedCount >= 2) {
       setView("claimed");
       onTutorialStepChange("box12");
     }
@@ -2658,7 +2675,7 @@ function ExploreTab({
     orderedBrowseTaskGroups,
     onTutorialStepChange,
     tutorialBrowseGroupKeySet,
-    tutorialClaimedTasks.length,
+    tutorialClaimedCount,
     tutorialTargetClaimTaskId,
     tutorialStep,
   ]);
@@ -2730,8 +2747,17 @@ function ExploreTab({
 
   const handleClaimConfirmed = async (task: Task) => {
     setClaimConfirmTask(null);
+    if (!task.isOnboarding && task.slotsRemaining <= 0) {
+      setClaimNotice({
+        message: "This task is no longer claimable (all slots are filled). Please claim another task.",
+        type: "warn",
+      });
+      return;
+    }
     if (!task.isOnboarding) {
-      if (myTasks.length >= sanctionsPolicy.maxActiveClaims) {
+      const localActiveClaimCount = new Set<string>([...myTasks.map(t => t.id), ...state.participant.claimedTaskIds])
+        .size;
+      if (localActiveClaimCount >= sanctionsPolicy.maxActiveClaims) {
         setClaimNotice({
           message:
             sanctionsPolicy.maxActiveClaims === 1
@@ -3235,7 +3261,7 @@ function ExploreTab({
                       <TaskCard
                         key={instance.id}
                         task={instance}
-                        isClaimed={myTaskIds.has(instance.id)}
+                        isClaimed={myTaskIds.has(instance.id) || localClaimedTaskIdSet.has(instance.id)}
                         locked={!isOnboarded && !instance.isOnboarding}
                         showClaimButton
                         tutorialAllowClaim={
