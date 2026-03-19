@@ -273,6 +273,140 @@ const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
   },
 };
 
+type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "dismissed";
+
+function TutorialCard({
+  title,
+  body,
+  subtitle,
+  children,
+}: {
+  title: string;
+  body: string;
+  subtitle?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div
+      style={{
+        background: "rgba(221,158,51,0.08)",
+        border: "1px solid rgba(221,158,51,0.28)",
+        borderRadius: 16,
+        padding: 14,
+      }}
+    >
+      {subtitle && (
+        <div
+          style={{
+            fontSize: 10,
+            color: "rgba(221,158,51,0.8)",
+            textTransform: "uppercase",
+            letterSpacing: "0.08em",
+            fontWeight: 700,
+            marginBottom: 6,
+          }}
+        >
+          {subtitle}
+        </div>
+      )}
+      <div style={{ fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 }}>{title}</div>
+      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
+        {body}
+      </div>
+      {children && <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>{children}</div>}
+    </div>
+  );
+}
+
+function TutorialActionButton({
+  label,
+  onClick,
+  variant = "primary",
+}: {
+  label: string;
+  onClick: () => void;
+  variant?: "primary" | "ghost";
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        border: "none",
+        borderRadius: 10,
+        padding: "8px 12px",
+        fontSize: 12,
+        fontWeight: 700,
+        cursor: "pointer",
+        background: variant === "primary" ? ACCENT : "rgba(255,255,255,0.08)",
+        color: variant === "primary" ? BG : "rgba(255,255,255,0.8)",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
+function IssuerTutorialPanel({
+  step,
+  orgName,
+  onStart,
+  onDismissIntro,
+  onContinueBox2,
+  onContinueBox3,
+}: {
+  step: IssuerTutorialStep;
+  orgName: string;
+  onStart: () => void;
+  onDismissIntro: () => void;
+  onContinueBox2: () => void;
+  onContinueBox3: () => void;
+}) {
+  const safeOrgName = orgName.trim() || "Issuer Organization";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      {step === "intro" && (
+        <TutorialCard
+          subtitle="Tutorial"
+          title="Welcome to the City/Sync Demo"
+          body="Everything in this demo has a shared onchain state, and local storage that allows edits to your profile, picture, etc. to persist. Every transaction you make is visible to all users and roles. The purpose of the demo is to simulate as closely as possible to the role UX for the pilot. Let's get started!"
+        >
+          <TutorialActionButton label="No Thanks" variant="ghost" onClick={onDismissIntro} />
+          <TutorialActionButton label="Start Tutorial" onClick={onStart} />
+        </TutorialCard>
+      )}
+
+      {step === "box1" && (
+        <TutorialCard
+          subtitle="Step 1"
+          title="Let's start with Issuers"
+          body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited to issuing and verifying civic-labor tasks. Issuers can use the City/Sync platform to enhance their already existing Volunteer Programs or build new ones from the ground up. This platform offers a centralized discovery method for volunteer opportunities in your City.\n\nTo start, please give your Issuer organization a name using the edit profile button highlighted in the Profile tab."
+        />
+      )}
+
+      {step === "box2" && (
+        <TutorialCard
+          subtitle="Step 2"
+          title={`Welcome ${safeOrgName}!`}
+          body="Great name! Now every Issuer organization who is certified through City/Sync will have an opportunity to participate in the Public-Sector economy. Issuer organizations have the unique ability to create a public-sector credit (CITY) that can be used to access local offerings provided by other public-sector organizations or mission-aligned businesses called Redeemers."
+        >
+          <TutorialActionButton label="Continue" onClick={onContinueBox2} />
+        </TutorialCard>
+      )}
+
+      {step === "box3" && (
+        <TutorialCard
+          subtitle="Step 3"
+          title="Understanding the Issuance Cap"
+          body="In order to maintain balance, the amount of credits issued should be in equilibrium with the amount of credits being redeemed for goods and services. Therefore, it's important to understand the Issuance Cap.\n\nThe issuance cap is the amount of credits that are allowed to be distributed during a specific Epoch (3 month period) by all Issuer organizations. The cap is spread evenly between all participating Issuers and can only be used to reward volunteers for expanding their organizational impact and mission. Issuers can keep track of their credits issued throughout the Epoch."
+        >
+          <TutorialActionButton label="Continue" onClick={onContinueBox3} />
+        </TutorialCard>
+      )}
+    </div>
+  );
+}
+
 // ─── Toast ────────────────────────────────────────────────────────────────────
 
 function Toast({ message, onDone }: { message: string; onDone: () => void }) {
@@ -401,6 +535,7 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
+  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>("intro");
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
     taskId: string;
@@ -423,15 +558,72 @@ export default function IssuerApp() {
   const { issuer } = state;
   issuerTasksRef.current = issuer.tasks;
   const rightPanel = getIssuerRightPanel(activeTab);
-  const leftPanel =
-    openInfoCards.length > 0 ? (
-      <LearnMorePanel
-        keys={openInfoCards}
-        cards={ISSUER_LEARN_CARDS}
-        onClose={key => setOpenInfoCards(prev => prev.filter(k => k !== key))}
-        accent={ACCENT}
+  const leftPanel = (
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
+      <IssuerTutorialPanel
+        step={tutorialStep}
+        orgName={issuer.orgName}
+        onStart={() => {
+          setActiveTab("profile");
+          setTutorialStep("box1");
+        }}
+        onDismissIntro={() => setTutorialStep("dismissed")}
+        onContinueBox2={() => setTutorialStep("box3")}
+        onContinueBox3={() => setTutorialStep("dismissed")}
       />
-    ) : null;
+      {openInfoCards.length > 0 ? (
+        <LearnMorePanel
+          keys={openInfoCards}
+          cards={ISSUER_LEARN_CARDS}
+          onClose={key => setOpenInfoCards(prev => prev.filter(k => k !== key))}
+          accent={ACCENT}
+        />
+      ) : (
+        <div
+          style={{
+            background: "rgba(255,255,255,0.025)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 16,
+            padding: 14,
+            fontSize: 12,
+            color: "rgba(255,255,255,0.62)",
+            lineHeight: 1.55,
+          }}
+        >
+          Use Learn More links in the app to load contextual cards in this panel.
+        </div>
+      )}
+      {tutorialStep === "dismissed" && (
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: 10,
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <button
+            onClick={() => {
+              setActiveTab("profile");
+              setTutorialStep("box1");
+            }}
+            style={{
+              width: "100%",
+              border: "1px dashed rgba(221,158,51,0.4)",
+              background: "rgba(221,158,51,0.08)",
+              color: ACCENT,
+              borderRadius: 10,
+              padding: "9px 10px",
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Start Tutorial
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   const openLearnMore = React.useCallback((key: IssuerLearnCardKey) => {
     setOpenInfoCards(prev => (prev.includes(key) ? prev : [...prev, key]));
@@ -728,7 +920,18 @@ export default function IssuerApp() {
           </div>
         )}
         {activeTab === "profile" && (
-          <ProfileTab issuer={issuer} creditsCommitted={creditsCommitted} onLearnMore={openLearnMore} />
+          <ProfileTab
+            issuer={issuer}
+            creditsCommitted={creditsCommitted}
+            onLearnMore={openLearnMore}
+            tutorialHighlightEditProfile={tutorialStep === "box1"}
+            tutorialHighlightEpoch={tutorialStep === "box3"}
+            onOrganizationNameSaved={_nextName => {
+              if (tutorialStep === "box1") {
+                setTutorialStep("box2");
+              }
+            }}
+          />
         )}
         {activeTab === "tasks" && (
           <TasksTab
@@ -865,10 +1068,16 @@ function ProfileTab({
   issuer,
   creditsCommitted,
   onLearnMore,
+  tutorialHighlightEditProfile,
+  tutorialHighlightEpoch,
+  onOrganizationNameSaved,
 }: {
   issuer: ReturnType<typeof useDemo>["state"]["issuer"];
   creditsCommitted: number;
   onLearnMore: (key: IssuerLearnCardKey) => void;
+  tutorialHighlightEditProfile: boolean;
+  tutorialHighlightEpoch: boolean;
+  onOrganizationNameSaved: (nextName: string) => void;
 }) {
   const { dispatch, state } = useDemo();
   const { address } = useAccount({ type: "ModularAccountV2" });
@@ -939,13 +1148,16 @@ function ProfileTab({
   };
 
   const saveEdit = () => {
-    if (draft.trim()) {
-      dispatch({ type: "ISSUER_REGISTER", orgName: draft.trim() });
+    const trimmed = draft.trim();
+    if (trimmed) {
+      const changed = trimmed !== issuer.orgName;
+      dispatch({ type: "ISSUER_REGISTER", orgName: trimmed });
       try {
-        window.localStorage.setItem(nameStorageKey, draft.trim());
+        window.localStorage.setItem(nameStorageKey, trimmed);
       } catch {
         /* ignore */
       }
+      if (changed) onOrganizationNameSaved(trimmed);
     }
     setEditing(false);
   };
@@ -1090,6 +1302,13 @@ function ProfileTab({
 
   return (
     <div style={{ padding: "24px 20px 100px" }}>
+      <style>{`
+        @keyframes tutorialPulse {
+          0% { box-shadow: 0 0 0 0 rgba(221,158,51,0.35); }
+          70% { box-shadow: 0 0 0 8px rgba(221,158,51,0); }
+          100% { box-shadow: 0 0 0 0 rgba(221,158,51,0); }
+        }
+      `}</style>
       <div style={{ background: SURFACE, borderRadius: 16, display: "flex", marginBottom: 20, overflow: "hidden" }}>
         {(
           [
@@ -1260,13 +1479,15 @@ function ProfileTab({
                 <button
                   onClick={startEdit}
                   style={{
-                    background: "transparent",
-                    border: "none",
+                    background: tutorialHighlightEditProfile ? "rgba(221,158,51,0.14)" : "transparent",
+                    border: tutorialHighlightEditProfile ? "1px solid rgba(221,158,51,0.45)" : "none",
+                    borderRadius: tutorialHighlightEditProfile ? 8 : 0,
                     cursor: "pointer",
-                    color: MUTED,
-                    padding: 4,
+                    color: tutorialHighlightEditProfile ? ACCENT : MUTED,
+                    padding: tutorialHighlightEditProfile ? "6px 8px" : 4,
                     display: "flex",
                     alignItems: "center",
+                    animation: tutorialHighlightEditProfile ? "tutorialPulse 1.7s ease-in-out infinite" : undefined,
                   }}
                 >
                   <IconPencil />
@@ -1356,7 +1577,11 @@ function ProfileTab({
               ...surfaceCard,
               marginBottom: 20,
               background: "linear-gradient(135deg, #1a1a00 0%, #1E1E2C 100%)",
-              border: "1px solid rgba(221,158,51,0.2)",
+              border: tutorialHighlightEpoch ? "1px solid rgba(221,158,51,0.58)" : "1px solid rgba(221,158,51,0.2)",
+              boxShadow: tutorialHighlightEpoch
+                ? "0 0 0 1px rgba(221,158,51,0.35), 0 10px 28px rgba(0,0,0,0.28)"
+                : "0 2px 12px rgba(0,0,0,0.28)",
+              animation: tutorialHighlightEpoch ? "tutorialPulse 1.7s ease-in-out infinite" : undefined,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
