@@ -1625,9 +1625,11 @@ function ProfileTab({
               background: "linear-gradient(135deg, #1a1a00 0%, #1E1E2C 100%)",
               border: tutorialHighlightEpoch ? "1px solid rgba(221,158,51,0.58)" : "1px solid rgba(221,158,51,0.2)",
               boxShadow: tutorialHighlightEpoch
-                ? "0 0 0 1px rgba(221,158,51,0.35), 0 10px 28px rgba(0,0,0,0.28)"
+                ? "0 0 0 1px rgba(255,226,162,0.78), 0 0 22px rgba(221,158,51,0.62), 0 0 42px rgba(221,158,51,0.42), 0 10px 28px rgba(0,0,0,0.28)"
                 : "0 2px 12px rgba(0,0,0,0.28)",
-              animation: tutorialHighlightEpoch ? "tutorialPulse 1.7s ease-in-out infinite" : undefined,
+              animation: tutorialHighlightEpoch ? "tutorialRadiant 1.55s ease-in-out infinite" : undefined,
+              position: tutorialHighlightEpoch ? "relative" : undefined,
+              zIndex: tutorialHighlightEpoch ? 40 : undefined,
             }}
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
@@ -1735,6 +1737,19 @@ function ProfileTab({
             pointerEvents: "auto",
             background:
               "radial-gradient(circle at 86% 20%, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.54) 32%, rgba(0,0,0,0.72) 100%)",
+            borderRadius: 12,
+          }}
+        />
+      )}
+      {tutorialHighlightEpoch && section === "profile" && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 24,
+            pointerEvents: "none",
+            background:
+              "radial-gradient(circle at 50% 56%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.22) 20%, rgba(0,0,0,0.64) 56%, rgba(0,0,0,0.74) 100%)",
             borderRadius: 12,
           }}
         />
