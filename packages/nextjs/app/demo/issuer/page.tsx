@@ -369,7 +369,7 @@ function IssuerTutorialPanel({
         <TutorialCard
           subtitle="Tutorial"
           title="Welcome to the City/Sync Demo"
-          body="Everything in this demo has a shared onchain state, and local storage that allows edits to your profile, picture, etc. to persist. Every transaction you make is visible to all users and roles. The purpose of the demo is to simulate as closely as possible to the role UX for the pilot. Let's get started!"
+          body="Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!"
         >
           <TutorialActionButton label="No Thanks" variant="ghost" onClick={onDismissIntro} />
           <TutorialActionButton label="Start Tutorial" onClick={onStart} />
