@@ -59,6 +59,7 @@ interface AppShellProps {
   /** When true, renders a phone device bezel around the app */
   phoneFrame?: boolean;
   tutorialHighlightWalletButton?: boolean;
+  tutorialLocked?: boolean;
   onWalletOpen?: () => void;
   onWalletClose?: () => void;
 }
@@ -311,6 +312,7 @@ export default function AppShell({
   rightPanel,
   phoneFrame = false,
   tutorialHighlightWalletButton = false,
+  tutorialLocked = false,
   onWalletOpen,
   onWalletClose,
 }: AppShellProps) {
@@ -321,6 +323,7 @@ export default function AppShell({
   const { logout } = useLogout({ onSuccess: () => router.push("/demo") });
 
   const currentRole = ROLES.find(r => r.key === role)!;
+  const walletAllowed = !tutorialLocked || tutorialHighlightWalletButton;
 
   const handleRoleSwitch = (r: (typeof ROLES)[number]) => {
     if (r.key === role) {
@@ -358,6 +361,21 @@ export default function AppShell({
   const phoneInner = (
     <>
       {phoneFrame && <PhoneStatusBar accentColor={accentColor} />}
+      {tutorialLocked && (
+        <style>{`
+          .citysync-tutorial-lock-scope * {
+            pointer-events: none !important;
+          }
+          .citysync-tutorial-lock-scope [data-tutorial-allow="true"],
+          .citysync-tutorial-lock-scope [data-tutorial-allow="true"] * {
+            pointer-events: auto !important;
+          }
+          .citysync-tutorial-lock-scope [data-tutorial-allow="true"] {
+            position: relative;
+            z-index: 120 !important;
+          }
+        `}</style>
+      )}
 
       {/* Header */}
       <header
@@ -377,7 +395,10 @@ export default function AppShell({
       >
         {/* Left: Role badge / switcher trigger */}
         <button
-          onClick={() => setSwitcherOpen(true)}
+          onClick={() => {
+            if (!tutorialLocked) setSwitcherOpen(true);
+          }}
+          disabled={tutorialLocked}
           style={{
             justifySelf: "start",
             display: "flex",
@@ -388,13 +409,16 @@ export default function AppShell({
             borderRadius: 10,
             border: `1px solid ${currentRole.accent}30`,
             background: `${currentRole.accent}14`,
-            cursor: "pointer",
+            cursor: tutorialLocked ? "not-allowed" : "pointer",
             transition: "background 0.15s ease",
+            opacity: tutorialLocked ? 0.55 : 1,
           }}
           onMouseEnter={e => {
+            if (tutorialLocked) return;
             (e.currentTarget as HTMLButtonElement).style.background = `${currentRole.accent}22`;
           }}
           onMouseLeave={e => {
+            if (tutorialLocked) return;
             (e.currentTarget as HTMLButtonElement).style.background = `${currentRole.accent}14`;
           }}
         >
@@ -462,6 +486,10 @@ export default function AppShell({
               justifyContent: "center",
             }}
             aria-label="QR Code"
+            disabled={tutorialLocked}
+            onClick={e => {
+              if (tutorialLocked) e.preventDefault();
+            }}
           >
             <svg
               width="18"
@@ -485,6 +513,7 @@ export default function AppShell({
           {/* Wallet icon button */}
           <button
             onClick={() => {
+              if (!walletAllowed) return;
               setWalletOpen(true);
               onWalletOpen?.();
             }}
@@ -496,7 +525,7 @@ export default function AppShell({
                 ? "1px solid rgba(255,226,162,0.85)"
                 : "1px solid rgba(255,255,255,0.1)",
               borderRadius: 10,
-              cursor: "pointer",
+              cursor: walletAllowed ? "pointer" : "not-allowed",
               color: tutorialHighlightWalletButton ? "#ffe2a2" : "rgba(255,255,255,0.65)",
               display: "flex",
               alignItems: "center",
@@ -504,8 +533,11 @@ export default function AppShell({
               boxShadow: tutorialHighlightWalletButton
                 ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.45)"
                 : undefined,
+              opacity: walletAllowed ? 1 : 0.55,
             }}
             aria-label="Wallet"
+            disabled={!walletAllowed}
+            data-tutorial-allow={tutorialHighlightWalletButton ? "true" : undefined}
           >
             <svg
               width="20"
@@ -527,7 +559,7 @@ export default function AppShell({
 
       {/* Scrollable content area */}
       <main
-        className="flex-1 overflow-y-auto"
+        className={`flex-1 overflow-y-auto ${tutorialLocked ? "citysync-tutorial-lock-scope" : ""}`}
         style={{
           position: "relative",
           paddingBottom: phoneFrame ? "108px" : "calc(108px + env(safe-area-inset-bottom, 0px))",
@@ -539,7 +571,13 @@ export default function AppShell({
       </main>
 
       {/* Bottom navigation */}
-      <BottomNav tabs={tabs} active={activeTab} onChange={onTabChange} accentColor={accentColor} />
+      <BottomNav
+        tabs={tabs}
+        active={activeTab}
+        onChange={onTabChange}
+        accentColor={accentColor}
+        locked={tutorialLocked}
+      />
 
       {phoneFrame && <HomeIndicator accentColor={accentColor} />}
 
@@ -766,6 +804,8 @@ export default function AppShell({
             display: "flex",
             flexDirection: "column",
             overflowY: "auto",
+            pointerEvents: tutorialLocked ? "none" : "auto",
+            opacity: tutorialLocked ? 0.75 : 1,
           }}
         >
           <DeepDiveLinksColumn accentColor={accentColor} />
@@ -924,6 +964,8 @@ export default function AppShell({
           display: "flex",
           flexDirection: "column",
           overflowY: "auto",
+          pointerEvents: tutorialLocked ? "none" : "auto",
+          opacity: tutorialLocked ? 0.75 : 1,
         }}
       >
         <DeepDiveLinksColumn accentColor={accentColor} />

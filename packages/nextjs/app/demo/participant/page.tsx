@@ -734,7 +734,17 @@ const TABS: NavTab[] = [
 
 // ─── Execute Task Modal ───────────────────────────────────────────────────────
 
-function ExecuteModal({ task, onConfirm, onClose }: { task: Task; onConfirm: () => void; onClose: () => void }) {
+function ExecuteModal({
+  task,
+  onConfirm,
+  onClose,
+  tutorialAllowSubmit = false,
+}: {
+  task: Task;
+  onConfirm: () => void;
+  onClose: () => void;
+  tutorialAllowSubmit?: boolean;
+}) {
   const [notes, setNotes] = React.useState("");
   const [fileName, setFileName] = React.useState<string | null>(null);
   const fileRef = React.useRef<HTMLInputElement>(null);
@@ -928,6 +938,7 @@ function ExecuteModal({ task, onConfirm, onClose }: { task: Task; onConfirm: () 
           </div>
 
           <button
+            data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
             onClick={onConfirm}
             style={{
               width: "100%",
@@ -1097,6 +1108,7 @@ function RedeemModal({
           </div>
 
           <button
+            data-tutorial-allow={tutorialHighlightConfirm && !confirmed ? "true" : undefined}
             onClick={onConfirm}
             disabled={pending || confirmed}
             style={{
@@ -1887,6 +1899,7 @@ function TaskCard({
   canUnclaim,
   showClaimButton,
   showUnclaimButton,
+  tutorialAllowClaim,
   tutorialHighlightActions,
   onClaim,
   onUnclaim,
@@ -1899,6 +1912,7 @@ function TaskCard({
   canUnclaim?: boolean;
   showClaimButton?: boolean;
   showUnclaimButton?: boolean;
+  tutorialAllowClaim?: boolean;
   tutorialHighlightActions?: boolean;
   onClaim?: () => void;
   onUnclaim?: () => void;
@@ -2067,6 +2081,7 @@ function TaskCard({
       <div style={{ display: "flex", gap: 8 }}>
         {showClaimButton && !isClaimed && !locked && (
           <button
+            data-tutorial-allow={tutorialAllowClaim ? "true" : undefined}
             onClick={onClaim}
             style={{
               flex: 1,
@@ -2126,6 +2141,7 @@ function TaskCard({
               Unclaim
             </button>
             <button
+              data-tutorial-allow={tutorialHighlightActions ? "true" : undefined}
               onClick={onExecute}
               style={{
                 flex: 1,
@@ -3215,6 +3231,7 @@ function ExploreTab({
                         isClaimed={myTaskIds.has(instance.id)}
                         locked={!isOnboarded && !instance.isOnboarding}
                         showClaimButton
+                        tutorialAllowClaim={tutorialHighlightTaskInstances && shouldHighlightTaskGroup}
                         onClaim={() => handleClaim(instance)}
                         onExecute={() => setExecuteTask(instance)}
                       />
@@ -3248,7 +3265,12 @@ function ExploreTab({
       )}
 
       {executeTask && (
-        <ExecuteModal task={executeTask} onConfirm={handleExecuteConfirm} onClose={() => setExecuteTask(null)} />
+        <ExecuteModal
+          task={executeTask}
+          onConfirm={handleExecuteConfirm}
+          onClose={() => setExecuteTask(null)}
+          tutorialAllowSubmit={tutorialStep === "box13"}
+        />
       )}
       {claimConfirmTask && (
         <ClaimConfirmSheet
@@ -4156,6 +4178,7 @@ function RedeemTab({
                         </span>
                       </div>
                       <button
+                        data-tutorial-allow={shouldHighlightOffer ? "true" : undefined}
                         onClick={() => {
                           if (disabled) return;
                           setRedeemWriteStatus({ state: "idle" });
@@ -4313,6 +4336,7 @@ export default function ParticipantPage() {
     return initial;
   });
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
+  const tutorialLockActive = tutorialStep !== "dismissed";
 
   useEffect(() => {
     if (!state.role) setRole("participant");
@@ -4883,6 +4907,7 @@ export default function ParticipantPage() {
         leftPanel={leftPanel}
         rightPanel={rightPanel}
         phoneFrame
+        tutorialLocked={tutorialLockActive}
         tutorialHighlightWalletButton={tutorialStep === "box23"}
         onWalletOpen={() => {
           if (tutorialStep === "box23") setTutorialWalletOpened(true);

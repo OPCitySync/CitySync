@@ -799,6 +799,7 @@ export default function IssuerApp() {
 
   const { issuer } = state;
   issuerTasksRef.current = issuer.tasks;
+  const tutorialLockActive = tutorialStep !== "dismissed";
   const rightPanel = getIssuerRightPanel(activeTab);
   const exitIssuerTutorial = React.useCallback(() => {
     if (tutorialStep !== "intro" && tutorialStep !== "dismissed") {
@@ -1239,6 +1240,7 @@ export default function IssuerApp() {
         leftPanel={leftPanel}
         rightPanel={rightPanel}
         phoneFrame
+        tutorialLocked={tutorialLockActive}
       >
         {isConnected && !address && (
           <div
@@ -1352,6 +1354,7 @@ export default function IssuerApp() {
             onPropose={handleProposeTask}
             creditsCommitted={creditsCommitted}
             tutorialAutofill={tutorialStep === "box5"}
+            tutorialAllowSubmit={tutorialStep === "box5"}
             onTutorialSubmitIntent={() => {
               if (tutorialStep === "box5") setTutorialStep("box6");
             }}
@@ -1385,6 +1388,7 @@ export default function IssuerApp() {
               setUnissueConfirmId(null);
             }}
             onCancel={() => setUnissueConfirmId(null)}
+            tutorialAllowConfirm={tutorialStep === "box15"}
           />
         )}
         {noShowConfirmItem && (
@@ -1411,6 +1415,7 @@ export default function IssuerApp() {
               setNoShowConfirmItem(null);
             }}
             onCancel={() => setNoShowConfirmItem(null)}
+            tutorialAllowConfirm={tutorialStep === "box16"}
           />
         )}
       </AppShell>
@@ -1775,6 +1780,7 @@ function ProfileTab({
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                 <input
                   ref={inputRef}
+                  data-tutorial-allow={tutorialHighlightEditProfile ? "true" : undefined}
                   value={draft}
                   onChange={e => setDraft(e.target.value)}
                   onKeyDown={e => {
@@ -1798,6 +1804,7 @@ function ProfileTab({
                   }}
                 />
                 <button
+                  data-tutorial-allow={tutorialHighlightEditProfile ? "true" : undefined}
                   onClick={saveEdit}
                   style={{
                     background: ACCENT,
@@ -1856,6 +1863,7 @@ function ProfileTab({
                   </div>
                 </div>
                 <button
+                  data-tutorial-allow={tutorialHighlightEditProfile ? "true" : undefined}
                   onClick={startEdit}
                   style={{
                     background: tutorialHighlightEditProfile
@@ -2592,6 +2600,7 @@ function TasksTab({
 
           {/* Create CTA */}
           <button
+            data-tutorial-allow={tutorialHighlightIssueButton ? "true" : undefined}
             onClick={atCap ? undefined : onCreateOpen}
             disabled={atCap}
             style={{
@@ -2684,6 +2693,7 @@ function TasksTab({
       {view === "catalog" && (
         <>
           <button
+            data-tutorial-allow={tutorialHighlightPropose ? "true" : undefined}
             onClick={atCap ? undefined : onProposeOpen}
             disabled={atCap}
             style={{
@@ -2840,6 +2850,7 @@ function TasksTab({
                     </div>
 
                     <button
+                      data-tutorial-allow={tutorialHighlightApprove ? "true" : undefined}
                       onClick={() => onApproveProposed(pt)}
                       style={{
                         width: "100%",
@@ -3080,6 +3091,7 @@ function CreateTaskSheet({
                   </div>
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
+                      data-tutorial-allow={tutorialHighlightTask && index === 0 ? "true" : undefined}
                       onClick={() => onIssueTask(task.id)}
                       style={{
                         width: "100%",
@@ -3113,12 +3125,14 @@ function ProposeTaskSheet({
   onPropose,
   creditsCommitted,
   tutorialAutofill = false,
+  tutorialAllowSubmit = false,
   onTutorialSubmitIntent,
 }: {
   onClose: () => void;
   onPropose: (task: ProposedTask) => void;
   creditsCommitted: number;
   tutorialAutofill?: boolean;
+  tutorialAllowSubmit?: boolean;
   onTutorialSubmitIntent?: () => void;
 }) {
   const [title, setTitle] = useState("");
@@ -3412,6 +3426,7 @@ function ProposeTaskSheet({
           </div>
 
           <button
+            data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
             onClick={handleSubmit}
             disabled={!canSubmit || wouldExceedCap}
             style={{
@@ -3829,10 +3844,12 @@ function UnissueConfirmSheet({
   taskId: _taskId,
   onConfirm,
   onCancel,
+  tutorialAllowConfirm = false,
 }: {
   taskId: string;
   onConfirm: () => void;
   onCancel: () => void;
+  tutorialAllowConfirm?: boolean;
 }) {
   return (
     <>
@@ -3896,6 +3913,7 @@ function UnissueConfirmSheet({
               Cancel
             </button>
             <button
+              data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               onClick={onConfirm}
               style={{
                 flex: 1,
@@ -3924,10 +3942,12 @@ function NoShowConfirmSheet({
   item: _item,
   onConfirm,
   onCancel,
+  tutorialAllowConfirm = false,
 }: {
   item: { taskId: string; claimant: `0x${string}`; title: string };
   onConfirm: () => void;
   onCancel: () => void;
+  tutorialAllowConfirm?: boolean;
 }) {
   return (
     <>
@@ -3991,6 +4011,7 @@ function NoShowConfirmSheet({
               Cancel
             </button>
             <button
+              data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               onClick={onConfirm}
               style={{
                 flex: 1,
@@ -4462,6 +4483,7 @@ function VerifyTab({
                       Open · Awaiting Claim
                     </div>
                     <button
+                      data-tutorial-allow={shouldHighlightUnissue ? "true" : undefined}
                       onClick={() => onUnissueConfirm(task.taskId)}
                       style={{
                         marginLeft: 8,
@@ -4583,6 +4605,7 @@ function VerifyTab({
                           Claimant no-show handling removes this task from circulation.
                         </div>
                         <button
+                          data-tutorial-allow={shouldHighlightNoShow ? "true" : undefined}
                           onClick={() => {
                             if (task.claimant) {
                               onNoShowConfirm({
@@ -4775,6 +4798,7 @@ function VerifyTab({
                         Reject & Mint
                       </button>
                       <button
+                        data-tutorial-allow={shouldHighlightVerifyButtons && task.claimant ? "true" : undefined}
                         onClick={async () => {
                           if (!task.claimant) return;
                           setConfirmVerify({
@@ -4920,6 +4944,11 @@ function VerifyTab({
                         Cancel
                       </button>
                       <button
+                        data-tutorial-allow={
+                          tutorialStep === "box17" && confirmVerify.decision === "verify" && canConfirm
+                            ? "true"
+                            : undefined
+                        }
                         onClick={async () => {
                           if (confirmVerify.decision === "reject" && !canConfirm) return;
                           const ok = await onVerify(confirmVerify.taskId, confirmVerify.claimant, {
@@ -5744,6 +5773,7 @@ function IssueTaskPopup({
                 {step === "select" ? "Cancel" : "Back"}
               </button>
               <button
+                data-tutorial-allow={isTutorialStep8 ? "true" : undefined}
                 onClick={async () => {
                   if (step === "select") {
                     if (isTutorialStep8) {

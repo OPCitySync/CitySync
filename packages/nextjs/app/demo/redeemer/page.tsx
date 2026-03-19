@@ -540,6 +540,7 @@ export default function RedeemerApp() {
   });
   const [tutorialCatalogOfferingId, setTutorialCatalogOfferingId] = useState<string | null>(null);
   const [tutorialActiveOfferingId, setTutorialActiveOfferingId] = useState<string | null>(null);
+  const tutorialLockActive = tutorialStep !== "dismissed";
 
   const { redeemer, mces } = state;
   // Only require `address` — the smart-account client can lag behind by
@@ -1344,6 +1345,7 @@ export default function RedeemerApp() {
         leftPanel={leftPanel}
         rightPanel={rightPanel}
         phoneFrame
+        tutorialLocked={tutorialLockActive}
       >
         {activeTab === "profile" && (
           <ProfileTab
@@ -1403,6 +1405,7 @@ export default function RedeemerApp() {
             onSubmitCommitted={handleCreateCommittedOffering}
             onSubmitMCE={handleCreateMCEOffering}
             tutorialLockCost={tutorialStep === "box20" && !catalogEditor.editId ? 10 : undefined}
+            tutorialAllowSubmit={tutorialStep === "box20"}
             initialCommitted={
               catalogEditor.editId ? (committedCatalog.find(item => item.id === catalogEditor.editId) ?? null) : null
             }
@@ -1451,6 +1454,7 @@ export default function RedeemerApp() {
         {qrTarget && (
           <QRModal
             offering={qrTarget}
+            tutorialAllowDone={tutorialStep === "box22"}
             onClose={() => {
               setQrTarget(null);
               if (tutorialStep === "box22") {
@@ -2164,6 +2168,7 @@ function OfferingsTab({
       {view === "committed" && (
         <>
           <button
+            data-tutorial-allow={tutorialStep === "box19" ? "true" : undefined}
             onClick={onAddCommitted}
             style={{
               width: "100%",
@@ -2270,6 +2275,9 @@ function OfferingsTab({
                       </button>
                       <button
                         onClick={() => setPendingCommittedCatalogCommitId(item.id)}
+                        data-tutorial-allow={
+                          !duplicateCommittedState && shouldHighlightCatalogActions ? "true" : undefined
+                        }
                         disabled={duplicateCommittedState}
                         style={{
                           background: duplicateCommittedState
@@ -2397,6 +2405,9 @@ function OfferingsTab({
                             orgName,
                           })
                         }
+                        data-tutorial-allow={
+                          tutorialStep === "box21" && tutorialActiveOfferingId === offering.id ? "true" : undefined
+                        }
                         style={{
                           flex: 1,
                           display: "flex",
@@ -2459,6 +2470,7 @@ function OfferingsTab({
               title="Commit Offering?"
               message="This commitment will be locked, and your organization agrees to honor this commitment until the end of the Epoch."
               confirmLabel="Confirm Commit"
+              tutorialAllowConfirm={tutorialStep === "box21"}
               onConfirm={() => {
                 onCommitFromCatalogCommitted(pendingCommittedCatalogCommitId);
                 if (tutorialStep === "box21") onTutorialStepChange("box21");
@@ -2747,6 +2759,7 @@ function AddOfferingSheet({
   initialCommitted,
   initialMCE,
   tutorialLockCost,
+  tutorialAllowSubmit = false,
 }: {
   type: "committed" | "mce";
   mces: ReturnType<typeof useDemo>["state"]["mces"];
@@ -2762,6 +2775,7 @@ function AddOfferingSheet({
   initialCommitted?: CustomOffering | null;
   initialMCE?: MCECustomOffering | null;
   tutorialLockCost?: number;
+  tutorialAllowSubmit?: boolean;
 }) {
   const [name, setName] = useState(type === "committed" ? (initialCommitted?.name ?? "") : (initialMCE?.name ?? ""));
   const [costCity, setCostCity] = useState(
@@ -2899,6 +2913,7 @@ function AddOfferingSheet({
             <div>
               <label style={labelStyle}>{isEditing ? "Offering Name (Locked)" : "Offering Name *"}</label>
               <input
+                data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
                 value={name}
                 onChange={e => setName(e.target.value)}
                 placeholder="e.g. 10% Grocery Discount"
@@ -3041,6 +3056,7 @@ function AddOfferingSheet({
           </div>
 
           <button
+            data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
             onClick={handleSubmit}
             disabled={type === "committed" ? !canSubmitCommitted : !canSubmitMCE}
             style={{
@@ -3273,6 +3289,7 @@ function ConfirmDialog({
   onConfirm,
   onCancel,
   warningOnly,
+  tutorialAllowConfirm,
 }: {
   title: string;
   message: string;
@@ -3280,6 +3297,7 @@ function ConfirmDialog({
   onConfirm: () => void;
   onCancel: () => void;
   warningOnly?: boolean;
+  tutorialAllowConfirm?: boolean;
 }) {
   return (
     <>
@@ -3345,6 +3363,7 @@ function ConfirmDialog({
             )}
             <button
               onClick={onConfirm}
+              data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               style={{
                 flex: 1,
                 background: warningOnly ? ACCENT : "rgba(255,107,157,0.15)",
@@ -3368,7 +3387,15 @@ function ConfirmDialog({
 
 // ─── QR Modal ─────────────────────────────────────────────────────────────────
 
-function QRModal({ offering, onClose }: { offering: QROfferingData; onClose: () => void }) {
+function QRModal({
+  offering,
+  onClose,
+  tutorialAllowDone = false,
+}: {
+  offering: QROfferingData;
+  onClose: () => void;
+  tutorialAllowDone?: boolean;
+}) {
   const qrPayload = `citysync://redeem?offer=${offering.id}&redeemer=${FAKE_WALLETS.redeemer}&cost=${offering.costCity}`;
 
   return (
@@ -3482,6 +3509,7 @@ function QRModal({ offering, onClose }: { offering: QROfferingData; onClose: () 
           </div>
 
           <button
+            data-tutorial-allow={tutorialAllowDone ? "true" : undefined}
             onClick={onClose}
             style={{
               width: "100%",

@@ -13,9 +13,10 @@ interface BottomNavProps {
   active: string;
   onChange: (key: string) => void;
   accentColor?: string;
+  locked?: boolean;
 }
 
-export default function BottomNav({ tabs, active, onChange, accentColor = "#4169E1" }: BottomNavProps) {
+export default function BottomNav({ tabs, active, onChange, accentColor = "#4169E1", locked = false }: BottomNavProps) {
   const activeBg = `${accentColor}20`;
   const lastIdx = tabs.length - 1;
 
@@ -39,7 +40,10 @@ export default function BottomNav({ tabs, active, onChange, accentColor = "#4169
         return (
           <button
             key={tab.key}
-            onClick={() => onChange(tab.key)}
+            onClick={() => {
+              if (!locked) onChange(tab.key);
+            }}
+            disabled={locked}
             className="flex flex-col items-center justify-center gap-0.5 transition-all"
             style={{
               color: isActive ? accentColor : "rgba(255,255,255,0.45)",
@@ -49,6 +53,8 @@ export default function BottomNav({ tabs, active, onChange, accentColor = "#4169
               paddingTop: 8,
               paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
               borderRadius,
+              cursor: locked ? "not-allowed" : "pointer",
+              opacity: locked ? 0.72 : 1,
             }}
           >
             <span
