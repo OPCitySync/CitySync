@@ -4178,7 +4178,10 @@ function VerifyTab({
         );
 
         const completionTargets: Array<{ itemBase: OnchainVerifyItem; id: bigint; claimant: `0x${string}` }> = [];
-        issuerItems.forEach(({ id, itemBase }, idx) => {
+        issuerItems.forEach(({ id, itemBase, opp }, idx) => {
+          // Inactive opportunities are out of circulation (unissued/no-show/etc.)
+          // and should not appear in Issued/Claimed/Completed verify lists.
+          if (!opp[9]) return;
           const claimantResult = claimantResults[idx];
           if (!claimantResult || claimantResult.status !== "success") return;
           const claimant = claimantResult.result as `0x${string}`;
