@@ -478,7 +478,17 @@ const CAT_COLORS: Record<string, string> = {
 
 // ─── Claim Confirmation Sheet ─────────────────────────────────────────────────
 
-function ClaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConfirm: () => void; onCancel: () => void }) {
+function ClaimConfirmSheet({
+  task,
+  onConfirm,
+  onCancel,
+  tutorialAllowConfirm = false,
+}: {
+  task: Task;
+  onConfirm: () => void;
+  onCancel: () => void;
+  tutorialAllowConfirm?: boolean;
+}) {
   return (
     <>
       <style>{`
@@ -489,7 +499,10 @@ function ClaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConfir
       `}</style>
 
       {/* Overlay wrapper — pointerEvents:none so BottomNav area stays clickable */}
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div
+        style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}
+        data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
+      >
         {/* Backdrop — stops at BottomNav top (69 px from bottom) */}
         <div
           style={{
@@ -540,6 +553,7 @@ function ClaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConfir
           <div style={{ display: "flex", gap: 10 }}>
             <button
               onClick={onCancel}
+              data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               style={{
                 flex: 1,
                 background: "rgba(255,255,255,0.1)",
@@ -556,6 +570,7 @@ function ClaimConfirmSheet({ task, onConfirm, onCancel }: { task: Task; onConfir
             </button>
             <button
               onClick={onConfirm}
+              data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               style={{
                 flex: 1,
                 background: TEAL,
@@ -3241,6 +3256,7 @@ function ExploreTab({
           task={claimConfirmTask}
           onConfirm={() => handleClaimConfirmed(claimConfirmTask)}
           onCancel={() => setClaimConfirmTask(null)}
+          tutorialAllowConfirm={tutorialStep === "box11"}
         />
       )}
       {unclaimConfirmTask && (
