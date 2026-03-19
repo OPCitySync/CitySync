@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAccount } from "@account-kit/react";
+import { useRouter } from "next/navigation";
 import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
@@ -25,6 +26,21 @@ const ACCENT = "#4169E1"; // blue — primary
 const TEAL = "#34eeb6"; // teal — tasks / rewards / verify
 const GOLD = "#DD9E33"; // gold — MCE / redemptions
 const PURPLE = "#a78bfa"; // purple — governance / vote
+const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
+type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "dismissed";
+const SHARED_TUTORIAL_INTRO_TEXT =
+  "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
+
+function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
+  if (typeof window === "undefined") return "intro";
+  try {
+    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
+    if (raw === "intro" || raw === "box1" || raw === "box2" || raw === "box3" || raw === "dismissed") return raw;
+  } catch {
+    // Ignore storage failures.
+  }
+  return "intro";
+}
 
 type ParticipantLearnCardKey =
   | "profile-overview"
@@ -3955,24 +3971,150 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
 
 export default function ParticipantPage() {
   const { state, setRole } = useDemo();
+  const router = useRouter();
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const [openInfoCards, setOpenInfoCards] = useState<ParticipantLearnCardKey[]>([]);
+  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
 
   useEffect(() => {
     if (!state.role) setRole("participant");
   }, [state.role, setRole]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, tutorialStep);
+    } catch {
+      // Ignore storage failures.
+    }
+  }, [tutorialStep]);
+
+  const startIssuerTutorial = React.useCallback(() => {
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
+    } catch {
+      // Ignore storage failures.
+    }
+    setTutorialStep("box1");
+    setRole("issuer");
+    router.push("/demo/issuer");
+  }, [router, setRole]);
+
   const rightPanel = getParticipantRightPanel(activeTab);
-  const leftPanel =
-    openInfoCards.length > 0 ? (
-      <LearnMorePanel
-        keys={openInfoCards}
-        cards={PARTICIPANT_LEARN_CARDS}
-        onClose={key => setOpenInfoCards(prev => prev.filter(existing => existing !== key))}
-        accent={ACCENT}
-      />
-    ) : null;
+  const leftPanel = (
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
+      {tutorialStep !== "dismissed" ? (
+        <div
+          style={{
+            background: "rgba(221,158,51,0.08)",
+            border: "1px solid rgba(221,158,51,0.28)",
+            borderRadius: 16,
+            padding: 14,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 10,
+              color: "rgba(221,158,51,0.8)",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              fontWeight: 700,
+              marginBottom: 6,
+            }}
+          >
+            Tutorial
+          </div>
+          <div style={{ fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 }}>
+            Welcome to the City/Sync Demo
+          </div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
+            {SHARED_TUTORIAL_INTRO_TEXT}
+          </div>
+          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            <button
+              onClick={() => setTutorialStep("dismissed")}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              No Thanks
+            </button>
+            <button
+              onClick={startIssuerTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "#DD9E33",
+                color: "#15151E",
+              }}
+            >
+              Start Tutorial
+            </button>
+          </div>
+        </div>
+      ) : null}
+      {openInfoCards.length > 0 ? (
+        <LearnMorePanel
+          keys={openInfoCards}
+          cards={PARTICIPANT_LEARN_CARDS}
+          onClose={key => setOpenInfoCards(prev => prev.filter(existing => existing !== key))}
+          accent={ACCENT}
+        />
+      ) : (
+        <div
+          style={{
+            background: "rgba(255,255,255,0.025)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 16,
+            padding: 14,
+            fontSize: 12,
+            color: "rgba(255,255,255,0.62)",
+            lineHeight: 1.55,
+          }}
+        >
+          Use Learn More links in the app to load contextual cards in this panel.
+        </div>
+      )}
+      {tutorialStep === "dismissed" && (
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: 10,
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <button
+            onClick={startIssuerTutorial}
+            style={{
+              width: "100%",
+              border: "1px dashed rgba(221,158,51,0.4)",
+              background: "rgba(221,158,51,0.08)",
+              color: "#DD9E33",
+              borderRadius: 10,
+              padding: "9px 10px",
+              fontSize: 12,
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Start Tutorial
+          </button>
+        </div>
+      )}
+    </div>
+  );
 
   const openLearnMore = React.useCallback((key: ParticipantLearnCardKey) => {
     setOpenInfoCards(prev => (prev.includes(key) ? prev : [...prev, key]));

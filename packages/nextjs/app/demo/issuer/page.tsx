@@ -112,6 +112,7 @@ const TABS = [
 const EPOCH1_CAP = 312;
 const EPOCH_RESET_KEY = "citysync:demo:issuer:epochReset:v1";
 const EPOCH_RESET_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
+const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
 
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
@@ -274,6 +275,17 @@ const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
 };
 
 type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "dismissed";
+
+function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
+  if (typeof window === "undefined") return "intro";
+  try {
+    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
+    if (raw === "intro" || raw === "box1" || raw === "box2" || raw === "box3" || raw === "dismissed") return raw;
+  } catch {
+    // Ignore storage access failures.
+  }
+  return "intro";
+}
 
 function TutorialCard({
   title,
@@ -535,7 +547,7 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
-  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>("intro");
+  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
     taskId: string;
@@ -634,6 +646,15 @@ export default function IssuerApp() {
     // Intentional mount-only role selection; avoids reruns when callback identity updates.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, tutorialStep);
+    } catch {
+      // Ignore storage access failures.
+    }
+  }, [tutorialStep]);
 
   // Weekly epoch reset: 250ms settle lets DemoContext hydrate issuer.tasks before we snapshot.
   React.useEffect(() => {
