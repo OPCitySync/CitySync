@@ -3187,6 +3187,7 @@ function ProposeTaskSheet({
       `}</style>
       <div
         onClick={e => e.stopPropagation()}
+        data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
         style={{
           position: "fixed",
           top: 112,
