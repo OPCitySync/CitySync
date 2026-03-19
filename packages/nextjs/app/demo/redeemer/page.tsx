@@ -540,7 +540,7 @@ export default function RedeemerApp() {
   });
   const [tutorialCatalogOfferingId, setTutorialCatalogOfferingId] = useState<string | null>(null);
   const [tutorialActiveOfferingId, setTutorialActiveOfferingId] = useState<string | null>(null);
-  const tutorialLockActive = tutorialStep !== "dismissed";
+  const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
 
   const { redeemer, mces } = state;
   // Only require `address` — the smart-account client can lag behind by

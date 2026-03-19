@@ -4336,7 +4336,7 @@ export default function ParticipantPage() {
     return initial;
   });
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
-  const tutorialLockActive = tutorialStep !== "dismissed";
+  const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
 
   useEffect(() => {
     if (!state.role) setRole("participant");

@@ -514,7 +514,6 @@ export default function DemoHome() {
               <div className="px-6 pb-6">
                 <Link
                   href={role.href}
-                  onClick={() => setRole(role.key)}
                   className="flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition-opacity hover:opacity-90"
                   style={{ background: role.accent, color: "#0D0D14", textDecoration: "none" }}
                 >

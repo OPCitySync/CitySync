@@ -799,7 +799,7 @@ export default function IssuerApp() {
 
   const { issuer } = state;
   issuerTasksRef.current = issuer.tasks;
-  const tutorialLockActive = tutorialStep !== "dismissed";
+  const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
   const rightPanel = getIssuerRightPanel(activeTab);
   const exitIssuerTutorial = React.useCallback(() => {
     if (tutorialStep !== "intro" && tutorialStep !== "dismissed") {
