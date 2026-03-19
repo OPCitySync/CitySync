@@ -1374,7 +1374,11 @@ function ProfileTab({
                       value={nameInput}
                       onChange={e => setNameInput(e.target.value)}
                       onKeyDown={e => {
-                        if (e.key === "Enter") saveEdit();
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          saveEdit();
+                        }
                         if (e.key === "Escape") cancelEdit();
                       }}
                       style={{
