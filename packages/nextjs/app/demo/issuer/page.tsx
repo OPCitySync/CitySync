@@ -115,7 +115,6 @@ const EPOCH1_CAP = 312;
 const EPOCH_RESET_KEY = "citysync:demo:issuer:epochReset:v1";
 const EPOCH_RESET_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
-const ISSUER_TUTORIAL_PAUSED_STORAGE_KEY = "citysync:demo:issuer:tutorial:paused:v1";
 
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
@@ -346,54 +345,6 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
     // Ignore storage access failures.
   }
   return "intro";
-}
-
-function readPausedIssuerTutorialStepFromStorage(): IssuerTutorialStep | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
-    if (
-      raw === "box1" ||
-      raw === "box2" ||
-      raw === "box3" ||
-      raw === "box4" ||
-      raw === "box5" ||
-      raw === "box6" ||
-      raw === "box7" ||
-      raw === "box8" ||
-      raw === "box9" ||
-      raw === "box10" ||
-      raw === "box11" ||
-      raw === "box12" ||
-      raw === "box13" ||
-      raw === "box14" ||
-      raw === "box15" ||
-      raw === "box16" ||
-      raw === "box17" ||
-      raw === "box18" ||
-      raw === "box19" ||
-      raw === "box20" ||
-      raw === "box21" ||
-      raw === "box22" ||
-      raw === "box23" ||
-      raw === "box24" ||
-      raw === "box25" ||
-      raw === "box26"
-    )
-      return raw;
-  } catch {
-    // Ignore storage access failures.
-  }
-  return null;
-}
-
-function clearPausedIssuerTutorialStep(): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.removeItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
-  } catch {
-    // Ignore storage access failures.
-  }
 }
 
 function TutorialCard({
@@ -770,14 +721,7 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
-  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => {
-    const initial = readIssuerTutorialStepFromStorage();
-    if (initial === "dismissed") {
-      const paused = readPausedIssuerTutorialStepFromStorage();
-      if (paused) return paused;
-    }
-    return initial;
-  });
+  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
     taskId: string;
@@ -802,22 +746,14 @@ export default function IssuerApp() {
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
   const rightPanel = getIssuerRightPanel(activeTab);
   const exitIssuerTutorial = React.useCallback(() => {
-    if (tutorialStep !== "intro" && tutorialStep !== "dismissed") {
-      try {
-        window.localStorage.setItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY, tutorialStep);
-      } catch {
-        // Ignore storage failures.
-      }
-    }
     setTutorialStep("dismissed");
-  }, [tutorialStep]);
+  }, []);
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       <IssuerTutorialPanel
         step={tutorialStep}
         orgName={issuer.orgName}
         onStart={() => {
-          clearPausedIssuerTutorialStep();
           startDemoTutorialRun();
           setActiveTab("profile");
           setTutorialStep("box1");
@@ -868,13 +804,6 @@ export default function IssuerApp() {
         >
           <button
             onClick={() => {
-              const pausedStep = readPausedIssuerTutorialStepFromStorage();
-              if (pausedStep) {
-                clearPausedIssuerTutorialStep();
-                setTutorialStep(pausedStep);
-                return;
-              }
-              clearPausedIssuerTutorialStep();
               startDemoTutorialRun();
               setActiveTab("profile");
               setTutorialStep("box1");
@@ -891,7 +820,7 @@ export default function IssuerApp() {
               cursor: "pointer",
             }}
           >
-            Resume Tutorial
+            Start Tutorial
           </button>
         </div>
       )}
@@ -915,11 +844,6 @@ export default function IssuerApp() {
     } catch {
       // Ignore storage access failures.
     }
-  }, [tutorialStep]);
-
-  React.useEffect(() => {
-    if (tutorialStep === "dismissed") return;
-    clearPausedIssuerTutorialStep();
   }, [tutorialStep]);
 
   React.useEffect(() => {

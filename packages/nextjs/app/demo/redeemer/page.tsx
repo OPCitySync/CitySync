@@ -112,7 +112,6 @@ const ACCENT_GOLD = "#DD9E33"; // gold — MCE / business
 const ACCENT_BLUE = "#7eb3ff"; // blue — stats / info
 const ACCENT_PURPLE = "#a78bfa"; // purple — catalog / network
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
-const ISSUER_TUTORIAL_PAUSED_STORAGE_KEY = "citysync:demo:issuer:tutorial:paused:v1";
 type IssuerTutorialStep =
   | "intro"
   | "box1"
@@ -186,53 +185,6 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   return "intro";
 }
 
-function readPausedIssuerTutorialStepFromStorage(): IssuerTutorialStep | null {
-  if (typeof window === "undefined") return null;
-  try {
-    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
-    if (
-      raw === "box1" ||
-      raw === "box2" ||
-      raw === "box3" ||
-      raw === "box4" ||
-      raw === "box5" ||
-      raw === "box6" ||
-      raw === "box7" ||
-      raw === "box8" ||
-      raw === "box9" ||
-      raw === "box10" ||
-      raw === "box11" ||
-      raw === "box12" ||
-      raw === "box13" ||
-      raw === "box14" ||
-      raw === "box15" ||
-      raw === "box16" ||
-      raw === "box17" ||
-      raw === "box18" ||
-      raw === "box19" ||
-      raw === "box20" ||
-      raw === "box21" ||
-      raw === "box22" ||
-      raw === "box23" ||
-      raw === "box24" ||
-      raw === "box25" ||
-      raw === "box26"
-    )
-      return raw;
-  } catch {
-    // Ignore storage access failures.
-  }
-  return null;
-}
-
-function clearPausedIssuerTutorialStep(): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.removeItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
-  } catch {
-    // Ignore storage access failures.
-  }
-}
 const SURFACE = "#1E1E2C";
 const BG = "#15151E";
 const MUTED = "rgba(255,255,255,0.45)";
@@ -530,14 +482,7 @@ export default function RedeemerApp() {
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
   const [offerWriteStatus, setOfferWriteStatus] = useState<OfferWriteStatus>({ state: "idle" });
   const [openInfoCards, setOpenInfoCards] = useState<RedeemerLearnCardKey[]>([]);
-  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => {
-    const initial = readIssuerTutorialStepFromStorage();
-    if (initial === "dismissed") {
-      const paused = readPausedIssuerTutorialStepFromStorage();
-      if (paused) return paused;
-    }
-    return initial;
-  });
+  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialCatalogOfferingId, setTutorialCatalogOfferingId] = useState<string | null>(null);
   const [tutorialActiveOfferingId, setTutorialActiveOfferingId] = useState<string | null>(null);
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
@@ -579,15 +524,8 @@ export default function RedeemerApp() {
     }
   }, [tutorialStep]);
   const exitTutorial = React.useCallback(() => {
-    if (tutorialStep !== "intro" && tutorialStep !== "dismissed") {
-      try {
-        window.localStorage.setItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY, tutorialStep);
-      } catch {
-        // Ignore storage failures.
-      }
-    }
     setTutorialStep("dismissed");
-  }, [tutorialStep]);
+  }, []);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
   const tutorialCard = (() => {
     if (tutorialStep === "dismissed") return null;
@@ -750,7 +688,6 @@ export default function RedeemerApp() {
           </button>
           <button
             onClick={() => {
-              clearPausedIssuerTutorialStep();
               startDemoTutorialRun();
               try {
                 window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
@@ -813,13 +750,6 @@ export default function RedeemerApp() {
         >
           <button
             onClick={() => {
-              const pausedStep = readPausedIssuerTutorialStepFromStorage();
-              if (pausedStep) {
-                clearPausedIssuerTutorialStep();
-                setTutorialStep(pausedStep);
-                return;
-              }
-              clearPausedIssuerTutorialStep();
               startDemoTutorialRun();
               try {
                 window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
@@ -842,7 +772,7 @@ export default function RedeemerApp() {
               cursor: "pointer",
             }}
           >
-            Resume Tutorial
+            Start Tutorial
           </button>
         </div>
       )}
@@ -866,11 +796,6 @@ export default function RedeemerApp() {
     } catch {
       // Ignore storage access failures.
     }
-  }, [tutorialStep]);
-
-  React.useEffect(() => {
-    if (tutorialStep === "dismissed") return;
-    clearPausedIssuerTutorialStep();
   }, [tutorialStep]);
 
   // Auto-process queued redemptions after 3 s to simulate business fulfillment.
