@@ -85,3 +85,12 @@ export const appendDemoTutorialOfferingIds = (offeringIds: string[]): DemoTutori
 };
 
 export const getDemoTutorialOfferingIds = (): string[] => readDemoTutorialRun()?.offeringIds ?? [];
+
+export const clearDemoTutorialRun = (): void => {
+  if (!isBrowser()) return;
+  try {
+    window.localStorage.removeItem(DEMO_TUTORIAL_RUN_STORAGE_KEY);
+  } catch {
+    // Ignore localStorage failures.
+  }
+};

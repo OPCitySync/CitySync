@@ -115,6 +115,7 @@ const EPOCH1_CAP = 312;
 const EPOCH_RESET_KEY = "citysync:demo:issuer:epochReset:v1";
 const EPOCH_RESET_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
+const ISSUER_TUTORIAL_PAUSED_STORAGE_KEY = "citysync:demo:issuer:tutorial:paused:v1";
 
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
@@ -347,6 +348,54 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   return "intro";
 }
 
+function readPausedIssuerTutorialStepFromStorage(): IssuerTutorialStep | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
+    if (
+      raw === "box1" ||
+      raw === "box2" ||
+      raw === "box3" ||
+      raw === "box4" ||
+      raw === "box5" ||
+      raw === "box6" ||
+      raw === "box7" ||
+      raw === "box8" ||
+      raw === "box9" ||
+      raw === "box10" ||
+      raw === "box11" ||
+      raw === "box12" ||
+      raw === "box13" ||
+      raw === "box14" ||
+      raw === "box15" ||
+      raw === "box16" ||
+      raw === "box17" ||
+      raw === "box18" ||
+      raw === "box19" ||
+      raw === "box20" ||
+      raw === "box21" ||
+      raw === "box22" ||
+      raw === "box23" ||
+      raw === "box24" ||
+      raw === "box25" ||
+      raw === "box26"
+    )
+      return raw;
+  } catch {
+    // Ignore storage access failures.
+  }
+  return null;
+}
+
+function clearPausedIssuerTutorialStep(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
+  } catch {
+    // Ignore storage access failures.
+  }
+}
+
 function TutorialCard({
   title,
   body,
@@ -434,6 +483,7 @@ function IssuerTutorialPanel({
   orgName,
   onStart,
   onDismissIntro,
+  onExit,
   onContinueBox2,
   onContinueBox3,
   onContinueBox4,
@@ -443,6 +493,7 @@ function IssuerTutorialPanel({
   orgName: string;
   onStart: () => void;
   onDismissIntro: () => void;
+  onExit: () => void;
   onContinueBox2: () => void;
   onContinueBox3: () => void;
   onContinueBox4: () => void;
@@ -468,7 +519,9 @@ function IssuerTutorialPanel({
           subtitle="Step 1"
           title="Let's start with Issuers"
           body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nIssuers can use the City/Sync platform to enhance their already existing Volunteer Programs or build new ones from the ground up.\n\nThis protocol offers a discovery method for civic participants to learn about new volunteer opportunities in their city.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
 
       {step === "box2" && (
@@ -477,6 +530,7 @@ function IssuerTutorialPanel({
           title={`Welcome ${safeOrgName}!`}
           body="Great name!\n\nEvery Issuer organization that is certified through City/Sync will have an opportunity to participate in the Public-Sector economy. There are 3 roles within this economy: Issuers, Civic Participants, and Redeemers.\n\nIssuers have the ability to expand their volunteer programs by issuing civic-tasks that expand their organizational impact and mission, and rewarding Civic-Participants for doing so! Civic-Participants are any individuals who execute these tasks and spend their credits at participating Redeemer Organizations.\n\nThis is the basis for the public-sector economy. Verified civic-labor mints credits that can be spent on local goods and services. All credits redeemed for goods and services are removed from circulation, so the balance between issuance and redemption must be maintained."
         >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
           <TutorialActionButton label="Continue" onClick={onContinueBox2} />
         </TutorialCard>
       )}
@@ -487,6 +541,7 @@ function IssuerTutorialPanel({
           title="Understanding the Issuance Cap"
           body="In order to sustain this balance, we implement an economic control lever called an Issuance Cap.\n\nAn issuance cap the maximum amount of civic credits that can be issued within a 3 month period, which we call an Epoch.\n\nIf redemption rates are strong (civic participants are spending credits), and credits are circulating smoothly, the issuance cap can expand gradually.\n\nIf redemption slows or credits accumulate in wallets without use, the issuance cap will tighten. The issuance cap is a feedback loop that nudges the system toward equilibrium.\n\nAll issuer organizations can keep track of how many credits they've issued during the epoch, and can plan their volunteer programs according to the limits of the issuance cap."
         >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
           <TutorialActionButton label="Continue" onClick={onContinueBox3} />
         </TutorialCard>
       )}
@@ -497,6 +552,7 @@ function IssuerTutorialPanel({
           title="Task Catalogs and Governance"
           body="All issuer organizations will manage their own task catalog which tracks all the details about a specific volunteer opportunity including the date/time/location of the opportunity, the amount of hours, the success criteria, and the rate of CITY issuance that is desired.\n\nAll tasks proposed by Issuer organizations must be approved by the Issuer governance committee that manages the catalogs. Creating a catalog for all existing volunteer opportunities allows the protocol to fine-tune the issuance of credits by classifying similar tasks, similarly.\n\nIt also allows for task issuance to be guided by rules that keep tasks aligned to public-sector goals. The initial ruleset will make two declarations: (1) tasks cannot replace existing paid functions of the Issuer organization, and (2) tasks must facilitate the delivery of a public good or public service."
         >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
           <TutorialActionButton label="Continue" onClick={onContinueBox4} />
         </TutorialCard>
       )}
@@ -506,7 +562,9 @@ function IssuerTutorialPanel({
           subtitle="Step 5"
           title="Propose a New Task"
           body="Issuer Organizations can propose the creation of a new task to be added to their catalog at any time. There is a standardized template for proposing tasks. Let's create one by clicking the + Propose New Task for Approval button.\n\nWe will auto-fill this task for you to start. When you're ready, let's talk about how they are approved."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
 
       {step === "box6" && (
@@ -514,7 +572,9 @@ function IssuerTutorialPanel({
           subtitle="Step 6"
           title="Approve Your Proposed Task"
           body="Great. Your proposed task is now ready for catalog approval.\n\nGo ahead and approve your task for the catalog."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
 
       {step === "box7" && (
@@ -522,7 +582,9 @@ function IssuerTutorialPanel({
           subtitle="Step 7"
           title="Issue from Your Catalog"
           body="Once a task has been approved, it is placed within your organizational task catalog. You can issue tasks from your catalog at any time."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
 
       {step === "box8" && (
@@ -530,7 +592,9 @@ function IssuerTutorialPanel({
           subtitle="Step 8"
           title="Choose Issuance Slots"
           body="When issuing tasks, Issuers are able to create multiple instances of that task to be made available for the public to claim.\n\nGo ahead and approve the 3 tasks for issuance."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
 
       {step === "box9" && (
@@ -539,6 +603,7 @@ function IssuerTutorialPanel({
           title="Great — Tasks Are Live"
           body="Now that we've issued our first tasks, lets take a look at the Civic Participant, and how they can claim tasks and execute them."
         >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
           <TutorialActionButton label="Continue" onClick={onContinueBox9} />
         </TutorialCard>
       )}
@@ -548,7 +613,9 @@ function IssuerTutorialPanel({
           subtitle="Step 15"
           title="Issued, Claimed, and Completed"
           body="All issued task will be in one of three states: Issued, Claimed, and Completed. Issued tasks can be unissued by the Issuer. Unissued tasks are removed from circulation.\n\nGo ahead an Unissue one of your tasks."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
 
       {step === "box16" && (
@@ -556,7 +623,9 @@ function IssuerTutorialPanel({
           subtitle="Step 16"
           title="Handling No-Shows"
           body="If a Civic-Participant fails to show up for their claimed task, Issuers can select the No Show button to remove the claimed task out of circulation. No Shows by Civic-Participants are tracked to prevent abuse.\n\nGo ahead and select Mark No-Show for this task."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
 
       {step === "box17" && (
@@ -564,7 +633,9 @@ function IssuerTutorialPanel({
           subtitle="Step 17"
           title="Verify or Reject with Mint"
           body="Issuers are responsible for verifying that the work was actually completed by the Civic-Participant. Once verification is complete they can either reject completion as unsatisfactory with feedback or verify. Rejections are designed to keep Civic-Participants accountable. In both circumstances, credits will be minted to the Civic-Participant.\n\nGo ahead and Verify & Mint."
-        />
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
       )}
     </div>
   );
@@ -699,7 +770,14 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
-  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
+  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => {
+    const initial = readIssuerTutorialStepFromStorage();
+    if (initial === "dismissed") {
+      const paused = readPausedIssuerTutorialStepFromStorage();
+      if (paused) return paused;
+    }
+    return initial;
+  });
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
     taskId: string;
@@ -722,17 +800,29 @@ export default function IssuerApp() {
   const { issuer } = state;
   issuerTasksRef.current = issuer.tasks;
   const rightPanel = getIssuerRightPanel(activeTab);
+  const exitIssuerTutorial = React.useCallback(() => {
+    if (tutorialStep !== "intro" && tutorialStep !== "dismissed") {
+      try {
+        window.localStorage.setItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY, tutorialStep);
+      } catch {
+        // Ignore storage failures.
+      }
+    }
+    setTutorialStep("dismissed");
+  }, [tutorialStep]);
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       <IssuerTutorialPanel
         step={tutorialStep}
         orgName={issuer.orgName}
         onStart={() => {
+          clearPausedIssuerTutorialStep();
           startDemoTutorialRun();
           setActiveTab("profile");
           setTutorialStep("box1");
         }}
-        onDismissIntro={() => setTutorialStep("dismissed")}
+        onDismissIntro={exitIssuerTutorial}
+        onExit={exitIssuerTutorial}
         onContinueBox2={() => setTutorialStep("box3")}
         onContinueBox3={() => {
           setActiveTab("tasks");
@@ -777,6 +867,13 @@ export default function IssuerApp() {
         >
           <button
             onClick={() => {
+              const pausedStep = readPausedIssuerTutorialStepFromStorage();
+              if (pausedStep) {
+                clearPausedIssuerTutorialStep();
+                setTutorialStep(pausedStep);
+                return;
+              }
+              clearPausedIssuerTutorialStep();
               startDemoTutorialRun();
               setActiveTab("profile");
               setTutorialStep("box1");
@@ -793,7 +890,7 @@ export default function IssuerApp() {
               cursor: "pointer",
             }}
           >
-            Start Tutorial
+            Resume Tutorial
           </button>
         </div>
       )}
@@ -817,6 +914,11 @@ export default function IssuerApp() {
     } catch {
       // Ignore storage access failures.
     }
+  }, [tutorialStep]);
+
+  React.useEffect(() => {
+    if (tutorialStep === "dismissed") return;
+    clearPausedIssuerTutorialStep();
   }, [tutorialStep]);
 
   React.useEffect(() => {

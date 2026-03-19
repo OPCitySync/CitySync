@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useLogout, useSignerStatus } from "@account-kit/react";
 import { LoginScreen } from "./_components/LoginScreen";
 import { useDemo } from "./_context/DemoContext";
@@ -176,9 +177,111 @@ const ECONOMY_CARDS = [
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const GUEST_KEY = "citysync:demo:guestMode";
+const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
+const ISSUER_TUTORIAL_PAUSED_STORAGE_KEY = "citysync:demo:issuer:tutorial:paused:v1";
+type IssuerTutorialStep =
+  | "intro"
+  | "box1"
+  | "box2"
+  | "box3"
+  | "box4"
+  | "box5"
+  | "box6"
+  | "box7"
+  | "box8"
+  | "box9"
+  | "box10"
+  | "box11"
+  | "box12"
+  | "box13"
+  | "box14"
+  | "box15"
+  | "box16"
+  | "box17"
+  | "box18"
+  | "box19"
+  | "box20"
+  | "box21"
+  | "box22"
+  | "box23"
+  | "box24"
+  | "box25"
+  | "box26"
+  | "dismissed";
+
+const readTutorialStep = (): IssuerTutorialStep => {
+  if (typeof window === "undefined") return "intro";
+  const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
+  const valid: IssuerTutorialStep[] = [
+    "intro",
+    "box1",
+    "box2",
+    "box3",
+    "box4",
+    "box5",
+    "box6",
+    "box7",
+    "box8",
+    "box9",
+    "box10",
+    "box11",
+    "box12",
+    "box13",
+    "box14",
+    "box15",
+    "box16",
+    "box17",
+    "box18",
+    "box19",
+    "box20",
+    "box21",
+    "box22",
+    "box23",
+    "box24",
+    "box25",
+    "box26",
+    "dismissed",
+  ];
+  return valid.includes(raw as IssuerTutorialStep) ? (raw as IssuerTutorialStep) : "intro";
+};
+
+const readPausedTutorialStep = (): IssuerTutorialStep | null => {
+  if (typeof window === "undefined") return null;
+  const raw = window.localStorage.getItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
+  const valid: IssuerTutorialStep[] = [
+    "box1",
+    "box2",
+    "box3",
+    "box4",
+    "box5",
+    "box6",
+    "box7",
+    "box8",
+    "box9",
+    "box10",
+    "box11",
+    "box12",
+    "box13",
+    "box14",
+    "box15",
+    "box16",
+    "box17",
+    "box18",
+    "box19",
+    "box20",
+    "box21",
+    "box22",
+    "box23",
+    "box24",
+    "box25",
+    "box26",
+  ];
+  return valid.includes(raw as IssuerTutorialStep) ? (raw as IssuerTutorialStep) : null;
+};
 
 export default function DemoHome() {
   const { setRole } = useDemo();
+  const router = useRouter();
   const { isConnected } = useSignerStatus();
   const { logout } = useLogout();
   const [guestMode, setGuestMode] = React.useState(() => {
@@ -187,8 +290,68 @@ export default function DemoHome() {
   });
   const orderedRoles = [...ROLES].sort((a, b) => ROLE_ORDER[a.key] - ROLE_ORDER[b.key]);
 
+  React.useEffect(() => {
+    if (!isConnected || guestMode) return;
+    const step = readTutorialStep();
+    const resumeStep = step === "dismissed" ? readPausedTutorialStep() : step;
+    if (!resumeStep) return;
+    if (resumeStep === "intro" || resumeStep === "dismissed") return;
+
+    const isIssuerStep =
+      resumeStep === "box1" ||
+      resumeStep === "box2" ||
+      resumeStep === "box3" ||
+      resumeStep === "box4" ||
+      resumeStep === "box5" ||
+      resumeStep === "box6" ||
+      resumeStep === "box7" ||
+      resumeStep === "box8" ||
+      resumeStep === "box9" ||
+      resumeStep === "box15" ||
+      resumeStep === "box16" ||
+      resumeStep === "box17";
+    const isRedeemerStep =
+      resumeStep === "box18" ||
+      resumeStep === "box19" ||
+      resumeStep === "box20" ||
+      resumeStep === "box21" ||
+      resumeStep === "box22";
+    const isParticipantStep =
+      resumeStep === "box10" ||
+      resumeStep === "box11" ||
+      resumeStep === "box12" ||
+      resumeStep === "box13" ||
+      resumeStep === "box14" ||
+      resumeStep === "box23" ||
+      resumeStep === "box24" ||
+      resumeStep === "box25" ||
+      resumeStep === "box26";
+
+    if (isIssuerStep) {
+      setRole("issuer");
+      router.replace("/demo/issuer");
+      return;
+    }
+    if (isRedeemerStep) {
+      setRole("redeemer");
+      router.replace("/demo/redeemer");
+      return;
+    }
+    if (isParticipantStep) {
+      setRole("participant");
+      router.replace("/demo/participant");
+    }
+  }, [guestMode, isConnected, router, setRole]);
+
   if (!isConnected && !guestMode)
-    return <LoginScreen onGuest={() => { window.localStorage.setItem(GUEST_KEY, "1"); setGuestMode(true); }} />;
+    return (
+      <LoginScreen
+        onGuest={() => {
+          window.localStorage.setItem(GUEST_KEY, "1");
+          setGuestMode(true);
+        }}
+      />
+    );
 
   return (
     <div

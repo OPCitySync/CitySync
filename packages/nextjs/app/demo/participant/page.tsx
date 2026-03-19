@@ -28,6 +28,7 @@ const TEAL = "#34eeb6"; // teal — tasks / rewards / verify
 const GOLD = "#DD9E33"; // gold — MCE / redemptions
 const PURPLE = "#a78bfa"; // purple — governance / vote
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
+const ISSUER_TUTORIAL_PAUSED_STORAGE_KEY = "citysync:demo:issuer:tutorial:paused:v1";
 type IssuerTutorialStep =
   | "intro"
   | "box1"
@@ -99,6 +100,54 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
     // Ignore storage failures.
   }
   return "intro";
+}
+
+function readPausedIssuerTutorialStepFromStorage(): IssuerTutorialStep | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
+    if (
+      raw === "box1" ||
+      raw === "box2" ||
+      raw === "box3" ||
+      raw === "box4" ||
+      raw === "box5" ||
+      raw === "box6" ||
+      raw === "box7" ||
+      raw === "box8" ||
+      raw === "box9" ||
+      raw === "box10" ||
+      raw === "box11" ||
+      raw === "box12" ||
+      raw === "box13" ||
+      raw === "box14" ||
+      raw === "box15" ||
+      raw === "box16" ||
+      raw === "box17" ||
+      raw === "box18" ||
+      raw === "box19" ||
+      raw === "box20" ||
+      raw === "box21" ||
+      raw === "box22" ||
+      raw === "box23" ||
+      raw === "box24" ||
+      raw === "box25" ||
+      raw === "box26"
+    )
+      return raw;
+  } catch {
+    // Ignore storage access failures.
+  }
+  return null;
+}
+
+function clearPausedIssuerTutorialStep(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY);
+  } catch {
+    // Ignore storage access failures.
+  }
 }
 
 type ParticipantLearnCardKey =
@@ -4255,7 +4304,14 @@ export default function ParticipantPage() {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const [openInfoCards, setOpenInfoCards] = useState<ParticipantLearnCardKey[]>([]);
-  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
+  const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => {
+    const initial = readIssuerTutorialStepFromStorage();
+    if (initial === "dismissed") {
+      const paused = readPausedIssuerTutorialStepFromStorage();
+      if (paused) return paused;
+    }
+    return initial;
+  });
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
 
   useEffect(() => {
@@ -4271,7 +4327,13 @@ export default function ParticipantPage() {
     }
   }, [tutorialStep]);
 
+  useEffect(() => {
+    if (tutorialStep === "dismissed") return;
+    clearPausedIssuerTutorialStep();
+  }, [tutorialStep]);
+
   const startIssuerTutorial = React.useCallback(() => {
+    clearPausedIssuerTutorialStep();
     startDemoTutorialRun();
     try {
       window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
@@ -4282,6 +4344,27 @@ export default function ParticipantPage() {
     setRole("issuer");
     router.push("/demo/issuer");
   }, [router, setRole]);
+
+  const resumeIssuerTutorial = React.useCallback(() => {
+    const pausedStep = readPausedIssuerTutorialStepFromStorage();
+    if (!pausedStep) {
+      startIssuerTutorial();
+      return;
+    }
+    clearPausedIssuerTutorialStep();
+    setTutorialStep(pausedStep);
+  }, [startIssuerTutorial]);
+
+  const exitTutorial = React.useCallback(() => {
+    if (tutorialStep !== "intro" && tutorialStep !== "dismissed") {
+      try {
+        window.localStorage.setItem(ISSUER_TUTORIAL_PAUSED_STORAGE_KEY, tutorialStep);
+      } catch {
+        // Ignore storage failures.
+      }
+    }
+    setTutorialStep("dismissed");
+  }, [tutorialStep]);
 
   useEffect(() => {
     if (
@@ -4334,7 +4417,7 @@ export default function ParticipantPage() {
           <div style={{ ...bodyStyle, whiteSpace: "pre-line" }}>{SHARED_TUTORIAL_INTRO_TEXT}</div>
           <div style={buttonRowStyle}>
             <button
-              onClick={() => setTutorialStep("dismissed")}
+              onClick={exitTutorial}
               style={{
                 border: "none",
                 borderRadius: 10,
@@ -4379,6 +4462,21 @@ export default function ParticipantPage() {
           </div>
           <div style={buttonRowStyle}>
             <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
+            <button
               onClick={() => setTutorialStep("box11")}
               style={{
                 border: "none",
@@ -4404,6 +4502,23 @@ export default function ParticipantPage() {
           <div style={subtitleStyle}>Step 11</div>
           <div style={titleStyle}>Claim Two Tasks</div>
           <div style={bodyStyle}>Please go ahead and claim 2 of the 3 tasks.</div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
+          </div>
         </div>
       );
     }
@@ -4418,6 +4533,21 @@ export default function ParticipantPage() {
             tsaks at any given time. This ensures that Civic-Participants all have an equal opportunity to claim tasks.
           </div>
           <div style={buttonRowStyle}>
+            <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
             <button
               onClick={() => setTutorialStep("box13")}
               style={{
@@ -4447,6 +4577,23 @@ export default function ParticipantPage() {
             When executing a task, Civic-Participants will be able to submit proof of task completion and provide
             feedback to Issuers about their experience. Go ahead and Execute on of your two tasks.
           </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
+          </div>
         </div>
       );
     }
@@ -4460,6 +4607,21 @@ export default function ParticipantPage() {
             Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.
           </div>
           <div style={buttonRowStyle}>
+            <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
             <button
               onClick={() => {
                 setRole("issuer");
@@ -4493,6 +4655,23 @@ export default function ParticipantPage() {
             After completed tasks are verified, users are Minted CITY and VOTE. Civic-Participants can keep track of
             their balances in their wallet.
           </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
+          </div>
         </div>
       );
     }
@@ -4505,6 +4684,23 @@ export default function ParticipantPage() {
           <div style={bodyStyle}>
             Civic-Participants can spend their credits on available offerings. Go ahead and spend your credits on the
             offering you created by clicking redeem.
+          </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
           </div>
         </div>
       );
@@ -4521,6 +4717,21 @@ export default function ParticipantPage() {
             provide those goods and services.
           </div>
           <div style={buttonRowStyle}>
+            <button
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
             <button
               onClick={() => setTutorialStep("box26")}
               style={{
@@ -4553,7 +4764,25 @@ export default function ParticipantPage() {
           </div>
           <div style={buttonRowStyle}>
             <button
-              onClick={() => setTutorialStep("dismissed")}
+              onClick={exitTutorial}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "rgba(255,255,255,0.08)",
+                color: "rgba(255,255,255,0.8)",
+              }}
+            >
+              Exit Tutorial
+            </button>
+            <button
+              onClick={() => {
+                clearPausedIssuerTutorialStep();
+                setTutorialStep("dismissed");
+              }}
               style={{
                 border: "none",
                 borderRadius: 10,
@@ -4614,7 +4843,7 @@ export default function ParticipantPage() {
           }}
         >
           <button
-            onClick={startIssuerTutorial}
+            onClick={resumeIssuerTutorial}
             style={{
               width: "100%",
               border: "1px dashed rgba(221,158,51,0.4)",
@@ -4627,7 +4856,7 @@ export default function ParticipantPage() {
               cursor: "pointer",
             }}
           >
-            Start Tutorial
+            Resume Tutorial
           </button>
         </div>
       )}
