@@ -941,13 +941,8 @@ export default function IssuerApp() {
   };
 
   const handleApproveProposed = async (proposed: ProposedTask) => {
-    // Dedup check
-    const dupInCatalog = approvedCatalogTasks.some(t => t.title.toLowerCase() === proposed.title.toLowerCase());
-    const dupInIssued = issuer.tasks.some(t => t.title.toLowerCase() === proposed.title.toLowerCase());
-    if (dupInCatalog || dupInIssued) {
-      setToast("A task with this title already exists in the catalog.");
-      return;
-    }
+    const normalizedTitle = proposed.title.trim().toLowerCase();
+    const existingCatalogTask = approvedCatalogTasks.find(t => t.title.trim().toLowerCase() === normalizedTitle);
 
     // If we have an onchain proposal ID, call approveTask() on the contract
     if (proposed.onchainProposalId !== undefined) {
@@ -960,28 +955,51 @@ export default function IssuerApp() {
       setProposeWriteStatus({ state: "confirmed", hash: result.hash });
     }
 
-    const task: Task = {
-      id: `task-approved-${Date.now()}`,
-      title: proposed.title,
-      description: proposed.successCriteria || "Community civic task proposed by organization.",
-      category: "Community",
-      estimatedTime: proposed.estimatedTime,
-      location: proposed.location || "TBD",
-      credits: proposed.credits,
-      voteTokens: proposed.credits,
-      slots: 5,
-      slotsRemaining: 5,
-      issuerName: issuer.orgName,
-      issuerId: address ?? FAKE_WALLETS.issuer,
-      tags: proposed.tags,
-      taskDate: proposed.date || "TBD",
-      successCriteria: proposed.successCriteria || "",
-      creditRatePerHr: proposed.creditRate,
-      credentials: proposed.credentials || "None",
-      isMCE: false,
-      isOnboarding: false,
-    };
-    setApprovedCatalogTasks(prev => [task, ...prev]);
+    if (existingCatalogTask) {
+      setApprovedCatalogTasks(prev =>
+        prev.map(task =>
+          task.id === existingCatalogTask.id
+            ? {
+                ...task,
+                description: proposed.successCriteria || task.description,
+                estimatedTime: proposed.estimatedTime || task.estimatedTime,
+                location: proposed.location || task.location,
+                credits: proposed.credits,
+                voteTokens: proposed.credits,
+                tags: proposed.tags.length > 0 ? proposed.tags : task.tags,
+                taskDate: proposed.date || task.taskDate,
+                successCriteria: proposed.successCriteria || task.successCriteria,
+                creditRatePerHr: proposed.creditRate || task.creditRatePerHr,
+                credentials: proposed.credentials || task.credentials,
+              }
+            : task,
+        ),
+      );
+      setToast("Task already existed in catalog. Details were updated.");
+    } else {
+      const task: Task = {
+        id: `task-approved-${Date.now()}`,
+        title: proposed.title,
+        description: proposed.successCriteria || "Community civic task proposed by organization.",
+        category: "Community",
+        estimatedTime: proposed.estimatedTime,
+        location: proposed.location || "TBD",
+        credits: proposed.credits,
+        voteTokens: proposed.credits,
+        slots: 5,
+        slotsRemaining: 5,
+        issuerName: issuer.orgName,
+        issuerId: address ?? FAKE_WALLETS.issuer,
+        tags: proposed.tags,
+        taskDate: proposed.date || "TBD",
+        successCriteria: proposed.successCriteria || "",
+        creditRatePerHr: proposed.creditRate,
+        credentials: proposed.credentials || "None",
+        isMCE: false,
+        isOnboarding: false,
+      };
+      setApprovedCatalogTasks(prev => [task, ...prev]);
+    }
     setProposedTasks(prev => prev.filter(p => p.id !== proposed.id));
     if (tutorialStep === "box6") {
       setTutorialStep("box7");
