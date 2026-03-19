@@ -296,6 +296,14 @@ type IssuerTutorialStep =
   | "box16"
   | "box17"
   | "box18"
+  | "box19"
+  | "box20"
+  | "box21"
+  | "box22"
+  | "box23"
+  | "box24"
+  | "box25"
+  | "box26"
   | "dismissed";
 
 function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
@@ -322,6 +330,14 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
       raw === "box16" ||
       raw === "box17" ||
       raw === "box18" ||
+      raw === "box19" ||
+      raw === "box20" ||
+      raw === "box21" ||
+      raw === "box22" ||
+      raw === "box23" ||
+      raw === "box24" ||
+      raw === "box25" ||
+      raw === "box26" ||
       raw === "dismissed"
     )
       return raw;

@@ -4,6 +4,7 @@ export type DemoTutorialRun = {
   runId: string;
   createdAt: number;
   taskIds: string[];
+  offeringIds: string[];
 };
 
 const isBrowser = () => typeof window !== "undefined";
@@ -23,10 +24,14 @@ export const readDemoTutorialRun = (): DemoTutorialRun | null => {
       Array.isArray(parsed.taskIds)
     ) {
       const taskIds = parsed.taskIds.filter((value): value is string => typeof value === "string" && value.length > 0);
+      const offeringIds = Array.isArray(parsed.offeringIds)
+        ? parsed.offeringIds.filter((value): value is string => typeof value === "string" && value.length > 0)
+        : [];
       return {
         runId: parsed.runId,
         createdAt: parsed.createdAt,
         taskIds,
+        offeringIds,
       };
     }
   } catch {
@@ -50,6 +55,7 @@ export const startDemoTutorialRun = (): DemoTutorialRun =>
     runId: generateRunId(),
     createdAt: Date.now(),
     taskIds: [],
+    offeringIds: [],
   });
 
 export const appendDemoTutorialTaskIds = (taskIds: string[]): DemoTutorialRun | null => {
@@ -65,3 +71,17 @@ export const appendDemoTutorialTaskIds = (taskIds: string[]): DemoTutorialRun | 
 };
 
 export const getDemoTutorialTaskIds = (): string[] => readDemoTutorialRun()?.taskIds ?? [];
+
+export const appendDemoTutorialOfferingIds = (offeringIds: string[]): DemoTutorialRun | null => {
+  const sanitized = offeringIds.filter(id => typeof id === "string" && id.length > 0);
+  if (sanitized.length === 0) return readDemoTutorialRun();
+  const current = readDemoTutorialRun();
+  if (!current) return null;
+  const merged = Array.from(new Set([...current.offeringIds, ...sanitized]));
+  return persistDemoTutorialRun({
+    ...current,
+    offeringIds: merged,
+  });
+};
+
+export const getDemoTutorialOfferingIds = (): string[] => readDemoTutorialRun()?.offeringIds ?? [];

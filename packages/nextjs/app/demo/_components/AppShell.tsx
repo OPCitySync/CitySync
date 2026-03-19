@@ -58,6 +58,9 @@ interface AppShellProps {
   rightPanel?: React.ReactNode;
   /** When true, renders a phone device bezel around the app */
   phoneFrame?: boolean;
+  tutorialHighlightWalletButton?: boolean;
+  onWalletOpen?: () => void;
+  onWalletClose?: () => void;
 }
 
 type DeepDiveSection = {
@@ -307,6 +310,9 @@ export default function AppShell({
   leftPanel,
   rightPanel,
   phoneFrame = false,
+  tutorialHighlightWalletButton = false,
+  onWalletOpen,
+  onWalletClose,
 }: AppShellProps) {
   const [walletOpen, setWalletOpen] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(false);
@@ -478,18 +484,26 @@ export default function AppShell({
           </button>
           {/* Wallet icon button */}
           <button
-            onClick={() => setWalletOpen(true)}
+            onClick={() => {
+              setWalletOpen(true);
+              onWalletOpen?.();
+            }}
             style={{
               minHeight: 42,
               padding: "8px 10px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: tutorialHighlightWalletButton ? "rgba(255,226,162,0.2)" : "rgba(255,255,255,0.06)",
+              border: tutorialHighlightWalletButton
+                ? "1px solid rgba(255,226,162,0.85)"
+                : "1px solid rgba(255,255,255,0.1)",
               borderRadius: 10,
               cursor: "pointer",
-              color: "rgba(255,255,255,0.65)",
+              color: tutorialHighlightWalletButton ? "#ffe2a2" : "rgba(255,255,255,0.65)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              boxShadow: tutorialHighlightWalletButton
+                ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.45)"
+                : undefined,
             }}
             aria-label="Wallet"
           >
@@ -715,7 +729,10 @@ export default function AppShell({
           mceBalance={mceBalance}
           orgName={orgName}
           role={role}
-          onClose={() => setWalletOpen(false)}
+          onClose={() => {
+            setWalletOpen(false);
+            onWalletClose?.();
+          }}
         />
       )}
     </>

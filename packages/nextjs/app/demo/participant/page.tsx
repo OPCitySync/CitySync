@@ -19,7 +19,7 @@ import {
   getSanctionPolicyForSnapshot,
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
-import { getDemoTutorialTaskIds, startDemoTutorialRun } from "../_utils/tutorialRun";
+import { getDemoTutorialOfferingIds, getDemoTutorialTaskIds, startDemoTutorialRun } from "../_utils/tutorialRun";
 
 // ─── Brand ────────────────────────────────────────────────────────────────────
 
@@ -48,6 +48,14 @@ type IssuerTutorialStep =
   | "box16"
   | "box17"
   | "box18"
+  | "box19"
+  | "box20"
+  | "box21"
+  | "box22"
+  | "box23"
+  | "box24"
+  | "box25"
+  | "box26"
   | "dismissed";
 const SHARED_TUTORIAL_INTRO_TEXT =
   "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
@@ -76,6 +84,14 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
       raw === "box16" ||
       raw === "box17" ||
       raw === "box18" ||
+      raw === "box19" ||
+      raw === "box20" ||
+      raw === "box21" ||
+      raw === "box22" ||
+      raw === "box23" ||
+      raw === "box24" ||
+      raw === "box25" ||
+      raw === "box26" ||
       raw === "dismissed"
     )
       return raw;
@@ -916,6 +932,7 @@ function RedeemModal({
   pending = false,
   confirmed = false,
   error,
+  tutorialHighlightConfirm = false,
 }: {
   offer: RedemptionOffer;
   onConfirm: () => void | Promise<void>;
@@ -923,6 +940,7 @@ function RedeemModal({
   pending?: boolean;
   confirmed?: boolean;
   error?: string;
+  tutorialHighlightConfirm?: boolean;
 }) {
   React.useEffect(() => {
     if (confirmed) {
@@ -941,6 +959,10 @@ function RedeemModal({
         @keyframes flashConfirm {
           0%, 100% { background-color: rgb(26, 29, 50); }
           50% { background-color: rgb(10, 60, 30); }
+        }
+        @keyframes tutorialPulse {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.28), 0 0 10px rgba(221,158,51,0.24); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.6), 0 0 18px rgba(221,158,51,0.46); }
         }
       `}</style>
       {/* Overlay wrapper — fixed so sheet doesn't scroll with page content */}
@@ -1031,15 +1053,25 @@ function RedeemModal({
             style={{
               width: "100%",
               padding: "14px 0",
-              background: confirmed ? "rgb(10, 120, 60)" : TEAL,
+              background: confirmed
+                ? "rgb(10, 120, 60)"
+                : tutorialHighlightConfirm
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : TEAL,
               color: confirmed ? "#d4ffe9" : "#15151E",
-              border: "none",
+              border: tutorialHighlightConfirm && !confirmed ? "1px solid rgba(255,226,162,0.92)" : "none",
               borderRadius: 12,
               fontWeight: 700,
               fontSize: 15,
               cursor: pending || confirmed ? "not-allowed" : "pointer",
               opacity: pending ? 0.8 : 1,
               transition: "background 0.3s ease",
+              boxShadow:
+                tutorialHighlightConfirm && !confirmed
+                  ? "0 0 0 1px rgba(255,226,162,0.38), 0 0 12px rgba(221,158,51,0.44)"
+                  : undefined,
+              animation:
+                tutorialHighlightConfirm && !confirmed ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
             }}
           >
             {confirmed ? "Confirmed" : pending ? "Confirming..." : "Redeem Now"}
@@ -3734,7 +3766,15 @@ type RedeemWriteStatus = {
   error?: string;
 };
 
-function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey) => void }) {
+function RedeemTab({
+  onLearnMore,
+  tutorialStep,
+  onTutorialStepChange,
+}: {
+  onLearnMore: (key: ParticipantLearnCardKey) => void;
+  tutorialStep: IssuerTutorialStep;
+  onTutorialStepChange: (step: IssuerTutorialStep) => void;
+}) {
   const { state, redeemOffer } = useDemo();
   const p = state.participant;
   const [view, setView] = useState<RedeemView>("browse");
@@ -3742,9 +3782,59 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
   const [confirmOffer, setConfirmOffer] = useState<RedemptionOffer | null>(null);
   const [redeemWriteStatus, setRedeemWriteStatus] = useState<RedeemWriteStatus>({ state: "idle" });
   const [showRedeemTxBox, setShowRedeemTxBox] = useState(true);
+  const [tutorialOfferingIds, setTutorialOfferingIds] = useState<string[]>(() => getDemoTutorialOfferingIds());
+
+  useEffect(() => {
+    setTutorialOfferingIds(getDemoTutorialOfferingIds());
+  }, [tutorialStep]);
 
   // Show all offers (CITYx and MCE) — MCE offers are visually distinguished by color
-  const filteredOffers = state.offers;
+  const parseOfferSortKey = React.useCallback((offer: RedemptionOffer) => {
+    const onchainMatch = offer.id.match(/^onchain:0x[a-fA-F0-9]{40}:(\d+)$/);
+    if (onchainMatch) {
+      return Number(onchainMatch[1]);
+    }
+    const anyNumeric = offer.id.match(/(\d{4,})/g);
+    if (anyNumeric && anyNumeric.length > 0) {
+      const candidate = Number(anyNumeric[anyNumeric.length - 1]);
+      if (Number.isFinite(candidate)) return candidate;
+    }
+    return 0;
+  }, []);
+
+  const filteredOffers = React.useMemo(() => {
+    const sorted = [...state.offers].sort((a, b) => parseOfferSortKey(b) - parseOfferSortKey(a));
+    if (tutorialStep !== "box24" && tutorialStep !== "box25") return sorted;
+    const tutorialSet = new Set(
+      tutorialOfferingIds.map(id => {
+        const match = id.match(/^onchain:(0x[a-fA-F0-9]{40}):(\d+)$/);
+        if (!match) return id.toLowerCase();
+        return `onchain:${match[1].toLowerCase()}:${match[2]}`;
+      }),
+    );
+    const normalized = (id: string) => {
+      const match = id.match(/^onchain:(0x[a-fA-F0-9]{40}):(\d+)$/);
+      if (!match) return id.toLowerCase();
+      return `onchain:${match[1].toLowerCase()}:${match[2]}`;
+    };
+    sorted.sort((a, b) => Number(tutorialSet.has(normalized(b.id))) - Number(tutorialSet.has(normalized(a.id))));
+    return sorted;
+  }, [parseOfferSortKey, state.offers, tutorialOfferingIds, tutorialStep]);
+
+  const normalizeOfferIdentity = React.useCallback((id: string) => {
+    const onchainMatch = id.match(/^onchain:(0x[a-fA-F0-9]{40}):(\d+)$/);
+    if (onchainMatch) return `onchain:${onchainMatch[1].toLowerCase()}:${onchainMatch[2]}`;
+    return id.toLowerCase();
+  }, []);
+  const tutorialOfferIdSet = React.useMemo(
+    () => new Set(tutorialOfferingIds.map(normalizeOfferIdentity)),
+    [normalizeOfferIdentity, tutorialOfferingIds],
+  );
+  const highlightedTutorialOfferId =
+    tutorialStep === "box24" || tutorialStep === "box25"
+      ? (filteredOffers.find(offer => tutorialOfferIdSet.has(normalizeOfferIdentity(offer.id)))?.id ??
+        filteredOffers[0]?.id)
+      : undefined;
   const filteredRedemptions = React.useMemo(() => {
     const resolveMceOnly = (redemption: PastRedemption): boolean => {
       if (typeof redemption.mceOnly === "boolean") return redemption.mceOnly;
@@ -3784,6 +3874,12 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
 
   return (
     <div style={{ padding: "20px 16px 24px" }}>
+      <style>{`
+        @keyframes tutorialPulse {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.28), 0 0 10px rgba(221,158,51,0.24); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.6), 0 0 18px rgba(221,158,51,0.46); }
+        }
+      `}</style>
       {/* Learn More row — above balance boxes */}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <LearnMoreLink onClick={() => onLearnMore("redeem-flow")} />
@@ -3913,6 +4009,8 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
             const canAfford = p.cityBalance >= offer.costCity;
             const needsMce = offer.mceOnly && p.mceBalance < offer.costCity;
             const disabled = !canAfford || needsMce;
+            const shouldHighlightOffer =
+              (tutorialStep === "box24" || tutorialStep === "box25") && offer.id === highlightedTutorialOfferId;
 
             return (
               <div
@@ -3921,6 +4019,10 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
                   ...card,
                   marginBottom: 10,
                   opacity: disabled ? 0.55 : 1,
+                  boxShadow: shouldHighlightOffer
+                    ? "0 0 0 1px rgba(255,226,162,0.42), 0 0 14px rgba(221,158,51,0.45)"
+                    : undefined,
+                  animation: shouldHighlightOffer ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
                   ...(offer.mceOnly
                     ? {
                         borderLeft: `3px solid rgba(221,158,51,0.5)`,
@@ -4010,6 +4112,9 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
                           setRedeemWriteStatus({ state: "idle" });
                           setShowRedeemTxBox(true);
                           setConfirmOffer(offer);
+                          if (tutorialStep === "box24" && offer.id === highlightedTutorialOfferId) {
+                            onTutorialStepChange("box25");
+                          }
                         }}
                         disabled={disabled}
                         style={{
@@ -4017,10 +4122,18 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
                           borderRadius: 10,
                           border: "none",
                           cursor: disabled ? "not-allowed" : "pointer",
-                          background: disabled ? "rgba(255,255,255,0.07)" : TEAL,
-                          color: disabled ? "rgba(255,255,255,0.3)" : "#15151E",
+                          background: disabled
+                            ? "rgba(255,255,255,0.07)"
+                            : shouldHighlightOffer
+                              ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                              : TEAL,
+                          color: disabled ? "rgba(255,255,255,0.3)" : shouldHighlightOffer ? "#15151E" : "#15151E",
                           fontSize: 13,
                           fontWeight: 700,
+                          boxShadow:
+                            !disabled && shouldHighlightOffer
+                              ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 12px rgba(221,158,51,0.42)"
+                              : undefined,
                         }}
                       >
                         {!canAfford ? "Can't Afford" : needsMce ? "Need MCE" : "Redeem"}
@@ -4125,6 +4238,7 @@ function RedeemTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey
           pending={redeemWriteStatus.state === "pending"}
           confirmed={redeemWriteStatus.state === "confirmed"}
           error={redeemWriteStatus.state === "failed" ? redeemWriteStatus.error : undefined}
+          tutorialHighlightConfirm={tutorialStep === "box25"}
         />
       )}
     </div>
@@ -4142,6 +4256,7 @@ export default function ParticipantPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [openInfoCards, setOpenInfoCards] = useState<ParticipantLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
+  const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
 
   useEffect(() => {
     if (!state.role) setRole("participant");
@@ -4177,6 +4292,10 @@ export default function ParticipantPage() {
       tutorialStep === "box14"
     ) {
       setActiveTab("explore");
+      return;
+    }
+    if (tutorialStep === "box23" || tutorialStep === "box24" || tutorialStep === "box25" || tutorialStep === "box26") {
+      setActiveTab("redeem");
     }
   }, [tutorialStep]);
 
@@ -4199,7 +4318,12 @@ export default function ParticipantPage() {
       marginBottom: 6,
     };
     const titleStyle: React.CSSProperties = { fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 };
-    const bodyStyle: React.CSSProperties = { fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6 };
+    const bodyStyle: React.CSSProperties = {
+      fontSize: 12,
+      color: "rgba(255,255,255,0.72)",
+      lineHeight: 1.6,
+      whiteSpace: "pre-line",
+    };
     const buttonRowStyle: React.CSSProperties = { display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" };
 
     if (tutorialStep === "intro") {
@@ -4360,6 +4484,94 @@ export default function ParticipantPage() {
       );
     }
 
+    if (tutorialStep === "box23") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 23</div>
+          <div style={titleStyle}>Your Wallet and Balances</div>
+          <div style={bodyStyle}>
+            After completed tasks are verified, users are Minted CITY and VOTE. Civic-Participants can keep track of
+            their balances in their wallet.
+          </div>
+        </div>
+      );
+    }
+
+    if (tutorialStep === "box24") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 24</div>
+          <div style={titleStyle}>Redeem an Offering</div>
+          <div style={bodyStyle}>
+            Civic-Participants can spend their credits on available offerings. Go ahead and spend your credits on the
+            offering you created by clicking redeem.
+          </div>
+        </div>
+      );
+    }
+
+    if (tutorialStep === "box25") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 25</div>
+          <div style={titleStyle}>Point-of-Sale Confirmation</div>
+          <div style={bodyStyle}>
+            When a Civic-Participant scans a QR code to redeem an offer, a visual and audible cue will flash on their
+            screen to show Redeemer Organization employees that the CITY has been burned and they are permitted to
+            provide those goods and services.
+          </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={() => setTutorialStep("box26")}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "#DD9E33",
+                color: "#15151E",
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (tutorialStep === "box26") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 26</div>
+          <div style={titleStyle}>You’re Ready to Explore</div>
+          <div style={bodyStyle}>
+            {
+              "Now that you have a good understanding of the major functions that facilitate the City/Sync protocol, feel free to explore more of the application and learn more about the abilities of the different roles."
+            }
+          </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={() => setTutorialStep("dismissed")}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "#DD9E33",
+                color: "#15151E",
+              }}
+            >
+              Finish Tutorial
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div style={cardStyle}>
         <div style={subtitleStyle}>Tutorial</div>
@@ -4442,13 +4654,25 @@ export default function ParticipantPage() {
         leftPanel={leftPanel}
         rightPanel={rightPanel}
         phoneFrame
+        tutorialHighlightWalletButton={tutorialStep === "box23"}
+        onWalletOpen={() => {
+          if (tutorialStep === "box23") setTutorialWalletOpened(true);
+        }}
+        onWalletClose={() => {
+          if (tutorialStep === "box23" && tutorialWalletOpened) {
+            setTutorialStep("box24");
+            setTutorialWalletOpened(false);
+          }
+        }}
       >
         {activeTab === "profile" && <ProfileTab onTabChange={setActiveTab} onLearnMore={openLearnMore} />}
         {activeTab === "explore" && (
           <ExploreTab onLearnMore={openLearnMore} tutorialStep={tutorialStep} onTutorialStepChange={setTutorialStep} />
         )}
         {activeTab === "community" && <CommunityTab onLearnMore={openLearnMore} />}
-        {activeTab === "redeem" && <RedeemTab onLearnMore={openLearnMore} />}
+        {activeTab === "redeem" && (
+          <RedeemTab onLearnMore={openLearnMore} tutorialStep={tutorialStep} onTutorialStepChange={setTutorialStep} />
+        )}
       </AppShell>
     </>
   );
