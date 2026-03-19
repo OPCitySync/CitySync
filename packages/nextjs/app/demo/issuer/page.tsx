@@ -17,6 +17,7 @@ import {
   getAllParticipantScoreSnapshots,
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
+import { appendDemoTutorialTaskIds, getDemoTutorialTaskIds, startDemoTutorialRun } from "../_utils/tutorialRun";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -711,6 +712,7 @@ export default function IssuerApp() {
         step={tutorialStep}
         orgName={issuer.orgName}
         onStart={() => {
+          startDemoTutorialRun();
           setActiveTab("profile");
           setTutorialStep("box1");
         }}
@@ -759,6 +761,7 @@ export default function IssuerApp() {
         >
           <button
             onClick={() => {
+              startDemoTutorialRun();
               setActiveTab("profile");
               setTutorialStep("box1");
             }}
@@ -1030,6 +1033,7 @@ export default function IssuerApp() {
     let lastHash: `0x${string}` | undefined;
     let firstError: string | undefined;
     let committedRunning = creditsCommitted;
+    const issuedTaskIds: string[] = [];
 
     for (let i = 0; i < slots; i++) {
       // Hard pre-write guard: avoid sending any write once local running budget is exhausted.
@@ -1044,12 +1048,16 @@ export default function IssuerApp() {
         okCount += 1;
         committedRunning += task.credits;
         if (result.hash) lastHash = result.hash;
+        issuedTaskIds.push(result.taskId);
       } else if (!firstError) {
         firstError = result.error;
       }
     }
 
     if (okCount === slots) {
+      if (tutorialStep === "box8" && issuedTaskIds.length > 0) {
+        appendDemoTutorialTaskIds(issuedTaskIds);
+      }
       setTaskWriteStatus({ state: "confirmed", hash: lastHash });
       return true;
     }
@@ -3953,6 +3961,12 @@ function VerifyTab({
   const tutorialHighlightUnissue = tutorialStep === "box15";
   const tutorialHighlightNoShow = tutorialStep === "box16";
   const tutorialHighlightVerifyButtons = tutorialStep === "box17";
+  const [tutorialTaskIds, setTutorialTaskIds] = useState<string[]>(() => getDemoTutorialTaskIds());
+  const tutorialTaskIdSet = React.useMemo(() => new Set(tutorialTaskIds), [tutorialTaskIds]);
+
+  useEffect(() => {
+    setTutorialTaskIds(getDemoTutorialTaskIds());
+  }, [tutorialStep]);
 
   useEffect(() => {
     if (!address) {
@@ -4133,11 +4147,46 @@ function VerifyTab({
   const visibleClaimedItems = claimedItems.filter(item => !hiddenTaskIdSet.has(item.taskId));
   const visibleCompletedItems = completedItems.filter(item => !hiddenTaskIdSet.has(item.taskId));
 
+  const orderedIssuedItems = React.useMemo(() => {
+    if (tutorialStep !== "box15") return visibleIssuedItems;
+    const sorted = [...visibleIssuedItems];
+    sorted.sort((a, b) => Number(tutorialTaskIdSet.has(b.taskId)) - Number(tutorialTaskIdSet.has(a.taskId)));
+    return sorted;
+  }, [tutorialStep, tutorialTaskIdSet, visibleIssuedItems]);
+
+  const orderedClaimedItems = React.useMemo(() => {
+    if (tutorialStep !== "box16") return visibleClaimedItems;
+    const sorted = [...visibleClaimedItems];
+    sorted.sort((a, b) => Number(tutorialTaskIdSet.has(b.taskId)) - Number(tutorialTaskIdSet.has(a.taskId)));
+    return sorted;
+  }, [tutorialStep, tutorialTaskIdSet, visibleClaimedItems]);
+
+  const orderedCompletedItems = React.useMemo(() => {
+    if (tutorialStep !== "box17") return visibleCompletedItems;
+    const sorted = [...visibleCompletedItems];
+    sorted.sort((a, b) => Number(tutorialTaskIdSet.has(b.taskId)) - Number(tutorialTaskIdSet.has(a.taskId)));
+    return sorted;
+  }, [tutorialStep, tutorialTaskIdSet, visibleCompletedItems]);
+
+  const highlightedUnissueTaskId =
+    tutorialStep === "box15"
+      ? (orderedIssuedItems.find(item => tutorialTaskIdSet.has(item.taskId))?.taskId ?? orderedIssuedItems[0]?.taskId)
+      : undefined;
+  const highlightedNoShowTaskId =
+    tutorialStep === "box16"
+      ? (orderedClaimedItems.find(item => tutorialTaskIdSet.has(item.taskId))?.taskId ?? orderedClaimedItems[0]?.taskId)
+      : undefined;
+  const highlightedVerifyTaskId =
+    tutorialStep === "box17"
+      ? (orderedCompletedItems.find(item => tutorialTaskIdSet.has(item.taskId))?.taskId ??
+        orderedCompletedItems[0]?.taskId)
+      : undefined;
+
   useEffect(() => {
     if (tutorialStep !== "box16") return;
-    if (visibleClaimedItems.length === 0) return;
-    setExpandedClaimed(prev => ({ ...prev, [visibleClaimedItems[0].taskId]: true }));
-  }, [tutorialStep, visibleClaimedItems]);
+    if (!highlightedNoShowTaskId) return;
+    setExpandedClaimed(prev => ({ ...prev, [highlightedNoShowTaskId]: true }));
+  }, [tutorialStep, highlightedNoShowTaskId]);
 
   const TOGGLE_OPTIONS = [
     { key: "issued", label: `Issued (${visibleIssuedItems.length})` },
@@ -4248,7 +4297,7 @@ function VerifyTab({
       {/* ── Issued Instances ── */}
       {view === "issued" && (
         <>
-          {visibleIssuedItems.length === 0 ? (
+          {orderedIssuedItems.length === 0 ? (
             <EmptyState
               emoji="📋"
               title="No issued tasks"
@@ -4256,7 +4305,8 @@ function VerifyTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {visibleIssuedItems.map(task => {
+              {orderedIssuedItems.map(task => {
+                const shouldHighlightUnissue = tutorialHighlightUnissue && task.taskId === highlightedUnissueTaskId;
                 return (
                   <div key={task.taskId} style={{ ...accentCard }}>
                     <div
@@ -4299,20 +4349,20 @@ function VerifyTab({
                         marginLeft: 8,
                         fontSize: 11,
                         fontWeight: 600,
-                        background: tutorialHighlightUnissue
+                        background: shouldHighlightUnissue
                           ? "linear-gradient(145deg, rgba(255,140,176,0.28), rgba(255,107,157,0.22))"
                           : "rgba(255,107,157,0.14)",
                         color: "#ff6b9d",
-                        border: tutorialHighlightUnissue
+                        border: shouldHighlightUnissue
                           ? "1px solid rgba(255,210,226,0.82)"
                           : "1px solid rgba(255,107,157,0.35)",
                         borderRadius: 8,
                         padding: "4px 10px",
                         cursor: "pointer",
-                        boxShadow: tutorialHighlightUnissue
+                        boxShadow: shouldHighlightUnissue
                           ? "0 0 0 1px rgba(255,210,226,0.35), 0 0 16px rgba(255,107,157,0.48)"
                           : undefined,
-                        animation: tutorialHighlightUnissue
+                        animation: shouldHighlightUnissue
                           ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
                           : undefined,
                       }}
@@ -4330,7 +4380,7 @@ function VerifyTab({
       {/* ── Claimed Instances ── */}
       {view === "claimed" && (
         <>
-          {visibleClaimedItems.length === 0 ? (
+          {orderedClaimedItems.length === 0 ? (
             <EmptyState
               emoji="👤"
               title="No claimed tasks"
@@ -4338,7 +4388,8 @@ function VerifyTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {visibleClaimedItems.map(task => {
+              {orderedClaimedItems.map(task => {
+                const shouldHighlightNoShow = tutorialHighlightNoShow && task.taskId === highlightedNoShowTaskId;
                 return (
                   <div key={task.taskId} style={{ ...accentCard }}>
                     <div
@@ -4425,10 +4476,10 @@ function VerifyTab({
                           }}
                           style={{
                             width: "100%",
-                            background: tutorialHighlightNoShow
+                            background: shouldHighlightNoShow
                               ? "linear-gradient(145deg, rgba(255,140,176,0.28), rgba(255,107,157,0.22))"
                               : "rgba(255,107,157,0.14)",
-                            border: tutorialHighlightNoShow
+                            border: shouldHighlightNoShow
                               ? "1px solid rgba(255,210,226,0.82)"
                               : "1px solid rgba(255,107,157,0.35)",
                             borderRadius: 10,
@@ -4437,10 +4488,10 @@ function VerifyTab({
                             fontWeight: 700,
                             color: "#ff6b9d",
                             cursor: "pointer",
-                            boxShadow: tutorialHighlightNoShow
+                            boxShadow: shouldHighlightNoShow
                               ? "0 0 0 1px rgba(255,210,226,0.35), 0 0 16px rgba(255,107,157,0.48)"
                               : undefined,
-                            animation: tutorialHighlightNoShow
+                            animation: shouldHighlightNoShow
                               ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
                               : undefined,
                           }}
@@ -4522,7 +4573,7 @@ function VerifyTab({
             </div>
           )}
 
-          {visibleCompletedItems.length === 0 ? (
+          {orderedCompletedItems.length === 0 ? (
             <EmptyState
               emoji="🎉"
               title="Nothing to verify yet"
@@ -4530,7 +4581,9 @@ function VerifyTab({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {visibleCompletedItems.map(task => {
+              {orderedCompletedItems.map(task => {
+                const shouldHighlightVerifyButtons =
+                  tutorialHighlightVerifyButtons && task.taskId === highlightedVerifyTaskId;
                 return (
                   <div
                     key={`${task.taskId}-${task.claimant ?? "none"}`}
@@ -4592,11 +4645,11 @@ function VerifyTab({
                           color: task.claimant ? "#ff6b9d" : MUTED,
                           cursor: task.claimant ? "pointer" : "not-allowed",
                           boxShadow:
-                            tutorialHighlightVerifyButtons && task.claimant
+                            shouldHighlightVerifyButtons && task.claimant
                               ? "0 0 0 1px rgba(255,210,226,0.35), 0 0 14px rgba(255,107,157,0.42)"
                               : undefined,
                           animation:
-                            tutorialHighlightVerifyButtons && task.claimant
+                            shouldHighlightVerifyButtons && task.claimant
                               ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
                               : undefined,
                         }}
@@ -4618,9 +4671,7 @@ function VerifyTab({
                           flex: 1,
                           background: task.claimant ? ACCENT : "rgba(255,255,255,0.1)",
                           border:
-                            tutorialHighlightVerifyButtons && task.claimant
-                              ? "1px solid rgba(255,226,162,0.9)"
-                              : "none",
+                            shouldHighlightVerifyButtons && task.claimant ? "1px solid rgba(255,226,162,0.9)" : "none",
                           borderRadius: 12,
                           padding: "11px 0",
                           fontSize: 13,
@@ -4628,11 +4679,11 @@ function VerifyTab({
                           color: task.claimant ? BG : MUTED,
                           cursor: task.claimant ? "pointer" : "not-allowed",
                           boxShadow:
-                            tutorialHighlightVerifyButtons && task.claimant
+                            shouldHighlightVerifyButtons && task.claimant
                               ? "0 0 0 1px rgba(255,226,162,0.45), 0 0 14px rgba(221,158,51,0.45)"
                               : undefined,
                           animation:
-                            tutorialHighlightVerifyButtons && task.claimant
+                            shouldHighlightVerifyButtons && task.claimant
                               ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
                               : undefined,
                         }}

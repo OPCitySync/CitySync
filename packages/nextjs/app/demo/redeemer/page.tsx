@@ -9,6 +9,7 @@ import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, RedemptionOffer } from "../_data/mockData";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
+import { startDemoTutorialRun } from "../_utils/tutorialRun";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -565,6 +566,7 @@ export default function RedeemerApp() {
               </button>
               <button
                 onClick={() => {
+                  startDemoTutorialRun();
                   try {
                     window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
                   } catch {
@@ -623,6 +625,7 @@ export default function RedeemerApp() {
         >
           <button
             onClick={() => {
+              startDemoTutorialRun();
               try {
                 window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
               } catch {

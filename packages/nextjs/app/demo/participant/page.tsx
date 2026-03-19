@@ -19,6 +19,7 @@ import {
   getSanctionPolicyForSnapshot,
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
+import { getDemoTutorialTaskIds, startDemoTutorialRun } from "../_utils/tutorialRun";
 
 // ─── Brand ────────────────────────────────────────────────────────────────────
 
@@ -2137,6 +2138,12 @@ function ExploreTab({
   const tutorialHighlightToggle = tutorialStep === "box10";
   const tutorialHighlightTaskInstances = tutorialStep === "box11";
   const tutorialHighlightClaimedActions = tutorialStep === "box13";
+  const [tutorialTaskIds, setTutorialTaskIds] = useState<string[]>(() => getDemoTutorialTaskIds());
+  const tutorialTaskIdSet = React.useMemo(() => new Set(tutorialTaskIds), [tutorialTaskIds]);
+
+  useEffect(() => {
+    setTutorialTaskIds(getDemoTutorialTaskIds());
+  }, [tutorialStep]);
 
   useEffect(() => {
     if (tutorialStep === "box10" || tutorialStep === "box11") {
@@ -2499,23 +2506,62 @@ function ExploreTab({
   );
   const onchainCompletedTasks = myTasksRaw.filter(t => t.completionStatus === 2);
   const myTaskIds = new Set(myTasks.map(t => t.id));
+  const tutorialBrowseGroupKeySet = React.useMemo(() => {
+    const keys = new Set<string>();
+    for (const group of groupedBrowseTasks) {
+      if (group.instances.some(instance => tutorialTaskIdSet.has(instance.id))) {
+        keys.add(group.key);
+      }
+    }
+    return keys;
+  }, [groupedBrowseTasks, tutorialTaskIdSet]);
+  const orderedBrowseTaskGroups = React.useMemo(() => {
+    if (tutorialStep !== "box11") return groupedBrowseTasks;
+    const sorted = [...groupedBrowseTasks];
+    sorted.sort((a, b) => Number(tutorialBrowseGroupKeySet.has(b.key)) - Number(tutorialBrowseGroupKeySet.has(a.key)));
+    return sorted;
+  }, [groupedBrowseTasks, tutorialBrowseGroupKeySet, tutorialStep]);
+  const tutorialClaimedTasks = React.useMemo(
+    () => myTasks.filter(task => tutorialTaskIdSet.has(task.id)),
+    [myTasks, tutorialTaskIdSet],
+  );
+  const orderedClaimedTasks = React.useMemo(() => {
+    if (tutorialStep !== "box13") return myTasks;
+    const sorted = [...myTasks];
+    sorted.sort((a, b) => Number(tutorialTaskIdSet.has(b.id)) - Number(tutorialTaskIdSet.has(a.id)));
+    return sorted;
+  }, [myTasks, tutorialStep, tutorialTaskIdSet]);
+  const highlightedClaimedTaskId =
+    tutorialStep === "box13" ? (tutorialClaimedTasks[0]?.id ?? orderedClaimedTasks[0]?.id) : undefined;
   const sanctionsPolicy = getSanctionPolicyForSnapshot(scoreSnapshot);
 
   useEffect(() => {
     if (tutorialStep !== "box11") return;
     setExpandedTaskGroups(prev => {
-      if (groupedBrowseTasks.length === 0) return prev;
+      if (orderedBrowseTaskGroups.length === 0) return prev;
       const next = { ...prev };
-      groupedBrowseTasks.slice(0, 2).forEach(group => {
-        next[group.key] = true;
-      });
+      if (tutorialBrowseGroupKeySet.size > 0) {
+        orderedBrowseTaskGroups.forEach(group => {
+          if (tutorialBrowseGroupKeySet.has(group.key)) next[group.key] = true;
+        });
+      } else {
+        orderedBrowseTaskGroups.slice(0, 2).forEach(group => {
+          next[group.key] = true;
+        });
+      }
       return next;
     });
-    if (myTasks.length >= 2) {
+    if (tutorialClaimedTasks.length >= 2) {
       setView("claimed");
       onTutorialStepChange("box12");
     }
-  }, [groupedBrowseTasks, myTasks.length, onTutorialStepChange, tutorialStep]);
+  }, [
+    orderedBrowseTaskGroups,
+    onTutorialStepChange,
+    tutorialBrowseGroupKeySet,
+    tutorialClaimedTasks.length,
+    tutorialStep,
+  ]);
 
   useEffect(() => {
     if (onchainCompletedTasks.length === 0) return;
@@ -2975,15 +3021,18 @@ function ExploreTab({
 
       {/* Task list */}
       {view === "browse" ? (
-        groupedBrowseTasks.length === 0 ? (
+        orderedBrowseTaskGroups.length === 0 ? (
           <div style={{ textAlign: "center", padding: "48px 0", color: "rgba(255,255,255,0.3)", fontSize: 14 }}>
             No tasks in this category
           </div>
         ) : (
-          groupedBrowseTasks.map((group, groupIndex) => {
+          orderedBrowseTaskGroups.map((group, groupIndex) => {
             const task = group.representative;
             const isExpanded = !!expandedTaskGroups[group.key];
             const catColor = CAT_COLORS[task.category] ?? "#666";
+            const shouldHighlightTaskGroup =
+              tutorialHighlightTaskInstances &&
+              (tutorialBrowseGroupKeySet.size > 0 ? tutorialBrowseGroupKeySet.has(group.key) : groupIndex < 2);
             return (
               <div
                 key={group.key}
@@ -2992,14 +3041,10 @@ function ExploreTab({
                   marginBottom: 10,
                   borderLeft: task.isMCE ? "3px solid rgba(221,158,51,0.45)" : "3px solid rgba(52,238,182,0.45)",
                   paddingLeft: 13,
-                  boxShadow:
-                    tutorialHighlightTaskInstances && groupIndex < 2
-                      ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 16px rgba(221,158,51,0.42)"
-                      : undefined,
-                  animation:
-                    tutorialHighlightTaskInstances && groupIndex < 2
-                      ? "tutorialPulse 1.45s ease-in-out infinite"
-                      : undefined,
+                  boxShadow: shouldHighlightTaskGroup
+                    ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 16px rgba(221,158,51,0.42)"
+                    : undefined,
+                  animation: shouldHighlightTaskGroup ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
                 }}
               >
                 <button
@@ -3105,7 +3150,7 @@ function ExploreTab({
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)" }}>Head to Open Tasks to claim one</div>
         </div>
       ) : (
-        myTasks.map((task, index) => (
+        orderedClaimedTasks.map(task => (
           <TaskCard
             key={task.id}
             task={task}
@@ -3114,7 +3159,7 @@ function ExploreTab({
             pendingVerification={pendingVerificationIds.includes(task.id) || task.completionStatus === 1}
             canUnclaim={task.completionStatus === 0 || task.completionStatus === 3}
             showUnclaimButton
-            tutorialHighlightActions={tutorialHighlightClaimedActions && index === 0}
+            tutorialHighlightActions={tutorialHighlightClaimedActions && task.id === highlightedClaimedTaskId}
             onUnclaim={() => handleUnclaim(task)}
             onExecute={() => setExecuteTask(task)}
           />
@@ -4112,6 +4157,7 @@ export default function ParticipantPage() {
   }, [tutorialStep]);
 
   const startIssuerTutorial = React.useCallback(() => {
+    startDemoTutorialRun();
     try {
       window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
     } catch {
