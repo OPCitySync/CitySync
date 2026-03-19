@@ -400,7 +400,7 @@ function IssuerTutorialPanel({
         <TutorialCard
           subtitle="Step 2"
           title={`Welcome ${safeOrgName}!`}
-          body="Great name! Now every Issuer organization who is certified through City/Sync will have an opportunity to participate in the Public-Sector economy. Issuer organizations have the unique ability to create a public-sector credit (CITY) that can be used to access local offerings provided by other public-sector organizations or mission-aligned businesses called Redeemers."
+          body="Great name!\n\nEvery Issuer organization that is certified through City/Sync will have an opportunity to participate in the Public-Sector economy. There are 3 roles within this economy: Issuers, Civic Participants, and Redeemers.\n\nIssuers have the ability to expand their volunteer programs by issuing civic-tasks that expand their organizational impact and mission, and rewarding Civic-Participants for doing so! Civic-Participants are any individuals who execute these tasks and spend their credits at participating Redeemer Organizations.\n\nThis is the basis for the public-sector economy. Verified civic-labor mints credits that can be spent on local goods and services. All credits redeemed for goods and services are removed from circulation, so the balance between issuance and redemption must be maintained."
         >
           <TutorialActionButton label="Continue" onClick={onContinueBox2} />
         </TutorialCard>
