@@ -392,7 +392,7 @@ function IssuerTutorialPanel({
         <TutorialCard
           subtitle="Step 1"
           title="Let's start with Issuers"
-          body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited to issuing and verifying civic-labor tasks. Issuers can use the City/Sync platform to enhance their already existing Volunteer Programs or build new ones from the ground up. This platform offers a centralized discovery method for volunteer opportunities in your City.\n\nTo start, please give your Issuer organization a name using the edit profile button highlighted in the Profile tab."
+          body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nIssuers can use the City/Sync platform to enhance their already existing Volunteer Programs or build new ones from the ground up.\n\nThis protocol offers a discovery method for civic participants to learn about new volunteer opportunities in their city.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
         />
       )}
 
