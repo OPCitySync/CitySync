@@ -141,6 +141,15 @@ type IssuerTutorialStep =
   | "box25"
   | "box26"
   | "dismissed";
+const REDEEMER_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
+  "intro",
+  "box18",
+  "box19",
+  "box20",
+  "box21",
+  "box22",
+  "dismissed",
+]);
 const SHARED_TUTORIAL_INTRO_TEXT =
   "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
 
@@ -796,6 +805,11 @@ export default function RedeemerApp() {
     } catch {
       // Ignore storage access failures.
     }
+  }, [tutorialStep]);
+
+  React.useEffect(() => {
+    if (REDEEMER_ROLE_TUTORIAL_STEPS.has(tutorialStep)) return;
+    setTutorialStep("dismissed");
   }, [tutorialStep]);
 
   // Auto-process queued redemptions after 3 s to simulate business fulfillment.

@@ -306,6 +306,23 @@ type IssuerTutorialStep =
   | "box26"
   | "dismissed";
 
+const ISSUER_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
+  "intro",
+  "box1",
+  "box2",
+  "box3",
+  "box4",
+  "box5",
+  "box6",
+  "box7",
+  "box8",
+  "box9",
+  "box15",
+  "box16",
+  "box17",
+  "dismissed",
+]);
+
 function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
@@ -844,6 +861,11 @@ export default function IssuerApp() {
     } catch {
       // Ignore storage access failures.
     }
+  }, [tutorialStep]);
+
+  React.useEffect(() => {
+    if (ISSUER_ROLE_TUTORIAL_STEPS.has(tutorialStep)) return;
+    setTutorialStep("dismissed");
   }, [tutorialStep]);
 
   React.useEffect(() => {

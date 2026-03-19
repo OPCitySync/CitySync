@@ -175,6 +175,7 @@ const ECONOMY_CARDS = [
 // ─── Component ────────────────────────────────────────────────────────────────
 
 const GUEST_KEY = "citysync:demo:guestMode";
+const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
 
 export default function DemoHome() {
   const { isConnected } = useSignerStatus();
@@ -356,6 +357,13 @@ export default function DemoHome() {
               <div className="px-6 pb-6">
                 <Link
                   href={role.href}
+                  onClick={() => {
+                    try {
+                      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "dismissed");
+                    } catch {
+                      // Ignore storage write failures.
+                    }
+                  }}
                   className="flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-sm font-bold transition-opacity hover:opacity-90"
                   style={{ background: role.accent, color: "#0D0D14", textDecoration: "none" }}
                 >
