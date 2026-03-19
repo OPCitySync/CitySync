@@ -2038,6 +2038,9 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
     error?: string;
     label?: string;
   }>({ state: "idle" });
+  // Hash-based dedup: tracks the last tx hash we already synced for so we
+  // don't re-fetch just because taskWriteStatus.state changes (pending→confirmed).
+  const lastSyncedConfirmedHashRef = React.useRef<string | undefined>(undefined);
   const [claimConfirmTask, setClaimConfirmTask] = useState<Task | null>(null);
   const [unclaimConfirmTask, setUnclaimConfirmTask] = useState<Task | null>(null);
   const [expandedTaskGroups, setExpandedTaskGroups] = useState<Record<string, boolean>>({});
@@ -2137,6 +2140,14 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
   }, [isOnboarded, state.participant.cityBalance]);
 
   useEffect(() => {
+    // Skip if no meaningful event occurred:
+    // • A tx hash is present but NOT yet confirmed → wait for confirmed state
+    // • A tx hash is present, confirmed, but we already synced for this exact hash
+    const { hash, state } = taskWriteStatus;
+    const isConfirmedNewTx = state === "confirmed" && hash !== lastSyncedConfirmedHashRef.current;
+    if (hash && !isConfirmedNewTx) return; // pending/failed state change — skip
+    if (isConfirmedNewTx) lastSyncedConfirmedHashRef.current = hash;
+
     let cancelled = false;
 
     const parseMetadata = (raw: string): Partial<Task> => {

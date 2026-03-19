@@ -1635,12 +1635,19 @@ function TasksTab({
   const explorerHref = taskWriteStatus.hash ? `https://sepolia.basescan.org/tx/${taskWriteStatus.hash}` : null;
   const creditsRemaining = EPOCH1_CAP - creditsCommitted;
   const atCap = creditsRemaining <= 0;
+  const lastCatalogSyncedHashRef = React.useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (!address) {
       setOnchainTasks([]);
       return;
     }
+
+    // Hash-based dedup: only re-sync when a new tx is confirmed, not on state transitions
+    const { hash, state } = taskWriteStatus;
+    const isConfirmedNewTx = state === "confirmed" && hash !== lastCatalogSyncedHashRef.current;
+    if (hash && !isConfirmedNewTx) return;
+    if (isConfirmedNewTx) lastCatalogSyncedHashRef.current = hash;
 
     let cancelled = false;
     const parseMetadata = (raw: string): Partial<Task> => {
@@ -3319,6 +3326,8 @@ function VerifyTab({
     title: string;
     decision: VerifyDecision;
   } | null>(null);
+  const lastVerifySyncedHashRef = React.useRef<string | undefined>(undefined);
+  const lastUnissueSyncedHashRef = React.useRef<string | undefined>(undefined);
 
   useEffect(() => {
     if (!address) {
@@ -3327,6 +3336,16 @@ function VerifyTab({
       setCompletedItems([]);
       return;
     }
+
+    // Hash-based dedup: only re-sync when a new tx confirms (verify or unissue), not on state transitions
+    const verifyHash = verifyWriteStatus.hash;
+    const unissueHash = unissueWriteStatus.hash;
+    const isNewVerify = verifyWriteStatus.state === "confirmed" && verifyHash !== lastVerifySyncedHashRef.current;
+    const isNewUnissue = unissueWriteStatus.state === "confirmed" && unissueHash !== lastUnissueSyncedHashRef.current;
+    const eitherHashActive = !!(verifyHash || unissueHash);
+    if (eitherHashActive && !isNewVerify && !isNewUnissue) return;
+    if (isNewVerify) lastVerifySyncedHashRef.current = verifyHash;
+    if (isNewUnissue) lastUnissueSyncedHashRef.current = unissueHash;
 
     let cancelled = false;
 

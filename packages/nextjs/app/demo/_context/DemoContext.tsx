@@ -681,6 +681,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const roleRegisterInFlight = useRef<{ issuer: boolean; redeemer: boolean }>({ issuer: false, redeemer: false });
   const autoRegisteredForRef = useRef<string | null>(null);
   const taskStateHydratedRef = useRef(false);
+  // ── CU throttle: minimum interval between focus/visibility-triggered RPC syncs ──
+  const FOCUS_SYNC_COOLDOWN_MS = 60_000; // 60 seconds between background re-syncs
+  const lastSyncStateMs = useRef<number>(0);
+  const lastSyncOffersMs = useRef<number>(0);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1012,8 +1016,11 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    const refresh = () => {
+    const refresh = (force = false) => {
       if (cancelled) return;
+      const now = Date.now();
+      if (!force && now - lastSyncStateMs.current < FOCUS_SYNC_COOLDOWN_MS) return;
+      lastSyncStateMs.current = now;
       void syncState();
     };
     const onFocus = () => refresh();
@@ -1021,7 +1028,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       if (document.visibilityState === "visible") refresh();
     };
 
-    refresh();
+    refresh(true); // always run on mount
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => {
@@ -1146,8 +1153,11 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    const refresh = () => {
+    const refresh = (force = false) => {
       if (cancelled) return;
+      const now = Date.now();
+      if (!force && now - lastSyncOffersMs.current < FOCUS_SYNC_COOLDOWN_MS) return;
+      lastSyncOffersMs.current = now;
       void syncOffers();
     };
     const onFocus = () => refresh();
@@ -1155,7 +1165,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       if (document.visibilityState === "visible") refresh();
     };
 
-    refresh();
+    refresh(true); // always run on mount
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onVisibilityChange);
     return () => {
@@ -1232,7 +1242,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     void attemptRegister();
     const id = window.setInterval(() => {
       void attemptRegister();
-    }, 10000);
+    }, 30_000); // 30s retry — keeps registration smooth without hammering the RPC
 
     return () => {
       cancelled = true;
