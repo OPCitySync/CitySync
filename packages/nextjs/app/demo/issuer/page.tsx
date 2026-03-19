@@ -1154,6 +1154,13 @@ export default function IssuerApp() {
     setToast("Task updated.");
   };
 
+  const handleRemoveCatalogTask = (taskId: string) => {
+    setApprovedCatalogTasks(prev => prev.filter(task => task.id !== taskId));
+    if (catalogModifyTaskId === taskId) setCatalogModifyTaskId(null);
+    if (issueTaskId === taskId) setIssueTaskId(null);
+    setToast("Task removed from catalog.");
+  };
+
   const handleCreatePost = (post: Post) => {
     setLocalPosts(prev => [post, ...prev]);
     setComposeOpen(false);
@@ -1234,6 +1241,7 @@ export default function IssuerApp() {
             onApproveProposed={handleApproveProposed}
             approvedCatalogTasks={approvedCatalogTasks}
             onModifyCatalogTask={taskId => setCatalogModifyTaskId(taskId)}
+            onRemoveCatalogTask={taskId => handleRemoveCatalogTask(taskId)}
             taskWriteStatus={taskWriteStatus}
             onDismissTaskWrite={() => setTaskWriteStatus({ state: "idle" })}
             proposeWriteStatus={proposeWriteStatus}
@@ -2193,6 +2201,7 @@ function TasksTab({
   onApproveProposed,
   approvedCatalogTasks,
   onModifyCatalogTask,
+  onRemoveCatalogTask,
   taskWriteStatus,
   onDismissTaskWrite,
   proposeWriteStatus,
@@ -2209,6 +2218,7 @@ function TasksTab({
   onApproveProposed: (task: ProposedTask) => void;
   approvedCatalogTasks: Task[];
   onModifyCatalogTask: (taskId: string) => void;
+  onRemoveCatalogTask: (taskId: string) => void;
   taskWriteStatus: TaskWriteStatus;
   onDismissTaskWrite: () => void;
   proposeWriteStatus: TaskWriteStatus;
@@ -2886,6 +2896,22 @@ function TasksTab({
                   </div>
 
                   <div style={{ display: "flex", gap: 8 }}>
+                    <button
+                      onClick={() => onRemoveCatalogTask(task.id)}
+                      style={{
+                        width: "100%",
+                        background: "rgba(255,107,157,0.12)",
+                        border: "1px solid rgba(255,107,157,0.35)",
+                        borderRadius: 10,
+                        padding: "9px 0",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: "#ff6b9d",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Remove From Catalog
+                    </button>
                     <button
                       onClick={() => onModifyCatalogTask(task.id)}
                       style={{
