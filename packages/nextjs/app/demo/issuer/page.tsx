@@ -3116,7 +3116,7 @@ function ProposeTaskSheet({
     setSuccessCriteria(
       "Prep wall materials, organize paint stations, and complete post-event cleanup with photo evidence.",
     );
-    setCreditRate("4");
+    setCreditRate("10");
     setCredentials("No prior experience required");
     setSelectedTags(["Community", "Arts"]);
   }, [tutorialAutofill]);
