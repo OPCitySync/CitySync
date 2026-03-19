@@ -495,6 +495,13 @@ export default function RedeemerApp() {
   const [tutorialCatalogOfferingId, setTutorialCatalogOfferingId] = useState<string | null>(null);
   const [tutorialActiveOfferingId, setTutorialActiveOfferingId] = useState<string | null>(null);
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
+  const persistTutorialStep = React.useCallback((nextStep: IssuerTutorialStep) => {
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, nextStep);
+    } catch {
+      // Ignore storage access failures.
+    }
+  }, []);
 
   const { redeemer, mces } = state;
   // Only require `address` — the smart-account client can lag behind by
@@ -698,11 +705,7 @@ export default function RedeemerApp() {
           <button
             onClick={() => {
               startDemoTutorialRun();
-              try {
-                window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
-              } catch {
-                // Ignore storage failures.
-              }
+              persistTutorialStep("box1");
               setTutorialStep("box1");
               setRole("issuer");
               router.push("/demo/issuer");
@@ -760,11 +763,7 @@ export default function RedeemerApp() {
           <button
             onClick={() => {
               startDemoTutorialRun();
-              try {
-                window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
-              } catch {
-                // Ignore storage failures.
-              }
+              persistTutorialStep("box1");
               setTutorialStep("box1");
               setRole("issuer");
               router.push("/demo/issuer");
@@ -1399,6 +1398,7 @@ export default function RedeemerApp() {
               if (tutorialStep === "box22") {
                 setRole("participant");
                 setTutorialStep("box23");
+                persistTutorialStep("box23");
                 router.push("/demo/participant");
               }
             }}

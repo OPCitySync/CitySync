@@ -761,6 +761,13 @@ export default function IssuerApp() {
   const { issuer } = state;
   issuerTasksRef.current = issuer.tasks;
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
+  const persistTutorialStep = React.useCallback((nextStep: IssuerTutorialStep) => {
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, nextStep);
+    } catch {
+      // Ignore storage access failures.
+    }
+  }, []);
   const rightPanel = getIssuerRightPanel(activeTab);
   const exitIssuerTutorial = React.useCallback(() => {
     setTutorialStep("dismissed");
@@ -786,6 +793,7 @@ export default function IssuerApp() {
         onContinueBox9={() => {
           setRole("participant");
           setTutorialStep("box10");
+          persistTutorialStep("box10");
           router.push("/demo/participant");
         }}
       />
@@ -1253,6 +1261,7 @@ export default function IssuerApp() {
             onTutorialVerifyMintComplete={() => {
               setRole("redeemer");
               setTutorialStep("box18");
+              persistTutorialStep("box18");
               router.push("/demo/redeemer");
             }}
           />

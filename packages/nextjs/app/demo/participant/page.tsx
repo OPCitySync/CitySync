@@ -4294,6 +4294,13 @@ export default function ParticipantPage() {
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
+  const persistTutorialStep = React.useCallback((nextStep: IssuerTutorialStep) => {
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, nextStep);
+    } catch {
+      // Ignore storage failures.
+    }
+  }, []);
 
   useEffect(() => {
     if (!state.role) setRole("participant");
@@ -4315,15 +4322,11 @@ export default function ParticipantPage() {
 
   const startIssuerTutorial = React.useCallback(() => {
     startDemoTutorialRun();
-    try {
-      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
-    } catch {
-      // Ignore storage failures.
-    }
+    persistTutorialStep("box1");
     setTutorialStep("box1");
     setRole("issuer");
     router.push("/demo/issuer");
-  }, [router, setRole]);
+  }, [persistTutorialStep, router, setRole]);
 
   const exitTutorial = React.useCallback(() => {
     setTutorialStep("dismissed");
@@ -4589,6 +4592,7 @@ export default function ParticipantPage() {
               onClick={() => {
                 setRole("issuer");
                 setTutorialStep("box15");
+                persistTutorialStep("box15");
                 router.push("/demo/issuer");
               }}
               style={{
