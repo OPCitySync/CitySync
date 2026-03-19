@@ -27,7 +27,27 @@ const TEAL = "#34eeb6"; // teal — tasks / rewards / verify
 const GOLD = "#DD9E33"; // gold — MCE / redemptions
 const PURPLE = "#a78bfa"; // purple — governance / vote
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
-type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "box4" | "box5" | "box6" | "dismissed";
+type IssuerTutorialStep =
+  | "intro"
+  | "box1"
+  | "box2"
+  | "box3"
+  | "box4"
+  | "box5"
+  | "box6"
+  | "box7"
+  | "box8"
+  | "box9"
+  | "box10"
+  | "box11"
+  | "box12"
+  | "box13"
+  | "box14"
+  | "box15"
+  | "box16"
+  | "box17"
+  | "box18"
+  | "dismissed";
 const SHARED_TUTORIAL_INTRO_TEXT =
   "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
 
@@ -43,6 +63,18 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
       raw === "box4" ||
       raw === "box5" ||
       raw === "box6" ||
+      raw === "box7" ||
+      raw === "box8" ||
+      raw === "box9" ||
+      raw === "box10" ||
+      raw === "box11" ||
+      raw === "box12" ||
+      raw === "box13" ||
+      raw === "box14" ||
+      raw === "box15" ||
+      raw === "box16" ||
+      raw === "box17" ||
+      raw === "box18" ||
       raw === "dismissed"
     )
       return raw;
@@ -1773,6 +1805,7 @@ function TaskCard({
   canUnclaim,
   showClaimButton,
   showUnclaimButton,
+  tutorialHighlightActions,
   onClaim,
   onUnclaim,
   onExecute,
@@ -1784,6 +1817,7 @@ function TaskCard({
   canUnclaim?: boolean;
   showClaimButton?: boolean;
   showUnclaimButton?: boolean;
+  tutorialHighlightActions?: boolean;
   onClaim?: () => void;
   onUnclaim?: () => void;
   onExecute?: () => void;
@@ -1990,13 +2024,21 @@ function TaskCard({
               onClick={onUnclaim}
               style={{
                 padding: "10px 18px",
-                background: "rgba(255,255,255,0.05)",
+                background: tutorialHighlightActions
+                  ? "linear-gradient(145deg, rgba(255,226,162,0.22), rgba(221,158,51,0.16))"
+                  : "rgba(255,255,255,0.05)",
                 color: "rgba(255,255,255,0.55)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                border: tutorialHighlightActions
+                  ? "1px solid rgba(255,226,162,0.85)"
+                  : "1px solid rgba(255,255,255,0.1)",
                 borderRadius: 10,
                 fontSize: 13,
                 fontWeight: 600,
                 cursor: "pointer",
+                boxShadow: tutorialHighlightActions
+                  ? "0 0 0 1px rgba(255,226,162,0.35), 0 0 14px rgba(221,158,51,0.42)"
+                  : undefined,
+                animation: tutorialHighlightActions ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
               }}
             >
               Unclaim
@@ -2006,13 +2048,19 @@ function TaskCard({
               style={{
                 flex: 1,
                 padding: "10px 0",
-                background: ACCENT,
+                background: tutorialHighlightActions
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : ACCENT,
                 color: "white",
-                border: "none",
+                border: tutorialHighlightActions ? "1px solid rgba(255,226,162,0.92)" : "none",
                 borderRadius: 10,
                 fontSize: 13,
                 fontWeight: 700,
                 cursor: "pointer",
+                boxShadow: tutorialHighlightActions
+                  ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.48)"
+                  : undefined,
+                animation: tutorialHighlightActions ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
               }}
             >
               Execute →
@@ -2041,7 +2089,15 @@ function TaskCard({
   );
 }
 
-function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey) => void }) {
+function ExploreTab({
+  onLearnMore,
+  tutorialStep,
+  onTutorialStepChange,
+}: {
+  onLearnMore: (key: ParticipantLearnCardKey) => void;
+  tutorialStep: IssuerTutorialStep;
+  onTutorialStepChange: (step: IssuerTutorialStep) => void;
+}) {
   type OnchainTask = Task & { claimedBy?: `0x${string}`; completionStatus?: number };
   type BrowseTaskGroup = {
     key: string;
@@ -2078,6 +2134,19 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
   const [scoreSnapshot, setScoreSnapshot] = useState<ParticipantScoreSnapshot>(() =>
     getParticipantScoreSnapshot(address ?? FAKE_WALLETS.participant),
   );
+  const tutorialHighlightToggle = tutorialStep === "box10";
+  const tutorialHighlightTaskInstances = tutorialStep === "box11";
+  const tutorialHighlightClaimedActions = tutorialStep === "box13";
+
+  useEffect(() => {
+    if (tutorialStep === "box10" || tutorialStep === "box11") {
+      setView("browse");
+      return;
+    }
+    if (tutorialStep === "box12" || tutorialStep === "box13" || tutorialStep === "box14") {
+      setView("claimed");
+    }
+  }, [tutorialStep]);
 
   const parseEstimatedHours = React.useCallback((estimatedTime: string): number | null => {
     const input = estimatedTime.toLowerCase();
@@ -2433,6 +2502,22 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
   const sanctionsPolicy = getSanctionPolicyForSnapshot(scoreSnapshot);
 
   useEffect(() => {
+    if (tutorialStep !== "box11") return;
+    setExpandedTaskGroups(prev => {
+      if (groupedBrowseTasks.length === 0) return prev;
+      const next = { ...prev };
+      groupedBrowseTasks.slice(0, 2).forEach(group => {
+        next[group.key] = true;
+      });
+      return next;
+    });
+    if (myTasks.length >= 2) {
+      setView("claimed");
+      onTutorialStepChange("box12");
+    }
+  }, [groupedBrowseTasks, myTasks.length, onTutorialStepChange, tutorialStep]);
+
+  useEffect(() => {
     if (onchainCompletedTasks.length === 0) return;
     setCompletedTasks(prev => {
       const existing = new Set(prev.map(t => t.id));
@@ -2592,6 +2677,9 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
       setToast("Now that you are onboarded your account can now interact with all City/Sync contracts.");
       return;
     }
+    if (tutorialStep === "box13") {
+      onTutorialStepChange("box14");
+    }
     setPendingVerificationIds(prev => (prev.includes(task.id) ? prev : [...prev, task.id]));
     setPendingTaskSnapshots(prev => ({ ...prev, [task.id]: task }));
     setTaskWriteStatus({ state: "pending", label: "Submit Completion" });
@@ -2622,6 +2710,12 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
 
   return (
     <div style={{ padding: "20px 16px 24px" }}>
+      <style>{`
+        @keyframes tutorialPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.01); }
+        }
+      `}</style>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
         <LearnMoreLink onClick={openExploreLearnMore} />
       </div>
@@ -2655,7 +2749,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
             style={{
               flex: 1,
               padding: "9px 0",
-              border: "none",
+              border: tutorialHighlightToggle ? "1px solid rgba(255,226,162,0.85)" : "none",
               borderRadius: 8,
               cursor: "pointer",
               fontSize: 13,
@@ -2663,6 +2757,10 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
               background: view === key ? color : "transparent",
               color: view === key ? (key === "browse" ? "white" : "#15151E") : "rgba(255,255,255,0.45)",
               transition: "all 0.15s",
+              boxShadow: tutorialHighlightToggle
+                ? "0 0 0 1px rgba(255,226,162,0.38), 0 0 12px rgba(221,158,51,0.35)"
+                : undefined,
+              animation: tutorialHighlightToggle ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
             }}
           >
             {label}
@@ -2882,7 +2980,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
             No tasks in this category
           </div>
         ) : (
-          groupedBrowseTasks.map(group => {
+          groupedBrowseTasks.map((group, groupIndex) => {
             const task = group.representative;
             const isExpanded = !!expandedTaskGroups[group.key];
             const catColor = CAT_COLORS[task.category] ?? "#666";
@@ -2894,6 +2992,14 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
                   marginBottom: 10,
                   borderLeft: task.isMCE ? "3px solid rgba(221,158,51,0.45)" : "3px solid rgba(52,238,182,0.45)",
                   paddingLeft: 13,
+                  boxShadow:
+                    tutorialHighlightTaskInstances && groupIndex < 2
+                      ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 16px rgba(221,158,51,0.42)"
+                      : undefined,
+                  animation:
+                    tutorialHighlightTaskInstances && groupIndex < 2
+                      ? "tutorialPulse 1.45s ease-in-out infinite"
+                      : undefined,
                 }}
               >
                 <button
@@ -2999,7 +3105,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.2)" }}>Head to Open Tasks to claim one</div>
         </div>
       ) : (
-        myTasks.map(task => (
+        myTasks.map((task, index) => (
           <TaskCard
             key={task.id}
             task={task}
@@ -3008,6 +3114,7 @@ function ExploreTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKe
             pendingVerification={pendingVerificationIds.includes(task.id) || task.completionStatus === 1}
             canUnclaim={task.completionStatus === 0 || task.completionStatus === 3}
             showUnclaimButton
+            tutorialHighlightActions={tutorialHighlightClaimedActions && index === 0}
             onUnclaim={() => handleUnclaim(task)}
             onExecute={() => setExecuteTask(task)}
           />
@@ -4015,37 +4122,47 @@ export default function ParticipantPage() {
     router.push("/demo/issuer");
   }, [router, setRole]);
 
+  useEffect(() => {
+    if (
+      tutorialStep === "box10" ||
+      tutorialStep === "box11" ||
+      tutorialStep === "box12" ||
+      tutorialStep === "box13" ||
+      tutorialStep === "box14"
+    ) {
+      setActiveTab("explore");
+    }
+  }, [tutorialStep]);
+
   const rightPanel = getParticipantRightPanel(activeTab);
-  const leftPanel = (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
-      {tutorialStep !== "dismissed" ? (
-        <div
-          style={{
-            background: "rgba(221,158,51,0.08)",
-            border: "1px solid rgba(221,158,51,0.28)",
-            borderRadius: 16,
-            padding: 14,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 10,
-              color: "rgba(221,158,51,0.8)",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              fontWeight: 700,
-              marginBottom: 6,
-            }}
-          >
-            Tutorial
-          </div>
-          <div style={{ fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 }}>
-            Welcome to the City/Sync Demo
-          </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
-            {SHARED_TUTORIAL_INTRO_TEXT}
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+  const tutorialCard = (() => {
+    if (tutorialStep === "dismissed") return null;
+
+    const cardStyle: React.CSSProperties = {
+      background: "rgba(221,158,51,0.08)",
+      border: "1px solid rgba(221,158,51,0.28)",
+      borderRadius: 16,
+      padding: 14,
+    };
+    const subtitleStyle: React.CSSProperties = {
+      fontSize: 10,
+      color: "rgba(221,158,51,0.8)",
+      textTransform: "uppercase",
+      letterSpacing: "0.08em",
+      fontWeight: 700,
+      marginBottom: 6,
+    };
+    const titleStyle: React.CSSProperties = { fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 };
+    const bodyStyle: React.CSSProperties = { fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6 };
+    const buttonRowStyle: React.CSSProperties = { display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" };
+
+    if (tutorialStep === "intro") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Tutorial</div>
+          <div style={titleStyle}>Welcome to the City/Sync Demo</div>
+          <div style={{ ...bodyStyle, whiteSpace: "pre-line" }}>{SHARED_TUTORIAL_INTRO_TEXT}</div>
+          <div style={buttonRowStyle}>
             <button
               onClick={() => setTutorialStep("dismissed")}
               style={{
@@ -4078,7 +4195,136 @@ export default function ParticipantPage() {
             </button>
           </div>
         </div>
-      ) : null}
+      );
+    }
+
+    if (tutorialStep === "box10") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 10</div>
+          <div style={titleStyle}>Civic Participant Task Flow</div>
+          <div style={bodyStyle}>
+            Civic Participants are able to browse available tasks offered by Issuer organizations, and track thier
+            claimed tasks for execution.
+          </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={() => setTutorialStep("box11")}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "#DD9E33",
+                color: "#15151E",
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (tutorialStep === "box11") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 11</div>
+          <div style={titleStyle}>Claim Two Tasks</div>
+          <div style={bodyStyle}>Please go ahead and claim 2 of the 3 tasks.</div>
+        </div>
+      );
+    }
+
+    if (tutorialStep === "box12") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 12</div>
+          <div style={titleStyle}>Tracking Claimed Work</div>
+          <div style={bodyStyle}>
+            Civic-Participants can keep track of their claimed tasks. All Civic-Participants are limited to 2 claimed
+            tsaks at any given time. This ensures that Civic-Participants all have an equal opportunity to claim tasks.
+          </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={() => setTutorialStep("box13")}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "#DD9E33",
+                color: "#15151E",
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (tutorialStep === "box13") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 13</div>
+          <div style={titleStyle}>Execute a Claimed Task</div>
+          <div style={bodyStyle}>
+            When executing a task, Civic-Participants will be able to submit proof of task completion and provide
+            feedback to Issuers about their experience. Go ahead and Execute on of your two tasks.
+          </div>
+        </div>
+      );
+    }
+
+    if (tutorialStep === "box14") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 14</div>
+          <div style={titleStyle}>Return to Issuer Verification</div>
+          <div style={bodyStyle}>
+            Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.
+          </div>
+          <div style={buttonRowStyle}>
+            <button
+              onClick={() => {
+                setRole("issuer");
+                setTutorialStep("box15");
+                router.push("/demo/issuer");
+              }}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "#DD9E33",
+                color: "#15151E",
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={cardStyle}>
+        <div style={subtitleStyle}>Tutorial</div>
+        <div style={titleStyle}>Tutorial in Progress</div>
+        <div style={bodyStyle}>Continue the tutorial in the currently highlighted role and tab.</div>
+      </div>
+    );
+  })();
+  const leftPanel = (
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
+      {tutorialCard}
       {openInfoCards.length > 0 ? (
         <LearnMorePanel
           keys={openInfoCards}
@@ -4152,7 +4398,9 @@ export default function ParticipantPage() {
         phoneFrame
       >
         {activeTab === "profile" && <ProfileTab onTabChange={setActiveTab} onLearnMore={openLearnMore} />}
-        {activeTab === "explore" && <ExploreTab onLearnMore={openLearnMore} />}
+        {activeTab === "explore" && (
+          <ExploreTab onLearnMore={openLearnMore} tutorialStep={tutorialStep} onTutorialStepChange={setTutorialStep} />
+        )}
         {activeTab === "community" && <CommunityTab onLearnMore={openLearnMore} />}
         {activeTab === "redeem" && <RedeemTab onLearnMore={openLearnMore} />}
       </AppShell>

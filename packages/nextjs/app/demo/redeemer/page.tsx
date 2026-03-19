@@ -111,7 +111,27 @@ const ACCENT_GOLD = "#DD9E33"; // gold — MCE / business
 const ACCENT_BLUE = "#7eb3ff"; // blue — stats / info
 const ACCENT_PURPLE = "#a78bfa"; // purple — catalog / network
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
-type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "box4" | "box5" | "box6" | "dismissed";
+type IssuerTutorialStep =
+  | "intro"
+  | "box1"
+  | "box2"
+  | "box3"
+  | "box4"
+  | "box5"
+  | "box6"
+  | "box7"
+  | "box8"
+  | "box9"
+  | "box10"
+  | "box11"
+  | "box12"
+  | "box13"
+  | "box14"
+  | "box15"
+  | "box16"
+  | "box17"
+  | "box18"
+  | "dismissed";
 const SHARED_TUTORIAL_INTRO_TEXT =
   "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
 
@@ -127,6 +147,18 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
       raw === "box4" ||
       raw === "box5" ||
       raw === "box6" ||
+      raw === "box7" ||
+      raw === "box8" ||
+      raw === "box9" ||
+      raw === "box10" ||
+      raw === "box11" ||
+      raw === "box12" ||
+      raw === "box13" ||
+      raw === "box14" ||
+      raw === "box15" ||
+      raw === "box16" ||
+      raw === "box17" ||
+      raw === "box18" ||
       raw === "dismissed"
     )
       return raw;
@@ -458,78 +490,106 @@ export default function RedeemerApp() {
     [walletStorageSuffix],
   );
   const allPosts = [...localPosts, ...state.posts];
+  React.useEffect(() => {
+    if (tutorialStep === "box18") setActiveTab("offerings");
+  }, [tutorialStep]);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       {tutorialStep !== "dismissed" ? (
-        <div
-          style={{
-            background: "rgba(221,158,51,0.08)",
-            border: "1px solid rgba(221,158,51,0.28)",
-            borderRadius: 16,
-            padding: 14,
-          }}
-        >
+        tutorialStep === "box18" ? (
           <div
             style={{
-              fontSize: 10,
-              color: "rgba(221,158,51,0.8)",
-              textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              fontWeight: 700,
-              marginBottom: 6,
+              background: "rgba(221,158,51,0.08)",
+              border: "1px solid rgba(221,158,51,0.28)",
+              borderRadius: 16,
+              padding: 14,
             }}
           >
-            Tutorial
-          </div>
-          <div style={{ fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 }}>
-            Welcome to the City/Sync Demo
-          </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
-            {SHARED_TUTORIAL_INTRO_TEXT}
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-            <button
-              onClick={() => setTutorialStep("dismissed")}
+            <div
               style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
+                fontSize: 10,
+                color: "rgba(221,158,51,0.8)",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
                 fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
+                marginBottom: 6,
               }}
             >
-              No Thanks
-            </button>
-            <button
-              onClick={() => {
-                try {
-                  window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
-                } catch {
-                  // Ignore storage failures.
-                }
-                setTutorialStep("box1");
-                setRole("issuer");
-                router.push("/demo/issuer");
-              }}
+              Step 18
+            </div>
+            <div style={{ fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 }}>Pause here.</div>
+          </div>
+        ) : (
+          <div
+            style={{
+              background: "rgba(221,158,51,0.08)",
+              border: "1px solid rgba(221,158,51,0.28)",
+              borderRadius: 16,
+              padding: 14,
+            }}
+          >
+            <div
               style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
+                fontSize: 10,
+                color: "rgba(221,158,51,0.8)",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
                 fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
+                marginBottom: 6,
               }}
             >
-              Start Tutorial
-            </button>
+              Tutorial
+            </div>
+            <div style={{ fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 }}>
+              Welcome to the City/Sync Demo
+            </div>
+            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
+              {SHARED_TUTORIAL_INTRO_TEXT}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+              <button
+                onClick={() => setTutorialStep("dismissed")}
+                style={{
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "8px 12px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  background: "rgba(255,255,255,0.08)",
+                  color: "rgba(255,255,255,0.8)",
+                }}
+              >
+                No Thanks
+              </button>
+              <button
+                onClick={() => {
+                  try {
+                    window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, "box1");
+                  } catch {
+                    // Ignore storage failures.
+                  }
+                  setTutorialStep("box1");
+                  setRole("issuer");
+                  router.push("/demo/issuer");
+                }}
+                style={{
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "8px 12px",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  background: "#DD9E33",
+                  color: "#15151E",
+                }}
+              >
+                Start Tutorial
+              </button>
+            </div>
           </div>
-        </div>
+        )
       ) : null}
       {openInfoCards.length > 0 ? (
         <LearnMorePanel

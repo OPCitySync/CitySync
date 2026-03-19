@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAccount, useAuthModal, useSignerStatus } from "@account-kit/react";
+import { useRouter } from "next/navigation";
 import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
@@ -274,7 +275,27 @@ const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
   },
 };
 
-type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "box4" | "box5" | "box6" | "dismissed";
+type IssuerTutorialStep =
+  | "intro"
+  | "box1"
+  | "box2"
+  | "box3"
+  | "box4"
+  | "box5"
+  | "box6"
+  | "box7"
+  | "box8"
+  | "box9"
+  | "box10"
+  | "box11"
+  | "box12"
+  | "box13"
+  | "box14"
+  | "box15"
+  | "box16"
+  | "box17"
+  | "box18"
+  | "dismissed";
 
 function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
@@ -288,6 +309,18 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
       raw === "box4" ||
       raw === "box5" ||
       raw === "box6" ||
+      raw === "box7" ||
+      raw === "box8" ||
+      raw === "box9" ||
+      raw === "box10" ||
+      raw === "box11" ||
+      raw === "box12" ||
+      raw === "box13" ||
+      raw === "box14" ||
+      raw === "box15" ||
+      raw === "box16" ||
+      raw === "box17" ||
+      raw === "box18" ||
       raw === "dismissed"
     )
       return raw;
@@ -387,7 +420,7 @@ function IssuerTutorialPanel({
   onContinueBox2,
   onContinueBox3,
   onContinueBox4,
-  onContinueBox6,
+  onContinueBox9,
 }: {
   step: IssuerTutorialStep;
   orgName: string;
@@ -396,7 +429,7 @@ function IssuerTutorialPanel({
   onContinueBox2: () => void;
   onContinueBox3: () => void;
   onContinueBox4: () => void;
-  onContinueBox6: () => void;
+  onContinueBox9: () => void;
 }) {
   const safeOrgName = orgName.trim() || "Issuer Organization";
 
@@ -462,11 +495,59 @@ function IssuerTutorialPanel({
       {step === "box6" && (
         <TutorialCard
           subtitle="Step 6"
-          title="Task Submitted"
-          body="Great. Your proposed task has been submitted for review. In this demo, you can auto-approve proposals to move them into your catalog and continue issuance."
+          title="Approve Your Proposed Task"
+          body="Great. Your proposed task is now ready for catalog approval.\n\nGo ahead and approve your task for the catalog."
+        />
+      )}
+
+      {step === "box7" && (
+        <TutorialCard
+          subtitle="Step 7"
+          title="Issue from Your Catalog"
+          body="Once a task has been approved, it is placed within your organizational task catalog. You can issue tasks from your catalog at any time."
+        />
+      )}
+
+      {step === "box8" && (
+        <TutorialCard
+          subtitle="Step 8"
+          title="Choose Issuance Slots"
+          body="When issuing tasks, Issuers are able to create multiple instances of that task to be made available for the public to claim.\n\nGo ahead and approve the 3 tasks for issuance."
+        />
+      )}
+
+      {step === "box9" && (
+        <TutorialCard
+          subtitle="Step 9"
+          title="Great — Tasks Are Live"
+          body="Now that we've issued our first tasks, lets take a look at the Civic Participant, and how they can claim tasks and execute them."
         >
-          <TutorialActionButton label="Continue" onClick={onContinueBox6} />
+          <TutorialActionButton label="Continue" onClick={onContinueBox9} />
         </TutorialCard>
+      )}
+
+      {step === "box15" && (
+        <TutorialCard
+          subtitle="Step 15"
+          title="Issued, Claimed, and Completed"
+          body="All issued task will be in one of three states: Issued, Claimed, and Completed. Issued tasks can be unissued by the Issuer. Unissued tasks are removed from circulation.\n\nGo ahead an Unissue one of your tasks."
+        />
+      )}
+
+      {step === "box16" && (
+        <TutorialCard
+          subtitle="Step 16"
+          title="Handling No-Shows"
+          body="If a Civic-Participant fails to show up for their claimed task, Issuers can select the No Show button to remove the claimed task out of circulation. No Shows by Civic-Participants are tracked to prevent abuse.\n\nGo ahead and select Mark No-Show for this task."
+        />
+      )}
+
+      {step === "box17" && (
+        <TutorialCard
+          subtitle="Step 17"
+          title="Verify or Reject with Mint"
+          body="Issuers are responsible for verifying that the work was actually completed by the Civic-Participant. Once verification is complete they can either reject completion as unsatisfactory with feedback or verify. Rejections are designed to keep Civic-Participants accountable. In both circumstances, credits will be minted to the Civic-Participant.\n\nGo ahead and Verify & Mint."
+        />
       )}
     </div>
   );
@@ -571,6 +652,7 @@ type TaskWriteStatus = {
 type VerifyDecision = "verify" | "reject";
 
 export default function IssuerApp() {
+  const router = useRouter();
   const {
     state,
     dispatch,
@@ -639,7 +721,11 @@ export default function IssuerApp() {
           setTutorialStep("box4");
         }}
         onContinueBox4={() => setTutorialStep("box5")}
-        onContinueBox6={() => setTutorialStep("dismissed")}
+        onContinueBox9={() => {
+          setRole("participant");
+          setTutorialStep("box10");
+          router.push("/demo/participant");
+        }}
       />
       {openInfoCards.length > 0 ? (
         <LearnMorePanel
@@ -714,6 +800,27 @@ export default function IssuerApp() {
     }
   }, [tutorialStep]);
 
+  React.useEffect(() => {
+    if (tutorialStep === "box1" || tutorialStep === "box2" || tutorialStep === "box3") {
+      setActiveTab("profile");
+      return;
+    }
+    if (
+      tutorialStep === "box4" ||
+      tutorialStep === "box5" ||
+      tutorialStep === "box6" ||
+      tutorialStep === "box7" ||
+      tutorialStep === "box8" ||
+      tutorialStep === "box9"
+    ) {
+      setActiveTab("tasks");
+      return;
+    }
+    if (tutorialStep === "box15" || tutorialStep === "box16" || tutorialStep === "box17") {
+      setActiveTab("verify");
+    }
+  }, [tutorialStep]);
+
   // Weekly epoch reset: 250ms settle lets DemoContext hydrate issuer.tasks before we snapshot.
   React.useEffect(() => {
     const timer = setTimeout(() => {
@@ -770,20 +877,20 @@ export default function IssuerApp() {
     taskId: string,
     citizen: string,
     options?: { decision?: VerifyDecision; feedback?: string },
-  ) => {
+  ): Promise<boolean> => {
     const decision = options?.decision ?? "verify";
     const feedback = options?.feedback?.trim() ?? "";
     if (decision === "reject" && feedback.length === 0) {
       setVerifyWriteStatus({ state: "failed", error: "Feedback is required for Reject & Mint." });
       setToast("Reject & Mint requires feedback.");
-      return;
+      return false;
     }
 
     if (!address) {
       setVerifyWriteStatus({ state: "failed", error: "Session not ready. Finish sign-in and retry Verify & Mint." });
       if (!isAuthenticating) openAuthModal();
       setToast("Finish sign-in to activate your issuer account, then retry.");
-      return;
+      return false;
     }
 
     setVerifyWriteStatus({ state: "pending" });
@@ -802,9 +909,10 @@ export default function IssuerApp() {
         setToast(`Verified & Minted. RD ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
       }
       setVerifyWriteStatus({ state: "confirmed", hash: result.hash });
-      return;
+      return true;
     }
     setVerifyWriteStatus({ state: "failed", error: result.error });
+    return false;
   };
 
   const handleProposeTask = async (proposed: ProposedTask) => {
@@ -875,14 +983,17 @@ export default function IssuerApp() {
     };
     setApprovedCatalogTasks(prev => [task, ...prev]);
     setProposedTasks(prev => prev.filter(p => p.id !== proposed.id));
+    if (tutorialStep === "box6") {
+      setTutorialStep("box7");
+    }
   };
 
-  const handleIssueTask = async (task: Task, slots: number) => {
+  const handleIssueTask = async (task: Task, slots: number): Promise<boolean> => {
     if (!address) {
       setTaskWriteStatus({ state: "failed", error: "Session not ready. Finish sign-in and tap Issue again." });
       if (!isAuthenticating) openAuthModal();
       setToast("Finish sign-in to activate your issuer account, then issue from catalog.");
-      return;
+      return false;
     }
 
     const projectedCost = task.credits * slots;
@@ -891,7 +1002,7 @@ export default function IssuerApp() {
       const error = `Issuance exceeds remaining Epoch budget (${projectedCost} > ${remainingBudget} CITYx).`;
       setTaskWriteStatus({ state: "failed", error });
       setToast("Issuance blocked: exceeds remaining Epoch budget.");
-      return;
+      return false;
     }
 
     setTaskWriteStatus({ state: "pending" });
@@ -922,7 +1033,7 @@ export default function IssuerApp() {
 
     if (okCount === slots) {
       setTaskWriteStatus({ state: "confirmed", hash: lastHash });
-      return;
+      return true;
     }
 
     if (okCount > 0) {
@@ -931,10 +1042,11 @@ export default function IssuerApp() {
         hash: lastHash,
         error: firstError ? `${firstError} (${okCount}/${slots} succeeded)` : `${okCount}/${slots} succeeded`,
       });
-      return;
+      return false;
     }
 
     setTaskWriteStatus({ state: "failed", error: firstError ?? "Task issuance failed." });
+    return false;
   };
 
   const handleModifyApproved = (taskId: string, updates: { location: string; taskDate: string }) => {
@@ -1029,6 +1141,7 @@ export default function IssuerApp() {
             onLearnMore={openLearnMore}
             onUnissueConfirm={setUnissueConfirmId}
             tutorialHighlightPropose={tutorialStep === "box5"}
+            tutorialStep={tutorialStep}
           />
         )}
         {activeTab === "verify" && (
@@ -1044,6 +1157,12 @@ export default function IssuerApp() {
             onLearnMore={openLearnMore}
             onUnissueConfirm={setUnissueConfirmId}
             onNoShowConfirm={setNoShowConfirmItem}
+            tutorialStep={tutorialStep}
+            onTutorialVerifyMintComplete={() => {
+              setRole("redeemer");
+              setTutorialStep("box18");
+              router.push("/demo/redeemer");
+            }}
           />
         )}
         {activeTab === "community" && (
@@ -1063,7 +1182,9 @@ export default function IssuerApp() {
             onIssueTask={id => {
               setIssueTaskId(id);
               setCreateSheet(false);
+              if (tutorialStep === "box7") setTutorialStep("box8");
             }}
+            tutorialHighlightTask={tutorialStep === "box7"}
           />
         )}
 
@@ -1076,6 +1197,8 @@ export default function IssuerApp() {
                 creditsCommitted={creditsCommitted}
                 onClose={() => setIssueTaskId(null)}
                 onIssue={slots => handleIssueTask(task, slots)}
+                tutorialStep={tutorialStep}
+                onTutorialIssued={() => setTutorialStep("box9")}
               />
             ) : null;
           })()}
@@ -1110,8 +1233,11 @@ export default function IssuerApp() {
         {unissueConfirmId && (
           <UnissueConfirmSheet
             taskId={unissueConfirmId}
-            onConfirm={() => {
-              void handleUnissueTask(unissueConfirmId);
+            onConfirm={async () => {
+              const result = await handleUnissueTask(unissueConfirmId);
+              if (tutorialStep === "box15" && result.ok) {
+                setTutorialStep("box16");
+              }
               setUnissueConfirmId(null);
             }}
             onCancel={() => setUnissueConfirmId(null)}
@@ -1133,6 +1259,9 @@ export default function IssuerApp() {
                 });
                 if (scoreResult) {
                   setToast(`No-Show recorded. RD ${scoreResult.db.toFixed(1)} · RS ${scoreResult.rs.toFixed(1)}.`);
+                }
+                if (tutorialStep === "box16") {
+                  setTutorialStep("box17");
                 }
               }
               setNoShowConfirmItem(null);
@@ -1964,6 +2093,7 @@ function TasksTab({
   onLearnMore,
   onUnissueConfirm: _onUnissueConfirm,
   tutorialHighlightPropose,
+  tutorialStep,
 }: {
   creditsCommitted: number;
   onCreateOpen: () => void;
@@ -1979,6 +2109,7 @@ function TasksTab({
   onLearnMore: (key: IssuerLearnCardKey) => void;
   onUnissueConfirm: (taskId: string) => void;
   tutorialHighlightPropose: boolean;
+  tutorialStep: IssuerTutorialStep;
 }) {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [view, setView] = useState<"issue" | "catalog">("catalog");
@@ -2001,6 +2132,8 @@ function TasksTab({
   const creditsRemaining = EPOCH1_CAP - creditsCommitted;
   const atCap = creditsRemaining <= 0;
   const lastCatalogSyncedHashRef = React.useRef<string | undefined>(undefined);
+  const tutorialHighlightApprove = tutorialStep === "box6";
+  const tutorialHighlightIssueButton = tutorialStep === "box7";
 
   useEffect(() => {
     if (!address) {
@@ -2113,6 +2246,16 @@ function TasksTab({
       cancelled = true;
     };
   }, [address, taskWriteStatus.hash, taskWriteStatus.state, proposeWriteStatus.hash, proposeWriteStatus.state]);
+
+  useEffect(() => {
+    if (tutorialStep === "box4" || tutorialStep === "box5" || tutorialStep === "box6") {
+      setView("catalog");
+      return;
+    }
+    if (tutorialStep === "box7" || tutorialStep === "box8" || tutorialStep === "box9") {
+      setView("issue");
+    }
+  }, [tutorialStep]);
 
   return (
     <div style={{ padding: "24px 20px 100px", position: "relative" }}>
@@ -2313,8 +2456,16 @@ function TasksTab({
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              background: atCap ? "rgba(255,255,255,0.04)" : "rgba(221,158,51,0.1)",
-              border: atCap ? "1px dashed rgba(255,255,255,0.12)" : "1px dashed rgba(221,158,51,0.4)",
+              background: tutorialHighlightIssueButton
+                ? "linear-gradient(145deg, rgba(221,158,51,0.25), rgba(221,158,51,0.14))"
+                : atCap
+                  ? "rgba(255,255,255,0.04)"
+                  : "rgba(221,158,51,0.1)",
+              border: tutorialHighlightIssueButton
+                ? "1px solid rgba(255,226,162,0.78)"
+                : atCap
+                  ? "1px dashed rgba(255,255,255,0.12)"
+                  : "1px dashed rgba(221,158,51,0.4)",
               borderRadius: 14,
               padding: "14px 0",
               fontSize: 13,
@@ -2322,6 +2473,9 @@ function TasksTab({
               color: atCap ? DIMMED : ACCENT,
               cursor: atCap ? "not-allowed" : "pointer",
               marginBottom: 10,
+              position: tutorialHighlightIssueButton ? "relative" : undefined,
+              zIndex: tutorialHighlightIssueButton ? 40 : undefined,
+              animation: tutorialHighlightIssueButton ? "tutorialRadiantTasks 1.55s ease-in-out infinite" : undefined,
             }}
           >
             <IconPlus /> Issue Task from Catalog
@@ -2545,8 +2699,10 @@ function TasksTab({
                       onClick={() => onApproveProposed(pt)}
                       style={{
                         width: "100%",
-                        background: ACCENT_PURPLE,
-                        border: "none",
+                        background: tutorialHighlightApprove
+                          ? "linear-gradient(145deg, rgba(192,168,255,0.95), rgba(167,139,250,0.95))"
+                          : ACCENT_PURPLE,
+                        border: tutorialHighlightApprove ? "1px solid rgba(255,236,255,0.9)" : "none",
                         borderRadius: 12,
                         padding: "11px 0",
                         fontSize: 13,
@@ -2554,6 +2710,11 @@ function TasksTab({
                         color: BG,
                         cursor: "pointer",
                         marginBottom: 8,
+                        position: tutorialHighlightApprove ? "relative" : undefined,
+                        zIndex: tutorialHighlightApprove ? 40 : undefined,
+                        animation: tutorialHighlightApprove
+                          ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
+                          : undefined,
                       }}
                     >
                       Approve Task in Catalog
@@ -2661,10 +2822,12 @@ function CreateTaskSheet({
   onClose,
   approvedCatalogTasks = [],
   onIssueTask,
+  tutorialHighlightTask = false,
 }: {
   onClose: () => void;
   approvedCatalogTasks?: Task[];
   onIssueTask: (taskId: string) => void;
+  tutorialHighlightTask?: boolean;
 }) {
   return (
     <>
@@ -2732,7 +2895,7 @@ function CreateTaskSheet({
             />
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {approvedCatalogTasks.map(task => (
+              {approvedCatalogTasks.map((task, index) => (
                 <div
                   key={task.id}
                   style={{
@@ -2740,6 +2903,16 @@ function CreateTaskSheet({
                     border: "1px solid rgba(255,255,255,0.08)",
                     borderRadius: 14,
                     padding: 14,
+                    position: tutorialHighlightTask && index === 0 ? "relative" : undefined,
+                    zIndex: tutorialHighlightTask && index === 0 ? 30 : undefined,
+                    boxShadow:
+                      tutorialHighlightTask && index === 0
+                        ? "0 0 0 1px rgba(255,226,162,0.9), 0 0 22px rgba(221,158,51,0.62), 0 0 44px rgba(221,158,51,0.36)"
+                        : undefined,
+                    animation:
+                      tutorialHighlightTask && index === 0
+                        ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
+                        : undefined,
                   }}
                 >
                   <div
@@ -3722,12 +3895,14 @@ function VerifyTab({
   onLearnMore,
   onUnissueConfirm,
   onNoShowConfirm,
+  tutorialStep,
+  onTutorialVerifyMintComplete,
 }: {
   onVerify: (
     taskId: string,
     citizen: string,
     options?: { decision?: VerifyDecision; feedback?: string },
-  ) => Promise<void>;
+  ) => Promise<boolean>;
   onSetTaskActive: (taskId: string, active: boolean) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
   onUnissueTask: (taskId: string) => Promise<{ ok: boolean; hash?: `0x${string}`; error?: string }>;
   verifyWriteStatus: TaskWriteStatus;
@@ -3738,6 +3913,8 @@ function VerifyTab({
   onLearnMore: (key: IssuerLearnCardKey) => void;
   onUnissueConfirm: (taskId: string) => void;
   onNoShowConfirm: (item: { taskId: string; claimant: `0x${string}`; title: string }) => void;
+  tutorialStep: IssuerTutorialStep;
+  onTutorialVerifyMintComplete: () => void;
 }) {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [view, setView] = useState<"issued" | "claimed" | "completed">("issued");
@@ -3755,6 +3932,9 @@ function VerifyTab({
   } | null>(null);
   const lastVerifySyncedHashRef = React.useRef<string | undefined>(undefined);
   const lastUnissueSyncedHashRef = React.useRef<string | undefined>(undefined);
+  const tutorialHighlightUnissue = tutorialStep === "box15";
+  const tutorialHighlightNoShow = tutorialStep === "box16";
+  const tutorialHighlightVerifyButtons = tutorialStep === "box17";
 
   useEffect(() => {
     if (!address) {
@@ -3910,6 +4090,20 @@ function VerifyTab({
     hiddenTaskIds,
   ]);
 
+  useEffect(() => {
+    if (tutorialStep === "box15") {
+      setView("issued");
+      return;
+    }
+    if (tutorialStep === "box16") {
+      setView("claimed");
+      return;
+    }
+    if (tutorialStep === "box17") {
+      setView("completed");
+    }
+  }, [tutorialStep]);
+
   const hiddenTaskIdSet = new Set(hiddenTaskIds);
   const claimedOrCompletedIdSet = new Set([
     ...claimedItems.map(item => item.taskId),
@@ -3920,6 +4114,12 @@ function VerifyTab({
   );
   const visibleClaimedItems = claimedItems.filter(item => !hiddenTaskIdSet.has(item.taskId));
   const visibleCompletedItems = completedItems.filter(item => !hiddenTaskIdSet.has(item.taskId));
+
+  useEffect(() => {
+    if (tutorialStep !== "box16") return;
+    if (visibleClaimedItems.length === 0) return;
+    setExpandedClaimed(prev => ({ ...prev, [visibleClaimedItems[0].taskId]: true }));
+  }, [tutorialStep, visibleClaimedItems]);
 
   const TOGGLE_OPTIONS = [
     { key: "issued", label: `Issued (${visibleIssuedItems.length})` },
@@ -4081,12 +4281,22 @@ function VerifyTab({
                         marginLeft: 8,
                         fontSize: 11,
                         fontWeight: 600,
-                        background: "rgba(255,107,157,0.14)",
+                        background: tutorialHighlightUnissue
+                          ? "linear-gradient(145deg, rgba(255,140,176,0.28), rgba(255,107,157,0.22))"
+                          : "rgba(255,107,157,0.14)",
                         color: "#ff6b9d",
-                        border: "1px solid rgba(255,107,157,0.35)",
+                        border: tutorialHighlightUnissue
+                          ? "1px solid rgba(255,210,226,0.82)"
+                          : "1px solid rgba(255,107,157,0.35)",
                         borderRadius: 8,
                         padding: "4px 10px",
                         cursor: "pointer",
+                        boxShadow: tutorialHighlightUnissue
+                          ? "0 0 0 1px rgba(255,210,226,0.35), 0 0 16px rgba(255,107,157,0.48)"
+                          : undefined,
+                        animation: tutorialHighlightUnissue
+                          ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
+                          : undefined,
                       }}
                     >
                       Unissue Task
@@ -4197,14 +4407,24 @@ function VerifyTab({
                           }}
                           style={{
                             width: "100%",
-                            background: "rgba(255,107,157,0.14)",
-                            border: "1px solid rgba(255,107,157,0.35)",
+                            background: tutorialHighlightNoShow
+                              ? "linear-gradient(145deg, rgba(255,140,176,0.28), rgba(255,107,157,0.22))"
+                              : "rgba(255,107,157,0.14)",
+                            border: tutorialHighlightNoShow
+                              ? "1px solid rgba(255,210,226,0.82)"
+                              : "1px solid rgba(255,107,157,0.35)",
                             borderRadius: 10,
                             padding: "10px 0",
                             fontSize: 12,
                             fontWeight: 700,
                             color: "#ff6b9d",
                             cursor: "pointer",
+                            boxShadow: tutorialHighlightNoShow
+                              ? "0 0 0 1px rgba(255,210,226,0.35), 0 0 16px rgba(255,107,157,0.48)"
+                              : undefined,
+                            animation: tutorialHighlightNoShow
+                              ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
+                              : undefined,
                           }}
                         >
                           No Show
@@ -4337,31 +4557,6 @@ function VerifyTab({
                             taskId: task.taskId,
                             claimant: task.claimant,
                             title: task.title,
-                            decision: "verify",
-                          });
-                        }}
-                        disabled={!task.claimant}
-                        style={{
-                          flex: 1,
-                          background: task.claimant ? ACCENT : "rgba(255,255,255,0.1)",
-                          border: "none",
-                          borderRadius: 12,
-                          padding: "11px 0",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          color: task.claimant ? BG : MUTED,
-                          cursor: task.claimant ? "pointer" : "not-allowed",
-                        }}
-                      >
-                        Verify & Mint
-                      </button>
-                      <button
-                        onClick={async () => {
-                          if (!task.claimant) return;
-                          setConfirmVerify({
-                            taskId: task.taskId,
-                            claimant: task.claimant,
-                            title: task.title,
                             decision: "reject",
                           });
                         }}
@@ -4378,9 +4573,53 @@ function VerifyTab({
                           fontWeight: 700,
                           color: task.claimant ? "#ff6b9d" : MUTED,
                           cursor: task.claimant ? "pointer" : "not-allowed",
+                          boxShadow:
+                            tutorialHighlightVerifyButtons && task.claimant
+                              ? "0 0 0 1px rgba(255,210,226,0.35), 0 0 14px rgba(255,107,157,0.42)"
+                              : undefined,
+                          animation:
+                            tutorialHighlightVerifyButtons && task.claimant
+                              ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
+                              : undefined,
                         }}
                       >
                         Reject & Mint
+                      </button>
+                      <button
+                        onClick={async () => {
+                          if (!task.claimant) return;
+                          setConfirmVerify({
+                            taskId: task.taskId,
+                            claimant: task.claimant,
+                            title: task.title,
+                            decision: "verify",
+                          });
+                        }}
+                        disabled={!task.claimant}
+                        style={{
+                          flex: 1,
+                          background: task.claimant ? ACCENT : "rgba(255,255,255,0.1)",
+                          border:
+                            tutorialHighlightVerifyButtons && task.claimant
+                              ? "1px solid rgba(255,226,162,0.9)"
+                              : "none",
+                          borderRadius: 12,
+                          padding: "11px 0",
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: task.claimant ? BG : MUTED,
+                          cursor: task.claimant ? "pointer" : "not-allowed",
+                          boxShadow:
+                            tutorialHighlightVerifyButtons && task.claimant
+                              ? "0 0 0 1px rgba(255,226,162,0.45), 0 0 14px rgba(221,158,51,0.45)"
+                              : undefined,
+                          animation:
+                            tutorialHighlightVerifyButtons && task.claimant
+                              ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
+                              : undefined,
+                        }}
+                      >
+                        Verify & Mint
                       </button>
                     </div>
                   </div>
@@ -4496,11 +4735,14 @@ function VerifyTab({
                       <button
                         onClick={async () => {
                           if (confirmVerify.decision === "reject" && !canConfirm) return;
-                          await onVerify(confirmVerify.taskId, confirmVerify.claimant, {
+                          const ok = await onVerify(confirmVerify.taskId, confirmVerify.claimant, {
                             decision: confirmVerify.decision,
                             feedback: feedbackValue.trim(),
                           });
                           setConfirmVerify(null);
+                          if (ok && tutorialStep === "box17" && confirmVerify.decision === "verify") {
+                            onTutorialVerifyMintComplete();
+                          }
                         }}
                         style={{
                           flex: 1,
@@ -5057,13 +5299,18 @@ function IssueTaskPopup({
   creditsCommitted,
   onClose,
   onIssue,
+  tutorialStep,
+  onTutorialIssued,
 }: {
   task: Task;
   creditsCommitted: number;
   onClose: () => void;
-  onIssue: (slots: number) => void | Promise<void>;
+  onIssue: (slots: number) => void | Promise<boolean | void>;
+  tutorialStep?: IssuerTutorialStep;
+  onTutorialIssued?: () => void;
 }) {
-  const [slots, setSlots] = useState(1);
+  const isTutorialStep8 = tutorialStep === "box8";
+  const [slots, setSlots] = useState(isTutorialStep8 ? 3 : 1);
   const [step, setStep] = useState<"select" | "confirm">("select");
   const [submitting, setSubmitting] = useState(false);
   const totalCity = slots * task.credits;
@@ -5075,11 +5322,17 @@ function IssueTaskPopup({
     if (submitting || wouldExceedBudget) return;
     setSubmitting(true);
     try {
-      await onIssue(slots);
+      const result = await onIssue(slots);
+      if (result === false) return false;
+      return true;
     } finally {
       setSubmitting(false);
     }
   };
+
+  React.useEffect(() => {
+    if (tutorialStep === "box8") setSlots(3);
+  }, [tutorialStep]);
 
   return (
     <>
@@ -5185,6 +5438,13 @@ function IssueTaskPopup({
                   justifyContent: "center",
                   gap: 16,
                   marginBottom: 14,
+                  borderRadius: 14,
+                  border: isTutorialStep8 ? "1px solid rgba(255,226,162,0.82)" : "none",
+                  boxShadow: isTutorialStep8
+                    ? "0 0 0 1px rgba(255,226,162,0.5), 0 0 20px rgba(221,158,51,0.55)"
+                    : "none",
+                  padding: isTutorialStep8 ? "8px 10px" : 0,
+                  animation: isTutorialStep8 ? "tutorialRadiantTasks 1.55s ease-in-out infinite" : undefined,
                 }}
               >
                 <button
@@ -5297,14 +5557,28 @@ function IssueTaskPopup({
                 {step === "select" ? "Cancel" : "Back"}
               </button>
               <button
-                onClick={step === "select" ? () => setStep("confirm") : () => void submitIssue()}
+                onClick={async () => {
+                  if (step === "select") {
+                    if (isTutorialStep8) {
+                      const ok = await submitIssue();
+                      if (ok) {
+                        onTutorialIssued?.();
+                        onClose();
+                      }
+                      return;
+                    }
+                    setStep("confirm");
+                    return;
+                  }
+                  void submitIssue();
+                }}
                 disabled={
                   submitting || (step === "select" && wouldExceedBudget) || (step === "confirm" && wouldExceedBudget)
                 }
                 style={{
                   flex: 2,
                   background: ACCENT,
-                  border: "none",
+                  border: isTutorialStep8 && step === "select" ? "1px solid rgba(255,226,162,0.86)" : "none",
                   borderRadius: 12,
                   padding: "12px 0",
                   fontSize: 13,
@@ -5312,6 +5586,14 @@ function IssueTaskPopup({
                   color: BG,
                   cursor: submitting || wouldExceedBudget ? "not-allowed" : "pointer",
                   opacity: submitting || wouldExceedBudget ? 0.7 : 1,
+                  boxShadow:
+                    isTutorialStep8 && step === "select"
+                      ? "0 0 0 1px rgba(255,226,162,0.48), 0 0 18px rgba(221,158,51,0.52)"
+                      : undefined,
+                  animation:
+                    isTutorialStep8 && step === "select"
+                      ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
+                      : undefined,
                 }}
               >
                 {step === "select"
