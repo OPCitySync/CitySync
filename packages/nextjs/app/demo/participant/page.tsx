@@ -4316,7 +4316,8 @@ export default function ParticipantPage() {
   }, [tutorialStep]);
 
   useEffect(() => {
-    if (PARTICIPANT_ROLE_TUTORIAL_STEPS.has(tutorialStep)) return;
+    // Allow cross-role tutorial handoff steps (box15+ / box18+). Only dismiss truly invalid values.
+    if (PARTICIPANT_ROLE_TUTORIAL_STEPS.has(tutorialStep) || /^box\d+$/.test(tutorialStep)) return;
     setTutorialStep("dismissed");
   }, [tutorialStep]);
 

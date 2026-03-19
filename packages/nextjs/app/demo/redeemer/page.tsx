@@ -807,7 +807,8 @@ export default function RedeemerApp() {
   }, [tutorialStep]);
 
   React.useEffect(() => {
-    if (REDEEMER_ROLE_TUTORIAL_STEPS.has(tutorialStep)) return;
+    // Allow cross-role tutorial handoff steps (box23+). Only dismiss truly invalid values.
+    if (REDEEMER_ROLE_TUTORIAL_STEPS.has(tutorialStep) || /^box\d+$/.test(tutorialStep)) return;
     setTutorialStep("dismissed");
   }, [tutorialStep]);
 

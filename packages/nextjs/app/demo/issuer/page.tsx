@@ -872,7 +872,8 @@ export default function IssuerApp() {
   }, [tutorialStep]);
 
   React.useEffect(() => {
-    if (ISSUER_ROLE_TUTORIAL_STEPS.has(tutorialStep)) return;
+    // Allow cross-role tutorial handoff steps (box10+). Only dismiss truly invalid values.
+    if (ISSUER_ROLE_TUTORIAL_STEPS.has(tutorialStep) || /^box\d+$/.test(tutorialStep)) return;
     setTutorialStep("dismissed");
   }, [tutorialStep]);
 
