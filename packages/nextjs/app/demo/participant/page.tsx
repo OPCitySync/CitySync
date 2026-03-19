@@ -2601,6 +2601,16 @@ function ExploreTab({
     () => myTasks.filter(task => tutorialTaskIdSet.has(task.id)),
     [myTasks, tutorialTaskIdSet],
   );
+  const tutorialTargetClaimTaskId = React.useMemo(() => {
+    if (tutorialStep !== "box11") return undefined;
+    for (const group of orderedBrowseTaskGroups) {
+      const nextInstance = group.instances.find(
+        instance => tutorialTaskIdSet.has(instance.id) && !myTaskIds.has(instance.id),
+      );
+      if (nextInstance) return nextInstance.id;
+    }
+    return undefined;
+  }, [myTaskIds, orderedBrowseTaskGroups, tutorialStep, tutorialTaskIdSet]);
   const orderedClaimedTasks = React.useMemo(() => {
     if (tutorialStep !== "box13") return myTasks;
     const sorted = [...myTasks];
@@ -2616,14 +2626,27 @@ function ExploreTab({
     setExpandedTaskGroups(prev => {
       if (orderedBrowseTaskGroups.length === 0) return prev;
       const next = { ...prev };
+      if (tutorialTargetClaimTaskId) {
+        const targetGroup = orderedBrowseTaskGroups.find(group =>
+          group.instances.some(instance => instance.id === tutorialTargetClaimTaskId),
+        );
+        if (targetGroup) {
+          next[targetGroup.key] = true;
+          return next;
+        }
+      }
       if (tutorialBrowseGroupKeySet.size > 0) {
-        orderedBrowseTaskGroups.forEach(group => {
-          if (tutorialBrowseGroupKeySet.has(group.key)) next[group.key] = true;
-        });
+        const firstTutorialGroup = orderedBrowseTaskGroups.find(group => tutorialBrowseGroupKeySet.has(group.key));
+        if (firstTutorialGroup) {
+          next[firstTutorialGroup.key] = true;
+          return next;
+        }
       } else {
-        orderedBrowseTaskGroups.slice(0, 2).forEach(group => {
-          next[group.key] = true;
-        });
+        const firstGroup = orderedBrowseTaskGroups[0];
+        if (firstGroup) {
+          next[firstGroup.key] = true;
+          return next;
+        }
       }
       return next;
     });
@@ -2636,6 +2659,7 @@ function ExploreTab({
     onTutorialStepChange,
     tutorialBrowseGroupKeySet,
     tutorialClaimedTasks.length,
+    tutorialTargetClaimTaskId,
     tutorialStep,
   ]);
 
@@ -3108,7 +3132,11 @@ function ExploreTab({
             const catColor = CAT_COLORS[task.category] ?? "#666";
             const shouldHighlightTaskGroup =
               tutorialHighlightTaskInstances &&
-              (tutorialBrowseGroupKeySet.size > 0 ? tutorialBrowseGroupKeySet.has(group.key) : groupIndex < 2);
+              (tutorialTargetClaimTaskId
+                ? group.instances.some(instance => instance.id === tutorialTargetClaimTaskId)
+                : tutorialBrowseGroupKeySet.size > 0
+                  ? tutorialBrowseGroupKeySet.has(group.key)
+                  : groupIndex < 2);
             return (
               <div
                 key={group.key}
@@ -3210,7 +3238,12 @@ function ExploreTab({
                         isClaimed={myTaskIds.has(instance.id)}
                         locked={!isOnboarded && !instance.isOnboarding}
                         showClaimButton
-                        tutorialAllowClaim={tutorialHighlightTaskInstances && shouldHighlightTaskGroup}
+                        tutorialAllowClaim={
+                          tutorialHighlightTaskInstances &&
+                          (tutorialTargetClaimTaskId
+                            ? instance.id === tutorialTargetClaimTaskId
+                            : shouldHighlightTaskGroup)
+                        }
                         onClaim={() => handleClaim(instance)}
                         onExecute={() => setExecuteTask(instance)}
                       />
