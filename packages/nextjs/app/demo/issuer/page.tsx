@@ -298,6 +298,13 @@ function TutorialCard({
   subtitle?: string;
   children?: React.ReactNode;
 }) {
+  const paragraphs = body
+    .replace(/\\n\\n/g, "\n\n")
+    .replace(/\\n/g, "\n")
+    .split(/\n{2,}/)
+    .map(segment => segment.trim())
+    .filter(Boolean);
+
   return (
     <div
       style={{
@@ -322,8 +329,12 @@ function TutorialCard({
         </div>
       )}
       <div style={{ fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 }}>{title}</div>
-      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6, whiteSpace: "pre-line" }}>
-        {body}
+      <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.6 }}>
+        {paragraphs.map((paragraph, index) => (
+          <p key={`${paragraph.slice(0, 18)}-${index}`} style={{ margin: 0, marginTop: index === 0 ? 0 : 10 }}>
+            {paragraph}
+          </p>
+        ))}
       </div>
       {children && <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>{children}</div>}
     </div>
