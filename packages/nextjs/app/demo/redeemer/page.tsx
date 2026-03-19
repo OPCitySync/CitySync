@@ -111,7 +111,7 @@ const ACCENT_GOLD = "#DD9E33"; // gold — MCE / business
 const ACCENT_BLUE = "#7eb3ff"; // blue — stats / info
 const ACCENT_PURPLE = "#a78bfa"; // purple — catalog / network
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
-type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "dismissed";
+type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "box4" | "box5" | "box6" | "dismissed";
 const SHARED_TUTORIAL_INTRO_TEXT =
   "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
 
@@ -119,7 +119,17 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
-    if (raw === "intro" || raw === "box1" || raw === "box2" || raw === "box3" || raw === "dismissed") return raw;
+    if (
+      raw === "intro" ||
+      raw === "box1" ||
+      raw === "box2" ||
+      raw === "box3" ||
+      raw === "box4" ||
+      raw === "box5" ||
+      raw === "box6" ||
+      raw === "dismissed"
+    )
+      return raw;
   } catch {
     // Ignore storage access failures.
   }

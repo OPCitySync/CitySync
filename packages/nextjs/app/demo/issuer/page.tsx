@@ -274,13 +274,23 @@ const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
   },
 };
 
-type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "dismissed";
+type IssuerTutorialStep = "intro" | "box1" | "box2" | "box3" | "box4" | "box5" | "box6" | "dismissed";
 
 function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
-    if (raw === "intro" || raw === "box1" || raw === "box2" || raw === "box3" || raw === "dismissed") return raw;
+    if (
+      raw === "intro" ||
+      raw === "box1" ||
+      raw === "box2" ||
+      raw === "box3" ||
+      raw === "box4" ||
+      raw === "box5" ||
+      raw === "box6" ||
+      raw === "dismissed"
+    )
+      return raw;
   } catch {
     // Ignore storage access failures.
   }
@@ -376,6 +386,8 @@ function IssuerTutorialPanel({
   onDismissIntro,
   onContinueBox2,
   onContinueBox3,
+  onContinueBox4,
+  onContinueBox6,
 }: {
   step: IssuerTutorialStep;
   orgName: string;
@@ -383,6 +395,8 @@ function IssuerTutorialPanel({
   onDismissIntro: () => void;
   onContinueBox2: () => void;
   onContinueBox3: () => void;
+  onContinueBox4: () => void;
+  onContinueBox6: () => void;
 }) {
   const safeOrgName = orgName.trim() || "Issuer Organization";
 
@@ -424,6 +438,34 @@ function IssuerTutorialPanel({
           body="In order to sustain this balance, we implement an economic control lever called an Issuance Cap.\n\nAn issuance cap the maximum amount of civic credits that can be issued within a 3 month period, which we call an Epoch.\n\nIf redemption rates are strong (civic participants are spending credits), and credits are circulating smoothly, the issuance cap can expand gradually.\n\nIf redemption slows or credits accumulate in wallets without use, the issuance cap will tighten. The issuance cap is a feedback loop that nudges the system toward equilibrium.\n\nAll issuer organizations can keep track of how many credits they've issued during the epoch, and can plan their volunteer programs according to the limits of the issuance cap."
         >
           <TutorialActionButton label="Continue" onClick={onContinueBox3} />
+        </TutorialCard>
+      )}
+
+      {step === "box4" && (
+        <TutorialCard
+          subtitle="Step 4"
+          title="Task Catalogs and Governance"
+          body="All issuer organizations will manage their own task catalog which tracks all the details about a specific volunteer opportunity including the date/time/location of the opportunity, the amount of hours, the success criteria, and the rate of CITY issuance that is desired.\n\nAll tasks proposed by Issuer organizations must be approved by the Issuer governance committee that manages the catalogs. Creating a catalog for all existing volunteer opportunities allows the protocol to fine-tune the issuance of credits by classifying similar tasks, similarly.\n\nIt also allows for task issuance to be guided by rules that keep tasks aligned to public-sector goals. The initial ruleset will make two declarations: (1) tasks cannot replace existing paid functions of the Issuer organization, and (2) tasks must facilitate the delivery of a public good or public service."
+        >
+          <TutorialActionButton label="Continue" onClick={onContinueBox4} />
+        </TutorialCard>
+      )}
+
+      {step === "box5" && (
+        <TutorialCard
+          subtitle="Step 5"
+          title="Propose a New Task"
+          body="Issuer Organizations can propose the creation of a new task to be added to their catalog at any time. There is a standardized template for proposing tasks. Let's create one by clicking the + Propose New Task for Approval button.\n\nWe will auto-fill this task for you to start. When you're ready, let's talk about how they are approved."
+        />
+      )}
+
+      {step === "box6" && (
+        <TutorialCard
+          subtitle="Step 6"
+          title="Task Submitted"
+          body="Great. Your proposed task has been submitted for review. In this demo, you can auto-approve proposals to move them into your catalog and continue issuance."
+        >
+          <TutorialActionButton label="Continue" onClick={onContinueBox6} />
         </TutorialCard>
       )}
     </div>
@@ -592,7 +634,12 @@ export default function IssuerApp() {
         }}
         onDismissIntro={() => setTutorialStep("dismissed")}
         onContinueBox2={() => setTutorialStep("box3")}
-        onContinueBox3={() => setTutorialStep("dismissed")}
+        onContinueBox3={() => {
+          setActiveTab("tasks");
+          setTutorialStep("box4");
+        }}
+        onContinueBox4={() => setTutorialStep("box5")}
+        onContinueBox6={() => setTutorialStep("dismissed")}
       />
       {openInfoCards.length > 0 ? (
         <LearnMorePanel
@@ -782,6 +829,7 @@ export default function IssuerApp() {
       ...prev,
     ]);
     setProposeWriteStatus({ state: "confirmed", hash: result.hash });
+    if (tutorialStep === "box5") setTutorialStep("box6");
   };
 
   const handleApproveProposed = async (proposed: ProposedTask) => {
@@ -980,6 +1028,7 @@ export default function IssuerApp() {
             onDismissProposeWrite={() => setProposeWriteStatus({ state: "idle" })}
             onLearnMore={openLearnMore}
             onUnissueConfirm={setUnissueConfirmId}
+            tutorialHighlightPropose={tutorialStep === "box5"}
           />
         )}
         {activeTab === "verify" && (
@@ -1035,6 +1084,10 @@ export default function IssuerApp() {
             onClose={() => setProposeSheet(false)}
             onPropose={handleProposeTask}
             creditsCommitted={creditsCommitted}
+            tutorialAutofill={tutorialStep === "box5"}
+            onTutorialSubmitIntent={() => {
+              if (tutorialStep === "box5") setTutorialStep("box6");
+            }}
           />
         )}
 
@@ -1910,6 +1963,7 @@ function TasksTab({
   onDismissProposeWrite,
   onLearnMore,
   onUnissueConfirm: _onUnissueConfirm,
+  tutorialHighlightPropose,
 }: {
   creditsCommitted: number;
   onCreateOpen: () => void;
@@ -1924,6 +1978,7 @@ function TasksTab({
   onDismissProposeWrite: () => void;
   onLearnMore: (key: IssuerLearnCardKey) => void;
   onUnissueConfirm: (taskId: string) => void;
+  tutorialHighlightPropose: boolean;
 }) {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [view, setView] = useState<"issue" | "catalog">("catalog");
@@ -2060,7 +2115,26 @@ function TasksTab({
   }, [address, taskWriteStatus.hash, taskWriteStatus.state, proposeWriteStatus.hash, proposeWriteStatus.state]);
 
   return (
-    <div style={{ padding: "24px 20px 100px" }}>
+    <div style={{ padding: "24px 20px 100px", position: "relative" }}>
+      <style>{`
+        @keyframes tutorialRadiantTasks {
+          0%, 100% {
+            box-shadow:
+              0 0 0 1px rgba(255,226,162,0.82),
+              0 0 16px rgba(221,158,51,0.56),
+              0 0 28px rgba(221,158,51,0.34);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow:
+              0 0 0 1px rgba(255,236,186,0.95),
+              0 0 24px rgba(221,158,51,0.74),
+              0 0 42px rgba(221,158,51,0.5),
+              0 0 64px rgba(221,158,51,0.28);
+            transform: scale(1.01);
+          }
+        }
+      `}</style>
       <div
         style={{
           ...surfaceCard,
@@ -2320,8 +2394,16 @@ function TasksTab({
               alignItems: "center",
               justifyContent: "center",
               gap: 8,
-              background: atCap ? "rgba(255,255,255,0.04)" : "rgba(221,158,51,0.06)",
-              border: atCap ? "1px dashed rgba(255,255,255,0.12)" : "1px solid rgba(221,158,51,0.25)",
+              background: tutorialHighlightPropose
+                ? "linear-gradient(145deg, rgba(221,158,51,0.25), rgba(221,158,51,0.14))"
+                : atCap
+                  ? "rgba(255,255,255,0.04)"
+                  : "rgba(221,158,51,0.06)",
+              border: tutorialHighlightPropose
+                ? "1px solid rgba(255,226,162,0.78)"
+                : atCap
+                  ? "1px dashed rgba(255,255,255,0.12)"
+                  : "1px solid rgba(221,158,51,0.25)",
               borderRadius: 14,
               padding: "14px 0",
               fontSize: 13,
@@ -2329,6 +2411,9 @@ function TasksTab({
               color: atCap ? DIMMED : "rgba(221,158,51,0.8)",
               cursor: atCap ? "not-allowed" : "pointer",
               marginBottom: 16,
+              position: tutorialHighlightPropose ? "relative" : undefined,
+              zIndex: tutorialHighlightPropose ? 40 : undefined,
+              animation: tutorialHighlightPropose ? "tutorialRadiantTasks 1.55s ease-in-out infinite" : undefined,
             }}
           >
             <IconPlus /> Propose New Task for Approval
@@ -2553,6 +2638,19 @@ function TasksTab({
           )}
         </>
       )}
+      {tutorialHighlightPropose && view === "catalog" && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 24,
+            pointerEvents: "none",
+            background:
+              "radial-gradient(circle at 50% 28%, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.22) 18%, rgba(0,0,0,0.64) 54%, rgba(0,0,0,0.74) 100%)",
+            borderRadius: 12,
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -2697,10 +2795,14 @@ function ProposeTaskSheet({
   onClose,
   onPropose,
   creditsCommitted,
+  tutorialAutofill = false,
+  onTutorialSubmitIntent,
 }: {
   onClose: () => void;
   onPropose: (task: ProposedTask) => void;
   creditsCommitted: number;
+  tutorialAutofill?: boolean;
+  onTutorialSubmitIntent?: () => void;
 }) {
   const [title, setTitle] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
@@ -2728,6 +2830,20 @@ function ProposeTaskSheet({
     setSelectedTags(prev => (prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]));
   };
 
+  useEffect(() => {
+    if (!tutorialAutofill) return;
+    setTitle("Neighborhood Mural Prep & Cleanup");
+    setEstimatedTime("2 hours");
+    setLocation("Downtown Arts Corridor");
+    setDate("Saturday, April 6, 2026 · 10:00 AM");
+    setSuccessCriteria(
+      "Prep wall materials, organize paint stations, and complete post-event cleanup with photo evidence.",
+    );
+    setCreditRate("4");
+    setCredentials("No prior experience required");
+    setSelectedTags(["Community", "Arts"]);
+  }, [tutorialAutofill]);
+
   const computedCredits = (() => {
     const rate = parseFloat(creditRate);
     if (isNaN(rate) || rate <= 0) return 0;
@@ -2747,6 +2863,7 @@ function ProposeTaskSheet({
 
   const handleSubmit = () => {
     if (!canSubmit || wouldExceedCap) return;
+    onTutorialSubmitIntent?.();
     onPropose({
       id: `proposed-${Date.now()}`,
       title: title.trim(),
