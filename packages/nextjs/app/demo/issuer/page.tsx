@@ -1322,12 +1322,29 @@ function ProfileTab({
   }, []);
 
   return (
-    <div style={{ padding: "24px 20px 100px" }}>
+    <div style={{ padding: "24px 20px 100px", position: "relative" }}>
       <style>{`
         @keyframes tutorialPulse {
           0% { box-shadow: 0 0 0 0 rgba(221,158,51,0.35); }
           70% { box-shadow: 0 0 0 8px rgba(221,158,51,0); }
           100% { box-shadow: 0 0 0 0 rgba(221,158,51,0); }
+        }
+        @keyframes tutorialRadiant {
+          0%, 100% {
+            box-shadow:
+              0 0 0 1px rgba(255,226,162,0.82),
+              0 0 16px rgba(221,158,51,0.56),
+              0 0 28px rgba(221,158,51,0.34);
+            transform: scale(1);
+          }
+          50% {
+            box-shadow:
+              0 0 0 1px rgba(255,236,186,0.95),
+              0 0 24px rgba(221,158,51,0.74),
+              0 0 42px rgba(221,158,51,0.5),
+              0 0 64px rgba(221,158,51,0.28);
+            transform: scale(1.03);
+          }
         }
       `}</style>
       <div style={{ background: SURFACE, borderRadius: 16, display: "flex", marginBottom: 20, overflow: "hidden" }}>
@@ -1504,15 +1521,19 @@ function ProfileTab({
                 <button
                   onClick={startEdit}
                   style={{
-                    background: tutorialHighlightEditProfile ? "rgba(221,158,51,0.14)" : "transparent",
-                    border: tutorialHighlightEditProfile ? "1px solid rgba(221,158,51,0.45)" : "none",
+                    background: tutorialHighlightEditProfile
+                      ? "linear-gradient(145deg, rgba(221,158,51,0.3), rgba(221,158,51,0.18))"
+                      : "transparent",
+                    border: tutorialHighlightEditProfile ? "1px solid rgba(255,226,162,0.78)" : "none",
                     borderRadius: tutorialHighlightEditProfile ? 8 : 0,
                     cursor: "pointer",
-                    color: tutorialHighlightEditProfile ? ACCENT : MUTED,
+                    color: tutorialHighlightEditProfile ? "#ffe2a2" : MUTED,
                     padding: tutorialHighlightEditProfile ? "6px 8px" : 4,
                     display: "flex",
                     alignItems: "center",
-                    animation: tutorialHighlightEditProfile ? "tutorialPulse 1.7s ease-in-out infinite" : undefined,
+                    position: tutorialHighlightEditProfile ? "relative" : undefined,
+                    zIndex: tutorialHighlightEditProfile ? 40 : undefined,
+                    animation: tutorialHighlightEditProfile ? "tutorialRadiant 1.55s ease-in-out infinite" : undefined,
                   }}
                 >
                   <IconPencil />
@@ -1704,6 +1725,19 @@ function ProfileTab({
               </div>
             ))}
         </>
+      )}
+      {tutorialHighlightEditProfile && !editing && section === "profile" && (
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            zIndex: 25,
+            pointerEvents: "auto",
+            background:
+              "radial-gradient(circle at 86% 20%, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.54) 32%, rgba(0,0,0,0.72) 100%)",
+            borderRadius: 12,
+          }}
+        />
       )}
     </div>
   );
