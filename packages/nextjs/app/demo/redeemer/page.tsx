@@ -385,12 +385,16 @@ type RedeemerLearnCardKey =
   | "profile-overview"
   | "offerings-catalog"
   | "offerings-commitment"
+  | "offerings-mce"
   | "offerings-activity"
+  | "dashboard-activity-overview"
+  | "dashboard-offerings-breakdown"
   | "mycity-feed"
-  | "dashboard-metrics"
   | "mce-participation"
   | "epoch1-voting"
   | "next-epoch";
+
+type RedeemerLearnMoreSelection = RedeemerLearnCardKey | RedeemerLearnCardKey[];
 
 const REDEEMER_LEARN_CARDS: Record<RedeemerLearnCardKey, LearnInfoCard> = {
   "profile-account": {
@@ -418,20 +422,30 @@ const REDEEMER_LEARN_CARDS: Record<RedeemerLearnCardKey, LearnInfoCard> = {
     subtitle: "Epoch and MCE commitment model",
     body: "Committed offerings are locked for the duration of an Epoch or MCE event to provide predictability for Civic Participants and strengthen participation incentives. Redeemer organizations must honor these commitments and abide by the rules established by the Representative Redeemer Committee.",
   },
+  "offerings-mce": {
+    title: "MCE Offerings",
+    subtitle: "Event-linked redemption commitments",
+    body: "MCE offerings are dedicated commitments tied to active MCE initiatives. They help align redemption behavior with city-priority events, make redeemer support visible during campaigns, and create predictable value for participants completing MCE-linked work.",
+  },
   "offerings-activity": {
     title: "Redeemer Onchain Activity",
     subtitle: "Shared role-wide visibility",
     body: "The activity panel tracks committed offerings and redemption-related contract actions across redeemer organizations, with explorer links for each transaction.",
   },
+  "dashboard-activity-overview": {
+    title: "Activity Overview",
+    subtitle: "High-level redeemer operations snapshot",
+    body: "This overview summarizes active offerings, organization status, total redemptions processed, and CITYx burned so your team can quickly monitor operating health across the current Epoch.",
+  },
+  "dashboard-offerings-breakdown": {
+    title: "Offerings Breakdown",
+    subtitle: "Per-offering performance detail",
+    body: "This section breaks performance down by offering so redeemer teams can compare utilization, identify what is working, and calibrate future commitments with clearer evidence.",
+  },
   "mycity-feed": {
     title: "MyCity Communications",
     subtitle: "Public coordination channel",
     body: "Use MyCity to announce reward programs, venue updates, and campaign participation so participants can discover timely redemption options.",
-  },
-  "dashboard-metrics": {
-    title: "Impact Dashboard",
-    subtitle: "Operational performance view",
-    body: "Dashboard metrics summarize active offerings, queue throughput, and redemption outcomes so your team can measure engagement and service reliability.",
   },
   "mce-participation": {
     title: "MCE Participation",
@@ -439,14 +453,14 @@ const REDEEMER_LEARN_CARDS: Record<RedeemerLearnCardKey, LearnInfoCard> = {
     body: "Mass Coordination Events align participant demand around city priorities. Redeemers support this by publishing MCE-specific offerings and redemption capacity.",
   },
   "epoch1-voting": {
-    title: "Epoch 1 Voting",
-    subtitle: "Planning MCE's",
-    body: "Epoch 1 voting is reserved for Civic Participants. Your role is to monitor which proposals are gaining support. The Issuer Representative Committee will be responsible for creating and distributing tasks on behalf of Issuer organizations that will execute on the winning proposal. These tasks will be added to your Task Catalog automatically during the next Epoch.",
+    title: "Current Epoch Voting",
+    subtitle: "How Redeemers engage during Epoch 1",
+    body: "During Epoch 1, Civic Participants vote on active MCE proposals while Redeemer organizations track momentum and align offerings with emerging priorities. Redeemers do not cast protocol votes in this stage, but can signal support through planned redemption commitments tied to likely initiatives.",
   },
   "next-epoch": {
-    title: "The Next Epoch",
-    subtitle: "Epoch Proposals & Process",
-    body: "While Epoch 1 Proposals are being voted on, active Issuer and Redeemer organizations will have the ability to propose their own MCE initiatives based on their observations and desires for the community. During this time, Civic Participants can boost these proposals through likes to provide signaling for the Issuer Committee, who will ultimately decide the top 5 proposals based on community need. Redeemers also have the opportunity to influence what 5 proposals are selected by providing preemptive Redemption Offerings for proposals that they like. This allows private businesses to influence community direction through their willingness to offer private goods and services in exchange for local outcomes.",
+    title: "Upcoming Epoch Proposals",
+    subtitle: "How proposals move into next-cycle voting",
+    body: "While current-epoch voting runs, active Issuer and Redeemer organizations can submit initiatives for the next epoch. Community likes provide public signal, and the Issuer Committee selects the final top proposals based on need and feasibility. Redeemer pre-commitments help shape which proposals appear operationally viable before final selection.",
   },
 };
 
@@ -470,7 +484,7 @@ export default function RedeemerApp() {
   const [catalogIssueSheet, setCatalogIssueSheet] = useState<"committed" | "mce" | null>(null);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
   const [offerWriteStatus, setOfferWriteStatus] = useState<OfferWriteStatus>({ state: "idle" });
-  const [openInfoCard, setOpenInfoCard] = useState<RedeemerLearnCardKey | null>(null);
+  const [openInfoCards, setOpenInfoCards] = useState<RedeemerLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialCatalogOfferingId, setTutorialCatalogOfferingId] = useState<string | null>(null);
   const [tutorialActiveOfferingId, setTutorialActiveOfferingId] = useState<string | null>(null);
@@ -666,11 +680,11 @@ export default function RedeemerApp() {
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       {tutorialCard}
-      {openInfoCard ? (
+      {openInfoCards.length > 0 ? (
         <LearnMorePanel
-          keys={[openInfoCard]}
+          keys={openInfoCards}
           cards={REDEEMER_LEARN_CARDS}
-          onClose={() => setOpenInfoCard(null)}
+          onClose={key => setOpenInfoCards(prev => prev.filter(item => item !== key))}
           accent={ACCENT}
         />
       ) : (
@@ -725,13 +739,13 @@ export default function RedeemerApp() {
     </div>
   );
 
-  const openLearnMore = React.useCallback((key: RedeemerLearnCardKey) => {
-    setOpenInfoCard(key);
+  const openLearnMore = React.useCallback((selection: RedeemerLearnMoreSelection) => {
+    setOpenInfoCards(Array.isArray(selection) ? selection : [selection]);
   }, []);
 
   React.useEffect(() => {
     if (previousActiveTabRef.current !== activeTab) {
-      setOpenInfoCard(null);
+      setOpenInfoCards([]);
       previousActiveTabRef.current = activeTab;
     }
   }, [activeTab]);
@@ -1225,7 +1239,7 @@ export default function RedeemerApp() {
         activeTab={activeTab}
         onTabChange={tab => {
           setActiveTab(tab);
-          setOpenInfoCard(null);
+          setOpenInfoCards([]);
         }}
         accentColor={ACCENT}
         title="Redeemer"
@@ -1393,7 +1407,7 @@ function ProfileTab({
   dispatch: ReturnType<typeof useDemo>["dispatch"];
   committedOfferings: CustomOffering[];
   mceOfferings: MCECustomOffering[];
-  onLearnMore: (key: RedeemerLearnCardKey) => void;
+  onLearnMore: (selection: RedeemerLearnMoreSelection) => void;
 }) {
   const { address: connectedAddress } = useAccount({ type: "ModularAccountV2" });
   const redeemerAddress = connectedAddress ?? FAKE_WALLETS.redeemer;
@@ -1931,7 +1945,7 @@ function OfferingsTab({
   orgName: string;
   offerWriteStatus: OfferWriteStatus;
   onDismissOfferWrite: () => void;
-  onLearnMore: (key: RedeemerLearnCardKey) => void;
+  onLearnMore: (selection: RedeemerLearnMoreSelection) => void;
   tutorialStep: IssuerTutorialStep;
   tutorialCatalogOfferingId: string | null;
   tutorialActiveOfferingId: string | null;
@@ -1971,7 +1985,11 @@ function OfferingsTab({
         }
       `}</style>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-        <LearnMoreLink onClick={() => onLearnMore("offerings-commitment")} />
+        <LearnMoreLink
+          onClick={() =>
+            onLearnMore(view === "mce" ? ["offerings-commitment", "offerings-mce"] : "offerings-commitment")
+          }
+        />
       </div>
       {/* Segment control */}
       <div style={{ background: SURFACE, borderRadius: 16, display: "flex", marginBottom: 20, overflow: "hidden" }}>
@@ -3503,7 +3521,7 @@ function CommunityTab({
   orgName: string;
   state: ReturnType<typeof useDemo>["state"];
   onCompose: () => void;
-  onLearnMore: (key: RedeemerLearnCardKey) => void;
+  onLearnMore: (selection: RedeemerLearnMoreSelection) => void;
 }) {
   const [section, setSection] = useState<"feed" | "mces">("feed");
 
@@ -3565,7 +3583,7 @@ function MyCityTab({
   posts: Post[];
   orgName: string;
   onCompose: () => void;
-  onLearnMore: (key: RedeemerLearnCardKey) => void;
+  onLearnMore: (selection: RedeemerLearnMoreSelection) => void;
 }) {
   const [sort, setSort] = useState<"recent" | "top">("recent");
 
@@ -3584,10 +3602,6 @@ function MyCityTab({
 
   return (
     <div style={{ paddingBottom: 20 }}>
-      {/* Header controls */}
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 10 }}>
-        <LearnMoreLink onClick={() => onLearnMore("mycity-feed")} />
-      </div>
       <button
         onClick={onCompose}
         style={{
@@ -3610,7 +3624,7 @@ function MyCityTab({
       </button>
 
       {/* Sort */}
-      <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
         <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
           {(["recent", "top"] as const).map(s => (
             <button
@@ -3631,6 +3645,7 @@ function MyCityTab({
             </button>
           ))}
         </div>
+        <LearnMoreLink onClick={() => onLearnMore("mycity-feed")} />
       </div>
 
       {/* Posts */}
@@ -3884,7 +3899,7 @@ function DashboardTab({
   redeemer: ReturnType<typeof useDemo>["state"]["redeemer"];
   committedOfferings: CustomOffering[];
   mceOfferings: MCECustomOffering[];
-  onLearnMore: (key: RedeemerLearnCardKey) => void;
+  onLearnMore: (selection: RedeemerLearnMoreSelection) => void;
 }) {
   const totalCityxBurned = redeemer.processedRedemptions.reduce((n, r) => n + r.costCity, 0);
   const activeOfferingsCount = committedOfferings.length + mceOfferings.length;
@@ -3917,56 +3932,65 @@ function DashboardTab({
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-        <LearnMoreLink onClick={() => onLearnMore("dashboard-metrics")} />
-      </div>
       {/* Activity Overview */}
-      <SectionLabel text="Activity Overview" accentColor={ACCENT_BLUE} />
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
-        <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: ACCENT }}>{activeOfferingsCount}</div>
-          <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>Active Offerings</div>
-        </div>
-        <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
-          <div
-            style={{
-              fontSize: 16,
-              fontWeight: 700,
-              color: isActive ? ACCENT : MUTED,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-            }}
-          >
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: isActive ? ACCENT : MUTED,
-                display: "inline-block",
-                flexShrink: 0,
-              }}
-            />
-            {isActive ? "Active" : "Inactive"}
+      <SectionLabel
+        text="Activity Overview"
+        accentColor={ACCENT_BLUE}
+        right={<LearnMoreLink onClick={() => onLearnMore("dashboard-activity-overview")} />}
+      />
+      <div style={{ ...surfaceCard, padding: 12, marginBottom: 24 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: ACCENT }}>{activeOfferingsCount}</div>
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>Active Offerings</div>
           </div>
-          <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>Redeemer Status</div>
-        </div>
-        <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#DD9E33" }}>{redeemer.processedRedemptions.length}</div>
-          <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>Your Redemptions</div>
-        </div>
-        <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#a78bfa" }}>{totalCityxBurned.toLocaleString()}</div>
-          <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>CITYx Burned</div>
+          <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
+            <div
+              style={{
+                fontSize: 16,
+                fontWeight: 700,
+                color: isActive ? ACCENT : MUTED,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+              }}
+            >
+              <span
+                style={{
+                  width: 8,
+                  height: 8,
+                  borderRadius: "50%",
+                  background: isActive ? ACCENT : MUTED,
+                  display: "inline-block",
+                  flexShrink: 0,
+                }}
+              />
+              {isActive ? "Active" : "Inactive"}
+            </div>
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>Redeemer Status</div>
+          </div>
+          <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#DD9E33" }}>
+              {redeemer.processedRedemptions.length}
+            </div>
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>Your Redemptions</div>
+          </div>
+          <div style={{ ...surfaceCard, textAlign: "center", padding: "16px 12px" }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#a78bfa" }}>{totalCityxBurned.toLocaleString()}</div>
+            <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>CITYx Burned</div>
+          </div>
         </div>
       </div>
 
       {/* Per-offering breakdown */}
+      <SectionLabel
+        text="Offerings Breakdown"
+        accentColor={ACCENT_PURPLE}
+        right={<LearnMoreLink onClick={() => onLearnMore("dashboard-offerings-breakdown")} />}
+      />
       {offeringStats.length > 0 ? (
         <>
-          <SectionLabel text="Offerings Breakdown" accentColor={ACCENT_PURPLE} />
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 }}>
             {offeringStats.map((o, i) => (
               <div
@@ -4044,7 +4068,7 @@ function MCEsTab({
 }: {
   state: ReturnType<typeof useDemo>["state"];
   orgName: string;
-  onLearnMore: (key: RedeemerLearnCardKey) => void;
+  onLearnMore: (selection: RedeemerLearnMoreSelection) => void;
 }) {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [section, setSection] = useState<"epoch1" | "epoch2">("epoch1");
@@ -4145,6 +4169,9 @@ function MCEsTab({
 
   return (
     <div style={{ paddingBottom: 20 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+        <LearnMoreLink onClick={() => onLearnMore(["epoch1-voting", "next-epoch"])} />
+      </div>
       {/* Epoch toggle */}
       <div
         style={{
@@ -4185,10 +4212,6 @@ function MCEsTab({
       {/* Epoch 1 — View only */}
       {section === "epoch1" && (
         <>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-            <LearnMoreLink onClick={() => onLearnMore("epoch1-voting")} />
-          </div>
-
           {epoch1Mces.length === 0 ? (
             <EmptyState emoji="🗳️" title="No active proposals" desc="Epoch 1 voting proposals will appear here." />
           ) : (
@@ -4267,10 +4290,6 @@ function MCEsTab({
       {/* Epoch 2 — View + Create proposal */}
       {section === "epoch2" && (
         <>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-            <LearnMoreLink onClick={() => onLearnMore("next-epoch")} />
-          </div>
-
           {/* Create proposal button */}
           <button
             onClick={() => setProposeOpen(true)}
