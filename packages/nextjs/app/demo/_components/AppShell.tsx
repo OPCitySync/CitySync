@@ -377,6 +377,16 @@ export default function AppShell({
               transform: scale(1.012);
             }
           }
+          @keyframes tutorialWalletBeacon {
+            0%, 100% {
+              box-shadow: 0 0 0 3px rgba(255,232,173,0.72), 0 0 24px rgba(221,158,51,0.72), 0 0 44px rgba(221,158,51,0.42);
+              transform: translateY(0) scale(1);
+            }
+            50% {
+              box-shadow: 0 0 0 5px rgba(255,242,205,1), 0 0 42px rgba(221,158,51,0.96), 0 0 72px rgba(221,158,51,0.56);
+              transform: translateY(-1px) scale(1.045);
+            }
+          }
           .citysync-tutorial-lock-scope * {
             pointer-events: none !important;
           }
@@ -389,6 +399,12 @@ export default function AppShell({
             z-index: 140 !important;
             outline: 2px solid rgba(255,226,162,0.9) !important;
             animation: tutorialAllowedPulse 1.55s ease-in-out infinite !important;
+          }
+          .citysync-tutorial-lock-scope [data-tutorial-wallet-target="true"] {
+            z-index: 180 !important;
+            outline: 3px solid rgba(255,242,205,0.98) !important;
+            filter: saturate(1.2) brightness(1.08);
+            animation: tutorialWalletBeacon 1.1s cubic-bezier(0.34, 1.56, 0.64, 1) infinite !important;
           }
         `}</style>
       )}
@@ -550,10 +566,12 @@ export default function AppShell({
                 ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.45)"
                 : undefined,
               opacity: walletAllowed ? 1 : 0.55,
+              transformOrigin: "center",
             }}
             aria-label="Wallet"
             disabled={!walletAllowed}
             data-tutorial-allow={tutorialHighlightWalletButton ? "true" : undefined}
+            data-tutorial-wallet-target={tutorialHighlightWalletButton ? "true" : undefined}
           >
             <svg
               width="20"
