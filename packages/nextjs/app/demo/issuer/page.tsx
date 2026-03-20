@@ -2260,6 +2260,10 @@ function TasksTab({
   const tutorialHighlightApprove = tutorialStep === "box6";
   const tutorialHighlightIssueButton = tutorialStep === "box7";
   const hiddenTaskIdSet = React.useMemo(() => new Set(hiddenTaskIds), [hiddenTaskIds]);
+  const taskWriteHash = taskWriteStatus.hash;
+  const taskWriteState = taskWriteStatus.state;
+  const proposeWriteHash = proposeWriteStatus.hash;
+  const proposeWriteState = proposeWriteStatus.state;
 
   useEffect(() => {
     if (!address) {
@@ -2268,10 +2272,9 @@ function TasksTab({
     }
 
     // Hash-based dedup: only re-sync when a new tx is confirmed, not on state transitions
-    const { hash, state } = taskWriteStatus;
-    const isConfirmedNewTx = state === "confirmed" && hash !== lastCatalogSyncedHashRef.current;
-    if (hash && !isConfirmedNewTx) return;
-    if (isConfirmedNewTx) lastCatalogSyncedHashRef.current = hash;
+    const isConfirmedNewTx = taskWriteState === "confirmed" && taskWriteHash !== lastCatalogSyncedHashRef.current;
+    if (taskWriteHash && !isConfirmedNewTx) return;
+    if (isConfirmedNewTx) lastCatalogSyncedHashRef.current = taskWriteHash;
 
     let cancelled = false;
     const parseMetadata = (raw: string): Partial<Task> => {
@@ -2372,14 +2375,7 @@ function TasksTab({
     return () => {
       cancelled = true;
     };
-  }, [
-    address,
-    hiddenTaskIdSet,
-    taskWriteStatus.hash,
-    taskWriteStatus.state,
-    proposeWriteStatus.hash,
-    proposeWriteStatus.state,
-  ]);
+  }, [address, hiddenTaskIdSet, taskWriteHash, taskWriteState, proposeWriteHash, proposeWriteState]);
 
   useEffect(() => {
     if (tutorialStep === "box5" || tutorialStep === "box6") {

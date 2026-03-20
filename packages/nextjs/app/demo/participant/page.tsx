@@ -2210,6 +2210,8 @@ function ExploreTab({
     error?: string;
     label?: string;
   }>({ state: "idle" });
+  const taskWriteHash = taskWriteStatus.hash;
+  const taskWriteState = taskWriteStatus.state;
   // Hash-based dedup: tracks the last tx hash we already synced for so we
   // don't re-fetch just because taskWriteStatus.state changes (pending→confirmed).
   const lastSyncedConfirmedHashRef = React.useRef<string | undefined>(undefined);
@@ -2334,10 +2336,9 @@ function ExploreTab({
     // Skip if no meaningful event occurred:
     // • A tx hash is present but NOT yet confirmed → wait for confirmed state
     // • A tx hash is present, confirmed, but we already synced for this exact hash
-    const { hash, state } = taskWriteStatus;
-    const isConfirmedNewTx = state === "confirmed" && hash !== lastSyncedConfirmedHashRef.current;
-    if (hash && !isConfirmedNewTx) return; // pending/failed state change — skip
-    if (isConfirmedNewTx) lastSyncedConfirmedHashRef.current = hash;
+    const isConfirmedNewTx = taskWriteState === "confirmed" && taskWriteHash !== lastSyncedConfirmedHashRef.current;
+    if (taskWriteHash && !isConfirmedNewTx) return; // pending/failed state change — skip
+    if (isConfirmedNewTx) lastSyncedConfirmedHashRef.current = taskWriteHash;
 
     let cancelled = false;
 
@@ -2514,7 +2515,7 @@ function ExploreTab({
     return () => {
       cancelled = true;
     };
-  }, [hiddenTaskIdSet, parseEstimatedHours, taskWriteStatus.hash, taskWriteStatus.state]);
+  }, [hiddenTaskIdSet, parseEstimatedHours, taskWriteHash, taskWriteState]);
 
   const addressLower = address?.toLowerCase();
   const openOnchainTasks = onchainTasks.filter(t => {
