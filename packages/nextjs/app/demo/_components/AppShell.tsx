@@ -482,8 +482,6 @@ export default function AppShell({
         className={`flex-1 overflow-y-auto ${tutorialLocked ? "citysync-tutorial-lock-scope" : ""}`}
         style={{
           position: "relative",
-          background: "#FFFFFF",
-          color: "#15151E",
           paddingBottom: phoneFrame ? "108px" : "calc(108px + env(safe-area-inset-bottom, 0px))",
           WebkitOverflowScrolling: "touch",
           overscrollBehaviorY: "contain",

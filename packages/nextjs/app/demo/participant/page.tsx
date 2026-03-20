@@ -253,7 +253,7 @@ function SectionLabel({
             fontWeight: 700,
             textTransform: "uppercase" as const,
             letterSpacing: "0.1em",
-            color: "rgba(21,21,30,0.56)",
+            color: "rgba(255,255,255,0.5)",
           }}
         >
           {text}
