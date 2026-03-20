@@ -1873,6 +1873,7 @@ function TaskCard({
   pendingVerification,
   canUnclaim,
   showClaimButton,
+  claimDisabled,
   showUnclaimButton,
   tutorialAllowClaim,
   tutorialHighlightActions,
@@ -1886,6 +1887,7 @@ function TaskCard({
   pendingVerification?: boolean;
   canUnclaim?: boolean;
   showClaimButton?: boolean;
+  claimDisabled?: boolean;
   showUnclaimButton?: boolean;
   tutorialAllowClaim?: boolean;
   tutorialHighlightActions?: boolean;
@@ -2057,26 +2059,34 @@ function TaskCard({
         {showClaimButton && !isClaimed && !locked && (
           <button
             data-tutorial-allow={tutorialAllowClaim ? "true" : undefined}
+            disabled={claimDisabled}
             onClick={onClaim}
             style={{
               flex: 1,
               padding: "10px 0",
-              background: tutorialAllowClaim
-                ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
-                : ACCENT,
-              color: tutorialAllowClaim ? "#15151E" : "white",
-              border: tutorialAllowClaim ? "1px solid rgba(255,226,162,0.88)" : "none",
+              background: claimDisabled
+                ? "rgba(255,255,255,0.14)"
+                : tutorialAllowClaim
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : ACCENT,
+              color: claimDisabled ? "rgba(255,255,255,0.45)" : tutorialAllowClaim ? "#15151E" : "white",
+              border: claimDisabled
+                ? "1px solid rgba(255,255,255,0.2)"
+                : tutorialAllowClaim
+                  ? "1px solid rgba(255,226,162,0.88)"
+                  : "none",
               borderRadius: 10,
               fontSize: 13,
               fontWeight: 700,
-              cursor: "pointer",
-              boxShadow: tutorialAllowClaim
-                ? "0 0 0 1px rgba(255,226,162,0.42), 0 0 14px rgba(221,158,51,0.48)"
-                : undefined,
-              animation: tutorialAllowClaim ? "tutorialPulse 1.55s ease-in-out infinite" : undefined,
+              cursor: claimDisabled ? "not-allowed" : "pointer",
+              boxShadow:
+                tutorialAllowClaim && !claimDisabled
+                  ? "0 0 0 1px rgba(255,226,162,0.42), 0 0 14px rgba(221,158,51,0.48)"
+                  : undefined,
+              animation: tutorialAllowClaim && !claimDisabled ? "tutorialPulse 1.55s ease-in-out infinite" : undefined,
             }}
           >
-            Claim
+            {claimDisabled ? "Unavailable During Tutorial" : "Claim"}
           </button>
         )}
         {showClaimButton && isClaimed && (
@@ -2224,6 +2234,7 @@ function ExploreTab({
   );
   const tutorialHighlightTaskInstances = tutorialStep === "box11";
   const tutorialHighlightClaimedActions = tutorialStep === "box13";
+  const tutorialIsActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
   const [tutorialTaskIds, setTutorialTaskIds] = useState<string[]>(() => getDemoTutorialTaskIds());
   const tutorialTaskIdSet = React.useMemo(() => new Set(tutorialTaskIds), [tutorialTaskIds]);
   const hiddenTaskIdSet = React.useMemo(() => new Set(hiddenTaskIds), [hiddenTaskIds]);
@@ -2763,11 +2774,25 @@ function ExploreTab({
   }, [groupedBrowseTasks, view]);
 
   const handleClaim = async (task: Task) => {
+    if (tutorialIsActive && task.id === DEMO_LOCAL_ONBOARDING_TASK.id) {
+      setClaimNotice({
+        message: "Onboarding task claiming is disabled during the tutorial.",
+        type: "warn",
+      });
+      return;
+    }
     setClaimConfirmTask(task);
   };
 
   const handleClaimConfirmed = async (task: Task) => {
     setClaimConfirmTask(null);
+    if (tutorialIsActive && task.id === DEMO_LOCAL_ONBOARDING_TASK.id) {
+      setClaimNotice({
+        message: "Onboarding task claiming is disabled during the tutorial.",
+        type: "warn",
+      });
+      return;
+    }
     const tutorialOwner = (task as Task & { tutorialOwner?: `0x${string}` }).tutorialOwner;
     if (tutorialOwner && tutorialOwner.toLowerCase() !== (addressLower ?? "")) {
       setClaimNotice({
@@ -3287,6 +3312,7 @@ function ExploreTab({
                         isClaimed={myTaskIds.has(instance.id) || localClaimedTaskIdSet.has(instance.id)}
                         locked={!isOnboarded && !instance.isOnboarding}
                         showClaimButton
+                        claimDisabled={tutorialIsActive && instance.id === DEMO_LOCAL_ONBOARDING_TASK.id}
                         tutorialAllowClaim={
                           tutorialHighlightTaskInstances &&
                           (tutorialTargetClaimTaskId
