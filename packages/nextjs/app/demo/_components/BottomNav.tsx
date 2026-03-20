@@ -35,10 +35,10 @@ export default function BottomNav({
       style={{
         bottom: 0,
         minHeight: 69,
-        background: "rgba(24,24,38,0.97)",
+        background: locked ? "#181826" : "rgba(24,24,38,0.97)",
         borderTop: "1px solid rgba(255,255,255,0.07)",
         boxShadow: "0 -8px 24px rgba(0,0,0,0.35)",
-        backdropFilter: "blur(14px)",
+        backdropFilter: locked ? "none" : "blur(14px)",
       }}
     >
       {locked && allowedWhenLocked.length > 0 && (
