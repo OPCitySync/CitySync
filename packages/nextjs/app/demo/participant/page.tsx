@@ -1703,7 +1703,7 @@ function ProfileTab({
       {section === "dashboard" && (
         <>
           <div style={{ ...card, marginBottom: 12 }}>
-            <SectionLabel text="Positive Activity" accentColor={TEAL} />
+            <SectionLabel text="Activity" accentColor={TEAL} />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <div style={miniMetricCardStyle}>
                 <div style={miniMetricLabelStyle}>Tasks Completed</div>

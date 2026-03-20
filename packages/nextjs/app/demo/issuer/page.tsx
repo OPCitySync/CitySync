@@ -320,6 +320,7 @@ const ISSUER_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
   "intro",
   "box1",
   "box2",
+  "box3",
   "box5",
   "box6",
   "box7",
@@ -455,8 +456,8 @@ function IssuerTutorialPanel({
       {step === "box1" && (
         <TutorialCard
           subtitle="Step 1"
-          title="Let's start with Issuers"
-          body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
+          title="Switch Roles in the Demo"
+          body="In the demo, users are able to switch between roles, acting as Issuer organizations, Civic-Participants, or Redeemer organizations.\n\nAfter the tutorial, feel free to switch between roles to explore full functionality."
         >
           <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
         </TutorialCard>
@@ -465,6 +466,16 @@ function IssuerTutorialPanel({
       {step === "box2" && (
         <TutorialCard
           subtitle="Step 2"
+          title="Let's start with Issuers"
+          body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
+        >
+          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
+        </TutorialCard>
+      )}
+
+      {step === "box3" && (
+        <TutorialCard
+          subtitle="Step 3"
           title={`Welcome ${safeOrgName}!`}
           body={`Welcome ${safeOrgName}!\n\nIssuer organizations can begin to issue tasks by selecting the Tasks Tab at the bottom.`}
         >
@@ -845,7 +856,7 @@ export default function IssuerApp() {
   }, []);
 
   React.useEffect(() => {
-    if (tutorialStep === "box3" || tutorialStep === "box4") {
+    if (tutorialStep === "box4") {
       setTutorialStep("box5");
       return;
     }
@@ -855,7 +866,7 @@ export default function IssuerApp() {
   }, [tutorialStep]);
 
   React.useEffect(() => {
-    if (tutorialStep === "box1" || tutorialStep === "box2") {
+    if (tutorialStep === "box1" || tutorialStep === "box2" || tutorialStep === "box3") {
       setActiveTab("profile");
       return;
     }
@@ -869,7 +880,7 @@ export default function IssuerApp() {
   }, [tutorialStep]);
 
   React.useEffect(() => {
-    if (tutorialStep === "box2" && activeTab === "tasks") {
+    if (tutorialStep === "box3" && activeTab === "tasks") {
       setTutorialStep("box5");
     }
   }, [activeTab, tutorialStep]);
@@ -1210,7 +1221,13 @@ export default function IssuerApp() {
         rightPanel={rightPanel}
         phoneFrame
         tutorialLocked={tutorialLockActive}
-        tutorialAllowedTabs={tutorialStep === "box2" ? ["tasks"] : []}
+        tutorialAllowedTabs={tutorialStep === "box3" ? ["tasks"] : []}
+        tutorialHighlightRoleSwitcher={tutorialStep === "box1"}
+        onTutorialRoleSwitcherCancel={() => {
+          if (tutorialStep === "box1") {
+            setTutorialStep("box2");
+          }
+        }}
       >
         {isConnected && !address && (
           <div
@@ -1232,11 +1249,11 @@ export default function IssuerApp() {
             issuer={issuer}
             creditsCommitted={creditsCommitted}
             onLearnMore={openLearnMore}
-            tutorialHighlightEditProfile={tutorialStep === "box1"}
-            tutorialHighlightEpoch={tutorialStep === "box3"}
+            tutorialHighlightEditProfile={tutorialStep === "box2"}
+            tutorialHighlightEpoch={false}
             onOrganizationNameSaved={_nextName => {
-              if (tutorialStep === "box1") {
-                setTutorialStep("box2");
+              if (tutorialStep === "box2") {
+                setTutorialStep("box3");
               }
             }}
           />
@@ -2487,7 +2504,7 @@ function TasksTab({
       >
         {(["catalog", "issue"] as const).map((v, i) => {
           const labels: Record<string, string> = {
-            issue: `Issue Task (${onchainTasks.length})`,
+            issue: "Issue Tasks",
             catalog: `Task Catalog (${approvedCatalogTasks.length})`,
           };
           const segAccent = v === "issue" ? ACCENT : ACCENT_PURPLE;
@@ -5695,7 +5712,7 @@ function IssueTaskPopup({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>Issue Task</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>Issue Tasks</div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ fontSize: 11, color: DIMMED, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                 {step === "select" ? "Step 1 of 2" : "Step 2 of 2"}

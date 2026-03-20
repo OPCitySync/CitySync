@@ -60,10 +60,12 @@ interface AppShellProps {
   phoneFrame?: boolean;
   tutorialHighlightWalletButton?: boolean;
   tutorialHighlightWalletCloseButton?: boolean;
+  tutorialHighlightRoleSwitcher?: boolean;
   tutorialLocked?: boolean;
   tutorialAllowedTabs?: string[];
   onWalletOpen?: () => void;
   onWalletClose?: () => void;
+  onTutorialRoleSwitcherCancel?: () => void;
 }
 
 type DeepDiveSection = {
@@ -315,10 +317,12 @@ export default function AppShell({
   phoneFrame = false,
   tutorialHighlightWalletButton = false,
   tutorialHighlightWalletCloseButton = false,
+  tutorialHighlightRoleSwitcher = false,
   tutorialLocked = false,
   tutorialAllowedTabs = [],
   onWalletOpen,
   onWalletClose,
+  onTutorialRoleSwitcherCancel,
 }: AppShellProps) {
   const [walletOpen, setWalletOpen] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(false);
@@ -328,6 +332,10 @@ export default function AppShell({
 
   const currentRole = ROLES.find(r => r.key === role)!;
   const walletAllowed = !tutorialLocked || tutorialHighlightWalletButton;
+  const roleSwitcherAllowed = !tutorialLocked || tutorialHighlightRoleSwitcher;
+  const roleSheetCancelOnly = tutorialLocked && tutorialHighlightRoleSwitcher;
+  const highlightRoleSwitcher = tutorialHighlightRoleSwitcher && !switcherOpen;
+  const highlightRoleCancel = tutorialHighlightRoleSwitcher && switcherOpen;
 
   const handleRoleSwitch = (r: (typeof ROLES)[number]) => {
     if (r.key === role) {
@@ -428,9 +436,9 @@ export default function AppShell({
         {/* Left: Role badge / switcher trigger */}
         <button
           onClick={() => {
-            if (!tutorialLocked) setSwitcherOpen(true);
+            if (roleSwitcherAllowed) setSwitcherOpen(true);
           }}
-          disabled={tutorialLocked}
+          disabled={!roleSwitcherAllowed}
           style={{
             justifySelf: "start",
             display: "flex",
@@ -439,20 +447,25 @@ export default function AppShell({
             minHeight: 42,
             padding: "6px 10px 6px 8px",
             borderRadius: 10,
-            border: `1px solid ${currentRole.accent}30`,
-            background: `${currentRole.accent}14`,
-            cursor: tutorialLocked ? "not-allowed" : "pointer",
+            border: highlightRoleSwitcher ? "1px solid rgba(255,226,162,0.92)" : `1px solid ${currentRole.accent}30`,
+            background: highlightRoleSwitcher ? "rgba(255,226,162,0.2)" : `${currentRole.accent}14`,
+            cursor: roleSwitcherAllowed ? "pointer" : "not-allowed",
             transition: "background 0.15s ease",
-            opacity: tutorialLocked ? 0.55 : 1,
+            opacity: roleSwitcherAllowed ? 1 : 0.55,
+            boxShadow: highlightRoleSwitcher
+              ? "0 0 0 1px rgba(255,226,162,0.5), 0 0 18px rgba(221,158,51,0.55)"
+              : undefined,
+            animation: highlightRoleSwitcher ? "tutorialAllowedPulse 1.55s ease-in-out infinite" : undefined,
           }}
           onMouseEnter={e => {
-            if (tutorialLocked) return;
+            if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
             (e.currentTarget as HTMLButtonElement).style.background = `${currentRole.accent}22`;
           }}
           onMouseLeave={e => {
-            if (tutorialLocked) return;
+            if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
             (e.currentTarget as HTMLButtonElement).style.background = `${currentRole.accent}14`;
           }}
+          data-tutorial-allow={highlightRoleSwitcher ? "true" : undefined}
         >
           <span style={{ fontSize: 14, lineHeight: 1 }}>{currentRole.emoji}</span>
           <span
@@ -618,7 +631,10 @@ export default function AppShell({
 
       {/* ── Role Switcher Bottom Sheet ────────────────────────────────────── */}
       <div
-        onClick={() => setSwitcherOpen(false)}
+        onClick={() => {
+          if (roleSheetCancelOnly) return;
+          setSwitcherOpen(false);
+        }}
         style={{
           position: "absolute",
           inset: 0,
@@ -676,6 +692,7 @@ export default function AppShell({
               <button
                 key={r.key}
                 onClick={() => handleRoleSwitch(r)}
+                disabled={roleSheetCancelOnly}
                 style={{
                   width: "100%",
                   display: "flex",
@@ -685,10 +702,11 @@ export default function AppShell({
                   borderRadius: 14,
                   border: isActive ? `1px solid ${r.accent}35` : "1px solid transparent",
                   background: isActive ? `${r.accent}12` : "transparent",
-                  cursor: "pointer",
+                  cursor: roleSheetCancelOnly ? "not-allowed" : "pointer",
                   textAlign: "left",
                   transition: "background 0.12s ease",
                   marginBottom: 4,
+                  opacity: roleSheetCancelOnly ? 0.55 : 1,
                 }}
               >
                 <div
@@ -756,17 +774,25 @@ export default function AppShell({
 
         <div style={{ padding: "4px 20px 0", display: "flex", flexDirection: "column", gap: 8 }}>
           <button
-            onClick={() => setSwitcherOpen(false)}
+            onClick={() => {
+              setSwitcherOpen(false);
+              onTutorialRoleSwitcherCancel?.();
+            }}
+            data-tutorial-allow={highlightRoleCancel ? "true" : undefined}
             style={{
               width: "100%",
               padding: "13px",
               borderRadius: 14,
-              border: "1px solid rgba(255,255,255,0.08)",
-              background: "rgba(255,255,255,0.04)",
-              color: "rgba(255,255,255,0.45)",
+              border: highlightRoleCancel ? "1px solid rgba(255,226,162,0.92)" : "1px solid rgba(255,255,255,0.08)",
+              background: highlightRoleCancel ? "rgba(255,226,162,0.2)" : "rgba(255,255,255,0.04)",
+              color: highlightRoleCancel ? "#ffe2a2" : "rgba(255,255,255,0.45)",
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
+              boxShadow: highlightRoleCancel
+                ? "0 0 0 1px rgba(255,226,162,0.45), 0 0 16px rgba(221,158,51,0.52)"
+                : undefined,
+              animation: highlightRoleCancel ? "tutorialAllowedPulse 1.55s ease-in-out infinite" : undefined,
             }}
           >
             Cancel
@@ -785,8 +811,10 @@ export default function AppShell({
               color: "rgba(255,100,100,0.7)",
               fontSize: 13,
               fontWeight: 600,
-              cursor: "pointer",
+              cursor: roleSheetCancelOnly ? "not-allowed" : "pointer",
+              opacity: roleSheetCancelOnly ? 0.45 : 1,
             }}
+            disabled={roleSheetCancelOnly}
           >
             Exit Demo
           </button>
