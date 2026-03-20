@@ -4477,7 +4477,7 @@ export default function ParticipantPage() {
     };
     const buttonRowStyle: React.CSSProperties = { display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" };
 
-    if (tutorialStep === "intro" || tutorialStep === "dismissed") {
+    if (tutorialStep === "intro") {
       return (
         <div style={cardStyle}>
           <div style={subtitleStyle}>Tutorial</div>
@@ -4784,6 +4784,33 @@ export default function ParticipantPage() {
           }}
         >
           Use Learn More links in the app to load contextual cards in this panel.
+        </div>
+      )}
+      {tutorialStep === "dismissed" && (
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: 10,
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <button
+            onClick={startIssuerTutorial}
+            style={{
+              width: "100%",
+              border: "1px solid rgba(255,226,162,0.9)",
+              background: "linear-gradient(145deg, rgba(221,158,51,0.98), rgba(221,158,51,0.82))",
+              color: "#15151E",
+              borderRadius: 10,
+              padding: "9px 10px",
+              fontSize: 12,
+              fontWeight: 800,
+              cursor: "pointer",
+              boxShadow: "0 0 0 1px rgba(255,226,162,0.35), 0 0 12px rgba(221,158,51,0.35)",
+            }}
+          >
+            Tutorial Walkthrough
+          </button>
         </div>
       )}
     </div>

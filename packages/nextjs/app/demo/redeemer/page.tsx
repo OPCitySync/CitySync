@@ -523,6 +523,8 @@ export default function RedeemerApp() {
   }, [persistTutorialStep]);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
   const tutorialCard = (() => {
+    if (tutorialStep === "dismissed") return null;
+
     const cardStyle: React.CSSProperties = {
       background: "rgba(221,158,51,0.08)",
       border: "1px solid rgba(221,158,51,0.28)",
@@ -624,35 +626,45 @@ export default function RedeemerApp() {
       );
     }
 
+    if (tutorialStep === "intro") {
+      return (
+        <div style={cardStyle}>
+          <div style={subtitleStyle}>Tutorial</div>
+          <div style={titleStyle}>Welcome to the City/Sync Demo</div>
+          <div style={bodyStyle}>{SHARED_TUTORIAL_INTRO_TEXT}</div>
+          <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+            <button
+              onClick={() => {
+                startDemoTutorialRun();
+                persistTutorialStep("box1");
+                setTutorialStep("box1");
+                setRole("issuer");
+                setDemoTutorialHandoff("issuer", "box1");
+                router.push("/demo/issuer");
+              }}
+              style={{
+                border: "none",
+                borderRadius: 10,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: "pointer",
+                background: "#DD9E33",
+                color: "#15151E",
+              }}
+            >
+              Lets Begin Tutorial
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div style={cardStyle}>
         <div style={subtitleStyle}>Tutorial</div>
-        <div style={titleStyle}>Welcome to the City/Sync Demo</div>
-        <div style={bodyStyle}>{SHARED_TUTORIAL_INTRO_TEXT}</div>
-        <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-          <button
-            onClick={() => {
-              startDemoTutorialRun();
-              persistTutorialStep("box1");
-              setTutorialStep("box1");
-              setRole("issuer");
-              setDemoTutorialHandoff("issuer", "box1");
-              router.push("/demo/issuer");
-            }}
-            style={{
-              border: "none",
-              borderRadius: 10,
-              padding: "8px 12px",
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-              background: "#DD9E33",
-              color: "#15151E",
-            }}
-          >
-            Lets Begin Tutorial
-          </button>
-        </div>
+        <div style={titleStyle}>Tutorial in Progress</div>
+        <div style={bodyStyle}>Continue the tutorial in the currently highlighted role and tab.</div>
       </div>
     );
   })();
@@ -679,6 +691,40 @@ export default function RedeemerApp() {
           }}
         >
           Use Learn More links in the app to load contextual cards in this panel.
+        </div>
+      )}
+      {tutorialStep === "dismissed" && (
+        <div
+          style={{
+            marginTop: "auto",
+            paddingTop: 10,
+            borderTop: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          <button
+            onClick={() => {
+              startDemoTutorialRun();
+              persistTutorialStep("box1");
+              setTutorialStep("box1");
+              setRole("issuer");
+              setDemoTutorialHandoff("issuer", "box1");
+              router.push("/demo/issuer");
+            }}
+            style={{
+              width: "100%",
+              border: "1px solid rgba(255,226,162,0.9)",
+              background: "linear-gradient(145deg, rgba(221,158,51,0.98), rgba(221,158,51,0.82))",
+              color: "#15151E",
+              borderRadius: 10,
+              padding: "9px 10px",
+              fontSize: 12,
+              fontWeight: 800,
+              cursor: "pointer",
+              boxShadow: "0 0 0 1px rgba(255,226,162,0.35), 0 0 12px rgba(221,158,51,0.35)",
+            }}
+          >
+            Tutorial Walkthrough
+          </button>
         </div>
       )}
     </div>
