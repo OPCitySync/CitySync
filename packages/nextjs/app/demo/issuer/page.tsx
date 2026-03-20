@@ -6180,7 +6180,7 @@ function SectionLabel({
             fontWeight: 700,
             textTransform: "uppercase",
             letterSpacing: "0.1em",
-            color: "rgba(255,255,255,0.5)",
+            color: "rgba(21,21,30,0.56)",
           }}
         >
           {text}
@@ -6229,8 +6229,8 @@ function EmptyState({ emoji, title, desc }: { emoji: string; title: string; desc
           width: 64,
           height: 64,
           borderRadius: 20,
-          background: "rgba(255,255,255,0.04)",
-          border: "1px solid rgba(255,255,255,0.07)",
+          background: "rgba(21,21,30,0.06)",
+          border: "1px solid rgba(21,21,30,0.12)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -6240,8 +6240,8 @@ function EmptyState({ emoji, title, desc }: { emoji: string; title: string; desc
       >
         {emoji}
       </div>
-      <div style={{ fontSize: 15, fontWeight: 600, color: "#fff", marginBottom: 6 }}>{title}</div>
-      <div style={{ fontSize: 13, color: MUTED, maxWidth: 240, lineHeight: 1.6 }}>{desc}</div>
+      <div style={{ fontSize: 15, fontWeight: 600, color: "#15151E", marginBottom: 6 }}>{title}</div>
+      <div style={{ fontSize: 13, color: "rgba(21,21,30,0.62)", maxWidth: 240, lineHeight: 1.6 }}>{desc}</div>
     </div>
   );
 }

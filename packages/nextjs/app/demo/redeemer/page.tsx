@@ -4618,7 +4618,7 @@ function SectionLabel({
             fontWeight: 700,
             textTransform: "uppercase",
             letterSpacing: "0.1em",
-            color: "rgba(255,255,255,0.5)",
+            color: "rgba(21,21,30,0.56)",
           }}
         >
           {text}
@@ -4662,8 +4662,8 @@ function EmptyState({ emoji, title, desc }: { emoji: string; title: string; desc
       }}
     >
       <div style={{ fontSize: 48, marginBottom: 14 }}>{emoji}</div>
-      <div style={{ fontSize: 16, fontWeight: 600, color: "#fff", marginBottom: 8 }}>{title}</div>
-      <div style={{ fontSize: 13, color: MUTED, maxWidth: 240, lineHeight: 1.55 }}>{desc}</div>
+      <div style={{ fontSize: 16, fontWeight: 600, color: "#15151E", marginBottom: 8 }}>{title}</div>
+      <div style={{ fontSize: 13, color: "rgba(21,21,30,0.62)", maxWidth: 240, lineHeight: 1.55 }}>{desc}</div>
     </div>
   );
 }
