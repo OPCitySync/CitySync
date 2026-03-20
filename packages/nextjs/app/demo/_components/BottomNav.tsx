@@ -25,7 +25,8 @@ export default function BottomNav({
   locked = false,
   allowedWhenLocked = [],
 }: BottomNavProps) {
-  const activeBg = `${accentColor}20`;
+  const activeBg = locked ? accentColor : `${accentColor}20`;
+  const lockedAllowedBg = "#5a4121";
   const lastIdx = tabs.length - 1;
   const allowedSet = new Set(allowedWhenLocked);
 
@@ -72,7 +73,7 @@ export default function BottomNav({
                     ? activeBg
                     : "transparent"
                   : isAllowedWhenLocked
-                    ? "linear-gradient(145deg, rgba(221,158,51,0.34), rgba(221,158,51,0.2))"
+                    ? lockedAllowedBg
                     : "transparent",
               border: "none",
               boxShadow: locked && isAllowedWhenLocked ? "inset 0 0 0 1px rgba(255,226,162,0.88)" : undefined,
