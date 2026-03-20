@@ -20,12 +20,13 @@ import {
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
 import {
-  clearDemoTutorialRun,
+  cleanupDemoTutorialArtifacts,
   consumeDemoTutorialHandoff,
+  getDemoTutorialHiddenTaskIds,
   getDemoTutorialOfferingIds,
   getDemoTutorialTaskIds,
   setDemoTutorialHandoff,
-  startDemoTutorialRun,
+  startDemoTutorialRunForAddress,
 } from "../_utils/tutorialRun";
 
 // ─── Brand ────────────────────────────────────────────────────────────────────
@@ -2171,10 +2172,12 @@ function ExploreTab({
   onLearnMore,
   tutorialStep,
   onTutorialStepChange,
+  hiddenTaskIds,
 }: {
   onLearnMore: (key: ParticipantLearnCardKey) => void;
   tutorialStep: IssuerTutorialStep;
   onTutorialStepChange: (step: IssuerTutorialStep) => void;
+  hiddenTaskIds: string[];
 }) {
   type OnchainTask = Task & {
     claimedBy?: `0x${string}`;
@@ -2221,6 +2224,7 @@ function ExploreTab({
   const tutorialHighlightClaimedActions = tutorialStep === "box13";
   const [tutorialTaskIds, setTutorialTaskIds] = useState<string[]>(() => getDemoTutorialTaskIds());
   const tutorialTaskIdSet = React.useMemo(() => new Set(tutorialTaskIds), [tutorialTaskIds]);
+  const hiddenTaskIdSet = React.useMemo(() => new Set(hiddenTaskIds), [hiddenTaskIds]);
 
   useEffect(() => {
     setTutorialTaskIds(getDemoTutorialTaskIds());
@@ -2499,7 +2503,8 @@ function ExploreTab({
           return bId - aId;
         });
 
-        if (!cancelled) setOnchainTasks(all);
+        const visibleTasks = all.filter(task => !hiddenTaskIdSet.has(task.id));
+        if (!cancelled) setOnchainTasks(visibleTasks);
       } catch {
         if (!cancelled) setOnchainTasks([]);
       }
@@ -2509,7 +2514,7 @@ function ExploreTab({
     return () => {
       cancelled = true;
     };
-  }, [parseEstimatedHours, taskWriteStatus.hash, taskWriteStatus.state]);
+  }, [hiddenTaskIdSet, parseEstimatedHours, taskWriteStatus.hash, taskWriteStatus.state]);
 
   const addressLower = address?.toLowerCase();
   const openOnchainTasks = onchainTasks.filter(t => {
@@ -4389,6 +4394,7 @@ export default function ParticipantPage() {
   const [openInfoCards, setOpenInfoCards] = useState<ParticipantLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
+  const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
   const persistTutorialStep = React.useCallback((nextStep: IssuerTutorialStep) => {
     try {
@@ -4417,20 +4423,29 @@ export default function ParticipantPage() {
     setTutorialStep("dismissed");
   }, [tutorialStep]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncHidden = () => setHiddenTutorialTaskIds(getDemoTutorialHiddenTaskIds());
+    syncHidden();
+    window.addEventListener("storage", syncHidden);
+    return () => window.removeEventListener("storage", syncHidden);
+  }, []);
+
   const startIssuerTutorial = React.useCallback(() => {
-    startDemoTutorialRun();
+    startDemoTutorialRunForAddress(address);
     persistTutorialStep("box1");
     setTutorialStep("box1");
     setRole("issuer");
     setDemoTutorialHandoff("issuer", "box1");
     router.push("/demo/issuer");
-  }, [persistTutorialStep, router, setRole]);
+  }, [address, persistTutorialStep, router, setRole]);
 
   const exitTutorial = React.useCallback(() => {
-    clearDemoTutorialRun();
+    const { hiddenTaskIds } = cleanupDemoTutorialArtifacts({ address, clearRun: true });
+    if (hiddenTaskIds.length > 0) setHiddenTutorialTaskIds(hiddenTaskIds);
     persistTutorialStep("dismissed");
     setTutorialStep("dismissed");
-  }, [persistTutorialStep]);
+  }, [address, persistTutorialStep]);
 
   useEffect(() => {
     if (tutorialStep === "box10") {
@@ -4732,9 +4747,7 @@ export default function ParticipantPage() {
               Exit Tutorial
             </button>
             <button
-              onClick={() => {
-                setTutorialStep("dismissed");
-              }}
+              onClick={exitTutorial}
               style={{
                 border: "none",
                 borderRadius: 10,
@@ -4851,7 +4864,12 @@ export default function ParticipantPage() {
       >
         {activeTab === "profile" && <ProfileTab onTabChange={setActiveTab} onLearnMore={openLearnMore} />}
         {activeTab === "explore" && (
-          <ExploreTab onLearnMore={openLearnMore} tutorialStep={tutorialStep} onTutorialStepChange={setTutorialStep} />
+          <ExploreTab
+            onLearnMore={openLearnMore}
+            tutorialStep={tutorialStep}
+            onTutorialStepChange={setTutorialStep}
+            hiddenTaskIds={hiddenTutorialTaskIds}
+          />
         )}
         {activeTab === "community" && <CommunityTab onLearnMore={openLearnMore} />}
         {activeTab === "redeem" && (

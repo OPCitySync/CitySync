@@ -11,10 +11,10 @@ import { FAKE_WALLETS, Post, PostCategory, RedemptionOffer } from "../_data/mock
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
 import {
   appendDemoTutorialOfferingIds,
-  clearDemoTutorialRun,
+  cleanupDemoTutorialArtifacts,
   consumeDemoTutorialHandoff,
   setDemoTutorialHandoff,
-  startDemoTutorialRun,
+  startDemoTutorialRunForAddress,
 } from "../_utils/tutorialRun";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -517,10 +517,10 @@ export default function RedeemerApp() {
     }
   }, [tutorialStep]);
   const exitTutorial = React.useCallback(() => {
-    clearDemoTutorialRun();
+    cleanupDemoTutorialArtifacts({ address, clearRun: true });
     persistTutorialStep("dismissed");
     setTutorialStep("dismissed");
-  }, [persistTutorialStep]);
+  }, [address, persistTutorialStep]);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
   const tutorialCard = (() => {
     if (tutorialStep === "dismissed") return null;
@@ -635,7 +635,7 @@ export default function RedeemerApp() {
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
             <button
               onClick={() => {
-                startDemoTutorialRun();
+                startDemoTutorialRunForAddress(address);
                 persistTutorialStep("box1");
                 setTutorialStep("box1");
                 setRole("issuer");
@@ -703,7 +703,7 @@ export default function RedeemerApp() {
         >
           <button
             onClick={() => {
-              startDemoTutorialRun();
+              startDemoTutorialRunForAddress(address);
               persistTutorialStep("box1");
               setTutorialStep("box1");
               setRole("issuer");

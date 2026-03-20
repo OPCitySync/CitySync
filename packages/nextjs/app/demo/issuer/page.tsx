@@ -18,13 +18,15 @@ import {
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
 import {
+  appendDemoTutorialCatalogTaskIds,
+  cleanupDemoTutorialArtifacts,
   appendDemoTutorialTaskIds,
-  clearDemoTutorialRun,
   consumeDemoTutorialHandoff,
+  getDemoTutorialHiddenTaskIds,
   getDemoTutorialTaskIds,
   readDemoTutorialRun,
   setDemoTutorialHandoff,
-  startDemoTutorialRun,
+  startDemoTutorialRunForAddress,
 } from "../_utils/tutorialRun";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -671,6 +673,7 @@ export default function IssuerApp() {
   const [unissueWriteStatus, setUnissueWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
+  const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
   const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
@@ -702,19 +705,43 @@ export default function IssuerApp() {
       // Ignore storage access failures.
     }
   }, []);
+  const mergedHiddenVerifyTaskIds = React.useMemo(
+    () => Array.from(new Set([...hiddenTutorialTaskIds, ...optimisticHiddenVerifyTaskIds])),
+    [hiddenTutorialTaskIds, optimisticHiddenVerifyTaskIds],
+  );
   const rightPanel = getIssuerRightPanel(activeTab);
   const exitIssuerTutorial = React.useCallback(() => {
-    clearDemoTutorialRun();
+    const runTaskIds = readDemoTutorialRun()?.taskIds ?? [];
+    const { hiddenTaskIds, removedCatalogTaskIds } = cleanupDemoTutorialArtifacts({
+      address,
+      clearRun: true,
+    });
+    if (hiddenTaskIds.length > 0) {
+      setHiddenTutorialTaskIds(hiddenTaskIds);
+      setOptimisticHiddenVerifyTaskIds(prev => Array.from(new Set([...prev, ...hiddenTaskIds])));
+    }
+    if (removedCatalogTaskIds.length > 0) {
+      const removedSet = new Set(removedCatalogTaskIds);
+      setApprovedCatalogTasks(prev => prev.filter(task => !removedSet.has(task.id)));
+      if (catalogModifyTaskId && removedSet.has(catalogModifyTaskId)) setCatalogModifyTaskId(null);
+      if (issueTaskId && removedSet.has(issueTaskId)) setIssueTaskId(null);
+    }
+    if (runTaskIds.length > 0) {
+      runTaskIds.forEach(taskId => dispatch({ type: "ISSUER_REMOVE_TASK", taskId }));
+      if (address) {
+        void Promise.allSettled(runTaskIds.map(taskId => issuerSetTaskActive(taskId, false)));
+      }
+    }
     persistTutorialStep("dismissed");
     setTutorialStep("dismissed");
-  }, [persistTutorialStep]);
+  }, [address, catalogModifyTaskId, dispatch, issueTaskId, issuerSetTaskActive, persistTutorialStep]);
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       <IssuerTutorialPanel
         step={tutorialStep}
         orgName={issuer.orgName}
         onStart={() => {
-          startDemoTutorialRun();
+          startDemoTutorialRunForAddress(address);
           setActiveTab("profile");
           setTutorialStep("box1");
         }}
@@ -752,7 +779,7 @@ export default function IssuerApp() {
         >
           <button
             onClick={() => {
-              startDemoTutorialRun();
+              startDemoTutorialRunForAddress(address);
               setActiveTab("profile");
               setTutorialStep("box1");
             }}
@@ -800,6 +827,14 @@ export default function IssuerApp() {
     if (ISSUER_ROLE_TUTORIAL_STEPS.has(tutorialStep) || /^box\d+$/.test(tutorialStep)) return;
     setTutorialStep("dismissed");
   }, [tutorialStep]);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncHidden = () => setHiddenTutorialTaskIds(getDemoTutorialHiddenTaskIds());
+    syncHidden();
+    window.addEventListener("storage", syncHidden);
+    return () => window.removeEventListener("storage", syncHidden);
+  }, []);
 
   React.useEffect(() => {
     if (tutorialStep === "box3" || tutorialStep === "box4") {
@@ -951,6 +986,8 @@ export default function IssuerApp() {
   };
 
   const handleApproveProposed = async (proposed: ProposedTask) => {
+    const isTutorialApproval = tutorialStep === "box6";
+    const tutorialRun = isTutorialApproval ? readDemoTutorialRun() : null;
     const normalizedTitle = proposed.title.trim().toLowerCase();
     const existingCatalogTask = approvedCatalogTasks.find(t => t.title.trim().toLowerCase() === normalizedTitle);
 
@@ -965,7 +1002,7 @@ export default function IssuerApp() {
       setProposeWriteStatus({ state: "confirmed", hash: result.hash });
     }
 
-    if (existingCatalogTask) {
+    if (existingCatalogTask && !isTutorialApproval) {
       setApprovedCatalogTasks(prev =>
         prev.map(task =>
           task.id === existingCatalogTask.id
@@ -987,8 +1024,11 @@ export default function IssuerApp() {
       );
       setToast("Task already existed in catalog. Details were updated.");
     } else {
-      const task: Task = {
-        id: `task-approved-${Date.now()}`,
+      const task: Task & {
+        tutorialRunId?: string;
+        tutorialOwner?: `0x${string}`;
+      } = {
+        id: tutorialRun ? `task-approved-${tutorialRun.runId}-${Date.now()}` : `task-approved-${Date.now()}`,
         title: proposed.title,
         description: proposed.successCriteria || "Community civic task proposed by organization.",
         category: "Community",
@@ -1008,7 +1048,16 @@ export default function IssuerApp() {
         isMCE: false,
         isOnboarding: false,
       };
+      if (tutorialRun) {
+        task.tutorialRunId = tutorialRun.runId;
+        if (address?.startsWith("0x")) {
+          task.tutorialOwner = address as `0x${string}`;
+        }
+      }
       setApprovedCatalogTasks(prev => [task, ...prev]);
+      if (tutorialRun) {
+        appendDemoTutorialCatalogTaskIds([task.id]);
+      }
     }
     setProposedTasks(prev => prev.filter(p => p.id !== proposed.id));
     if (tutorialStep === "box6") {
@@ -1199,6 +1248,7 @@ export default function IssuerApp() {
             onUnissueConfirm={setUnissueConfirmId}
             tutorialHighlightPropose={tutorialStep === "box5"}
             tutorialStep={tutorialStep}
+            hiddenTaskIds={hiddenTutorialTaskIds}
           />
         )}
         {activeTab === "verify" && (
@@ -1210,7 +1260,7 @@ export default function IssuerApp() {
             onDismissVerifyWrite={() => setVerifyWriteStatus({ state: "idle" })}
             unissueWriteStatus={unissueWriteStatus}
             onDismissUnissueWrite={() => setUnissueWriteStatus({ state: "idle" })}
-            hiddenTaskIds={optimisticHiddenVerifyTaskIds}
+            hiddenTaskIds={mergedHiddenVerifyTaskIds}
             onLearnMore={openLearnMore}
             onUnissueConfirm={setUnissueConfirmId}
             onNoShowConfirm={setNoShowConfirmItem}
@@ -2166,6 +2216,7 @@ function TasksTab({
   onUnissueConfirm: _onUnissueConfirm,
   tutorialHighlightPropose,
   tutorialStep,
+  hiddenTaskIds,
 }: {
   creditsCommitted: number;
   onCreateOpen: () => void;
@@ -2183,6 +2234,7 @@ function TasksTab({
   onUnissueConfirm: (taskId: string) => void;
   tutorialHighlightPropose: boolean;
   tutorialStep: IssuerTutorialStep;
+  hiddenTaskIds: string[];
 }) {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [view, setView] = useState<"issue" | "catalog">("catalog");
@@ -2207,6 +2259,7 @@ function TasksTab({
   const lastCatalogSyncedHashRef = React.useRef<string | undefined>(undefined);
   const tutorialHighlightApprove = tutorialStep === "box6";
   const tutorialHighlightIssueButton = tutorialStep === "box7";
+  const hiddenTaskIdSet = React.useMemo(() => new Set(hiddenTaskIds), [hiddenTaskIds]);
 
   useEffect(() => {
     if (!address) {
@@ -2304,8 +2357,9 @@ function TasksTab({
         });
 
         tasks.sort((a, b) => Number(b.id.match(/(\d+)$/)?.[1] ?? "0") - Number(a.id.match(/(\d+)$/)?.[1] ?? "0"));
+        const visibleTasks = tasks.filter(task => !hiddenTaskIdSet.has(task.id));
         if (!cancelled) {
-          setOnchainTasks(tasks);
+          setOnchainTasks(visibleTasks);
         }
       } catch {
         // Keep last good snapshot on transient RPC/read failures to avoid UI flicker.
@@ -2318,7 +2372,14 @@ function TasksTab({
     return () => {
       cancelled = true;
     };
-  }, [address, taskWriteStatus.hash, taskWriteStatus.state, proposeWriteStatus.hash, proposeWriteStatus.state]);
+  }, [
+    address,
+    hiddenTaskIdSet,
+    taskWriteStatus.hash,
+    taskWriteStatus.state,
+    proposeWriteStatus.hash,
+    proposeWriteStatus.state,
+  ]);
 
   useEffect(() => {
     if (tutorialStep === "box5" || tutorialStep === "box6") {
