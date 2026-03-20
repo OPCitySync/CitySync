@@ -1897,11 +1897,12 @@ function OfferingsTab({
     if (tutorialStep !== "box21") return;
     if (offerWriteStatus.state === "confirmed") {
       setShowActiveCommitted(true);
+      onTutorialStepChange("box22");
     }
-  }, [offerWriteStatus.state, tutorialStep]);
+  }, [offerWriteStatus.state, onTutorialStepChange, tutorialStep]);
 
   useEffect(() => {
-    if (tutorialStep !== "box21") return;
+    if (tutorialStep !== "box21" && tutorialStep !== "box22") return;
     if (!showActiveCommitted) return;
     const timer = window.setTimeout(() => {
       const target = document.querySelector<HTMLButtonElement>('[data-tutorial-show-qr="true"]');
@@ -2235,6 +2236,18 @@ function OfferingsTab({
 
                     <div style={{ display: "flex", gap: 8 }}>
                       <button
+                        data-tutorial-show-qr={
+                          (tutorialStep === "box21" || tutorialStep === "box22") &&
+                          tutorialActiveOfferingId === offering.id
+                            ? "true"
+                            : undefined
+                        }
+                        data-tutorial-allow={
+                          (tutorialStep === "box21" || tutorialStep === "box22") &&
+                          tutorialActiveOfferingId === offering.id
+                            ? "true"
+                            : undefined
+                        }
                         onClick={() =>
                           onShowQR({
                             id: offering.id,
@@ -2243,12 +2256,6 @@ function OfferingsTab({
                             orgName,
                           })
                         }
-                        data-tutorial-show-qr={
-                          tutorialStep === "box21" && tutorialActiveOfferingId === offering.id ? "true" : undefined
-                        }
-                        data-tutorial-allow={
-                          tutorialStep === "box21" && tutorialActiveOfferingId === offering.id ? "true" : undefined
-                        }
                         style={{
                           flex: 1,
                           display: "flex",
@@ -2256,11 +2263,13 @@ function OfferingsTab({
                           justifyContent: "center",
                           gap: 6,
                           background:
-                            tutorialStep === "box21" && tutorialActiveOfferingId === offering.id
+                            (tutorialStep === "box21" || tutorialStep === "box22") &&
+                            tutorialActiveOfferingId === offering.id
                               ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
                               : "rgba(52,238,182,0.1)",
                           border:
-                            tutorialStep === "box21" && tutorialActiveOfferingId === offering.id
+                            (tutorialStep === "box21" || tutorialStep === "box22") &&
+                            tutorialActiveOfferingId === offering.id
                               ? "1px solid rgba(255,226,162,0.9)"
                               : "none",
                           borderRadius: 10,
@@ -2268,14 +2277,19 @@ function OfferingsTab({
                           fontSize: 12,
                           fontWeight: 600,
                           color:
-                            tutorialStep === "box21" && tutorialActiveOfferingId === offering.id ? "#15151E" : ACCENT,
+                            (tutorialStep === "box21" || tutorialStep === "box22") &&
+                            tutorialActiveOfferingId === offering.id
+                              ? "#15151E"
+                              : ACCENT,
                           cursor: "pointer",
                           boxShadow:
-                            tutorialStep === "box21" && tutorialActiveOfferingId === offering.id
+                            (tutorialStep === "box21" || tutorialStep === "box22") &&
+                            tutorialActiveOfferingId === offering.id
                               ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.48)"
                               : undefined,
                           animation:
-                            tutorialStep === "box21" && tutorialActiveOfferingId === offering.id
+                            (tutorialStep === "box21" || tutorialStep === "box22") &&
+                            tutorialActiveOfferingId === offering.id
                               ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
                               : undefined,
                         }}
