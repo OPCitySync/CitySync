@@ -79,6 +79,7 @@ const PARTICIPANT_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
 ]);
 const SHARED_TUTORIAL_INTRO_TEXT =
   "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
+const DEMO_DISABLE_SANCTION_ENFORCEMENT = true;
 
 function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
@@ -1751,7 +1752,8 @@ function ProfileTab({
               <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Sanctions Summary</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.55 }}>
                 Verify & Mint improves score (RS +0.5, RD -0.5). Reject & Mint (RS -1.5, RD +2) and No-Show (RS -1, RD
-                +1) increase restrictions. Current policy: {sanctionsPolicy.summary}
+                +1) would normally increase restrictions. Current policy: {sanctionsPolicy.summary}
+                {DEMO_DISABLE_SANCTION_ENFORCEMENT ? " Demo mode: sanction enforcement is currently disabled." : ""}
               </div>
               <a
                 href="/demo/graduate-sanctions"
@@ -2778,33 +2780,36 @@ function ExploreTab({
     if (!task.isOnboarding) {
       const localActiveClaimCount = new Set<string>([...myTasks.map(t => t.id), ...state.participant.claimedTaskIds])
         .size;
-      if (localActiveClaimCount >= sanctionsPolicy.maxActiveClaims) {
+      const maxActiveClaims = DEMO_DISABLE_SANCTION_ENFORCEMENT ? 2 : sanctionsPolicy.maxActiveClaims;
+      if (localActiveClaimCount >= maxActiveClaims) {
         setClaimNotice({
           message:
-            sanctionsPolicy.maxActiveClaims === 1
+            maxActiveClaims === 1
               ? `Claim limited by ${scoreSnapshot.tier} status (max 1 active claim).`
-              : "Max task claim limit reached.",
+              : "Max 2 active claims reached.",
           type: "warn",
         });
         return;
       }
 
-      if (sanctionsPolicy.blockPremiumTasks && task.creditRatePerHr > PREMIUM_TASK_RATE_THRESHOLD) {
-        setClaimNotice({
-          message: `Claim blocked: premium tasks above ${PREMIUM_TASK_RATE_THRESHOLD} CITYx/hr are restricted in ${scoreSnapshot.tier}.`,
-          type: "warn",
-        });
-        return;
-      }
-
-      if (sanctionsPolicy.maxEstimatedHours !== null) {
-        const estimatedHours = parseEstimatedHours(task.estimatedTime);
-        if (estimatedHours !== null && estimatedHours > sanctionsPolicy.maxEstimatedHours) {
+      if (!DEMO_DISABLE_SANCTION_ENFORCEMENT) {
+        if (sanctionsPolicy.blockPremiumTasks && task.creditRatePerHr > PREMIUM_TASK_RATE_THRESHOLD) {
           setClaimNotice({
-            message: `Claim blocked: ${scoreSnapshot.tier} status allows tasks up to ${sanctionsPolicy.maxEstimatedHours} hour.`,
+            message: `Claim blocked: premium tasks above ${PREMIUM_TASK_RATE_THRESHOLD} CITYx/hr are restricted in ${scoreSnapshot.tier}.`,
             type: "warn",
           });
           return;
+        }
+
+        if (sanctionsPolicy.maxEstimatedHours !== null) {
+          const estimatedHours = parseEstimatedHours(task.estimatedTime);
+          if (estimatedHours !== null && estimatedHours > sanctionsPolicy.maxEstimatedHours) {
+            setClaimNotice({
+              message: `Claim blocked: ${scoreSnapshot.tier} status allows tasks up to ${sanctionsPolicy.maxEstimatedHours} hour.`,
+              type: "warn",
+            });
+            return;
+          }
         }
       }
     }
@@ -3091,10 +3096,11 @@ function ExploreTab({
           }}
         >
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", marginBottom: 4 }}>
-            Sanctions Active · {scoreSnapshot.tier}
+            {DEMO_DISABLE_SANCTION_ENFORCEMENT ? "Sanctions Tracking Only" : "Sanctions Active"} · {scoreSnapshot.tier}
           </div>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.86)", lineHeight: 1.45 }}>
             {sanctionsPolicy.summary}
+            {DEMO_DISABLE_SANCTION_ENFORCEMENT ? " Enforcement is disabled in demo mode." : ""}
           </div>
         </div>
       )}
