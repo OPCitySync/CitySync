@@ -1534,6 +1534,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
     async (task: Task) => {
       const rewardCity = parseUnits(String(Math.max(0, task.credits)), 18);
       const rewardVote = parseUnits(String(Math.max(0, task.voteTokens)), 18);
+      const taskWithTutorialMeta = task as Task & {
+        tutorialOwner?: `0x${string}`;
+        tutorialRunId?: string;
+      };
       const metadataURI = JSON.stringify({
         title: task.title,
         description: task.description,
@@ -1546,6 +1550,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         credentials: task.credentials,
         tags: task.tags,
         isOnboarding: task.isOnboarding,
+        tutorialOwner: taskWithTutorialMeta.tutorialOwner,
+        tutorialRunId: taskWithTutorialMeta.tutorialRunId,
       });
 
       if (!address) {

@@ -17,7 +17,13 @@ import {
   getAllParticipantScoreSnapshots,
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
-import { appendDemoTutorialTaskIds, getDemoTutorialTaskIds, startDemoTutorialRun } from "../_utils/tutorialRun";
+import {
+  appendDemoTutorialTaskIds,
+  clearDemoTutorialRun,
+  getDemoTutorialTaskIds,
+  readDemoTutorialRun,
+  startDemoTutorialRun,
+} from "../_utils/tutorialRun";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -310,13 +316,10 @@ const ISSUER_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
   "intro",
   "box1",
   "box2",
-  "box3",
-  "box4",
   "box5",
   "box6",
   "box7",
   "box8",
-  "box9",
   "box15",
   "box16",
   "box17",
@@ -327,37 +330,7 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
-    if (
-      raw === "intro" ||
-      raw === "box1" ||
-      raw === "box2" ||
-      raw === "box3" ||
-      raw === "box4" ||
-      raw === "box5" ||
-      raw === "box6" ||
-      raw === "box7" ||
-      raw === "box8" ||
-      raw === "box9" ||
-      raw === "box10" ||
-      raw === "box11" ||
-      raw === "box12" ||
-      raw === "box13" ||
-      raw === "box14" ||
-      raw === "box15" ||
-      raw === "box16" ||
-      raw === "box17" ||
-      raw === "box18" ||
-      raw === "box19" ||
-      raw === "box20" ||
-      raw === "box21" ||
-      raw === "box22" ||
-      raw === "box23" ||
-      raw === "box24" ||
-      raw === "box25" ||
-      raw === "box26" ||
-      raw === "dismissed"
-    )
-      return raw;
+    if (raw === "dismissed") return "dismissed";
   } catch {
     // Ignore storage access failures.
   }
@@ -452,20 +425,14 @@ function IssuerTutorialPanel({
   onStart,
   onDismissIntro,
   onExit,
-  onContinueBox2,
-  onContinueBox3,
-  onContinueBox4,
-  onContinueBox9,
+  onGoToTasks,
 }: {
   step: IssuerTutorialStep;
   orgName: string;
   onStart: () => void;
   onDismissIntro: () => void;
   onExit: () => void;
-  onContinueBox2: () => void;
-  onContinueBox3: () => void;
-  onContinueBox4: () => void;
-  onContinueBox9: () => void;
+  onGoToTasks: () => void;
 }) {
   const safeOrgName = orgName.trim() || "Issuer Organization";
 
@@ -486,7 +453,7 @@ function IssuerTutorialPanel({
         <TutorialCard
           subtitle="Step 1"
           title="Let's start with Issuers"
-          body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nIssuers can use the City/Sync platform to enhance their already existing Volunteer Programs or build new ones from the ground up.\n\nThis protocol offers a discovery method for civic participants to learn about new volunteer opportunities in their city.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
+          body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
         >
           <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
         </TutorialCard>
@@ -496,38 +463,16 @@ function IssuerTutorialPanel({
         <TutorialCard
           subtitle="Step 2"
           title={`Welcome ${safeOrgName}!`}
-          body="Great name!\n\nEvery Issuer organization that is certified through City/Sync will have an opportunity to participate in the Public-Sector economy. There are 3 roles within this economy: Issuers, Civic Participants, and Redeemers.\n\nIssuers have the ability to expand their volunteer programs by issuing civic-tasks that expand their organizational impact and mission, and rewarding Civic-Participants for doing so! Civic-Participants are any individuals who execute these tasks and spend their credits at participating Redeemer Organizations.\n\nThis is the basis for the public-sector economy. Verified civic-labor mints credits that can be spent on local goods and services. All credits redeemed for goods and services are removed from circulation, so the balance between issuance and redemption must be maintained."
+          body={`Welcome ${safeOrgName}!\n\nIssuer organizations can begin to issue tasks by selecting the Tasks Tab at the bottom.`}
         >
           <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
-          <TutorialActionButton label="Continue" onClick={onContinueBox2} />
-        </TutorialCard>
-      )}
-
-      {step === "box3" && (
-        <TutorialCard
-          subtitle="Step 3"
-          title="Understanding the Issuance Cap"
-          body="In order to sustain this balance, we implement an economic control lever called an Issuance Cap.\n\nAn issuance cap the maximum amount of civic credits that can be issued within a 3 month period, which we call an Epoch.\n\nIf redemption rates are strong (civic participants are spending credits), and credits are circulating smoothly, the issuance cap can expand gradually.\n\nIf redemption slows or credits accumulate in wallets without use, the issuance cap will tighten. The issuance cap is a feedback loop that nudges the system toward equilibrium.\n\nAll issuer organizations can keep track of how many credits they've issued during the epoch, and can plan their volunteer programs according to the limits of the issuance cap."
-        >
-          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
-          <TutorialActionButton label="Continue" onClick={onContinueBox3} />
-        </TutorialCard>
-      )}
-
-      {step === "box4" && (
-        <TutorialCard
-          subtitle="Step 4"
-          title="Task Catalogs and Governance"
-          body="All issuer organizations will manage their own task catalog which tracks all the details about a specific volunteer opportunity including the date/time/location of the opportunity, the amount of hours, the success criteria, and the rate of CITY issuance that is desired.\n\nAll tasks proposed by Issuer organizations must be approved by the Issuer governance committee that manages the catalogs. Creating a catalog for all existing volunteer opportunities allows the protocol to fine-tune the issuance of credits by classifying similar tasks, similarly.\n\nIt also allows for task issuance to be guided by rules that keep tasks aligned to public-sector goals. The initial ruleset will make two declarations: (1) tasks cannot replace existing paid functions of the Issuer organization, and (2) tasks must facilitate the delivery of a public good or public service."
-        >
-          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
-          <TutorialActionButton label="Continue" onClick={onContinueBox4} />
+          <TutorialActionButton label="Go To Tasks" onClick={onGoToTasks} />
         </TutorialCard>
       )}
 
       {step === "box5" && (
         <TutorialCard
-          subtitle="Step 5"
+          subtitle="Step 3"
           title="Propose a New Task"
           body="Issuer Organizations can propose the creation of a new task to be added to their catalog at any time. There is a standardized template for proposing tasks. Let's create one by clicking the + Propose New Task for Approval button.\n\nWe will auto-fill this task for you to start. When you're ready, let's talk about how they are approved."
         >
@@ -537,7 +482,7 @@ function IssuerTutorialPanel({
 
       {step === "box6" && (
         <TutorialCard
-          subtitle="Step 6"
+          subtitle="Step 4"
           title="Approve Your Proposed Task"
           body="Great. Your proposed task is now ready for catalog approval.\n\nGo ahead and approve your task for the catalog."
         >
@@ -547,7 +492,7 @@ function IssuerTutorialPanel({
 
       {step === "box7" && (
         <TutorialCard
-          subtitle="Step 7"
+          subtitle="Step 5"
           title="Issue from Your Catalog"
           body="Once a task has been approved, it is placed within your organizational task catalog. You can issue tasks from your catalog at any time."
         >
@@ -557,7 +502,7 @@ function IssuerTutorialPanel({
 
       {step === "box8" && (
         <TutorialCard
-          subtitle="Step 8"
+          subtitle="Step 6"
           title="Choose Issuance Slots"
           body="When issuing tasks, Issuers are able to create multiple instances of that task to be made available for the public to claim.\n\nGo ahead and approve the 3 tasks for issuance."
         >
@@ -565,20 +510,9 @@ function IssuerTutorialPanel({
         </TutorialCard>
       )}
 
-      {step === "box9" && (
-        <TutorialCard
-          subtitle="Step 9"
-          title="Great — Tasks Are Live"
-          body="Now that we've issued our first tasks, lets take a look at the Civic Participant, and how they can claim tasks and execute them."
-        >
-          <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
-          <TutorialActionButton label="Continue" onClick={onContinueBox9} />
-        </TutorialCard>
-      )}
-
       {step === "box15" && (
         <TutorialCard
-          subtitle="Step 15"
+          subtitle="Step 10"
           title="Issued, Claimed, and Completed"
           body="All issued task will be in one of three states: Issued, Claimed, and Completed. Issued tasks can be unissued by the Issuer. Unissued tasks are removed from circulation.\n\nGo ahead an Unissue one of your tasks."
         >
@@ -588,7 +522,7 @@ function IssuerTutorialPanel({
 
       {step === "box16" && (
         <TutorialCard
-          subtitle="Step 16"
+          subtitle="Step 11"
           title="Handling No-Shows"
           body="If a Civic-Participant fails to show up for their claimed task, Issuers can select the No Show button to remove the claimed task out of circulation. No Shows by Civic-Participants are tracked to prevent abuse.\n\nGo ahead and select Mark No-Show for this task."
         >
@@ -598,7 +532,7 @@ function IssuerTutorialPanel({
 
       {step === "box17" && (
         <TutorialCard
-          subtitle="Step 17"
+          subtitle="Step 12"
           title="Verify or Reject with Mint"
           body="Issuers are responsible for verifying that the work was actually completed by the Civic-Participant. Once verification is complete they can either reject completion as unsatisfactory with feedback or verify. Rejections are designed to keep Civic-Participants accountable. In both circumstances, credits will be minted to the Civic-Participant.\n\nGo ahead and Verify & Mint."
         >
@@ -770,8 +704,10 @@ export default function IssuerApp() {
   }, []);
   const rightPanel = getIssuerRightPanel(activeTab);
   const exitIssuerTutorial = React.useCallback(() => {
+    clearDemoTutorialRun();
+    persistTutorialStep("dismissed");
     setTutorialStep("dismissed");
-  }, []);
+  }, [persistTutorialStep]);
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       <IssuerTutorialPanel
@@ -784,17 +720,9 @@ export default function IssuerApp() {
         }}
         onDismissIntro={exitIssuerTutorial}
         onExit={exitIssuerTutorial}
-        onContinueBox2={() => setTutorialStep("box3")}
-        onContinueBox3={() => {
+        onGoToTasks={() => {
           setActiveTab("tasks");
-          setTutorialStep("box4");
-        }}
-        onContinueBox4={() => setTutorialStep("box5")}
-        onContinueBox9={() => {
-          setRole("participant");
-          setTutorialStep("box10");
-          persistTutorialStep("box10");
-          router.push("/demo/participant");
+          setTutorialStep("box5");
         }}
       />
       {openInfoCards.length > 0 ? (
@@ -878,18 +806,21 @@ export default function IssuerApp() {
   }, [tutorialStep]);
 
   React.useEffect(() => {
-    if (tutorialStep === "box1" || tutorialStep === "box2" || tutorialStep === "box3") {
+    if (tutorialStep === "box3" || tutorialStep === "box4") {
+      setTutorialStep("box5");
+      return;
+    }
+    if (tutorialStep === "box9") {
+      setTutorialStep("box11");
+    }
+  }, [tutorialStep]);
+
+  React.useEffect(() => {
+    if (tutorialStep === "box1" || tutorialStep === "box2") {
       setActiveTab("profile");
       return;
     }
-    if (
-      tutorialStep === "box4" ||
-      tutorialStep === "box5" ||
-      tutorialStep === "box6" ||
-      tutorialStep === "box7" ||
-      tutorialStep === "box8" ||
-      tutorialStep === "box9"
-    ) {
+    if (tutorialStep === "box5" || tutorialStep === "box6" || tutorialStep === "box7" || tutorialStep === "box8") {
       setActiveTab("tasks");
       return;
     }
@@ -897,6 +828,12 @@ export default function IssuerApp() {
       setActiveTab("verify");
     }
   }, [tutorialStep]);
+
+  React.useEffect(() => {
+    if (tutorialStep === "box2" && activeTab === "tasks") {
+      setTutorialStep("box5");
+    }
+  }, [activeTab, tutorialStep]);
 
   // Weekly epoch reset: 250ms settle lets DemoContext hydrate issuer.tasks before we snapshot.
   React.useEffect(() => {
@@ -1093,6 +1030,7 @@ export default function IssuerApp() {
 
     const projectedCost = task.credits * slots;
     const remainingBudget = Math.max(0, EPOCH1_CAP - creditsCommitted);
+    const tutorialRun = tutorialStep === "box8" ? readDemoTutorialRun() : null;
     if (projectedCost > remainingBudget) {
       const error = `Issuance exceeds remaining Epoch budget (${projectedCost} > ${remainingBudget} CITYx).`;
       setTaskWriteStatus({ state: "failed", error });
@@ -1117,7 +1055,20 @@ export default function IssuerApp() {
       }
 
       const localId = `task-issued-${Date.now()}-${i + 1}`;
-      const result = await issuerCreateTask({ ...task, id: localId, slots: 1, slotsRemaining: 1 });
+      const payload = {
+        ...task,
+        id: localId,
+        slots: 1,
+        slotsRemaining: 1,
+      } as Task & {
+        tutorialOwner?: `0x${string}`;
+        tutorialRunId?: string;
+      };
+      if (tutorialRun && address?.startsWith("0x")) {
+        payload.tutorialOwner = address as `0x${string}`;
+        payload.tutorialRunId = tutorialRun.runId;
+      }
+      const result = await issuerCreateTask(payload as Task);
       if (result.ok) {
         okCount += 1;
         committedRunning += task.credits;
@@ -1203,6 +1154,7 @@ export default function IssuerApp() {
         rightPanel={rightPanel}
         phoneFrame
         tutorialLocked={tutorialLockActive}
+        tutorialAllowedTabs={tutorialStep === "box2" ? ["tasks"] : []}
       >
         {isConnected && !address && (
           <div
@@ -1269,8 +1221,8 @@ export default function IssuerApp() {
             tutorialStep={tutorialStep}
             onTutorialVerifyMintComplete={() => {
               setRole("redeemer");
-              setTutorialStep("box18");
-              persistTutorialStep("box18");
+              setTutorialStep("box19");
+              persistTutorialStep("box19");
               router.push("/demo/redeemer");
             }}
           />
@@ -1308,7 +1260,12 @@ export default function IssuerApp() {
                 onClose={() => setIssueTaskId(null)}
                 onIssue={slots => handleIssueTask(task, slots)}
                 tutorialStep={tutorialStep}
-                onTutorialIssued={() => setTutorialStep("box9")}
+                onTutorialIssued={() => {
+                  setRole("participant");
+                  setTutorialStep("box11");
+                  persistTutorialStep("box11");
+                  router.push("/demo/participant");
+                }}
               />
             ) : null;
           })()}
@@ -2366,14 +2323,25 @@ function TasksTab({
   }, [address, taskWriteStatus.hash, taskWriteStatus.state, proposeWriteStatus.hash, proposeWriteStatus.state]);
 
   useEffect(() => {
-    if (tutorialStep === "box4" || tutorialStep === "box5" || tutorialStep === "box6") {
+    if (tutorialStep === "box5" || tutorialStep === "box6") {
       setView("catalog");
       return;
     }
-    if (tutorialStep === "box7" || tutorialStep === "box8" || tutorialStep === "box9") {
+    if (tutorialStep === "box7" || tutorialStep === "box8") {
       setView("issue");
     }
   }, [tutorialStep]);
+
+  useEffect(() => {
+    if (tutorialStep !== "box6") return;
+    const timer = window.setTimeout(() => {
+      const approveBtn = document.querySelector('[data-tutorial-approve="true"]');
+      if (approveBtn instanceof HTMLElement) {
+        approveBtn.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [tutorialStep, proposedTasks.length]);
 
   return (
     <div style={{ padding: "24px 20px 100px", position: "relative" }}>
@@ -2817,6 +2785,7 @@ function TasksTab({
 
                     <button
                       data-tutorial-allow={tutorialHighlightApprove ? "true" : undefined}
+                      data-tutorial-approve={tutorialHighlightApprove ? "true" : undefined}
                       onClick={() => onApproveProposed(pt)}
                       style={{
                         width: "100%",
@@ -2832,7 +2801,7 @@ function TasksTab({
                         cursor: "pointer",
                         marginBottom: 8,
                         position: tutorialHighlightApprove ? "relative" : undefined,
-                        zIndex: tutorialHighlightApprove ? 40 : undefined,
+                        zIndex: tutorialHighlightApprove ? 20 : undefined,
                         animation: tutorialHighlightApprove
                           ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
                           : undefined,
@@ -3117,6 +3086,7 @@ function ProposeTaskSheet({
   tutorialAllowSubmit?: boolean;
   onTutorialSubmitIntent?: () => void;
 }) {
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [title, setTitle] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
   const [location, setLocation] = useState("");
@@ -3155,6 +3125,16 @@ function ProposeTaskSheet({
     setCreditRate("10");
     setCredentials("No prior experience required");
     setSelectedTags(["Community", "Arts"]);
+  }, [tutorialAutofill]);
+
+  useEffect(() => {
+    if (!tutorialAutofill) return;
+    const timer = window.setTimeout(() => {
+      const area = scrollAreaRef.current;
+      if (!area) return;
+      area.scrollTo({ top: area.scrollHeight, behavior: "smooth" });
+    }, 100);
+    return () => window.clearTimeout(timer);
   }, [tutorialAutofill]);
 
   const computedCredits = (() => {
@@ -3267,7 +3247,7 @@ function ProposeTaskSheet({
           </button>
         </div>
         {/* Scrollable content */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px" }}>
+        <div ref={scrollAreaRef} style={{ flex: 1, overflowY: "auto", padding: "16px 20px 24px" }}>
           <div style={{ fontSize: 13, color: MUTED, marginBottom: 20, lineHeight: 1.5 }}>
             Submit a task for admin review. Once approved, it will enter the catalog for participants to claim.
           </div>
@@ -3309,6 +3289,7 @@ function ProposeTaskSheet({
                   onChange={e => setEstimatedTime(e.target.value)}
                   placeholder="e.g. 2 hours"
                   style={inputStyle}
+                  disabled={tutorialAutofill}
                 />
               </div>
               <div>
@@ -3319,9 +3300,15 @@ function ProposeTaskSheet({
                   onChange={e => setCreditRate(e.target.value)}
                   placeholder="e.g. 20"
                   style={inputStyle}
+                  disabled={tutorialAutofill}
                 />
               </div>
             </div>
+            {tutorialAutofill && (
+              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.62)", marginTop: -4 }}>
+                Tutorial mode: Estimated Time and Credit Rate are fixed.
+              </div>
+            )}
 
             {computedCredits > 0 && (
               <div
@@ -3836,7 +3823,13 @@ function UnissueConfirmSheet({
 }) {
   return (
     <>
-      <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
+      <style>{`
+        @keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes tutorialRadiantVerify {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.35), 0 0 10px rgba(221,158,51,0.24); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
+        }
+      `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
         <div
           style={{
@@ -3900,14 +3893,20 @@ function UnissueConfirmSheet({
               onClick={onConfirm}
               style={{
                 flex: 1,
-                background: "#ff6b9d",
-                border: "none",
-                color: "white",
+                background: tutorialAllowConfirm
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : "#ff6b9d",
+                border: tutorialAllowConfirm ? "1px solid rgba(255,226,162,0.92)" : "none",
+                color: tutorialAllowConfirm ? "#15151E" : "white",
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
                 fontWeight: 700,
                 cursor: "pointer",
+                boxShadow: tutorialAllowConfirm
+                  ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.44)"
+                  : undefined,
+                animation: tutorialAllowConfirm ? "tutorialRadiantVerify 1.55s ease-in-out infinite" : undefined,
               }}
             >
               Unissue Task
@@ -3934,7 +3933,13 @@ function NoShowConfirmSheet({
 }) {
   return (
     <>
-      <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
+      <style>{`
+        @keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes tutorialRadiantVerify {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.35), 0 0 10px rgba(221,158,51,0.24); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
+        }
+      `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
         <div
           style={{
@@ -3998,14 +4003,20 @@ function NoShowConfirmSheet({
               onClick={onConfirm}
               style={{
                 flex: 1,
-                background: "#ff6b9d",
-                border: "none",
-                color: "white",
+                background: tutorialAllowConfirm
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : "#ff6b9d",
+                border: tutorialAllowConfirm ? "1px solid rgba(255,226,162,0.92)" : "none",
+                color: tutorialAllowConfirm ? "#15151E" : "white",
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
                 fontWeight: 700,
                 cursor: "pointer",
+                boxShadow: tutorialAllowConfirm
+                  ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.44)"
+                  : undefined,
+                animation: tutorialAllowConfirm ? "tutorialRadiantVerify 1.55s ease-in-out infinite" : undefined,
               }}
             >
               Mark No-Show
@@ -4321,6 +4332,12 @@ function VerifyTab({
 
   return (
     <div style={{ padding: "24px 20px 100px" }}>
+      <style>{`
+        @keyframes tutorialRadiantVerify {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.35), 0 0 10px rgba(221,158,51,0.24); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
+        }
+      `}</style>
       {/* Three-way toggle */}
       <div
         style={{
@@ -4331,26 +4348,40 @@ function VerifyTab({
           marginBottom: 8,
         }}
       >
-        {TOGGLE_OPTIONS.map(opt => (
-          <button
-            key={opt.key}
-            onClick={() => setView(opt.key)}
-            style={{
-              flex: 1,
-              padding: "9px 0",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-              fontSize: 11,
-              fontWeight: 600,
-              background: view === opt.key ? ACCENT : "transparent",
-              color: view === opt.key ? BG : MUTED,
-              transition: "all 0.15s",
-            }}
-          >
-            {opt.label}
-          </button>
-        ))}
+        {TOGGLE_OPTIONS.map(opt => {
+          const shouldHighlightToggle =
+            (tutorialStep === "box15" && opt.key === "issued") ||
+            (tutorialStep === "box16" && opt.key === "claimed") ||
+            (tutorialStep === "box17" && opt.key === "completed");
+          return (
+            <button
+              key={opt.key}
+              onClick={() => setView(opt.key)}
+              style={{
+                flex: 1,
+                padding: "9px 0",
+                border: shouldHighlightToggle ? "1px solid rgba(255,226,162,0.86)" : "none",
+                borderRadius: 8,
+                cursor: "pointer",
+                fontSize: 11,
+                fontWeight: 600,
+                background: shouldHighlightToggle
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : view === opt.key
+                    ? ACCENT
+                    : "transparent",
+                color: shouldHighlightToggle ? BG : view === opt.key ? BG : MUTED,
+                transition: "all 0.15s",
+                boxShadow: shouldHighlightToggle
+                  ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.48)"
+                  : undefined,
+                animation: shouldHighlightToggle ? "tutorialRadiantVerify 1.55s ease-in-out infinite" : undefined,
+              }}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}>
         <LearnMoreLink onClick={() => onLearnMore("verify-flow")} />
@@ -4771,14 +4802,6 @@ function VerifyTab({
                           fontWeight: 700,
                           color: task.claimant ? "#ff6b9d" : MUTED,
                           cursor: task.claimant ? "pointer" : "not-allowed",
-                          boxShadow:
-                            shouldHighlightVerifyButtons && task.claimant
-                              ? "0 0 0 1px rgba(255,210,226,0.35), 0 0 14px rgba(255,107,157,0.42)"
-                              : undefined,
-                          animation:
-                            shouldHighlightVerifyButtons && task.claimant
-                              ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
-                              : undefined,
                         }}
                       >
                         Reject & Mint
@@ -4954,13 +4977,26 @@ function VerifyTab({
                                 ? "#ff6b9d"
                                 : "rgba(255,255,255,0.08)"
                               : ACCENT,
-                          border: confirmVerify.decision === "reject" ? "1px solid rgba(255,107,157,0.35)" : "none",
+                          border:
+                            confirmVerify.decision === "reject"
+                              ? "1px solid rgba(255,107,157,0.35)"
+                              : tutorialStep === "box17" && confirmVerify.decision === "verify" && canConfirm
+                                ? "1px solid rgba(255,226,162,0.92)"
+                                : "none",
                           borderRadius: 10,
                           padding: "10px 0",
                           fontSize: 12,
                           fontWeight: 700,
                           color: confirmVerify.decision === "reject" ? (canConfirm ? "#fff" : MUTED) : BG,
                           cursor: canConfirm ? "pointer" : "not-allowed",
+                          boxShadow:
+                            tutorialStep === "box17" && confirmVerify.decision === "verify" && canConfirm
+                              ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.44)"
+                              : undefined,
+                          animation:
+                            tutorialStep === "box17" && confirmVerify.decision === "verify" && canConfirm
+                              ? "tutorialRadiantVerify 1.55s ease-in-out infinite"
+                              : undefined,
                         }}
                         disabled={!canConfirm}
                       >

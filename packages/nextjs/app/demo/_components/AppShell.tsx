@@ -59,7 +59,9 @@ interface AppShellProps {
   /** When true, renders a phone device bezel around the app */
   phoneFrame?: boolean;
   tutorialHighlightWalletButton?: boolean;
+  tutorialHighlightWalletCloseButton?: boolean;
   tutorialLocked?: boolean;
+  tutorialAllowedTabs?: string[];
   onWalletOpen?: () => void;
   onWalletClose?: () => void;
 }
@@ -312,7 +314,9 @@ export default function AppShell({
   rightPanel,
   phoneFrame = false,
   tutorialHighlightWalletButton = false,
+  tutorialHighlightWalletCloseButton = false,
   tutorialLocked = false,
+  tutorialAllowedTabs = [],
   onWalletOpen,
   onWalletClose,
 }: AppShellProps) {
@@ -372,7 +376,7 @@ export default function AppShell({
           }
           .citysync-tutorial-lock-scope [data-tutorial-allow="true"] {
             position: relative;
-            z-index: 120 !important;
+            z-index: 140 !important;
           }
         `}</style>
       )}
@@ -567,6 +571,18 @@ export default function AppShell({
           overscrollBehaviorY: "contain",
         }}
       >
+        {tutorialLocked && (
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 90,
+              pointerEvents: "none",
+              background: "rgba(0,0,0,0.36)",
+            }}
+          />
+        )}
         {children}
       </main>
 
@@ -577,6 +593,7 @@ export default function AppShell({
         onChange={onTabChange}
         accentColor={accentColor}
         locked={tutorialLocked}
+        allowedWhenLocked={tutorialAllowedTabs}
       />
 
       {phoneFrame && <HomeIndicator accentColor={accentColor} />}
@@ -767,6 +784,7 @@ export default function AppShell({
           mceBalance={mceBalance}
           orgName={orgName}
           role={role}
+          tutorialHighlightCloseButton={tutorialHighlightWalletCloseButton}
           onClose={() => {
             setWalletOpen(false);
             onWalletClose?.();

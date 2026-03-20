@@ -14,11 +14,20 @@ interface BottomNavProps {
   onChange: (key: string) => void;
   accentColor?: string;
   locked?: boolean;
+  allowedWhenLocked?: string[];
 }
 
-export default function BottomNav({ tabs, active, onChange, accentColor = "#4169E1", locked = false }: BottomNavProps) {
+export default function BottomNav({
+  tabs,
+  active,
+  onChange,
+  accentColor = "#4169E1",
+  locked = false,
+  allowedWhenLocked = [],
+}: BottomNavProps) {
   const activeBg = `${accentColor}20`;
   const lastIdx = tabs.length - 1;
+  const allowedSet = new Set(allowedWhenLocked);
 
   return (
     <nav
@@ -32,8 +41,17 @@ export default function BottomNav({ tabs, active, onChange, accentColor = "#4169
         backdropFilter: "blur(14px)",
       }}
     >
+      {locked && allowedWhenLocked.length > 0 && (
+        <style>{`
+          @keyframes tutorialNavPulse {
+            0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.35), 0 0 10px rgba(221,158,51,0.24); }
+            50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
+          }
+        `}</style>
+      )}
       {tabs.map((tab, index) => {
         const isActive = tab.key === active;
+        const isAllowedWhenLocked = !locked || allowedSet.has(tab.key);
         const isFirst = index === 0;
         const isLast = index === lastIdx;
         const borderRadius = isFirst ? "0 0 0 20px" : isLast ? "0 0 20px 0" : 0;
@@ -41,20 +59,29 @@ export default function BottomNav({ tabs, active, onChange, accentColor = "#4169
           <button
             key={tab.key}
             onClick={() => {
-              if (!locked) onChange(tab.key);
+              if (isAllowedWhenLocked) onChange(tab.key);
             }}
-            disabled={locked}
+            disabled={!isAllowedWhenLocked}
             className="flex flex-col items-center justify-center gap-0.5 transition-all"
             style={{
               color: isActive ? accentColor : "rgba(255,255,255,0.45)",
               flex: 1,
-              background: isActive ? activeBg : "transparent",
+              background:
+                isActive || !locked
+                  ? isActive
+                    ? activeBg
+                    : "transparent"
+                  : isAllowedWhenLocked
+                    ? "linear-gradient(145deg, rgba(221,158,51,0.2), rgba(221,158,51,0.14))"
+                    : "transparent",
               border: "none",
+              boxShadow: locked && isAllowedWhenLocked ? "inset 0 0 0 1px rgba(255,226,162,0.55)" : undefined,
               paddingTop: 8,
               paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
               borderRadius,
-              cursor: locked ? "not-allowed" : "pointer",
-              opacity: locked ? 0.72 : 1,
+              cursor: isAllowedWhenLocked ? "pointer" : "not-allowed",
+              opacity: locked && !isAllowedWhenLocked ? 0.72 : 1,
+              animation: locked && isAllowedWhenLocked ? "tutorialNavPulse 1.55s ease-in-out infinite" : undefined,
             }}
           >
             <span

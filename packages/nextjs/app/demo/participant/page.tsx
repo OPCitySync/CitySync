@@ -19,7 +19,12 @@ import {
   getSanctionPolicyForSnapshot,
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
-import { getDemoTutorialOfferingIds, getDemoTutorialTaskIds, startDemoTutorialRun } from "../_utils/tutorialRun";
+import {
+  clearDemoTutorialRun,
+  getDemoTutorialOfferingIds,
+  getDemoTutorialTaskIds,
+  startDemoTutorialRun,
+} from "../_utils/tutorialRun";
 
 // ─── Brand ────────────────────────────────────────────────────────────────────
 
@@ -77,37 +82,7 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
-    if (
-      raw === "intro" ||
-      raw === "box1" ||
-      raw === "box2" ||
-      raw === "box3" ||
-      raw === "box4" ||
-      raw === "box5" ||
-      raw === "box6" ||
-      raw === "box7" ||
-      raw === "box8" ||
-      raw === "box9" ||
-      raw === "box10" ||
-      raw === "box11" ||
-      raw === "box12" ||
-      raw === "box13" ||
-      raw === "box14" ||
-      raw === "box15" ||
-      raw === "box16" ||
-      raw === "box17" ||
-      raw === "box18" ||
-      raw === "box19" ||
-      raw === "box20" ||
-      raw === "box21" ||
-      raw === "box22" ||
-      raw === "box23" ||
-      raw === "box24" ||
-      raw === "box25" ||
-      raw === "box26" ||
-      raw === "dismissed"
-    )
-      return raw;
+    if (raw === "dismissed") return "dismissed";
   } catch {
     // Ignore storage failures.
   }
@@ -499,10 +474,7 @@ function ClaimConfirmSheet({
       `}</style>
 
       {/* Overlay wrapper — pointerEvents:none so BottomNav area stays clickable */}
-      <div
-        style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}
-        data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
-      >
+      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
         {/* Backdrop — stops at BottomNav top (69 px from bottom) */}
         <div
           style={{
@@ -553,7 +525,6 @@ function ClaimConfirmSheet({
           <div style={{ display: "flex", gap: 10 }}>
             <button
               onClick={onCancel}
-              data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               style={{
                 flex: 1,
                 background: "rgba(255,255,255,0.1)",
@@ -573,14 +544,20 @@ function ClaimConfirmSheet({
               data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               style={{
                 flex: 1,
-                background: TEAL,
-                border: "none",
+                background: tutorialAllowConfirm
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : TEAL,
+                border: tutorialAllowConfirm ? "1px solid rgba(255,226,162,0.9)" : "none",
                 color: "#0f0f1e",
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
                 fontWeight: 700,
                 cursor: "pointer",
+                boxShadow: tutorialAllowConfirm
+                  ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 12px rgba(221,158,51,0.42)"
+                  : undefined,
+                animation: tutorialAllowConfirm ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
               }}
             >
               Claim
@@ -2065,13 +2042,19 @@ function TaskCard({
             style={{
               flex: 1,
               padding: "10px 0",
-              background: ACCENT,
-              color: "white",
-              border: "none",
+              background: tutorialAllowClaim
+                ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                : ACCENT,
+              color: tutorialAllowClaim ? "#15151E" : "white",
+              border: tutorialAllowClaim ? "1px solid rgba(255,226,162,0.88)" : "none",
               borderRadius: 10,
               fontSize: 13,
               fontWeight: 700,
               cursor: "pointer",
+              boxShadow: tutorialAllowClaim
+                ? "0 0 0 1px rgba(255,226,162,0.42), 0 0 14px rgba(221,158,51,0.48)"
+                : undefined,
+              animation: tutorialAllowClaim ? "tutorialPulse 1.55s ease-in-out infinite" : undefined,
             }}
           >
             Claim
@@ -2175,7 +2158,12 @@ function ExploreTab({
   tutorialStep: IssuerTutorialStep;
   onTutorialStepChange: (step: IssuerTutorialStep) => void;
 }) {
-  type OnchainTask = Task & { claimedBy?: `0x${string}`; completionStatus?: number };
+  type OnchainTask = Task & {
+    claimedBy?: `0x${string}`;
+    completionStatus?: number;
+    tutorialOwner?: `0x${string}`;
+    tutorialRunId?: string;
+  };
   type BrowseTaskGroup = {
     key: string;
     representative: OnchainTask;
@@ -2211,7 +2199,6 @@ function ExploreTab({
   const [scoreSnapshot, setScoreSnapshot] = useState<ParticipantScoreSnapshot>(() =>
     getParticipantScoreSnapshot(address ?? FAKE_WALLETS.participant),
   );
-  const tutorialHighlightToggle = tutorialStep === "box10";
   const tutorialHighlightTaskInstances = tutorialStep === "box11";
   const tutorialHighlightClaimedActions = tutorialStep === "box13";
   const [tutorialTaskIds, setTutorialTaskIds] = useState<string[]>(() => getDemoTutorialTaskIds());
@@ -2222,11 +2209,11 @@ function ExploreTab({
   }, [tutorialStep]);
 
   useEffect(() => {
-    if (tutorialStep === "box10" || tutorialStep === "box11") {
+    if (tutorialStep === "box11") {
       setView("browse");
       return;
     }
-    if (tutorialStep === "box12" || tutorialStep === "box13" || tutorialStep === "box14") {
+    if (tutorialStep === "box13" || tutorialStep === "box14") {
       setView("claimed");
     }
   }, [tutorialStep]);
@@ -2477,6 +2464,14 @@ function ExploreTab({
               credentials: metadata.credentials || "None",
               claimedBy,
               completionStatus,
+              tutorialOwner:
+                typeof (metadata as Record<string, unknown>).tutorialOwner === "string"
+                  ? ((metadata as Record<string, unknown>).tutorialOwner as `0x${string}`)
+                  : undefined,
+              tutorialRunId:
+                typeof (metadata as Record<string, unknown>).tutorialRunId === "string"
+                  ? ((metadata as Record<string, unknown>).tutorialRunId as string)
+                  : undefined,
             } as OnchainTask;
           })
           .filter(Boolean);
@@ -2500,6 +2495,8 @@ function ExploreTab({
 
   const addressLower = address?.toLowerCase();
   const openOnchainTasks = onchainTasks.filter(t => {
+    const tutorialOwnerLower = t.tutorialOwner?.toLowerCase();
+    if (tutorialOwnerLower && tutorialOwnerLower !== addressLower) return false;
     const claimedBy = t.claimedBy?.toLowerCase();
     const isUnclaimed = !claimedBy || claimedBy === "0x0000000000000000000000000000000000000000";
     const optimisticUnclaimedByMe = !!addressLower && claimedBy === addressLower && optimisticUnclaimIds.includes(t.id);
@@ -2669,7 +2666,7 @@ function ExploreTab({
     });
     if (tutorialClaimedCount >= 2) {
       setView("claimed");
-      onTutorialStepChange("box12");
+      onTutorialStepChange("box13");
     }
   }, [
     orderedBrowseTaskGroups,
@@ -2747,6 +2744,14 @@ function ExploreTab({
 
   const handleClaimConfirmed = async (task: Task) => {
     setClaimConfirmTask(null);
+    const tutorialOwner = (task as Task & { tutorialOwner?: `0x${string}` }).tutorialOwner;
+    if (tutorialOwner && tutorialOwner.toLowerCase() !== (addressLower ?? "")) {
+      setClaimNotice({
+        message: "This tutorial task is reserved for the account that issued it.",
+        type: "warn",
+      });
+      return;
+    }
     if (!task.isOnboarding && task.slotsRemaining <= 0) {
       setClaimNotice({
         message: "This task is no longer claimable (all slots are filled). Please claim another task.",
@@ -2884,8 +2889,8 @@ function ExploreTab({
     <div style={{ padding: "20px 16px 24px" }}>
       <style>{`
         @keyframes tutorialPulse {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.01); }
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.28), 0 0 10px rgba(221,158,51,0.24); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.62), 0 0 18px rgba(221,158,51,0.5); }
         }
       `}</style>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
@@ -2921,7 +2926,7 @@ function ExploreTab({
             style={{
               flex: 1,
               padding: "9px 0",
-              border: tutorialHighlightToggle ? "1px solid rgba(255,226,162,0.85)" : "none",
+              border: "none",
               borderRadius: 8,
               cursor: "pointer",
               fontSize: 13,
@@ -2929,10 +2934,6 @@ function ExploreTab({
               background: view === key ? color : "transparent",
               color: view === key ? (key === "browse" ? "white" : "#15151E") : "rgba(255,255,255,0.45)",
               transition: "all 0.15s",
-              boxShadow: tutorialHighlightToggle
-                ? "0 0 0 1px rgba(255,226,162,0.38), 0 0 12px rgba(221,158,51,0.35)"
-                : undefined,
-              animation: tutorialHighlightToggle ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
             }}
           >
             {label}
@@ -3171,10 +3172,6 @@ function ExploreTab({
                   marginBottom: 10,
                   borderLeft: task.isMCE ? "3px solid rgba(221,158,51,0.45)" : "3px solid rgba(52,238,182,0.45)",
                   paddingLeft: 13,
-                  boxShadow: shouldHighlightTaskGroup
-                    ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 16px rgba(221,158,51,0.42)"
-                    : undefined,
-                  animation: shouldHighlightTaskGroup ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
                 }}
               >
                 <button
@@ -3982,6 +3979,12 @@ function RedeemTab({
     setRedeemWriteStatus({ state: "confirmed", hash: result.hash });
   };
 
+  useEffect(() => {
+    if (tutorialStep === "box25" && redeemWriteStatus.state === "confirmed") {
+      onTutorialStepChange("box26");
+    }
+  }, [onTutorialStepChange, redeemWriteStatus.state, tutorialStep]);
+
   return (
     <div style={{ padding: "20px 16px 24px" }}>
       <style>{`
@@ -4129,10 +4132,6 @@ function RedeemTab({
                   ...card,
                   marginBottom: 10,
                   opacity: disabled ? 0.55 : 1,
-                  boxShadow: shouldHighlightOffer
-                    ? "0 0 0 1px rgba(255,226,162,0.42), 0 0 14px rgba(221,158,51,0.45)"
-                    : undefined,
-                  animation: shouldHighlightOffer ? "tutorialPulse 1.45s ease-in-out infinite" : undefined,
                   ...(offer.mceOnly
                     ? {
                         borderLeft: `3px solid rgba(221,158,51,0.5)`,
@@ -4405,17 +4404,23 @@ export default function ParticipantPage() {
   }, [persistTutorialStep, router, setRole]);
 
   const exitTutorial = React.useCallback(() => {
+    clearDemoTutorialRun();
+    persistTutorialStep("dismissed");
     setTutorialStep("dismissed");
-  }, []);
+  }, [persistTutorialStep]);
 
   useEffect(() => {
-    if (
-      tutorialStep === "box10" ||
-      tutorialStep === "box11" ||
-      tutorialStep === "box12" ||
-      tutorialStep === "box13" ||
-      tutorialStep === "box14"
-    ) {
+    if (tutorialStep === "box10") {
+      setTutorialStep("box11");
+      return;
+    }
+    if (tutorialStep === "box12") {
+      setTutorialStep("box13");
+    }
+  }, [tutorialStep]);
+
+  useEffect(() => {
+    if (tutorialStep === "box11" || tutorialStep === "box13" || tutorialStep === "box14") {
       setActiveTab("explore");
       return;
     }
@@ -4493,86 +4498,14 @@ export default function ParticipantPage() {
       );
     }
 
-    if (tutorialStep === "box10") {
-      return (
-        <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 10</div>
-          <div style={titleStyle}>Civic Participant Task Flow</div>
-          <div style={bodyStyle}>
-            Civic Participants are able to browse available tasks offered by Issuer organizations, and track thier
-            claimed tasks for execution.
-          </div>
-          <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
-              Exit Tutorial
-            </button>
-            <button
-              onClick={() => setTutorialStep("box11")}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
-              }}
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-      );
-    }
-
     if (tutorialStep === "box11") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 11</div>
+          <div style={subtitleStyle}>Step 7</div>
           <div style={titleStyle}>Claim Two Tasks</div>
-          <div style={bodyStyle}>Please go ahead and claim 2 of the 3 tasks.</div>
-          <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
-              Exit Tutorial
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    if (tutorialStep === "box12") {
-      return (
-        <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 12</div>
-          <div style={titleStyle}>Tracking Claimed Work</div>
           <div style={bodyStyle}>
-            Civic-Participants can keep track of their claimed tasks. All Civic-Participants are limited to 2 claimed
-            tsaks at any given time. This ensures that Civic-Participants all have an equal opportunity to claim tasks.
+            Civic-Participants are able to Browse all issued tasks and claim up to 2 tasks at any given time.
+            {"\n"}Please go ahead and claim 2 of the 3 tasks you issued.
           </div>
           <div style={buttonRowStyle}>
             <button
@@ -4589,21 +4522,6 @@ export default function ParticipantPage() {
               }}
             >
               Exit Tutorial
-            </button>
-            <button
-              onClick={() => setTutorialStep("box13")}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
-              }}
-            >
-              Continue
             </button>
           </div>
         </div>
@@ -4613,7 +4531,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box13") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 13</div>
+          <div style={subtitleStyle}>Step 8</div>
           <div style={titleStyle}>Execute a Claimed Task</div>
           <div style={bodyStyle}>
             When executing a task, Civic-Participants will be able to submit proof of task completion and provide
@@ -4643,7 +4561,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box14") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 14</div>
+          <div style={subtitleStyle}>Step 9</div>
           <div style={titleStyle}>Return to Issuer Verification</div>
           <div style={bodyStyle}>
             Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.
@@ -4692,7 +4610,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box23") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 23</div>
+          <div style={subtitleStyle}>Step 17</div>
           <div style={titleStyle}>Your Wallet and Balances</div>
           <div style={bodyStyle}>
             After completed tasks are verified, users are Minted CITY and VOTE. Civic-Participants can keep track of
@@ -4722,7 +4640,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box24") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 24</div>
+          <div style={subtitleStyle}>Step 18</div>
           <div style={titleStyle}>Redeem an Offering</div>
           <div style={bodyStyle}>
             Civic-Participants can spend their credits on available offerings. Go ahead and spend your credits on the
@@ -4752,7 +4670,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box25") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 25</div>
+          <div style={subtitleStyle}>Step 19</div>
           <div style={titleStyle}>Point-of-Sale Confirmation</div>
           <div style={bodyStyle}>
             When a Civic-Participant scans a QR code to redeem an offer, a visual and audible cue will flash on their
@@ -4775,21 +4693,6 @@ export default function ParticipantPage() {
             >
               Exit Tutorial
             </button>
-            <button
-              onClick={() => setTutorialStep("box26")}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
-              }}
-            >
-              Continue
-            </button>
           </div>
         </div>
       );
@@ -4798,7 +4701,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box26") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 26</div>
+          <div style={subtitleStyle}>Step 20</div>
           <div style={titleStyle}>You’re Ready to Explore</div>
           <div style={bodyStyle}>
             {
@@ -4927,6 +4830,7 @@ export default function ParticipantPage() {
         phoneFrame
         tutorialLocked={tutorialLockActive}
         tutorialHighlightWalletButton={tutorialStep === "box23"}
+        tutorialHighlightWalletCloseButton={tutorialStep === "box23" && tutorialWalletOpened}
         onWalletOpen={() => {
           if (tutorialStep === "box23") setTutorialWalletOpened(true);
         }}

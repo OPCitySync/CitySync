@@ -9,6 +9,7 @@ interface WalletModalProps {
   mceBalance: number;
   orgName?: string;
   role: string;
+  tutorialHighlightCloseButton?: boolean;
   onClose: () => void;
 }
 
@@ -25,6 +26,7 @@ export default function WalletModal({
   mceBalance,
   orgName,
   role,
+  tutorialHighlightCloseButton = false,
   onClose,
 }: WalletModalProps) {
   const color = ROLE_COLOR[role] ?? "#4169E1";
@@ -35,6 +37,10 @@ export default function WalletModal({
         @keyframes walletSlideUp {
           from { transform: translateY(100%); opacity: 0; }
           to   { transform: translateY(0);    opacity: 1; }
+        }
+        @keyframes tutorialWalletPulse {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.35), 0 0 10px rgba(221,158,51,0.24); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
         }
       `}</style>
 
@@ -117,8 +123,16 @@ export default function WalletModal({
 
         <button
           onClick={onClose}
+          data-tutorial-allow={tutorialHighlightCloseButton ? "true" : undefined}
           className="mt-5 w-full rounded-2xl py-3 text-sm font-semibold transition"
-          style={{ background: color, color: "#15151E" }}
+          style={{
+            background: tutorialHighlightCloseButton
+              ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+              : color,
+            color: "#15151E",
+            border: tutorialHighlightCloseButton ? "1px solid rgba(255,226,162,0.92)" : "none",
+            animation: tutorialHighlightCloseButton ? "tutorialWalletPulse 1.55s ease-in-out infinite" : undefined,
+          }}
         >
           Close
         </button>

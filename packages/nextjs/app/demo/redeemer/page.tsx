@@ -9,7 +9,7 @@ import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, RedemptionOffer } from "../_data/mockData";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
-import { appendDemoTutorialOfferingIds, startDemoTutorialRun } from "../_utils/tutorialRun";
+import { appendDemoTutorialOfferingIds, clearDemoTutorialRun, startDemoTutorialRun } from "../_utils/tutorialRun";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -143,7 +143,6 @@ type IssuerTutorialStep =
   | "dismissed";
 const REDEEMER_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
   "intro",
-  "box18",
   "box19",
   "box20",
   "box21",
@@ -157,37 +156,7 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
-    if (
-      raw === "intro" ||
-      raw === "box1" ||
-      raw === "box2" ||
-      raw === "box3" ||
-      raw === "box4" ||
-      raw === "box5" ||
-      raw === "box6" ||
-      raw === "box7" ||
-      raw === "box8" ||
-      raw === "box9" ||
-      raw === "box10" ||
-      raw === "box11" ||
-      raw === "box12" ||
-      raw === "box13" ||
-      raw === "box14" ||
-      raw === "box15" ||
-      raw === "box16" ||
-      raw === "box17" ||
-      raw === "box18" ||
-      raw === "box19" ||
-      raw === "box20" ||
-      raw === "box21" ||
-      raw === "box22" ||
-      raw === "box23" ||
-      raw === "box24" ||
-      raw === "box25" ||
-      raw === "box26" ||
-      raw === "dismissed"
-    )
-      return raw;
+    if (raw === "dismissed") return "dismissed";
   } catch {
     // Ignore storage access failures.
   }
@@ -529,19 +498,19 @@ export default function RedeemerApp() {
   );
   const allPosts = [...localPosts, ...state.posts];
   React.useEffect(() => {
-    if (
-      tutorialStep === "box18" ||
-      tutorialStep === "box19" ||
-      tutorialStep === "box20" ||
-      tutorialStep === "box21" ||
-      tutorialStep === "box22"
-    ) {
+    if (tutorialStep === "box18") {
+      setTutorialStep("box19");
+      return;
+    }
+    if (tutorialStep === "box19" || tutorialStep === "box20" || tutorialStep === "box21" || tutorialStep === "box22") {
       setActiveTab("offerings");
     }
   }, [tutorialStep]);
   const exitTutorial = React.useCallback(() => {
+    clearDemoTutorialRun();
+    persistTutorialStep("dismissed");
     setTutorialStep("dismissed");
-  }, []);
+  }, [persistTutorialStep]);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
   const tutorialCard = (() => {
     if (tutorialStep === "dismissed") return null;
@@ -567,17 +536,6 @@ export default function RedeemerApp() {
       lineHeight: 1.6,
       whiteSpace: "pre-line",
     };
-    const buttonStyle: React.CSSProperties = {
-      border: "none",
-      borderRadius: 10,
-      padding: "8px 12px",
-      fontSize: 12,
-      fontWeight: 700,
-      cursor: "pointer",
-      background: "#DD9E33",
-      color: "#15151E",
-      marginTop: 12,
-    };
     const ghostButtonStyle: React.CSSProperties = {
       border: "none",
       borderRadius: 10,
@@ -589,29 +547,6 @@ export default function RedeemerApp() {
       color: "rgba(255,255,255,0.8)",
       marginTop: 12,
     };
-
-    if (tutorialStep === "box18") {
-      return (
-        <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 18</div>
-          <div style={titleStyle}>How Redeemers Participate</div>
-          <div style={bodyStyle}>
-            Redeemers are organizations that offer access to goods and services in exchange for the redemption of
-            civic-credits. The potential target organizations are those that provision goods and services that are
-            underutilized in the private economy and have the capacity to provide access without additional costs (think
-            about our trains, buses, museums, zoo&apos;s, movie theaters, etc.).
-          </div>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            <button onClick={exitTutorial} style={ghostButtonStyle}>
-              Exit Tutorial
-            </button>
-            <button onClick={() => setTutorialStep("box19")} style={buttonStyle}>
-              Continue
-            </button>
-          </div>
-        </div>
-      );
-    }
 
     if (tutorialStep === "box19") {
       return (
@@ -2002,6 +1937,16 @@ function OfferingsTab({
     }
   }, [offerWriteStatus.state, tutorialStep]);
 
+  useEffect(() => {
+    if (tutorialStep !== "box21") return;
+    if (!showActiveCommitted) return;
+    const timer = window.setTimeout(() => {
+      const target = document.querySelector<HTMLButtonElement>('[data-tutorial-show-qr="true"]');
+      target?.scrollIntoView({ block: "center", behavior: "smooth" });
+    }, 140);
+    return () => window.clearTimeout(timer);
+  }, [committedOfferings.length, showActiveCommitted, tutorialActiveOfferingId, tutorialStep]);
+
   return (
     <div style={{ padding: "24px 20px 100px" }}>
       <style>{`
@@ -2151,7 +2096,7 @@ function OfferingsTab({
             <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
               {committedCatalog.map(item => {
                 const tutorialTargetCatalogId = tutorialCatalogOfferingId ?? committedCatalog[0]?.id ?? null;
-                const shouldHighlightCatalogActions = tutorialStep === "box21" && tutorialTargetCatalogId === item.id;
+                const shouldHighlightCatalogCommit = tutorialStep === "box21" && tutorialTargetCatalogId === item.id;
                 const committedForCatalog =
                   committedOfferings.find(existing => existing.catalogId === item.id) ??
                   committedOfferings.find(
@@ -2191,24 +2136,14 @@ function OfferingsTab({
                       <button
                         onClick={() => onModifyCommitted(item.id)}
                         style={{
-                          background: shouldHighlightCatalogActions
-                            ? "linear-gradient(145deg, rgba(255,226,162,0.2), rgba(221,158,51,0.14))"
-                            : "rgba(255,255,255,0.08)",
-                          border: shouldHighlightCatalogActions
-                            ? "1px solid rgba(255,226,162,0.8)"
-                            : "1px solid rgba(255,255,255,0.14)",
+                          background: "rgba(255,255,255,0.08)",
+                          border: "1px solid rgba(255,255,255,0.14)",
                           borderRadius: 10,
                           padding: "8px 12px",
                           fontSize: 12,
                           fontWeight: 700,
-                          color: shouldHighlightCatalogActions ? "#ffe2a2" : "#fff",
+                          color: "#fff",
                           cursor: "pointer",
-                          boxShadow: shouldHighlightCatalogActions
-                            ? "0 0 0 1px rgba(255,226,162,0.35), 0 0 14px rgba(221,158,51,0.42)"
-                            : undefined,
-                          animation: shouldHighlightCatalogActions
-                            ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
-                            : undefined,
                         }}
                       >
                         Modify Offering
@@ -2216,13 +2151,13 @@ function OfferingsTab({
                       <button
                         onClick={() => setPendingCommittedCatalogCommitId(item.id)}
                         data-tutorial-allow={
-                          !duplicateCommittedState && shouldHighlightCatalogActions ? "true" : undefined
+                          !duplicateCommittedState && shouldHighlightCatalogCommit ? "true" : undefined
                         }
                         disabled={duplicateCommittedState}
                         style={{
                           background: duplicateCommittedState
                             ? "rgba(255,255,255,0.1)"
-                            : shouldHighlightCatalogActions
+                            : shouldHighlightCatalogCommit
                               ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
                               : ACCENT,
                           border: "none",
@@ -2233,11 +2168,11 @@ function OfferingsTab({
                           color: duplicateCommittedState ? MUTED : BG,
                           cursor: duplicateCommittedState ? "not-allowed" : "pointer",
                           boxShadow:
-                            !duplicateCommittedState && shouldHighlightCatalogActions
+                            !duplicateCommittedState && shouldHighlightCatalogCommit
                               ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.48)"
                               : undefined,
                           animation:
-                            !duplicateCommittedState && shouldHighlightCatalogActions
+                            !duplicateCommittedState && shouldHighlightCatalogCommit
                               ? "tutorialRadiantTasks 1.55s ease-in-out infinite"
                               : undefined,
                         }}
@@ -2344,6 +2279,9 @@ function OfferingsTab({
                             costCity: offering.costCity,
                             orgName,
                           })
+                        }
+                        data-tutorial-show-qr={
+                          tutorialStep === "box21" && tutorialActiveOfferingId === offering.id ? "true" : undefined
                         }
                         data-tutorial-allow={
                           tutorialStep === "box21" && tutorialActiveOfferingId === offering.id ? "true" : undefined
