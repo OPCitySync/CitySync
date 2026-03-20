@@ -734,12 +734,8 @@ export default function RedeemerApp() {
         >
           <button
             onClick={() => {
-              startDemoTutorialRunForAddress(address);
-              persistTutorialStep("box1");
-              setTutorialStep("box1");
-              setRole("issuer");
-              setDemoTutorialHandoff("issuer", "box1");
-              router.push("/demo/issuer");
+              persistTutorialStep("intro");
+              setTutorialStep("intro");
             }}
             style={{
               width: "100%",

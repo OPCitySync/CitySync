@@ -4519,6 +4519,11 @@ export default function ParticipantPage() {
     router.push("/demo/issuer");
   }, [address, persistTutorialStep, router, setRole]);
 
+  const openTutorialIntro = React.useCallback(() => {
+    persistTutorialStep("intro");
+    setTutorialStep("intro");
+  }, [persistTutorialStep]);
+
   const exitTutorial = React.useCallback(() => {
     const { hiddenTaskIds } = cleanupDemoTutorialArtifacts({ address, clearRun: true });
     if (hiddenTaskIds.length > 0) setHiddenTutorialTaskIds(hiddenTaskIds);
@@ -4866,7 +4871,7 @@ export default function ParticipantPage() {
           }}
         >
           <button
-            onClick={startIssuerTutorial}
+            onClick={openTutorialIntro}
             style={{
               width: "100%",
               border: "1px solid rgba(255,226,162,0.9)",

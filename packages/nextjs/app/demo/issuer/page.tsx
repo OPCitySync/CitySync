@@ -827,9 +827,8 @@ export default function IssuerApp() {
         >
           <button
             onClick={() => {
-              startDemoTutorialRunForAddress(address);
-              setActiveTab("profile");
-              setTutorialStep("box1");
+              persistTutorialStep("intro");
+              setTutorialStep("intro");
             }}
             style={{
               width: "100%",
