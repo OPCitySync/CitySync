@@ -429,32 +429,30 @@ function IssuerTutorialPanel({
   step,
   orgName,
   onStart,
-  onDismissIntro,
   onExit,
 }: {
   step: IssuerTutorialStep;
   orgName: string;
   onStart: () => void;
-  onDismissIntro: () => void;
   onExit: () => void;
 }) {
   const safeOrgName = orgName.trim() || "Issuer Organization";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      {step === "intro" && (
+      {(step === "intro" || step === "dismissed") && (
         <TutorialCard
           subtitle="Tutorial"
           title="Welcome to the City/Sync Demo"
           body="Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!"
         >
-          <TutorialActionButton label="No Thanks" variant="ghost" onClick={onDismissIntro} />
-          <TutorialActionButton label="Start Tutorial" onClick={onStart} />
+          <TutorialActionButton label="Lets Begin Tutorial" onClick={onStart} />
         </TutorialCard>
       )}
 
       {step === "box1" && (
         <TutorialCard
+          subtitle="Step 1"
           title="Let's start with Issuers"
           body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
         >
@@ -464,6 +462,7 @@ function IssuerTutorialPanel({
 
       {step === "box2" && (
         <TutorialCard
+          subtitle="Step 2"
           title={`Welcome ${safeOrgName}!`}
           body={`Welcome ${safeOrgName}!\n\nIssuer organizations can begin to issue tasks by selecting the Tasks Tab at the bottom.`}
         >
@@ -473,6 +472,7 @@ function IssuerTutorialPanel({
 
       {step === "box5" && (
         <TutorialCard
+          subtitle="Step 5"
           title="Propose a New Task"
           body="Issuer Organizations can propose the creation of a new task to be added to their catalog at any time. There is a standardized template for proposing tasks. Let's create one by clicking the + Propose New Task for Approval button.\n\nWe will auto-fill this task for you to start. When you're ready, let's talk about how they are approved."
         >
@@ -482,6 +482,7 @@ function IssuerTutorialPanel({
 
       {step === "box6" && (
         <TutorialCard
+          subtitle="Step 6"
           title="Approve Your Proposed Task"
           body="Great. Your proposed task is now ready for catalog approval.\n\nGo ahead and approve your task for the catalog."
         >
@@ -491,6 +492,7 @@ function IssuerTutorialPanel({
 
       {step === "box7" && (
         <TutorialCard
+          subtitle="Step 7"
           title="Issue from Your Catalog"
           body="Once a task has been approved, it is placed within your organizational task catalog. You can issue tasks from your catalog at any time."
         >
@@ -500,6 +502,7 @@ function IssuerTutorialPanel({
 
       {step === "box8" && (
         <TutorialCard
+          subtitle="Step 8"
           title="Choose Issuance Slots"
           body="When issuing tasks, Issuers are able to create multiple instances of that task to be made available for the public to claim.\n\nGo ahead and approve the 3 tasks for issuance."
         >
@@ -509,6 +512,7 @@ function IssuerTutorialPanel({
 
       {step === "box15" && (
         <TutorialCard
+          subtitle="Step 15"
           title="Issued, Claimed, and Completed"
           body="All issued task will be in one of three states: Issued, Claimed, and Completed. Issued tasks can be unissued by the Issuer. Unissued tasks are removed from circulation.\n\nGo ahead an Unissue one of your tasks."
         >
@@ -518,6 +522,7 @@ function IssuerTutorialPanel({
 
       {step === "box16" && (
         <TutorialCard
+          subtitle="Step 16"
           title="Handling No-Shows"
           body="If a Civic-Participant fails to show up for their claimed task, Issuers can select the No Show button to remove the claimed task out of circulation. No Shows by Civic-Participants are tracked to prevent abuse.\n\nGo ahead and select Mark No-Show for this task."
         >
@@ -527,6 +532,7 @@ function IssuerTutorialPanel({
 
       {step === "box17" && (
         <TutorialCard
+          subtitle="Step 17"
           title="Verify or Reject with Mint"
           body="Issuers are responsible for verifying that the work was actually completed by the Civic-Participant. Once verification is complete they can either reject completion as unsatisfactory with feedback or verify. Rejections are designed to keep Civic-Participants accountable. In both circumstances, credits will be minted to the Civic-Participant.\n\nGo ahead and Verify & Mint."
         >
@@ -712,7 +718,6 @@ export default function IssuerApp() {
           setActiveTab("profile");
           setTutorialStep("box1");
         }}
-        onDismissIntro={exitIssuerTutorial}
         onExit={exitIssuerTutorial}
       />
       {openInfoCards.length > 0 ? (
@@ -735,36 +740,6 @@ export default function IssuerApp() {
           }}
         >
           Use Learn More links in the app to load contextual cards in this panel.
-        </div>
-      )}
-      {tutorialStep === "dismissed" && (
-        <div
-          style={{
-            marginTop: "auto",
-            paddingTop: 10,
-            borderTop: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <button
-            onClick={() => {
-              startDemoTutorialRun();
-              setActiveTab("profile");
-              setTutorialStep("box1");
-            }}
-            style={{
-              width: "100%",
-              border: "1px dashed rgba(221,158,51,0.4)",
-              background: "rgba(221,158,51,0.08)",
-              color: ACCENT,
-              borderRadius: 10,
-              padding: "9px 10px",
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
-          >
-            Start Tutorial
-          </button>
         </div>
       )}
     </div>

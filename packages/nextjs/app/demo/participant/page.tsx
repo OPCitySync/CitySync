@@ -4448,8 +4448,6 @@ export default function ParticipantPage() {
 
   const rightPanel = getParticipantRightPanel(activeTab);
   const tutorialCard = (() => {
-    if (tutorialStep === "dismissed") return null;
-
     const cardStyle: React.CSSProperties = {
       background: "rgba(221,158,51,0.08)",
       border: "1px solid rgba(221,158,51,0.28)",
@@ -4473,28 +4471,13 @@ export default function ParticipantPage() {
     };
     const buttonRowStyle: React.CSSProperties = { display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" };
 
-    if (tutorialStep === "intro") {
+    if (tutorialStep === "intro" || tutorialStep === "dismissed") {
       return (
         <div style={cardStyle}>
           <div style={subtitleStyle}>Tutorial</div>
           <div style={titleStyle}>Welcome to the City/Sync Demo</div>
           <div style={{ ...bodyStyle, whiteSpace: "pre-line" }}>{SHARED_TUTORIAL_INTRO_TEXT}</div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
-              No Thanks
-            </button>
             <button
               onClick={startIssuerTutorial}
               style={{
@@ -4508,7 +4491,7 @@ export default function ParticipantPage() {
                 color: "#15151E",
               }}
             >
-              Start Tutorial
+              Lets Begin Tutorial
             </button>
           </div>
         </div>
@@ -4518,6 +4501,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box11") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 11</div>
           <div style={titleStyle}>Claim Two Tasks</div>
           <div style={bodyStyle}>
             Civic-Participants are able to Browse all issued tasks and claim up to 2 tasks at any given time.
@@ -4547,6 +4531,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box13") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 13</div>
           <div style={titleStyle}>Execute a Claimed Task</div>
           <div style={bodyStyle}>
             When executing a task, Civic-Participants will be able to submit proof of task completion and provide
@@ -4576,6 +4561,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box14") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 14</div>
           <div style={titleStyle}>Return to Issuer Verification</div>
           <div style={bodyStyle}>
             Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.
@@ -4625,6 +4611,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box23") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 23</div>
           <div style={titleStyle}>Your Wallet and Balances</div>
           <div style={bodyStyle}>
             After completed tasks are verified, users are Minted CITY and VOTE. Civic-Participants can keep track of
@@ -4654,6 +4641,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box24") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 24</div>
           <div style={titleStyle}>Redeem an Offering</div>
           <div style={bodyStyle}>
             Civic-Participants can spend their credits on available offerings. Go ahead and spend your credits on the
@@ -4683,6 +4671,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box25") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 25</div>
           <div style={titleStyle}>Point-of-Sale Confirmation</div>
           <div style={bodyStyle}>
             When a Civic-Participant scans a QR code to redeem an offer, a visual and audible cue will flash on their
@@ -4713,6 +4702,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box26") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 26</div>
           <div style={titleStyle}>You’re Ready to Explore</div>
           <div style={bodyStyle}>
             {
@@ -4788,32 +4778,6 @@ export default function ParticipantPage() {
           }}
         >
           Use Learn More links in the app to load contextual cards in this panel.
-        </div>
-      )}
-      {tutorialStep === "dismissed" && (
-        <div
-          style={{
-            marginTop: "auto",
-            paddingTop: 10,
-            borderTop: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <button
-            onClick={startIssuerTutorial}
-            style={{
-              width: "100%",
-              border: "1px dashed rgba(221,158,51,0.4)",
-              background: "rgba(221,158,51,0.08)",
-              color: "#DD9E33",
-              borderRadius: 10,
-              padding: "9px 10px",
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
-          >
-            Start Tutorial
-          </button>
         </div>
       )}
     </div>

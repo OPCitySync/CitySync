@@ -368,8 +368,14 @@ export default function AppShell({
       {tutorialLocked && (
         <style>{`
           @keyframes tutorialAllowedPulse {
-            0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.32), 0 0 10px rgba(221,158,51,0.26); }
-            50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.82), 0 0 18px rgba(221,158,51,0.52); }
+            0%, 100% {
+              box-shadow: 0 0 0 2px rgba(255,226,162,0.58), 0 0 18px rgba(221,158,51,0.5), 0 0 32px rgba(221,158,51,0.32);
+              transform: scale(1);
+            }
+            50% {
+              box-shadow: 0 0 0 3px rgba(255,241,198,0.98), 0 0 28px rgba(221,158,51,0.82), 0 0 52px rgba(221,158,51,0.48);
+              transform: scale(1.012);
+            }
           }
           .citysync-tutorial-lock-scope * {
             pointer-events: none !important;
@@ -381,7 +387,7 @@ export default function AppShell({
           .citysync-tutorial-lock-scope [data-tutorial-allow="true"] {
             position: relative;
             z-index: 140 !important;
-            outline: 1px solid rgba(255,226,162,0.75) !important;
+            outline: 2px solid rgba(255,226,162,0.9) !important;
             animation: tutorialAllowedPulse 1.55s ease-in-out infinite !important;
           }
         `}</style>
@@ -577,18 +583,6 @@ export default function AppShell({
           overscrollBehaviorY: "contain",
         }}
       >
-        {tutorialLocked && (
-          <div
-            aria-hidden
-            style={{
-              position: "absolute",
-              inset: 0,
-              zIndex: 90,
-              pointerEvents: "none",
-              background: "rgba(0,0,0,0.36)",
-            }}
-          />
-        )}
         {children}
       </main>
 

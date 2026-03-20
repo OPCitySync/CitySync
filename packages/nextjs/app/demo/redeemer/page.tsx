@@ -523,8 +523,6 @@ export default function RedeemerApp() {
   }, [persistTutorialStep]);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
   const tutorialCard = (() => {
-    if (tutorialStep === "dismissed") return null;
-
     const cardStyle: React.CSSProperties = {
       background: "rgba(221,158,51,0.08)",
       border: "1px solid rgba(221,158,51,0.28)",
@@ -561,6 +559,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box19") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 19</div>
           <div style={titleStyle}>Offering Catalog</div>
           <div style={bodyStyle}>
             Redeemer Organizations also have an offering Catalog to keep track of past offerings and the ability to
@@ -576,6 +575,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box20") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 20</div>
           <div style={titleStyle}>Create Your Offering</div>
           <div style={bodyStyle}>
             For each offering, Redeemer organizations can name their offering, set the credit rate for that offering, or
@@ -592,6 +592,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box21") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 21</div>
           <div style={titleStyle}>Commit and Lock</div>
           <div style={bodyStyle}>
             Once an offering is added to their catalog, Redeemer organizations can modify their offering before they
@@ -609,6 +610,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box22") {
       return (
         <div style={cardStyle}>
+          <div style={subtitleStyle}>Step 22</div>
           <div style={titleStyle}>How QR Redemption Works</div>
           <div style={bodyStyle}>
             QR Codes are issued for each offering, and Redeemer organizations can present these QR codes near their
@@ -629,21 +631,6 @@ export default function RedeemerApp() {
         <div style={bodyStyle}>{SHARED_TUTORIAL_INTRO_TEXT}</div>
         <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
           <button
-            onClick={exitTutorial}
-            style={{
-              border: "none",
-              borderRadius: 10,
-              padding: "8px 12px",
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-              background: "rgba(255,255,255,0.08)",
-              color: "rgba(255,255,255,0.8)",
-            }}
-          >
-            No Thanks
-          </button>
-          <button
             onClick={() => {
               startDemoTutorialRun();
               persistTutorialStep("box1");
@@ -663,7 +650,7 @@ export default function RedeemerApp() {
               color: "#15151E",
             }}
           >
-            Start Tutorial
+            Lets Begin Tutorial
           </button>
         </div>
       </div>
@@ -692,39 +679,6 @@ export default function RedeemerApp() {
           }}
         >
           Use Learn More links in the app to load contextual cards in this panel.
-        </div>
-      )}
-      {tutorialStep === "dismissed" && (
-        <div
-          style={{
-            marginTop: "auto",
-            paddingTop: 10,
-            borderTop: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          <button
-            onClick={() => {
-              startDemoTutorialRun();
-              persistTutorialStep("box1");
-              setTutorialStep("box1");
-              setRole("issuer");
-              setDemoTutorialHandoff("issuer", "box1");
-              router.push("/demo/issuer");
-            }}
-            style={{
-              width: "100%",
-              border: "1px dashed rgba(221,158,51,0.4)",
-              background: "rgba(221,158,51,0.08)",
-              color: "#DD9E33",
-              borderRadius: 10,
-              padding: "9px 10px",
-              fontSize: 12,
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
-          >
-            Start Tutorial
-          </button>
         </div>
       )}
     </div>
