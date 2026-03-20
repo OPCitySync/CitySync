@@ -85,6 +85,16 @@ const DEEP_DIVE_SECTIONS: DeepDiveSection[] = [
     ],
   },
   {
+    title: "Modeling & Governance",
+    links: [
+      { label: "Civic-Credit Formal Model", href: "/demo/civic-credit-formal-model" },
+      { label: "Decision Triggers", href: "/demo/decision-triggers" },
+      { label: "Pilot Calibration Sequence", href: "/demo/pilot-calibration-sequence" },
+      { label: "Civic-Credit Simulator", href: "/demo/civic-credit-simulator" },
+      { label: "CitySync Governance Dashboard", href: "/demo/citysync-governance-dashboard" },
+    ],
+  },
+  {
     title: "Civic Participants",
     links: [
       { label: "Onboarding Tasks", href: "/demo/onboarding-tasks" },
