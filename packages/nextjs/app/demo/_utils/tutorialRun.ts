@@ -1,10 +1,20 @@
 export const DEMO_TUTORIAL_RUN_STORAGE_KEY = "citysync:demo:tutorial:run:v1";
+export const DEMO_TUTORIAL_HANDOFF_STORAGE_KEY = "citysync:demo:tutorial:handoff:v1";
+const DEMO_TUTORIAL_HANDOFF_TTL_MS = 30_000;
 
 export type DemoTutorialRun = {
   runId: string;
   createdAt: number;
   taskIds: string[];
   offeringIds: string[];
+};
+
+export type DemoTutorialRole = "issuer" | "participant" | "redeemer";
+
+type DemoTutorialHandoff = {
+  role: DemoTutorialRole;
+  step: string;
+  expiresAt: number;
 };
 
 const isBrowser = () => typeof window !== "undefined";
@@ -86,10 +96,45 @@ export const appendDemoTutorialOfferingIds = (offeringIds: string[]): DemoTutori
 
 export const getDemoTutorialOfferingIds = (): string[] => readDemoTutorialRun()?.offeringIds ?? [];
 
+export const setDemoTutorialHandoff = (
+  role: DemoTutorialRole,
+  step: string,
+  ttlMs: number = DEMO_TUTORIAL_HANDOFF_TTL_MS,
+): void => {
+  if (!isBrowser()) return;
+  try {
+    const payload: DemoTutorialHandoff = {
+      role,
+      step,
+      expiresAt: Date.now() + Math.max(1_000, ttlMs),
+    };
+    window.localStorage.setItem(DEMO_TUTORIAL_HANDOFF_STORAGE_KEY, JSON.stringify(payload));
+  } catch {
+    // Ignore localStorage write failures.
+  }
+};
+
+export const consumeDemoTutorialHandoff = (role: DemoTutorialRole): string | null => {
+  if (!isBrowser()) return null;
+  try {
+    const raw = window.localStorage.getItem(DEMO_TUTORIAL_HANDOFF_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<DemoTutorialHandoff>;
+    window.localStorage.removeItem(DEMO_TUTORIAL_HANDOFF_STORAGE_KEY);
+    if (!parsed || parsed.role !== role || typeof parsed.step !== "string" || typeof parsed.expiresAt !== "number")
+      return null;
+    if (parsed.expiresAt < Date.now()) return null;
+    return parsed.step;
+  } catch {
+    return null;
+  }
+};
+
 export const clearDemoTutorialRun = (): void => {
   if (!isBrowser()) return;
   try {
     window.localStorage.removeItem(DEMO_TUTORIAL_RUN_STORAGE_KEY);
+    window.localStorage.removeItem(DEMO_TUTORIAL_HANDOFF_STORAGE_KEY);
   } catch {
     // Ignore localStorage failures.
   }

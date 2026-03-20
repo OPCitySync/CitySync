@@ -44,8 +44,8 @@ export default function BottomNav({
       {locked && allowedWhenLocked.length > 0 && (
         <style>{`
           @keyframes tutorialNavPulse {
-            0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.35), 0 0 10px rgba(221,158,51,0.24); }
-            50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
+            0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.52), 0 0 12px rgba(221,158,51,0.34); }
+            50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.95), 0 0 22px rgba(221,158,51,0.62); }
           }
         `}</style>
       )}
@@ -64,7 +64,7 @@ export default function BottomNav({
             disabled={!isAllowedWhenLocked}
             className="flex flex-col items-center justify-center gap-0.5 transition-all"
             style={{
-              color: isActive ? accentColor : "rgba(255,255,255,0.45)",
+              color: locked && isAllowedWhenLocked ? "#ffe2a2" : isActive ? accentColor : "rgba(255,255,255,0.45)",
               flex: 1,
               background:
                 isActive || !locked
@@ -72,10 +72,10 @@ export default function BottomNav({
                     ? activeBg
                     : "transparent"
                   : isAllowedWhenLocked
-                    ? "linear-gradient(145deg, rgba(221,158,51,0.2), rgba(221,158,51,0.14))"
+                    ? "linear-gradient(145deg, rgba(221,158,51,0.34), rgba(221,158,51,0.2))"
                     : "transparent",
               border: "none",
-              boxShadow: locked && isAllowedWhenLocked ? "inset 0 0 0 1px rgba(255,226,162,0.55)" : undefined,
+              boxShadow: locked && isAllowedWhenLocked ? "inset 0 0 0 1px rgba(255,226,162,0.88)" : undefined,
               paddingTop: 8,
               paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
               borderRadius,
@@ -96,7 +96,7 @@ export default function BottomNav({
             <span
               style={{
                 fontSize: 11,
-                fontWeight: isActive ? 600 : 400,
+                fontWeight: isActive || (locked && isAllowedWhenLocked) ? 700 : 400,
                 letterSpacing: "0.02em",
               }}
             >

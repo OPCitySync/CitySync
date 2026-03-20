@@ -21,8 +21,10 @@ import {
 } from "../_utils/participantScoring";
 import {
   clearDemoTutorialRun,
+  consumeDemoTutorialHandoff,
   getDemoTutorialOfferingIds,
   getDemoTutorialTaskIds,
+  setDemoTutorialHandoff,
   startDemoTutorialRun,
 } from "../_utils/tutorialRun";
 
@@ -83,6 +85,10 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
     if (raw === "dismissed") return "dismissed";
+    const handoffStep = consumeDemoTutorialHandoff("participant");
+    if (handoffStep && (handoffStep === "intro" || handoffStep === "dismissed" || /^box\d+$/.test(handoffStep))) {
+      return handoffStep as IssuerTutorialStep;
+    }
   } catch {
     // Ignore storage failures.
   }
@@ -4400,6 +4406,7 @@ export default function ParticipantPage() {
     persistTutorialStep("box1");
     setTutorialStep("box1");
     setRole("issuer");
+    setDemoTutorialHandoff("issuer", "box1");
     router.push("/demo/issuer");
   }, [persistTutorialStep, router, setRole]);
 
@@ -4587,6 +4594,7 @@ export default function ParticipantPage() {
                 setRole("issuer");
                 setTutorialStep("box15");
                 persistTutorialStep("box15");
+                setDemoTutorialHandoff("issuer", "box15");
                 router.push("/demo/issuer");
               }}
               style={{

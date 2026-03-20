@@ -20,8 +20,10 @@ import {
 import {
   appendDemoTutorialTaskIds,
   clearDemoTutorialRun,
+  consumeDemoTutorialHandoff,
   getDemoTutorialTaskIds,
   readDemoTutorialRun,
+  setDemoTutorialHandoff,
   startDemoTutorialRun,
 } from "../_utils/tutorialRun";
 
@@ -331,6 +333,10 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
     if (raw === "dismissed") return "dismissed";
+    const handoffStep = consumeDemoTutorialHandoff("issuer");
+    if (handoffStep && (handoffStep === "intro" || handoffStep === "dismissed" || /^box\d+$/.test(handoffStep))) {
+      return handoffStep as IssuerTutorialStep;
+    }
   } catch {
     // Ignore storage access failures.
   }
@@ -425,14 +431,12 @@ function IssuerTutorialPanel({
   onStart,
   onDismissIntro,
   onExit,
-  onGoToTasks,
 }: {
   step: IssuerTutorialStep;
   orgName: string;
   onStart: () => void;
   onDismissIntro: () => void;
   onExit: () => void;
-  onGoToTasks: () => void;
 }) {
   const safeOrgName = orgName.trim() || "Issuer Organization";
 
@@ -466,7 +470,6 @@ function IssuerTutorialPanel({
           body={`Welcome ${safeOrgName}!\n\nIssuer organizations can begin to issue tasks by selecting the Tasks Tab at the bottom.`}
         >
           <TutorialActionButton label="Exit Tutorial" variant="ghost" onClick={onExit} />
-          <TutorialActionButton label="Go To Tasks" onClick={onGoToTasks} />
         </TutorialCard>
       )}
 
@@ -720,10 +723,6 @@ export default function IssuerApp() {
         }}
         onDismissIntro={exitIssuerTutorial}
         onExit={exitIssuerTutorial}
-        onGoToTasks={() => {
-          setActiveTab("tasks");
-          setTutorialStep("box5");
-        }}
       />
       {openInfoCards.length > 0 ? (
         <LearnMorePanel
@@ -1223,6 +1222,7 @@ export default function IssuerApp() {
               setRole("redeemer");
               setTutorialStep("box19");
               persistTutorialStep("box19");
+              setDemoTutorialHandoff("redeemer", "box19");
               router.push("/demo/redeemer");
             }}
           />
@@ -1264,6 +1264,7 @@ export default function IssuerApp() {
                   setRole("participant");
                   setTutorialStep("box11");
                   persistTutorialStep("box11");
+                  setDemoTutorialHandoff("participant", "box11");
                   router.push("/demo/participant");
                 }}
               />
@@ -2942,6 +2943,10 @@ function CreateTaskSheet({
           from { transform: translateY(100%); opacity: 0; }
           to   { transform: translateY(0);    opacity: 1; }
         }
+        @keyframes tutorialRadiantSubmit {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.3), 0 0 10px rgba(221,158,51,0.26); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.5); }
+        }
       `}</style>
       <div
         onClick={e => e.stopPropagation()}
@@ -3401,8 +3406,13 @@ function ProposeTaskSheet({
             disabled={!canSubmit || wouldExceedCap}
             style={{
               width: "100%",
-              background: canSubmit && !wouldExceedCap ? ACCENT : "rgba(255,255,255,0.08)",
-              border: "none",
+              background:
+                tutorialAllowSubmit && canSubmit && !wouldExceedCap
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : canSubmit && !wouldExceedCap
+                    ? ACCENT
+                    : "rgba(255,255,255,0.08)",
+              border: tutorialAllowSubmit && canSubmit && !wouldExceedCap ? "1px solid rgba(255,226,162,0.88)" : "none",
               borderRadius: 14,
               padding: "14px 0",
               fontSize: 14,
@@ -3410,6 +3420,14 @@ function ProposeTaskSheet({
               color: canSubmit && !wouldExceedCap ? BG : MUTED,
               cursor: canSubmit && !wouldExceedCap ? "pointer" : "not-allowed",
               marginTop: 20,
+              boxShadow:
+                tutorialAllowSubmit && canSubmit && !wouldExceedCap
+                  ? "0 0 0 1px rgba(255,226,162,0.46), 0 0 16px rgba(221,158,51,0.52)"
+                  : undefined,
+              animation:
+                tutorialAllowSubmit && canSubmit && !wouldExceedCap
+                  ? "tutorialRadiantSubmit 1.55s ease-in-out infinite"
+                  : undefined,
             }}
           >
             Submit for Review

@@ -9,7 +9,13 @@ import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, RedemptionOffer } from "../_data/mockData";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
-import { appendDemoTutorialOfferingIds, clearDemoTutorialRun, startDemoTutorialRun } from "../_utils/tutorialRun";
+import {
+  appendDemoTutorialOfferingIds,
+  clearDemoTutorialRun,
+  consumeDemoTutorialHandoff,
+  setDemoTutorialHandoff,
+  startDemoTutorialRun,
+} from "../_utils/tutorialRun";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -157,6 +163,10 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   try {
     const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
     if (raw === "dismissed") return "dismissed";
+    const handoffStep = consumeDemoTutorialHandoff("redeemer");
+    if (handoffStep && (handoffStep === "intro" || handoffStep === "dismissed" || /^box\d+$/.test(handoffStep))) {
+      return handoffStep as IssuerTutorialStep;
+    }
   } catch {
     // Ignore storage access failures.
   }
@@ -643,6 +653,7 @@ export default function RedeemerApp() {
               persistTutorialStep("box1");
               setTutorialStep("box1");
               setRole("issuer");
+              setDemoTutorialHandoff("issuer", "box1");
               router.push("/demo/issuer");
             }}
             style={{
@@ -701,6 +712,7 @@ export default function RedeemerApp() {
               persistTutorialStep("box1");
               setTutorialStep("box1");
               setRole("issuer");
+              setDemoTutorialHandoff("issuer", "box1");
               router.push("/demo/issuer");
             }}
             style={{
@@ -1335,6 +1347,7 @@ export default function RedeemerApp() {
                 setRole("participant");
                 setTutorialStep("box23");
                 persistTutorialStep("box23");
+                setDemoTutorialHandoff("participant", "box23");
                 router.push("/demo/participant");
               }
             }}
