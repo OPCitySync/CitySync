@@ -96,7 +96,7 @@ const DEEP_DIVE_SECTIONS: DeepDiveSection[] = [
   {
     title: "Issuers",
     links: [
-      { label: "Issuer Organizations (issuer fit)", href: "/demo/issuer-fit" },
+      { label: "Issuer Organizations", href: "/demo/issuer-fit" },
       { label: "Task Management", href: "/demo/task-management" },
       { label: "Task Verification", href: "/demo/task-verification" },
     ],
@@ -104,7 +104,7 @@ const DEEP_DIVE_SECTIONS: DeepDiveSection[] = [
   {
     title: "Redeemers",
     links: [
-      { label: "Redeemer Organizations (redeemer fit)", href: "/demo/redeemer-fit" },
+      { label: "Redeemer Organizations", href: "/demo/redeemer-fit" },
       { label: "How Redemptions Work", href: "/demo/how-redemption-works" },
       { label: "Capacity Optimization", href: "/demo/capacity-optimization" },
     ],
