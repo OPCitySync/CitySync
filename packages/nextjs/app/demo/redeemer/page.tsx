@@ -401,66 +401,88 @@ const REDEEMER_LEARN_CARDS: Record<RedeemerLearnCardKey, LearnInfoCard> = {
     title: "Redeemer Account",
     subtitle: "Registered organization identity",
     body: "Your redeemer profile ties venue details, organization identity, and account-level redemption actions to one persistent role session in the demo.",
+    relatedLinks: [{ label: "Redeemer Organizations", href: "/demo/redeemer-fit" }],
   },
   "profile-role": {
     title: "Redeemer Responsibilities",
     subtitle: "How redeemers create utility",
     body: "Redeemers convert earned CITY into real-world value through committed offerings and event-specific reward programs, closing the contribution-to-benefit loop.",
+    relatedLinks: [
+      { label: "Redeemer Organizations", href: "/demo/redeemer-fit" },
+      { label: "Public-Sector Economy", href: "/demo/public-sector-economy" },
+    ],
   },
   "profile-overview": {
     title: "Certified Redeemer Organization",
     subtitle: "Account identity and responsibilities",
     body: "Your redeemer profile ties venue details, organization identity, and account-level redemption actions to one persistent role session. Redeemers convert earned CITY into real-world value through committed offerings and event-specific reward programs, closing the contribution-to-benefit loop for Civic Participants.",
+    relatedLinks: [{ label: "Redeemer Organizations", href: "/demo/redeemer-fit" }],
   },
   "offerings-catalog": {
     title: "Offerings Catalog",
     subtitle: "Templates before commitment",
     body: "Catalog entries are reusable templates for future commitments. You can edit them over time and issue new active offerings without recreating details from scratch.",
+    relatedLinks: [{ label: "How Redemptions Work", href: "/demo/how-redemption-works" }],
   },
   "offerings-commitment": {
     title: "Why Offerings Are Committed",
     subtitle: "Epoch and MCE commitment model",
     body: "Committed offerings are locked for the duration of an Epoch or MCE event to provide predictability for Civic Participants and strengthen participation incentives. Redeemer organizations must honor these commitments and abide by the rules established by the Representative Redeemer Committee.",
+    relatedLinks: [{ label: "Public-Sector Economy", href: "/demo/public-sector-economy" }],
   },
   "offerings-mce": {
     title: "MCE Offerings",
     subtitle: "Event-linked redemption commitments",
     body: "MCE offerings are dedicated commitments tied to active MCE initiatives. They help align redemption behavior with city-priority events, make redeemer support visible during campaigns, and create predictable value for participants completing MCE-linked work.",
+    relatedLinks: [{ label: "MCE's", href: "/demo/mce" }],
   },
   "offerings-activity": {
     title: "Redeemer Onchain Activity",
     subtitle: "Shared role-wide visibility",
     body: "The activity panel tracks committed offerings and redemption-related contract actions across redeemer organizations, with explorer links for each transaction.",
+    relatedLinks: [{ label: "CitySync Governance Dashboard", href: "/demo/citysync-governance-dashboard" }],
   },
   "dashboard-activity-overview": {
     title: "Activity Overview",
     subtitle: "High-level redeemer operations snapshot",
     body: "This overview summarizes active offerings, organization status, total redemptions processed, and CITYx burned so your team can quickly monitor operating health across the current Epoch.",
+    relatedLinks: [{ label: "CitySync Governance Dashboard", href: "/demo/citysync-governance-dashboard" }],
   },
   "dashboard-offerings-breakdown": {
     title: "Offerings Breakdown",
     subtitle: "Per-offering performance detail",
     body: "This section breaks performance down by offering so redeemer teams can compare utilization, identify what is working, and calibrate future commitments with clearer evidence.",
+    relatedLinks: [{ label: "Capacity Optimization", href: "/demo/capacity-optimization" }],
   },
   "mycity-feed": {
     title: "MyCity Communications",
     subtitle: "Public coordination channel",
     body: "Use MyCity to announce reward programs, venue updates, and campaign participation so participants can discover timely redemption options.",
+    relatedLinks: [{ label: "MyCity Feed", href: "/demo/mycity-feed" }],
   },
   "mce-participation": {
     title: "MCE Participation",
     subtitle: "Event-based reward programs",
     body: "Mass Coordination Events align participant demand around city priorities. Redeemers support this by publishing MCE-specific offerings and redemption capacity.",
+    relatedLinks: [{ label: "MCE's", href: "/demo/mce" }],
   },
   "epoch1-voting": {
     title: "Current Epoch Voting",
     subtitle: "How Redeemers engage during Epoch 1",
     body: "During Epoch 1, Civic Participants vote on active MCE proposals while Redeemer organizations track momentum and align offerings with emerging priorities. Redeemers do not cast protocol votes in this stage, but can signal support through planned redemption commitments tied to likely initiatives.",
+    relatedLinks: [
+      { label: "MCE's", href: "/demo/mce" },
+      { label: "Civic Participant Voting", href: "/demo/civic-participant-voting" },
+    ],
   },
   "next-epoch": {
     title: "Upcoming Epoch Proposals",
     subtitle: "How proposals move into next-cycle voting",
     body: "While current-epoch voting runs, active Issuer and Redeemer organizations can submit initiatives for the next epoch. Community likes provide public signal, and the Issuer Committee selects the final top proposals based on need and feasibility. Redeemer pre-commitments help shape which proposals appear operationally viable before final selection.",
+    relatedLinks: [
+      { label: "MCE's", href: "/demo/mce" },
+      { label: "Role Governance", href: "/demo/role-governance" },
+    ],
   },
 };
 

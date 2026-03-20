@@ -242,61 +242,83 @@ const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
     title: "Becoming a Certified Issuer Organization",
     subtitle: "Role onboarding and certification",
     body: "In production, onboarding certification is reviewed by governance and operational criteria set by City/Sync before issuance permissions are granted. Issuer eligibility requires that an organization be formally incorporated as a public-service entity, demonstrate a track record of serving the local community, and possess the operational capacity to manage and oversee a volunteer program.",
+    relatedLinks: [{ label: "Issuer Organizations", href: "/demo/issuer-fit" }],
   },
   "activity-stats": {
     title: "Activity Stats",
     subtitle: "How issuer metrics are tracked",
     body: "These stats summarize your onchain task lifecycle activity, including created tasks, credits issued, and verifications currently awaiting action.",
+    relatedLinks: [{ label: "CitySync Governance Dashboard", href: "/demo/citysync-governance-dashboard" }],
   },
   "dashboard-task-operations": {
     title: "Task Operations",
     subtitle: "Issuer operational metrics",
     body: "This card summarizes issuance throughput, active task state, and verification queue pressure so issuers can keep task operations balanced and predictable during the epoch.",
+    relatedLinks: [{ label: "Task Management", href: "/demo/task-management" }],
   },
   "dashboard-participant-risk": {
     title: "Participant Risk Signals",
     subtitle: "RD / RS monitoring",
     body: "RD and RS signal reliability trends across participants. Issuers can use this to identify support needs early and reduce disruption from repeated no-shows or rejected completions.",
+    relatedLinks: [{ label: "Graduated Sanctions", href: "/demo/graduate-sanctions" }],
   },
   "epoch-issuance": {
     title: "Epoch Issuance",
     subtitle: "Allocation and budget controls",
     body: "Each epoch sets an issuance budget to balance credit supply with redemption capacity. Issuers can monitor consumption in real time and adjust issuance strategy throughout the epoch.",
+    relatedLinks: [
+      { label: "Public-Sector Economy", href: "/demo/public-sector-economy" },
+      { label: "Civic-Credit Formal Model", href: "/demo/civic-credit-formal-model" },
+      { label: "Decision Triggers", href: "/demo/decision-triggers" },
+    ],
   },
   "active-tasks": {
     title: "Active Tasks",
     subtitle: "Live task instance state",
     body: "Active task instances are opportunities that are currently open, claimed, or pending verification. Completed or unissued tasks are excluded from this list.",
+    relatedLinks: [{ label: "Task Management", href: "/demo/task-management" }],
   },
   "issue-tasks": {
     title: "Issuing Tasks",
     subtitle: "How issuance works onchain",
     body: "Use approved catalog templates to issue live task instances onchain. Each issued instance enters the open task pool for participants to claim, execute, and submit for issuer verification.",
+    relatedLinks: [{ label: "Task Management", href: "/demo/task-management" }],
   },
   "task-catalog": {
     title: "Task Catalog Operations",
     subtitle: "From Approval to Issuance",
     body: "The Task catalog serves to standardize Task rates over time. As new tasks enter the City-Wide Task catalog, the Representative Issuer Committee will begin to set standard rates of similar tasks, similarly. The Committee has the final say in what rate is issued for that Task and if the proposed task satisfies the rule requirements set out by the Committee. The initial Task ruleset will include the following declarations: (1) tasks cannot replace existing paid functions of the Issuer Organization, and (2) tasks must facilitate the delivery of a public-good or public-service.",
+    relatedLinks: [{ label: "Task Management", href: "/demo/task-management" }],
   },
   "verify-flow": {
     title: "Verification and CITY Distribution",
     subtitle: "Task Tracking",
     body: "Issuer organizations can keep track of Issued Tasks available to Civic Participants, when they are claimed, and when they need to be verified. When issuers verify completion, the workflow mints CITY and VOTE rewards to participants.",
+    relatedLinks: [{ label: "Task Verification", href: "/demo/task-verification" }],
   },
   "mycity-feed": {
     title: "Issuer MyCity Feed",
     subtitle: "Public Communication Layer",
     body: "The MyCity feed lets Issuer and Redeemer organizations publish updates, opportunities, announcements, and events as a method to inform and engage with Civic Participants. This offers the public-sector a channel for publicity and awareness for important community activities.",
+    relatedLinks: [{ label: "MyCity Feed", href: "/demo/mycity-feed" }],
   },
   "epoch1-voting": {
     title: "Current Epoch Voting",
     subtitle: "Issuer role in active voting",
     body: "Epoch 1 voting is led by Civic Participants. Issuer organizations monitor support trends, prepare delivery strategy for likely winners, and coordinate operational readiness for the tasks that follow.",
+    relatedLinks: [
+      { label: "MCE's", href: "/demo/mce" },
+      { label: "Civic Participant Voting", href: "/demo/civic-participant-voting" },
+    ],
   },
   "next-epoch": {
     title: "Upcoming Epoch Proposals",
     subtitle: "Issuer proposal pipeline",
     body: "During the current voting cycle, issuers can submit proposals for the next epoch. Community likes and committee review help shape which proposals advance, so upcoming rounds reflect both local demand and execution feasibility.",
+    relatedLinks: [
+      { label: "MCE's", href: "/demo/mce" },
+      { label: "Role Governance", href: "/demo/role-governance" },
+    ],
   },
 };
 

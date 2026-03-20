@@ -117,56 +117,76 @@ const PARTICIPANT_LEARN_CARDS: Record<ParticipantLearnCardKey, LearnInfoCard> = 
     title: "Participant Account and Identity",
     subtitle: "How your profile works",
     body: "Your City/Sync sign-in provisions a smart account for onchain actions and syncs CITY, VOTE, and MCE balances from contract state. Your profile tracks participation history, completed tasks, and governance activity, building a civic reputation tied to verified community contributions.",
+    relatedLinks: [
+      { label: "Public-Sector Economy", href: "/demo/public-sector-economy" },
+      { label: "City/Sync Framework", href: "/demo/citysync-framework" },
+    ],
   },
   "profile-activity": {
     title: "Participant Activity",
     subtitle: "Tracking positive participation",
     body: "This card summarizes your completion volume and earned rewards over time. It gives a quick view of how consistently you are contributing through verified civic work.",
+    relatedLinks: [{ label: "Civic Participant Growth", href: "/demo/civic-participant-growth" }],
   },
   "profile-rd-rs": {
     title: "RD / RS Status",
     subtitle: "Reliability and sanctions signal",
     body: "RD tracks risk/debt from disruptive behavior patterns and RS tracks successful completion momentum. Together they determine your current status and whether protective controls should apply.",
+    relatedLinks: [{ label: "Graduated Sanctions", href: "/demo/graduate-sanctions" }],
   },
   "explore-onboarding": {
     title: "Onboarding Requirement",
     subtitle: "Why onboarding exists",
     body: "Onboarding confirms real community membership through an in-person step. Once activated, your account can interact with the wider City/Sync task and redemption ecosystem.",
+    relatedLinks: [{ label: "Onboarding Tasks", href: "/demo/onboarding-tasks" }],
   },
   "explore-task-flow": {
     title: "Task Lifecycle",
     subtitle: "Open → Claimed → Completed",
     body: "Claim tasks from the open pool, execute and submit completion, and track progression through verification to completion. This keeps participant work visible and auditable.",
+    relatedLinks: [{ label: "Task Management", href: "/demo/task-management" }],
   },
   "explore-claimed": {
     title: "Claimed Tasks",
     subtitle: "Claim and unclaim flow",
     body: "Claiming reserves a task instance for you. If plans change, unclaim promptly so another participant can take it. Once execution begins and proof is submitted, it moves into issuer verification.",
+    relatedLinks: [{ label: "Task Management", href: "/demo/task-management" }],
   },
   "explore-verify": {
     title: "Verification",
     subtitle: "How rewards are minted",
     body: "Issuers verify task completions onchain. Verification mints CITY and VOTE rewards to the participant account, creating a direct record of civic work and rewards.",
+    relatedLinks: [{ label: "Task Verification", href: "/demo/task-verification" }],
   },
   "mycity-feed": {
     title: "MyCity Feed",
     subtitle: "Local information layer",
     body: "MyCity is a role-shared civic feed where organizations publish events, announcements, and opportunities. It functions as coordination context around task participation.",
+    relatedLinks: [{ label: "MyCity Feed", href: "/demo/mycity-feed" }],
   },
   "vote-current-epoch": {
     title: "Current Epoch Voting",
     subtitle: "How active voting works",
     body: "In the current epoch, Civic Participants allocate earned VOTE to active MCE proposals. Votes signal which city priorities should advance first and help determine which initiative receives execution focus.",
+    relatedLinks: [
+      { label: "Civic Participant Voting", href: "/demo/civic-participant-voting" },
+      { label: "MCE's", href: "/demo/mce" },
+    ],
   },
   "vote-upcoming-epoch": {
     title: "Upcoming Epoch Proposals",
     subtitle: "What happens next",
     body: "Upcoming proposals are a pipeline for the next voting round. Participants can review and like proposals to signal support before formal voting opens, helping shape the next epoch slate.",
+    relatedLinks: [
+      { label: "Civic Participant Voting", href: "/demo/civic-participant-voting" },
+      { label: "MCE's", href: "/demo/mce" },
+    ],
   },
   "redeem-flow": {
     title: "Redemption Flow",
     subtitle: "Using CITY credits",
     body: "CITY credits are redeemed against partner offerings. In production, participants scan the redeemer QR code at point of sale to initiate redemption, then confirm the transaction to execute contract logic onchain and update available balance.",
+    relatedLinks: [{ label: "How Redemptions Work", href: "/demo/how-redemption-works" }],
   },
 };
 

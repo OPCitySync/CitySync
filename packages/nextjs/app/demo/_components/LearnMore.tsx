@@ -6,6 +6,7 @@ export type LearnInfoCard = {
   title: string;
   subtitle: string;
   body: string;
+  relatedLinks?: Array<{ label: string; href: string }>;
 };
 
 export function LearnMoreLink({ onClick }: { onClick: () => void }) {
@@ -92,6 +93,48 @@ export function LearnMorePanel<TKey extends string>({
               </button>
             </div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>{info.body}</div>
+            {info.relatedLinks && info.relatedLinks.length > 0 ? (
+              <div style={{ marginTop: 12 }}>
+                <div
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 700,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.52)",
+                    marginBottom: 8,
+                  }}
+                >
+                  Related Pages
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {info.relatedLinks.map(link => (
+                    <a
+                      key={`${key}-${link.href}`}
+                      href={link.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 6,
+                        textDecoration: "none",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        color: "rgba(255,255,255,0.92)",
+                        background: "rgba(255,255,255,0.06)",
+                        border: "1px solid rgba(255,255,255,0.14)",
+                        borderRadius: 9,
+                        padding: "6px 8px",
+                      }}
+                    >
+                      <span>{link.label}</span>
+                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10 }}>↗</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         );
       })}
