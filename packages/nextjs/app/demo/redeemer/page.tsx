@@ -457,6 +457,7 @@ export default function RedeemerApp() {
   const router = useRouter();
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
+  const previousActiveTabRef = useRef(activeTab);
   const [catalogEditor, setCatalogEditor] = useState<CatalogEditorState>(null);
   const [qrTarget, setQrTarget] = useState<QROfferingData | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -469,7 +470,7 @@ export default function RedeemerApp() {
   const [catalogIssueSheet, setCatalogIssueSheet] = useState<"committed" | "mce" | null>(null);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
   const [offerWriteStatus, setOfferWriteStatus] = useState<OfferWriteStatus>({ state: "idle" });
-  const [openInfoCards, setOpenInfoCards] = useState<RedeemerLearnCardKey[]>([]);
+  const [openInfoCard, setOpenInfoCard] = useState<RedeemerLearnCardKey | null>(null);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialCatalogOfferingId, setTutorialCatalogOfferingId] = useState<string | null>(null);
   const [tutorialActiveOfferingId, setTutorialActiveOfferingId] = useState<string | null>(null);
@@ -671,11 +672,11 @@ export default function RedeemerApp() {
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       {tutorialCard}
-      {openInfoCards.length > 0 ? (
+      {openInfoCard ? (
         <LearnMorePanel
-          keys={openInfoCards}
+          keys={[openInfoCard]}
           cards={REDEEMER_LEARN_CARDS}
-          onClose={key => setOpenInfoCards(prev => prev.filter(existing => existing !== key))}
+          onClose={() => setOpenInfoCard(null)}
           accent={ACCENT}
         />
       ) : (
@@ -731,8 +732,15 @@ export default function RedeemerApp() {
   );
 
   const openLearnMore = React.useCallback((key: RedeemerLearnCardKey) => {
-    setOpenInfoCards(prev => (prev.includes(key) ? prev : [...prev, key]));
+    setOpenInfoCard(key);
   }, []);
+
+  React.useEffect(() => {
+    if (previousActiveTabRef.current !== activeTab) {
+      setOpenInfoCard(null);
+      previousActiveTabRef.current = activeTab;
+    }
+  }, [activeTab]);
 
   React.useEffect(() => {
     setRole("redeemer");
@@ -1221,7 +1229,10 @@ export default function RedeemerApp() {
         mceBalance={0}
         tabs={TABS}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={tab => {
+          setActiveTab(tab);
+          setOpenInfoCard(null);
+        }}
         accentColor={ACCENT}
         title="Redeemer"
         leftPanel={leftPanel}

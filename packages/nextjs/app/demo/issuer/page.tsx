@@ -659,6 +659,7 @@ export default function IssuerApp() {
   const { openAuthModal } = useAuthModal();
   const { isConnected, isAuthenticating } = useSignerStatus();
   const [activeTab, setActiveTab] = useState("profile");
+  const previousActiveTabRef = useRef(activeTab);
   const [createSheet, setCreateSheet] = useState(false);
   const [proposeSheet, setProposeSheet] = useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -674,7 +675,7 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
-  const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
+  const [openInfoCard, setOpenInfoCard] = useState<IssuerLearnCardKey | null>(null);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
@@ -747,11 +748,11 @@ export default function IssuerApp() {
         }}
         onExit={exitIssuerTutorial}
       />
-      {openInfoCards.length > 0 ? (
+      {openInfoCard ? (
         <LearnMorePanel
-          keys={openInfoCards}
+          keys={[openInfoCard]}
           cards={ISSUER_LEARN_CARDS}
-          onClose={key => setOpenInfoCards(prev => prev.filter(k => k !== key))}
+          onClose={() => setOpenInfoCard(null)}
           accent={ACCENT}
         />
       ) : (
@@ -804,8 +805,15 @@ export default function IssuerApp() {
   );
 
   const openLearnMore = React.useCallback((key: IssuerLearnCardKey) => {
-    setOpenInfoCards(prev => (prev.includes(key) ? prev : [...prev, key]));
+    setOpenInfoCard(key);
   }, []);
+
+  React.useEffect(() => {
+    if (previousActiveTabRef.current !== activeTab) {
+      setOpenInfoCard(null);
+      previousActiveTabRef.current = activeTab;
+    }
+  }, [activeTab]);
 
   React.useEffect(() => {
     setRole("issuer");
@@ -1192,7 +1200,10 @@ export default function IssuerApp() {
         mceBalance={0}
         tabs={TABS}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={tab => {
+          setActiveTab(tab);
+          setOpenInfoCard(null);
+        }}
         accentColor={ACCENT}
         title="Issuer"
         leftPanel={leftPanel}

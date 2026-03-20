@@ -2907,9 +2907,7 @@ function ExploreTab({
   };
 
   const openExploreLearnMore = () => {
-    onLearnMore("explore-onboarding");
     onLearnMore("explore-task-flow");
-    onLearnMore("explore-verify");
   };
 
   return (
@@ -3368,8 +3366,7 @@ function CommunityTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCard
       <div style={{ display: "flex", justifyContent: "flex-end", margin: "16px 16px 4px" }}>
         <LearnMoreLink
           onClick={() => {
-            onLearnMore("mycity-feed");
-            onLearnMore("vote-overview");
+            onLearnMore(section === "feed" ? "mycity-feed" : "vote-overview");
           }}
         />
       </div>
@@ -4392,7 +4389,8 @@ export default function ParticipantPage() {
   const router = useRouter();
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
-  const [openInfoCards, setOpenInfoCards] = useState<ParticipantLearnCardKey[]>([]);
+  const previousActiveTabRef = useRef(activeTab);
+  const [openInfoCard, setOpenInfoCard] = useState<ParticipantLearnCardKey | null>(null);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
   const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
@@ -4778,11 +4776,11 @@ export default function ParticipantPage() {
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       {tutorialCard}
-      {openInfoCards.length > 0 ? (
+      {openInfoCard ? (
         <LearnMorePanel
-          keys={openInfoCards}
+          keys={[openInfoCard]}
           cards={PARTICIPANT_LEARN_CARDS}
-          onClose={key => setOpenInfoCards(prev => prev.filter(existing => existing !== key))}
+          onClose={() => setOpenInfoCard(null)}
           accent={ACCENT}
         />
       ) : (
@@ -4831,8 +4829,19 @@ export default function ParticipantPage() {
   );
 
   const openLearnMore = React.useCallback((key: ParticipantLearnCardKey) => {
-    setOpenInfoCards(prev => (prev.includes(key) ? prev : [...prev, key]));
+    setOpenInfoCard(key);
   }, []);
+  const handleRoleTabChange = React.useCallback((tab: string) => {
+    setActiveTab(tab);
+    setOpenInfoCard(null);
+  }, []);
+
+  useEffect(() => {
+    if (previousActiveTabRef.current !== activeTab) {
+      setOpenInfoCard(null);
+      previousActiveTabRef.current = activeTab;
+    }
+  }, [activeTab]);
 
   return (
     <>
@@ -4844,7 +4853,7 @@ export default function ParticipantPage() {
         mceBalance={state.participant.mceBalance}
         tabs={TABS}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleRoleTabChange}
         accentColor={ACCENT}
         title="CitySync · Citizen"
         leftPanel={leftPanel}
@@ -4863,7 +4872,7 @@ export default function ParticipantPage() {
           }
         }}
       >
-        {activeTab === "profile" && <ProfileTab onTabChange={setActiveTab} onLearnMore={openLearnMore} />}
+        {activeTab === "profile" && <ProfileTab onTabChange={handleRoleTabChange} onLearnMore={openLearnMore} />}
         {activeTab === "explore" && (
           <ExploreTab
             onLearnMore={openLearnMore}
