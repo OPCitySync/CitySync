@@ -477,6 +477,10 @@ function ClaimConfirmSheet({
           from { transform: translateY(100%); opacity: 0; }
           to   { transform: translateY(0);    opacity: 1; }
         }
+        @keyframes tutorialSubmitPulse {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.32), 0 0 10px rgba(221,158,51,0.26); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.82), 0 0 18px rgba(221,158,51,0.52); }
+        }
       `}</style>
 
       {/* Overlay wrapper — pointerEvents:none so BottomNav area stays clickable */}
@@ -905,13 +909,19 @@ function ExecuteModal({
             style={{
               width: "100%",
               padding: "14px 0",
-              background: ACCENT,
-              color: "white",
-              border: "none",
+              background: tutorialAllowSubmit
+                ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                : ACCENT,
+              color: tutorialAllowSubmit ? "#15151E" : "white",
+              border: tutorialAllowSubmit ? "1px solid rgba(255,226,162,0.88)" : "none",
               borderRadius: 12,
               fontWeight: 700,
               fontSize: 15,
               cursor: "pointer",
+              boxShadow: tutorialAllowSubmit
+                ? "0 0 0 1px rgba(255,226,162,0.46), 0 0 16px rgba(221,158,51,0.52)"
+                : undefined,
+              animation: tutorialAllowSubmit ? "tutorialSubmitPulse 1.55s ease-in-out infinite" : undefined,
             }}
           >
             Submit Proof for Verification
@@ -4508,7 +4518,6 @@ export default function ParticipantPage() {
     if (tutorialStep === "box11") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 7</div>
           <div style={titleStyle}>Claim Two Tasks</div>
           <div style={bodyStyle}>
             Civic-Participants are able to Browse all issued tasks and claim up to 2 tasks at any given time.
@@ -4538,7 +4547,6 @@ export default function ParticipantPage() {
     if (tutorialStep === "box13") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 8</div>
           <div style={titleStyle}>Execute a Claimed Task</div>
           <div style={bodyStyle}>
             When executing a task, Civic-Participants will be able to submit proof of task completion and provide
@@ -4568,7 +4576,6 @@ export default function ParticipantPage() {
     if (tutorialStep === "box14") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 9</div>
           <div style={titleStyle}>Return to Issuer Verification</div>
           <div style={bodyStyle}>
             Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.
@@ -4618,7 +4625,6 @@ export default function ParticipantPage() {
     if (tutorialStep === "box23") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 17</div>
           <div style={titleStyle}>Your Wallet and Balances</div>
           <div style={bodyStyle}>
             After completed tasks are verified, users are Minted CITY and VOTE. Civic-Participants can keep track of
@@ -4648,7 +4654,6 @@ export default function ParticipantPage() {
     if (tutorialStep === "box24") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 18</div>
           <div style={titleStyle}>Redeem an Offering</div>
           <div style={bodyStyle}>
             Civic-Participants can spend their credits on available offerings. Go ahead and spend your credits on the
@@ -4678,7 +4683,6 @@ export default function ParticipantPage() {
     if (tutorialStep === "box25") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 19</div>
           <div style={titleStyle}>Point-of-Sale Confirmation</div>
           <div style={bodyStyle}>
             When a Civic-Participant scans a QR code to redeem an offer, a visual and audible cue will flash on their
@@ -4709,7 +4713,6 @@ export default function ParticipantPage() {
     if (tutorialStep === "box26") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 20</div>
           <div style={titleStyle}>You’re Ready to Explore</div>
           <div style={bodyStyle}>
             {

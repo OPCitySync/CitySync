@@ -455,7 +455,6 @@ function IssuerTutorialPanel({
 
       {step === "box1" && (
         <TutorialCard
-          subtitle="Step 1"
           title="Let's start with Issuers"
           body="Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab."
         >
@@ -465,7 +464,6 @@ function IssuerTutorialPanel({
 
       {step === "box2" && (
         <TutorialCard
-          subtitle="Step 2"
           title={`Welcome ${safeOrgName}!`}
           body={`Welcome ${safeOrgName}!\n\nIssuer organizations can begin to issue tasks by selecting the Tasks Tab at the bottom.`}
         >
@@ -475,7 +473,6 @@ function IssuerTutorialPanel({
 
       {step === "box5" && (
         <TutorialCard
-          subtitle="Step 3"
           title="Propose a New Task"
           body="Issuer Organizations can propose the creation of a new task to be added to their catalog at any time. There is a standardized template for proposing tasks. Let's create one by clicking the + Propose New Task for Approval button.\n\nWe will auto-fill this task for you to start. When you're ready, let's talk about how they are approved."
         >
@@ -485,7 +482,6 @@ function IssuerTutorialPanel({
 
       {step === "box6" && (
         <TutorialCard
-          subtitle="Step 4"
           title="Approve Your Proposed Task"
           body="Great. Your proposed task is now ready for catalog approval.\n\nGo ahead and approve your task for the catalog."
         >
@@ -495,7 +491,6 @@ function IssuerTutorialPanel({
 
       {step === "box7" && (
         <TutorialCard
-          subtitle="Step 5"
           title="Issue from Your Catalog"
           body="Once a task has been approved, it is placed within your organizational task catalog. You can issue tasks from your catalog at any time."
         >
@@ -505,7 +500,6 @@ function IssuerTutorialPanel({
 
       {step === "box8" && (
         <TutorialCard
-          subtitle="Step 6"
           title="Choose Issuance Slots"
           body="When issuing tasks, Issuers are able to create multiple instances of that task to be made available for the public to claim.\n\nGo ahead and approve the 3 tasks for issuance."
         >
@@ -515,7 +509,6 @@ function IssuerTutorialPanel({
 
       {step === "box15" && (
         <TutorialCard
-          subtitle="Step 10"
           title="Issued, Claimed, and Completed"
           body="All issued task will be in one of three states: Issued, Claimed, and Completed. Issued tasks can be unissued by the Issuer. Unissued tasks are removed from circulation.\n\nGo ahead an Unissue one of your tasks."
         >
@@ -525,7 +518,6 @@ function IssuerTutorialPanel({
 
       {step === "box16" && (
         <TutorialCard
-          subtitle="Step 11"
           title="Handling No-Shows"
           body="If a Civic-Participant fails to show up for their claimed task, Issuers can select the No Show button to remove the claimed task out of circulation. No Shows by Civic-Participants are tracked to prevent abuse.\n\nGo ahead and select Mark No-Show for this task."
         >
@@ -535,7 +527,6 @@ function IssuerTutorialPanel({
 
       {step === "box17" && (
         <TutorialCard
-          subtitle="Step 12"
           title="Verify or Reject with Mint"
           body="Issuers are responsible for verifying that the work was actually completed by the Civic-Participant. Once verification is complete they can either reject completion as unsatisfactory with feedback or verify. Rejections are designed to keep Civic-Participants accountable. In both circumstances, credits will be minted to the Civic-Participant.\n\nGo ahead and Verify & Mint."
         >

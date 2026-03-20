@@ -367,6 +367,10 @@ export default function AppShell({
       {phoneFrame && <PhoneStatusBar accentColor={accentColor} />}
       {tutorialLocked && (
         <style>{`
+          @keyframes tutorialAllowedPulse {
+            0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.32), 0 0 10px rgba(221,158,51,0.26); }
+            50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.82), 0 0 18px rgba(221,158,51,0.52); }
+          }
           .citysync-tutorial-lock-scope * {
             pointer-events: none !important;
           }
@@ -377,6 +381,8 @@ export default function AppShell({
           .citysync-tutorial-lock-scope [data-tutorial-allow="true"] {
             position: relative;
             z-index: 140 !important;
+            outline: 1px solid rgba(255,226,162,0.75) !important;
+            animation: tutorialAllowedPulse 1.55s ease-in-out infinite !important;
           }
         `}</style>
       )}

@@ -561,7 +561,6 @@ export default function RedeemerApp() {
     if (tutorialStep === "box19") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 19</div>
           <div style={titleStyle}>Offering Catalog</div>
           <div style={bodyStyle}>
             Redeemer Organizations also have an offering Catalog to keep track of past offerings and the ability to
@@ -577,7 +576,6 @@ export default function RedeemerApp() {
     if (tutorialStep === "box20") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 20</div>
           <div style={titleStyle}>Create Your Offering</div>
           <div style={bodyStyle}>
             For each offering, Redeemer organizations can name their offering, set the credit rate for that offering, or
@@ -594,7 +592,6 @@ export default function RedeemerApp() {
     if (tutorialStep === "box21") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 21</div>
           <div style={titleStyle}>Commit and Lock</div>
           <div style={bodyStyle}>
             Once an offering is added to their catalog, Redeemer organizations can modify their offering before they
@@ -612,7 +609,6 @@ export default function RedeemerApp() {
     if (tutorialStep === "box22") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 22</div>
           <div style={titleStyle}>How QR Redemption Works</div>
           <div style={bodyStyle}>
             QR Codes are issued for each offering, and Redeemer organizations can present these QR codes near their
@@ -2744,7 +2740,13 @@ function AddOfferingSheet({
 
   return (
     <>
-      <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
+      <style>{`
+        @keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes tutorialConfirmPulse {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.32), 0 0 10px rgba(221,158,51,0.26); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.82), 0 0 18px rgba(221,158,51,0.52); }
+        }
+      `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
         <div
           style={{
@@ -3001,7 +3003,13 @@ function IssueOfferingFromCatalogSheet({
 
   return (
     <>
-      <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
+      <style>{`
+        @keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes tutorialDonePulse {
+          0%, 100% { box-shadow: 0 0 0 1px rgba(255,226,162,0.32), 0 0 10px rgba(221,158,51,0.26); }
+          50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.82), 0 0 18px rgba(221,158,51,0.52); }
+        }
+      `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
         <div
           style={{
@@ -3257,14 +3265,26 @@ function ConfirmDialog({
               data-tutorial-allow={tutorialAllowConfirm ? "true" : undefined}
               style={{
                 flex: 1,
-                background: warningOnly ? ACCENT : "rgba(255,107,157,0.15)",
-                border: warningOnly ? "none" : "1px solid rgba(255,107,157,0.3)",
+                background: tutorialAllowConfirm
+                  ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                  : warningOnly
+                    ? ACCENT
+                    : "rgba(255,107,157,0.15)",
+                border: tutorialAllowConfirm
+                  ? "1px solid rgba(255,226,162,0.88)"
+                  : warningOnly
+                    ? "none"
+                    : "1px solid rgba(255,107,157,0.3)",
                 borderRadius: 12,
                 padding: "12px 0",
                 fontSize: 14,
                 fontWeight: 700,
-                color: warningOnly ? BG : "#ff6b9d",
+                color: tutorialAllowConfirm ? "#15151E" : warningOnly ? BG : "#ff6b9d",
                 cursor: "pointer",
+                boxShadow: tutorialAllowConfirm
+                  ? "0 0 0 1px rgba(255,226,162,0.46), 0 0 16px rgba(221,158,51,0.52)"
+                  : undefined,
+                animation: tutorialAllowConfirm ? "tutorialConfirmPulse 1.55s ease-in-out infinite" : undefined,
               }}
             >
               {confirmLabel}
@@ -3404,14 +3424,20 @@ function QRModal({
             onClick={onClose}
             style={{
               width: "100%",
-              background: ACCENT,
-              border: "none",
+              background: tutorialAllowDone
+                ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
+                : ACCENT,
+              border: tutorialAllowDone ? "1px solid rgba(255,226,162,0.88)" : "none",
               borderRadius: 14,
               padding: "13px 0",
               fontSize: 14,
               fontWeight: 700,
-              color: BG,
+              color: tutorialAllowDone ? "#15151E" : BG,
               cursor: "pointer",
+              boxShadow: tutorialAllowDone
+                ? "0 0 0 1px rgba(255,226,162,0.46), 0 0 16px rgba(221,158,51,0.52)"
+                : undefined,
+              animation: tutorialAllowDone ? "tutorialDonePulse 1.55s ease-in-out infinite" : undefined,
             }}
           >
             Done
