@@ -562,7 +562,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box19") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 19</div>
+          <div style={subtitleStyle}>Step 14</div>
           <div style={titleStyle}>Offering Catalog</div>
           <div style={bodyStyle}>
             Redeemer Organizations also have an offering Catalog to keep track of past offerings and the ability to
@@ -578,7 +578,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box20") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 20</div>
+          <div style={subtitleStyle}>Step 15</div>
           <div style={titleStyle}>Create Your Offering</div>
           <div style={bodyStyle}>
             For each offering, Redeemer organizations can name their offering, set the credit rate for that offering, or
@@ -595,7 +595,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box21") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 21</div>
+          <div style={subtitleStyle}>Step 16</div>
           <div style={titleStyle}>Commit and Lock</div>
           <div style={bodyStyle}>
             Once an offering is added to their catalog, Redeemer organizations can modify their offering before they
@@ -613,7 +613,7 @@ export default function RedeemerApp() {
     if (tutorialStep === "box22") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 22</div>
+          <div style={subtitleStyle}>Step 17</div>
           <div style={titleStyle}>How QR Redemption Works</div>
           <div style={bodyStyle}>
             QR Codes are issued for each offering, and Redeemer organizations can present these QR codes near their
@@ -661,13 +661,7 @@ export default function RedeemerApp() {
       );
     }
 
-    return (
-      <div style={cardStyle}>
-        <div style={subtitleStyle}>Tutorial</div>
-        <div style={titleStyle}>Tutorial in Progress</div>
-        <div style={bodyStyle}>Continue the tutorial in the currently highlighted role and tab.</div>
-      </div>
-    );
+    return null;
   })();
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>

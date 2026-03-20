@@ -224,6 +224,8 @@ const STATUS_COLOR: Record<string, string> = {
 type IssuerLearnCardKey =
   | "becoming-certified-issuer"
   | "activity-stats"
+  | "dashboard-task-operations"
+  | "dashboard-participant-risk"
   | "epoch-issuance"
   | "active-tasks"
   | "issue-tasks"
@@ -232,6 +234,8 @@ type IssuerLearnCardKey =
   | "mycity-feed"
   | "epoch1-voting"
   | "next-epoch";
+
+type IssuerLearnMoreSelection = IssuerLearnCardKey | IssuerLearnCardKey[];
 
 const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
   "becoming-certified-issuer": {
@@ -243,6 +247,16 @@ const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
     title: "Activity Stats",
     subtitle: "How issuer metrics are tracked",
     body: "These stats summarize your onchain task lifecycle activity, including created tasks, credits issued, and verifications currently awaiting action.",
+  },
+  "dashboard-task-operations": {
+    title: "Task Operations",
+    subtitle: "Issuer operational metrics",
+    body: "This card summarizes issuance throughput, active task state, and verification queue pressure so issuers can keep task operations balanced and predictable during the epoch.",
+  },
+  "dashboard-participant-risk": {
+    title: "Participant Risk Signals",
+    subtitle: "RD / RS monitoring",
+    body: "RD and RS signal reliability trends across participants. Issuers can use this to identify support needs early and reduce disruption from repeated no-shows or rejected completions.",
   },
   "epoch-issuance": {
     title: "Epoch Issuance",
@@ -275,14 +289,14 @@ const ISSUER_LEARN_CARDS: Record<IssuerLearnCardKey, LearnInfoCard> = {
     body: "The MyCity feed lets Issuer and Redeemer organizations publish updates, opportunities, announcements, and events as a method to inform and engage with Civic Participants. This offers the public-sector a channel for publicity and awareness for important community activities.",
   },
   "epoch1-voting": {
-    title: "Epoch 1 Voting",
-    subtitle: "Planning MCE's",
-    body: "Epoch 1 voting is reserved for Civic Participants. Your role is to monitor which proposals are gaining support. The Issuer Representative Committee will be responsible for creating and distributing tasks on behalf of Issuer organizations that will execute on the winning proposal. These tasks will be added to your Task Catalog automatically during the next Epoch.",
+    title: "Current Epoch Voting",
+    subtitle: "Issuer role in active voting",
+    body: "Epoch 1 voting is led by Civic Participants. Issuer organizations monitor support trends, prepare delivery strategy for likely winners, and coordinate operational readiness for the tasks that follow.",
   },
   "next-epoch": {
-    title: "The Next Epoch",
-    subtitle: "Epoch Proposals & Process",
-    body: "While Epoch 1 Proposals are being voted on, active Issuer and Redeemer organizations will have the ability to propose their own MCE initiatives based on their observations and desires for the community. During this time, Civic Participants can boost these proposals through likes to provide signaling for the Issuer Committee, who will ultimately decide the top 5 proposals based on community need. Redeemers also have the opportunity to influence what 5 proposals are selected by providing preemptive Redemption Offerings for proposals that they like. This allows private businesses to influence community direction through their willingness to offer private goods and services in exchange for local outcomes.",
+    title: "Upcoming Epoch Proposals",
+    subtitle: "Issuer proposal pipeline",
+    body: "During the current voting cycle, issuers can submit proposals for the next epoch. Community likes and committee review help shape which proposals advance, so upcoming rounds reflect both local demand and execution feasibility.",
   },
 };
 
@@ -485,7 +499,7 @@ function IssuerTutorialPanel({
 
       {step === "box5" && (
         <TutorialCard
-          subtitle="Step 5"
+          subtitle="Step 4"
           title="Propose a New Task"
           body="Issuer Organizations can propose the creation of a new task to be added to their catalog at any time. There is a standardized template for proposing tasks. Let's create one by clicking the + Propose New Task for Approval button.\n\nWe will auto-fill this task for you to start. When you're ready, let's talk about how they are approved."
         >
@@ -495,7 +509,7 @@ function IssuerTutorialPanel({
 
       {step === "box6" && (
         <TutorialCard
-          subtitle="Step 6"
+          subtitle="Step 5"
           title="Approve Your Proposed Task"
           body="Great. Your proposed task is now ready for catalog approval.\n\nGo ahead and approve your task for the catalog."
         >
@@ -505,7 +519,7 @@ function IssuerTutorialPanel({
 
       {step === "box7" && (
         <TutorialCard
-          subtitle="Step 7"
+          subtitle="Step 6"
           title="Issue from Your Catalog"
           body="Once a task has been approved, it is placed within your organizational task catalog. You can issue tasks from your catalog at any time."
         >
@@ -515,7 +529,7 @@ function IssuerTutorialPanel({
 
       {step === "box8" && (
         <TutorialCard
-          subtitle="Step 8"
+          subtitle="Step 7"
           title="Choose Issuance Slots"
           body="When issuing tasks, Issuers are able to create multiple instances of that task to be made available for the public to claim.\n\nGo ahead and approve the 3 tasks for issuance."
         >
@@ -525,7 +539,7 @@ function IssuerTutorialPanel({
 
       {step === "box15" && (
         <TutorialCard
-          subtitle="Step 15"
+          subtitle="Step 11"
           title="Issued, Claimed, and Completed"
           body="All issued task will be in one of three states: Issued, Claimed, and Completed. Issued tasks can be unissued by the Issuer. Unissued tasks are removed from circulation.\n\nGo ahead an Unissue one of your tasks."
         >
@@ -535,7 +549,7 @@ function IssuerTutorialPanel({
 
       {step === "box16" && (
         <TutorialCard
-          subtitle="Step 16"
+          subtitle="Step 12"
           title="Handling No-Shows"
           body="If a Civic-Participant fails to show up for their claimed task, Issuers can select the No Show button to remove the claimed task out of circulation. No Shows by Civic-Participants are tracked to prevent abuse.\n\nGo ahead and select Mark No-Show for this task."
         >
@@ -545,7 +559,7 @@ function IssuerTutorialPanel({
 
       {step === "box17" && (
         <TutorialCard
-          subtitle="Step 17"
+          subtitle="Step 13"
           title="Verify or Reject with Mint"
           body="Issuers are responsible for verifying that the work was actually completed by the Civic-Participant. Once verification is complete they can either reject completion as unsatisfactory with feedback or verify. Rejections are designed to keep Civic-Participants accountable. In both circumstances, credits will be minted to the Civic-Participant.\n\nGo ahead and Verify & Mint."
         >
@@ -686,7 +700,7 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
-  const [openInfoCard, setOpenInfoCard] = useState<IssuerLearnCardKey | null>(null);
+  const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
@@ -759,11 +773,11 @@ export default function IssuerApp() {
         }}
         onExit={exitIssuerTutorial}
       />
-      {openInfoCard ? (
+      {openInfoCards.length > 0 ? (
         <LearnMorePanel
-          keys={[openInfoCard]}
+          keys={openInfoCards}
           cards={ISSUER_LEARN_CARDS}
-          onClose={() => setOpenInfoCard(null)}
+          onClose={key => setOpenInfoCards(prev => prev.filter(item => item !== key))}
           accent={ACCENT}
         />
       ) : (
@@ -815,13 +829,13 @@ export default function IssuerApp() {
     </div>
   );
 
-  const openLearnMore = React.useCallback((key: IssuerLearnCardKey) => {
-    setOpenInfoCard(key);
+  const openLearnMore = React.useCallback((selection: IssuerLearnMoreSelection) => {
+    setOpenInfoCards(Array.isArray(selection) ? selection : [selection]);
   }, []);
 
   React.useEffect(() => {
     if (previousActiveTabRef.current !== activeTab) {
-      setOpenInfoCard(null);
+      setOpenInfoCards([]);
       previousActiveTabRef.current = activeTab;
     }
   }, [activeTab]);
@@ -1213,7 +1227,7 @@ export default function IssuerApp() {
         activeTab={activeTab}
         onTabChange={tab => {
           setActiveTab(tab);
-          setOpenInfoCard(null);
+          setOpenInfoCards([]);
         }}
         accentColor={ACCENT}
         title="Issuer"
@@ -1434,7 +1448,7 @@ function ProfileTab({
 }: {
   issuer: ReturnType<typeof useDemo>["state"]["issuer"];
   creditsCommitted: number;
-  onLearnMore: (key: IssuerLearnCardKey) => void;
+  onLearnMore: (selection: IssuerLearnMoreSelection) => void;
   tutorialHighlightEditProfile: boolean;
   tutorialHighlightEpoch: boolean;
   onOrganizationNameSaved: (nextName: string) => void;
@@ -1721,6 +1735,7 @@ function ProfileTab({
           totalTasksIssued={state.issuer.totalTasksIssued}
           totalCreditsIssued={state.issuer.totalCreditsIssued}
           scoreSnapshots={scoreSnapshots}
+          onLearnMore={onLearnMore}
         />
       ) : (
         <>
@@ -2106,6 +2121,7 @@ function IssuerDashboardTab({
   totalTasksIssued,
   totalCreditsIssued,
   scoreSnapshots,
+  onLearnMore,
 }: {
   creditsCommitted: number;
   activeTaskInstances: Array<{
@@ -2117,6 +2133,7 @@ function IssuerDashboardTab({
   totalTasksIssued: number;
   totalCreditsIssued: number;
   scoreSnapshots: ParticipantScoreSnapshot[];
+  onLearnMore: (selection: IssuerLearnMoreSelection) => void;
 }) {
   const openCount = activeTaskInstances.filter(task => task.status === "Open").length;
   const claimedCount = activeTaskInstances.filter(task => task.status === "Claimed").length;
@@ -2137,7 +2154,11 @@ function IssuerDashboardTab({
   return (
     <div>
       <div style={{ ...surfaceCard, marginBottom: 14 }}>
-        <SectionLabel text="Task Operations" accentColor={ACCENT_TEAL} />
+        <SectionLabel
+          text="Task Operations"
+          accentColor={ACCENT_TEAL}
+          right={<LearnMoreLink onClick={() => onLearnMore("dashboard-task-operations")} />}
+        />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Issued (Total)</div>
@@ -2167,7 +2188,11 @@ function IssuerDashboardTab({
       </div>
 
       <div style={{ ...surfaceCard }}>
-        <SectionLabel text="Participant Risk Signals (RD/RS)" accentColor={"#ff6b9d"} />
+        <SectionLabel
+          text="Participant Risk Signals (RD/RS)"
+          accentColor={"#ff6b9d"}
+          right={<LearnMoreLink onClick={() => onLearnMore("dashboard-participant-risk")} />}
+        />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Participants Tracked</div>
@@ -3533,7 +3558,7 @@ function CommunityTab({
   orgName: string;
   state: ReturnType<typeof useDemo>["state"];
   onCompose: () => void;
-  onLearnMore: (key: IssuerLearnCardKey) => void;
+  onLearnMore: (selection: IssuerLearnMoreSelection) => void;
 }) {
   const [section, setSection] = useState<"feed" | "mces">("feed");
 
@@ -3593,7 +3618,7 @@ function MyCityTab({
   posts: Post[];
   orgName: string;
   onCompose: () => void;
-  onLearnMore: (key: IssuerLearnCardKey) => void;
+  onLearnMore: (selection: IssuerLearnMoreSelection) => void;
 }) {
   const [sort, setSort] = useState<"recent" | "top">("recent");
 
@@ -5123,7 +5148,7 @@ function MCEsTab({
 }: {
   state: ReturnType<typeof useDemo>["state"];
   orgName: string;
-  onLearnMore: (key: IssuerLearnCardKey) => void;
+  onLearnMore: (selection: IssuerLearnMoreSelection) => void;
 }) {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [section, setSection] = useState<"epoch1" | "epoch2">("epoch1");
@@ -5225,6 +5250,10 @@ function MCEsTab({
 
   return (
     <div style={{ padding: "24px 20px 100px" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+        <LearnMoreLink onClick={() => onLearnMore(["epoch1-voting", "next-epoch"])} />
+      </div>
+
       {/* Epoch toggle */}
       <div
         style={{
@@ -5265,10 +5294,6 @@ function MCEsTab({
       {/* Epoch 1 — View only, no voting */}
       {section === "epoch1" && (
         <>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-            <LearnMoreLink onClick={() => onLearnMore("epoch1-voting")} />
-          </div>
-
           {epoch1Mces.length === 0 ? (
             <EmptyState emoji="🗳️" title="No active proposals" desc="Epoch 1 voting proposals will appear here." />
           ) : (
@@ -5347,10 +5372,6 @@ function MCEsTab({
       {/* Epoch 2 — View + Create proposal */}
       {section === "epoch2" && (
         <>
-          <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-            <LearnMoreLink onClick={() => onLearnMore("next-epoch")} />
-          </div>
-
           {/* Create proposal button */}
           <button
             onClick={() => setProposeOpen(true)}

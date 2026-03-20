@@ -99,18 +99,34 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
 
 type ParticipantLearnCardKey =
   | "profile-overview"
+  | "profile-activity"
+  | "profile-rd-rs"
   | "explore-onboarding"
   | "explore-task-flow"
+  | "explore-claimed"
   | "explore-verify"
   | "mycity-feed"
-  | "vote-overview"
+  | "vote-current-epoch"
+  | "vote-upcoming-epoch"
   | "redeem-flow";
+
+type ParticipantLearnMoreSelection = ParticipantLearnCardKey | ParticipantLearnCardKey[];
 
 const PARTICIPANT_LEARN_CARDS: Record<ParticipantLearnCardKey, LearnInfoCard> = {
   "profile-overview": {
     title: "Participant Account and Identity",
     subtitle: "How your profile works",
     body: "Your City/Sync sign-in provisions a smart account for onchain actions and syncs CITY, VOTE, and MCE balances from contract state. Your profile tracks participation history, completed tasks, and governance activity, building a civic reputation tied to verified community contributions.",
+  },
+  "profile-activity": {
+    title: "Participant Activity",
+    subtitle: "Tracking positive participation",
+    body: "This card summarizes your completion volume and earned rewards over time. It gives a quick view of how consistently you are contributing through verified civic work.",
+  },
+  "profile-rd-rs": {
+    title: "RD / RS Status",
+    subtitle: "Reliability and sanctions signal",
+    body: "RD tracks risk/debt from disruptive behavior patterns and RS tracks successful completion momentum. Together they determine your current status and whether protective controls should apply.",
   },
   "explore-onboarding": {
     title: "Onboarding Requirement",
@@ -122,6 +138,11 @@ const PARTICIPANT_LEARN_CARDS: Record<ParticipantLearnCardKey, LearnInfoCard> = 
     subtitle: "Open → Claimed → Completed",
     body: "Claim tasks from the open pool, execute and submit completion, and track progression through verification to completion. This keeps participant work visible and auditable.",
   },
+  "explore-claimed": {
+    title: "Claimed Tasks",
+    subtitle: "Claim and unclaim flow",
+    body: "Claiming reserves a task instance for you. If plans change, unclaim promptly so another participant can take it. Once execution begins and proof is submitted, it moves into issuer verification.",
+  },
   "explore-verify": {
     title: "Verification",
     subtitle: "How rewards are minted",
@@ -132,10 +153,15 @@ const PARTICIPANT_LEARN_CARDS: Record<ParticipantLearnCardKey, LearnInfoCard> = 
     subtitle: "Local information layer",
     body: "MyCity is a role-shared civic feed where organizations publish events, announcements, and opportunities. It functions as coordination context around task participation.",
   },
-  "vote-overview": {
-    title: "Voting and MCE Governance",
-    subtitle: "Using earned VOTE",
-    body: "VOTE is earned through civic contribution and used in time-bounded proposal rounds where participants allocate vote weight to proposals. MCEs are mission-oriented cycles where the community signals priorities and organizations execute coordinated tasks, linking governance outcomes to tangible civic execution.\n\nEpoch 2 — Upcoming: These proposals are gathering community support for the next voting epoch. Like the ones you want considered — the top-liked proposals may be selected by the committee for Epoch 2 voting.",
+  "vote-current-epoch": {
+    title: "Current Epoch Voting",
+    subtitle: "How active voting works",
+    body: "In the current epoch, Civic Participants allocate earned VOTE to active MCE proposals. Votes signal which city priorities should advance first and help determine which initiative receives execution focus.",
+  },
+  "vote-upcoming-epoch": {
+    title: "Upcoming Epoch Proposals",
+    subtitle: "What happens next",
+    body: "Upcoming proposals are a pipeline for the next voting round. Participants can review and like proposals to signal support before formal voting opens, helping shape the next epoch slate.",
   },
   "redeem-flow": {
     title: "Redemption Flow",
@@ -1199,7 +1225,7 @@ function ProfileTab({
   onLearnMore,
 }: {
   onTabChange: (tab: string) => void;
-  onLearnMore: (key: ParticipantLearnCardKey) => void;
+  onLearnMore: (selection: ParticipantLearnMoreSelection) => void;
 }) {
   const { state, setCitizenName } = useDemo();
   const { address } = useAccount({ type: "ModularAccountV2" });
@@ -1703,7 +1729,11 @@ function ProfileTab({
       {section === "dashboard" && (
         <>
           <div style={{ ...card, marginBottom: 12 }}>
-            <SectionLabel text="Activity" accentColor={TEAL} />
+            <SectionLabel
+              text="Activity"
+              accentColor={TEAL}
+              right={<LearnMoreLink onClick={() => onLearnMore("profile-activity")} />}
+            />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
               <div style={miniMetricCardStyle}>
                 <div style={miniMetricLabelStyle}>Tasks Completed</div>
@@ -1725,7 +1755,11 @@ function ProfileTab({
           </div>
 
           <div style={{ ...card, marginBottom: 12 }}>
-            <SectionLabel text="RD / RS Status" accentColor={tierColor} />
+            <SectionLabel
+              text="RD / RS Status"
+              accentColor={tierColor}
+              right={<LearnMoreLink onClick={() => onLearnMore("profile-rd-rs")} />}
+            />
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 10 }}>
               <div style={miniMetricCardStyle}>
                 <div style={miniMetricLabelStyle}>RD</div>
@@ -2184,7 +2218,7 @@ function ExploreTab({
   onTutorialStepChange,
   hiddenTaskIds,
 }: {
-  onLearnMore: (key: ParticipantLearnCardKey) => void;
+  onLearnMore: (selection: ParticipantLearnMoreSelection) => void;
   tutorialStep: IssuerTutorialStep;
   onTutorialStepChange: (step: IssuerTutorialStep) => void;
   hiddenTaskIds: string[];
@@ -2932,7 +2966,7 @@ function ExploreTab({
   };
 
   const openExploreLearnMore = () => {
-    onLearnMore("explore-task-flow");
+    onLearnMore(view === "claimed" ? "explore-claimed" : "explore-task-flow");
   };
 
   return (
@@ -3383,19 +3417,16 @@ function ExploreTab({
 // COMMUNITY TAB  (Feed + Vote)
 // ═════════════════════════════════════════════════════════════════════════════
 
-function CommunityTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCardKey) => void }) {
+function CommunityTab({ onLearnMore }: { onLearnMore: (selection: ParticipantLearnMoreSelection) => void }) {
   const [section, setSection] = useState<"feed" | "vote">("feed");
 
   return (
     <div style={{ paddingBottom: 20 }}>
-      {/* Learn More row — above segment toggle, triggers both cards */}
-      <div style={{ display: "flex", justifyContent: "flex-end", margin: "16px 16px 4px" }}>
-        <LearnMoreLink
-          onClick={() => {
-            onLearnMore(section === "feed" ? "mycity-feed" : "vote-overview");
-          }}
-        />
-      </div>
+      {section === "vote" && (
+        <div style={{ display: "flex", justifyContent: "flex-end", margin: "16px 16px 4px" }}>
+          <LearnMoreLink onClick={() => onLearnMore(["vote-current-epoch", "vote-upcoming-epoch"])} />
+        </div>
+      )}
       {/* Segment toggle */}
       <div style={{ margin: "0 16px 20px" }}>
         <div
@@ -3436,12 +3467,12 @@ function CommunityTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCard
 
       {section === "feed" && (
         <div style={{ padding: "0 16px" }}>
-          <MyCityTab _onLearnMore={onLearnMore} />
+          <MyCityTab onLearnMore={onLearnMore} />
         </div>
       )}
       {section === "vote" && (
         <div style={{ padding: "0 16px" }}>
-          <VoteTab onLearnMore={onLearnMore} />
+          <VoteTab />
         </div>
       )}
     </div>
@@ -3452,7 +3483,7 @@ function CommunityTab({ onLearnMore }: { onLearnMore: (key: ParticipantLearnCard
 // MYCITY TAB
 // ═════════════════════════════════════════════════════════════════════════════
 
-function MyCityTab({ _onLearnMore }: { _onLearnMore?: (key: ParticipantLearnCardKey) => void }) {
+function MyCityTab({ onLearnMore }: { onLearnMore?: (selection: ParticipantLearnMoreSelection) => void }) {
   const { state, likePost } = useDemo();
   const [sort, setSort] = useState<"recent" | "top">("recent");
 
@@ -3477,7 +3508,9 @@ function MyCityTab({ _onLearnMore }: { _onLearnMore?: (key: ParticipantLearnCard
 
   return (
     <div style={{ paddingBottom: 4 }}>
-      <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: 12 }}>
+      <div
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, gap: 10 }}
+      >
         <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
           {(["recent", "top"] as const).map(s => (
             <button
@@ -3498,6 +3531,7 @@ function MyCityTab({ _onLearnMore }: { _onLearnMore?: (key: ParticipantLearnCard
             </button>
           ))}
         </div>
+        <LearnMoreLink onClick={() => onLearnMore?.("mycity-feed")} />
       </div>
 
       {sorted.map(post => {
@@ -3585,7 +3619,7 @@ function MyCityTab({ _onLearnMore }: { _onLearnMore?: (key: ParticipantLearnCard
 // VOTE TAB
 // ═════════════════════════════════════════════════════════════════════════════
 
-function VoteTab({ onLearnMore: _onLearnMore }: { onLearnMore?: (key: ParticipantLearnCardKey) => void }) {
+function VoteTab() {
   const { state, allocateMceVote, likeEpoch2 } = useDemo();
   const p = state.participant;
   const [section, setSection] = useState<"epoch1" | "epoch2">("epoch1");
@@ -4416,7 +4450,7 @@ export default function ParticipantPage() {
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const previousActiveTabRef = useRef(activeTab);
-  const [openInfoCard, setOpenInfoCard] = useState<ParticipantLearnCardKey | null>(null);
+  const [openInfoCards, setOpenInfoCards] = useState<ParticipantLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
   const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
@@ -4547,7 +4581,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box11") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 11</div>
+          <div style={subtitleStyle}>Step 8</div>
           <div style={titleStyle}>Claim Two Tasks</div>
           <div style={bodyStyle}>
             Civic-Participants are able to Browse all issued tasks and claim up to 2 tasks at any given time.
@@ -4577,7 +4611,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box13") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 13</div>
+          <div style={subtitleStyle}>Step 9</div>
           <div style={titleStyle}>Execute a Claimed Task</div>
           <div style={bodyStyle}>
             When executing a task, Civic-Participants will be able to submit proof of task completion and provide
@@ -4607,7 +4641,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box14") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 14</div>
+          <div style={subtitleStyle}>Step 10</div>
           <div style={titleStyle}>Return to Issuer Verification</div>
           <div style={bodyStyle}>
             Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.
@@ -4657,7 +4691,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box23") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 23</div>
+          <div style={subtitleStyle}>Step 18</div>
           <div style={titleStyle}>Your Wallet and Balances</div>
           <div style={bodyStyle}>
             After completed tasks are verified, users are Minted CITY and VOTE. Civic-Participants can keep track of
@@ -4687,7 +4721,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box24") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 24</div>
+          <div style={subtitleStyle}>Step 19</div>
           <div style={titleStyle}>Redeem an Offering</div>
           <div style={bodyStyle}>
             Civic-Participants can spend their credits on available offerings. Go ahead and spend your credits on the
@@ -4717,7 +4751,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box25") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 25</div>
+          <div style={subtitleStyle}>Step 20</div>
           <div style={titleStyle}>Point-of-Sale Confirmation</div>
           <div style={bodyStyle}>
             When a Civic-Participant scans a QR code to redeem an offer, a visual and audible cue will flash on their
@@ -4748,7 +4782,7 @@ export default function ParticipantPage() {
     if (tutorialStep === "box26") {
       return (
         <div style={cardStyle}>
-          <div style={subtitleStyle}>Step 26</div>
+          <div style={subtitleStyle}>Step 21</div>
           <div style={titleStyle}>You’re Ready to Explore</div>
           <div style={bodyStyle}>
             {
@@ -4756,21 +4790,6 @@ export default function ParticipantPage() {
             }
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
-              Exit Tutorial
-            </button>
             <button
               onClick={exitTutorial}
               style={{
@@ -4791,22 +4810,16 @@ export default function ParticipantPage() {
       );
     }
 
-    return (
-      <div style={cardStyle}>
-        <div style={subtitleStyle}>Tutorial</div>
-        <div style={titleStyle}>Tutorial in Progress</div>
-        <div style={bodyStyle}>Continue the tutorial in the currently highlighted role and tab.</div>
-      </div>
-    );
+    return null;
   })();
   const leftPanel = (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       {tutorialCard}
-      {openInfoCard ? (
+      {openInfoCards.length > 0 ? (
         <LearnMorePanel
-          keys={[openInfoCard]}
+          keys={openInfoCards}
           cards={PARTICIPANT_LEARN_CARDS}
-          onClose={() => setOpenInfoCard(null)}
+          onClose={key => setOpenInfoCards(prev => prev.filter(item => item !== key))}
           accent={ACCENT}
         />
       ) : (
@@ -4854,17 +4867,17 @@ export default function ParticipantPage() {
     </div>
   );
 
-  const openLearnMore = React.useCallback((key: ParticipantLearnCardKey) => {
-    setOpenInfoCard(key);
+  const openLearnMore = React.useCallback((selection: ParticipantLearnMoreSelection) => {
+    setOpenInfoCards(Array.isArray(selection) ? selection : [selection]);
   }, []);
   const handleRoleTabChange = React.useCallback((tab: string) => {
     setActiveTab(tab);
-    setOpenInfoCard(null);
+    setOpenInfoCards([]);
   }, []);
 
   useEffect(() => {
     if (previousActiveTabRef.current !== activeTab) {
-      setOpenInfoCard(null);
+      setOpenInfoCards([]);
       previousActiveTabRef.current = activeTab;
     }
   }, [activeTab]);
