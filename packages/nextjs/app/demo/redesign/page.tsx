@@ -27,17 +27,14 @@ const activityLog = [
 ] as const;
 
 type RedesignPageProps = {
-  searchParams?: Promise<{
+  searchParams?: {
     view?: string | string[];
-  }>;
+  };
 };
 
-export default async function DemoRedesignPage({ searchParams }: RedesignPageProps) {
-  const resolvedSearchParams = await searchParams;
-  const requestedView = Array.isArray(resolvedSearchParams?.view)
-    ? resolvedSearchParams.view[0]
-    : resolvedSearchParams?.view;
-  const selectedView = requestedView === "web" ? "web" : "mobile";
+export default function DemoRedesignPage({ searchParams }: RedesignPageProps) {
+  const selectedView =
+    (Array.isArray(searchParams?.view) ? searchParams?.view[0] : searchParams?.view) === "web" ? "web" : "mobile";
   const embedSrc =
     selectedView === "web" ? "/demo/redesign-web-shell?embed=1&skin=redesign" : "/demo/issuer?embed=1&skin=redesign";
 
