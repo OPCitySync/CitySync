@@ -826,6 +826,8 @@ export default function AppShell({
                 #08080f
               `,
           height: embedMode ? "100vh" : undefined,
+          padding: embedMode ? "8px 0" : undefined,
+          boxSizing: embedMode ? "border-box" : undefined,
           overflow: embedMode ? "hidden" : undefined,
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
@@ -927,10 +929,10 @@ export default function AppShell({
               padding: 2,
               borderRadius: 52,
               background: redesignSkin
-                ? "linear-gradient(145deg, rgba(239,243,252,0.98) 0%, rgba(226,234,250,0.96) 55%, rgba(215,227,247,0.94) 100%)"
+                ? "linear-gradient(145deg, rgba(249,244,234,0.99) 0%, rgba(245,237,221,0.98) 55%, rgba(239,230,210,0.96) 100%)"
                 : `linear-gradient(145deg, ${accentColor}90 0%, rgba(130,100,240,0.6) 45%, rgba(52,238,182,0.5) 100%)`,
               boxShadow: redesignSkin
-                ? "0 0 0 1px rgba(28,42,78,0.14), 0 16px 36px rgba(32,47,83,0.18)"
+                ? "0 0 0 1px rgba(72,56,30,0.16), 0 14px 28px rgba(76,58,28,0.2)"
                 : `
                   0 0 0 1px rgba(0,0,0,0.6),
                   0 0 60px ${accentColor}28,

@@ -405,10 +405,12 @@
 .embedFrame {
   width: 100%;
   max-width: 780px;
-  min-height: 860px;
-  height: min(92vh, 920px);
+  min-height: 800px;
+  height: min(84vh, 860px);
+  padding: 8px 0;
+  box-sizing: border-box;
   border-radius: 0;
-  background: #f8f4eb;
+  background: transparent;
   border: none;
   box-shadow: none;
   overflow: hidden;
@@ -705,8 +707,8 @@
 
   .embedFrame {
     max-width: 600px;
-    min-height: 760px;
-    height: min(84vh, 820px);
+    min-height: 700px;
+    height: min(78vh, 760px);
   }
 }
 
@@ -731,7 +733,7 @@
 
   .embedFrame {
     max-width: 100%;
-    min-height: 680px;
-    height: 76vh;
+    min-height: 620px;
+    height: 72vh;
   }
 }
