@@ -78,14 +78,10 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
               height={44}
               className={styles.wordmark}
             />
-            <span className={styles.prototypeBadge}>Prototype - UI only</span>
           </div>
           <div className={styles.topActions}>
-            <Link href="/demo" className={styles.ghostBtn}>
-              Open Current Demo
-            </Link>
             <button className={styles.primaryBtn} type="button">
-              Request Pilot Access
+              Request Pilot for your City
             </button>
           </div>
         </div>
