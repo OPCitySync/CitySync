@@ -26,7 +26,18 @@ const activityLog = [
   { title: "Redemption Burn", detail: "Farmers Market Voucher · 10 CITY", time: "14m ago", status: "Confirmed" },
 ] as const;
 
-export default function DemoRedesignPage() {
+type RedesignPageProps = {
+  searchParams?: {
+    view?: string | string[];
+  };
+};
+
+export default function DemoRedesignPage({ searchParams }: RedesignPageProps) {
+  const selectedView =
+    (Array.isArray(searchParams?.view) ? searchParams?.view[0] : searchParams?.view) === "web" ? "web" : "mobile";
+  const embedSrc =
+    selectedView === "web" ? "/demo/redesign-web-shell?embed=1&skin=redesign" : "/demo/issuer?embed=1&skin=redesign";
+
   return (
     <div className={styles.page}>
       <header className={styles.topNav}>
@@ -85,6 +96,26 @@ export default function DemoRedesignPage() {
 
         <section className={styles.workspace}>
           <aside className={styles.leftRail}>
+            <div className={styles.viewModeCard}>
+              <p className={styles.cardLabel}>Preview Surface</p>
+              <h3>Mobile / Web</h3>
+              <p className={styles.cardText}>Toggle between the current mobile shell and a proposed web app layout.</p>
+              <div className={styles.viewModeToggle}>
+                <Link
+                  href="/demo/redesign"
+                  className={`${styles.viewModeOption} ${selectedView === "mobile" ? styles.viewModeOptionActive : ""}`}
+                >
+                  Mobile
+                </Link>
+                <Link
+                  href="/demo/redesign?view=web"
+                  className={`${styles.viewModeOption} ${selectedView === "web" ? styles.viewModeOptionActive : ""}`}
+                >
+                  Web
+                </Link>
+              </div>
+            </div>
+
             <h2 className={styles.railTitle}>Role Modes</h2>
             <div className={styles.roleStack}>
               {roleCards.map(role => (
@@ -124,12 +155,7 @@ export default function DemoRedesignPage() {
 
           <div className={styles.deviceStage}>
             <div className={styles.embedFrame}>
-              <iframe
-                src="/demo/issuer?embed=1&skin=redesign"
-                title="AppShell Preview"
-                className={styles.embedIframe}
-                loading="lazy"
-              />
+              <iframe src={embedSrc} title="AppShell Preview" className={styles.embedIframe} loading="lazy" />
             </div>
           </div>
 
