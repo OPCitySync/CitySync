@@ -811,7 +811,9 @@ export default function AppShell({
         }
         style={{
           background: embedMode
-            ? "transparent"
+            ? redesignSkin
+              ? "#f7f8fc"
+              : "transparent"
             : lightSurroundings
               ? `
                 radial-gradient(ellipse 720px 520px at 50% 8%, ${accentColor}22, transparent 58%),
