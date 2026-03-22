@@ -214,14 +214,15 @@ export default function AppShell({
   const { logout } = useLogout({ onSuccess: () => router.push("/demo") });
 
   const currentRole = ROLES.find(r => r.key === role)!;
-  const walletAllowed = !tutorialLocked || tutorialHighlightWalletButton;
-  const roleSwitcherAllowed = !tutorialLocked || tutorialHighlightRoleSwitcher;
-  const roleSheetCancelOnly = tutorialLocked && tutorialHighlightRoleSwitcher;
-  const highlightRoleSwitcher = tutorialHighlightRoleSwitcher && !switcherOpen;
-  const highlightRoleCancel = tutorialHighlightRoleSwitcher && switcherOpen;
   const embedMode = searchParams?.get("embed") === "1";
   const skinParam = searchParams?.get("skin");
   const redesignSkin = skinParam !== "classic";
+  const hasExternalRoleChooser = redesignSkin && showLeftPanel && !embedMode;
+  const walletAllowed = !tutorialLocked || tutorialHighlightWalletButton;
+  const roleSwitcherAllowed = tutorialHighlightRoleSwitcher || (!tutorialLocked && !hasExternalRoleChooser);
+  const roleSheetCancelOnly = tutorialLocked && tutorialHighlightRoleSwitcher;
+  const highlightRoleSwitcher = tutorialHighlightRoleSwitcher && !switcherOpen;
+  const highlightRoleCancel = tutorialHighlightRoleSwitcher && switcherOpen;
   const lightSurroundings = phoneFrame && (surroundingsTheme === "light" || redesignSkin);
   const sideRailWidth = redesignSkin ? 320 : 280;
   const sideRailOffset = redesignSkin ? 250 : 230;
@@ -415,8 +416,17 @@ export default function AppShell({
       {redesignSkin && (
         <style>{`
           .citysync-redesign-main {
+            --cs-bg: #f8f2e4;
+            --cs-surface: rgba(255,255,255,0.92);
+            --cs-surface-soft: rgba(246,249,255,0.92);
+            --cs-border: rgba(31,45,86,0.14);
+            --cs-text-strong: #1b2e63;
+            --cs-text: rgba(27,45,95,0.78);
+            --cs-text-muted: rgba(27,45,95,0.62);
+            --cs-text-dimmed: rgba(27,45,95,0.46);
+            --cs-shadow: none;
             background: linear-gradient(180deg, #f8f4eb 0%, #f3ead7 100%) !important;
-            color: #1a2d62 !important;
+            color: var(--cs-text-strong) !important;
           }
           .citysync-redesign-content {
             filter: invert(1) hue-rotate(180deg) saturate(0.88) contrast(0.96) brightness(1.02) sepia(0.16);

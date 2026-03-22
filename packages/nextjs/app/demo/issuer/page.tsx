@@ -129,10 +129,10 @@ const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
 const ACCENT_TEAL = "#34eeb6"; // teal — verify / success states
-const SURFACE = "#1E1E2C";
-const BG = "#15151E";
-const MUTED = "rgba(255,255,255,0.45)";
-const DIMMED = "rgba(255,255,255,0.25)";
+const SURFACE = "var(--cs-surface, #1E1E2C)";
+const BG = "var(--cs-bg, #15151E)";
+const MUTED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
+const DIMMED = "var(--cs-text-muted, rgba(255,255,255,0.25))";
 
 type OpportunityRaw = readonly [
   issuer: `0x${string}`,
@@ -184,10 +184,10 @@ function getIssuerRightPanel(_activeTab: string): React.ReactNode {
 
 const surfaceCard: React.CSSProperties = {
   background: SURFACE,
-  border: "1px solid rgba(255,255,255,0.07)",
+  border: "1px solid var(--cs-border, rgba(255,255,255,0.07))",
   borderRadius: 16,
   padding: "16px",
-  boxShadow: "0 2px 12px rgba(0,0,0,0.28)",
+  boxShadow: "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))",
 };
 
 /** Card with a faint gold left accent — for primary content cards (tasks) */
