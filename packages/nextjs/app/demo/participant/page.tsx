@@ -21,7 +21,12 @@ import {
   getSanctionPolicyForSnapshot,
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
-import { DEMO_MODAL_OVERLAY_STYLE, DEMO_MODAL_SHEET_BASE_STYLE } from "../_utils/sheetStyles";
+import {
+  DEMO_CONTENT_SHEET_ABSOLUTE_STYLE,
+  DEMO_CONTENT_SHEET_FIXED_STYLE,
+  DEMO_MODAL_OVERLAY_STYLE,
+  DEMO_MODAL_SHEET_BASE_STYLE,
+} from "../_utils/sheetStyles";
 import {
   cleanupDemoTutorialArtifacts,
   consumeDemoTutorialHandoff,
@@ -743,18 +748,8 @@ function ExecuteModal({
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          position: "fixed",
-          top: 112,
-          left: 0,
-          right: 0,
-          bottom: 69,
-          zIndex: 221,
+          ...DEMO_CONTENT_SHEET_FIXED_STYLE,
           background: "var(--cs-bg, #14172e)",
-          borderRadius: "12px 12px 0 0",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
         }}
       >
         {/* Header */}
@@ -1018,21 +1013,14 @@ function RedeemModal({
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            top: 112,
-            bottom: 69,
-            zIndex: 1,
+            ...DEMO_CONTENT_SHEET_ABSOLUTE_STYLE,
             background: "var(--cs-bg, rgb(26, 29, 50))",
             borderRadius: "20px 20px 0 0",
             border: `1px solid ${BORDER}`,
             padding: "24px 20px 24px",
-            overflowY: "auto",
             animation: confirmed
               ? "flashConfirm 0.5s ease-in-out 0s 10"
               : "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-            pointerEvents: "auto",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>

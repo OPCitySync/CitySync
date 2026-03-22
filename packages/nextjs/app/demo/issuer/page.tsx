@@ -30,7 +30,12 @@ import {
   setDemoTutorialHandoff,
   startDemoTutorialRunForAddress,
 } from "../_utils/tutorialRun";
-import { DEMO_MODAL_OVERLAY_STYLE, DEMO_MODAL_SHEET_BASE_STYLE } from "../_utils/sheetStyles";
+import {
+  DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
+  DEMO_CONTENT_SHEET_FIXED_STYLE,
+  DEMO_MODAL_OVERLAY_STYLE,
+  DEMO_MODAL_SHEET_BASE_STYLE,
+} from "../_utils/sheetStyles";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -3135,18 +3140,8 @@ function CreateTaskSheet({
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          position: "fixed",
-          top: 112,
-          left: 0,
-          right: 0,
-          bottom: 69,
-          zIndex: 221,
+          ...DEMO_CONTENT_SHEET_FIXED_STYLE,
           background: "var(--cs-surface, #1E1E2C)",
-          borderRadius: "12px 12px 0 0",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
         }}
       >
         {/* Sticky header */}
@@ -3398,18 +3393,8 @@ function ProposeTaskSheet({
         onClick={e => e.stopPropagation()}
         data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
         style={{
-          position: "fixed",
-          top: 112,
-          left: 0,
-          right: 0,
-          bottom: 69,
-          zIndex: 221,
+          ...DEMO_CONTENT_SHEET_FIXED_STYLE,
           background: "var(--cs-surface, #1E1E2C)",
-          borderRadius: "12px 12px 0 0",
-          animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
         }}
       >
         {/* Sticky header */}
@@ -5586,19 +5571,9 @@ function MCEsTab({
             <div
               onClick={e => e.stopPropagation()}
               style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: 112,
-                bottom: 69,
-                zIndex: 1,
+                ...DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
                 background: "var(--cs-surface, #1E1E2C)",
-                borderRadius: "12px 12px 0 0",
-                boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
                 padding: "20px 20px 24px",
-                animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-                overflowY: "auto",
-                pointerEvents: "auto",
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
