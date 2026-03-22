@@ -27,6 +27,13 @@ export const DEMO_MODAL_SHEET_BASE_STYLE: CSSProperties = {
   pointerEvents: "auto",
 };
 
+export const DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE: CSSProperties = {
+  position: "fixed",
+  inset: 0,
+  zIndex: 220,
+  pointerEvents: "none",
+};
+
 export const DEMO_CONTENT_SHEET_FIXED_STYLE: CSSProperties = {
   position: "fixed",
   top: APP_NAV_OFFSET_PX,

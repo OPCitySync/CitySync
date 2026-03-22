@@ -36,6 +36,7 @@ import {
   DEMO_CONTENT_SHEET_FIXED_STYLE,
   DEMO_MODAL_OVERLAY_STYLE,
   DEMO_MODAL_SHEET_BASE_STYLE,
+  DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE,
 } from "../_utils/sheetStyles";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -3815,7 +3816,7 @@ function ComposePostSheet({
           to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
@@ -3950,7 +3951,7 @@ function UnissueConfirmSheet({
           50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
         }
       `}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
         <div
           onClick={e => e.stopPropagation()}
@@ -4041,7 +4042,7 @@ function NoShowConfirmSheet({
           50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.72), 0 0 18px rgba(221,158,51,0.46); }
         }
       `}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
         <div
           onClick={e => e.stopPropagation()}
@@ -4959,7 +4960,7 @@ function VerifyTab({
             return (
               <>
                 <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
-                <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+                <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
                   {/* backdrop */}
                   <div
                     onClick={() => setConfirmVerify(null)}
@@ -5507,7 +5508,7 @@ function MCEsTab({
               to   { transform: translateY(0);    opacity: 1; }
             }
           `}</style>
-          <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+          <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
             <div
               onClick={e => e.stopPropagation()}
               style={{
@@ -5682,7 +5683,7 @@ function IssueTaskPopup({
           to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
@@ -5980,7 +5981,7 @@ function ModifyTaskSheet({
           to   { transform: translateY(0);    opacity: 1; }
         }
       `}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}

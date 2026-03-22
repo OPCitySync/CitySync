@@ -27,6 +27,7 @@ import {
   DEMO_CONTENT_SHEET_FIXED_STYLE,
   DEMO_MODAL_OVERLAY_STYLE,
   DEMO_MODAL_SHEET_BASE_STYLE,
+  DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE,
 } from "../_utils/sheetStyles";
 import {
   cleanupDemoTutorialArtifacts,
@@ -547,7 +548,7 @@ function ClaimConfirmSheet({
       `}</style>
 
       {/* Overlay wrapper — pointerEvents:none so BottomNav area stays clickable */}
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         {/* Backdrop — stops at BottomNav top (69 px from bottom) */}
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
 
@@ -642,7 +643,7 @@ function UnclaimConfirmSheet({
       `}</style>
 
       {/* Overlay wrapper — pointerEvents:none so BottomNav area stays clickable */}
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         {/* Backdrop — stops at BottomNav top (69 px from bottom) */}
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
 
@@ -1009,7 +1010,7 @@ function RedeemModal({
         }
       `}</style>
       {/* Overlay wrapper — fixed so sheet doesn't scroll with page content */}
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         {/* Sheet — constrained to app content area between nav bar and bottom tabs */}
         <div
           onClick={e => e.stopPropagation()}

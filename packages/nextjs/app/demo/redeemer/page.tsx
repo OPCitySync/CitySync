@@ -16,6 +16,7 @@ import {
   DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
   DEMO_MODAL_OVERLAY_STYLE,
   DEMO_MODAL_SHEET_BASE_STYLE,
+  DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE,
 } from "../_utils/sheetStyles";
 import {
   appendDemoTutorialOfferingIds,
@@ -2794,7 +2795,7 @@ function AddOfferingSheet({
           50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.82), 0 0 18px rgba(221,158,51,0.52); }
         }
       `}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
@@ -3042,7 +3043,7 @@ function IssueOfferingFromCatalogSheet({
           50% { box-shadow: 0 0 0 1px rgba(255,226,162,0.82), 0 0 18px rgba(221,158,51,0.52); }
         }
       `}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
@@ -3215,7 +3216,7 @@ function ConfirmDialog({
   return (
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
         <div
           onClick={e => e.stopPropagation()}
@@ -3308,7 +3309,7 @@ function QRModal({
   return (
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
@@ -3702,7 +3703,7 @@ function ComposePostSheet({
   return (
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
-      <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+      <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
         <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
@@ -4381,7 +4382,7 @@ function MCEsTab({
       {proposeOpen && (
         <>
           <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
-          <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
+          <div style={DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE}>
             <div
               onClick={e => e.stopPropagation()}
               style={{
