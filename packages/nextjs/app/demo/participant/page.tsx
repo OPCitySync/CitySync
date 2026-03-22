@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAccount } from "@account-kit/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
@@ -20,6 +21,7 @@ import {
   getSanctionPolicyForSnapshot,
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
+import { DEMO_MODAL_OVERLAY_STYLE, DEMO_MODAL_SHEET_BASE_STYLE } from "../_utils/sheetStyles";
 import {
   cleanupDemoTutorialArtifacts,
   consumeDemoTutorialHandoff,
@@ -541,41 +543,20 @@ function ClaimConfirmSheet({
       {/* Overlay wrapper — pointerEvents:none so BottomNav area stays clickable */}
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
         {/* Backdrop — stops at BottomNav top (69 px from bottom) */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 69,
-            background: "rgba(0,0,0,0.45)",
-            pointerEvents: "auto",
-          }}
-          onClick={onCancel}
-        />
+        <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
 
         {/* Sheet — bottom quarter, slides up from above BottomNav */}
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 69,
+            ...DEMO_MODAL_SHEET_BASE_STYLE,
             minHeight: 180,
             maxHeight: "32%",
-            zIndex: 1,
-            background: "var(--cs-surface, #1E1E2C)",
-            borderRadius: "24px 24px 0 0",
-            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
-            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             gap: 16,
-            overflowY: "auto",
-            pointerEvents: "auto",
           }}
         >
           <div>
@@ -657,41 +638,20 @@ function UnclaimConfirmSheet({
       {/* Overlay wrapper — pointerEvents:none so BottomNav area stays clickable */}
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
         {/* Backdrop — stops at BottomNav top (69 px from bottom) */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 69,
-            background: "rgba(0,0,0,0.45)",
-            pointerEvents: "auto",
-          }}
-          onClick={onCancel}
-        />
+        <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
 
         {/* Sheet — bottom quarter, slides up from above BottomNav */}
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 69,
+            ...DEMO_MODAL_SHEET_BASE_STYLE,
             minHeight: 180,
             maxHeight: "32%",
-            zIndex: 1,
-            background: "var(--cs-surface, #1E1E2C)",
-            borderRadius: "24px 24px 0 0",
-            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
-            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             gap: 16,
-            overflowY: "auto",
-            pointerEvents: "auto",
           }}
         >
           <div>
@@ -1530,7 +1490,14 @@ function ProfileTab({
                 }}
               >
                 {photoUrl ? (
-                  <img src={photoUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <Image
+                    src={photoUrl}
+                    alt="Profile"
+                    width={44}
+                    height={44}
+                    unoptimized
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
                 ) : (
                   <span>👤</span>
                 )}

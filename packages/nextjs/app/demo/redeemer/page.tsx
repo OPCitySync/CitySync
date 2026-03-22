@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useAccount } from "@account-kit/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
@@ -10,6 +11,7 @@ import { RailInfoPlaceholderCard, RelatedDeepDivesCard, TutorialWalkthroughButto
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, RedemptionOffer } from "../_data/mockData";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
+import { DEMO_MODAL_OVERLAY_STYLE, DEMO_MODAL_SHEET_BASE_STYLE } from "../_utils/sheetStyles";
 import {
   appendDemoTutorialOfferingIds,
   cleanupDemoTutorialArtifacts,
@@ -1708,7 +1710,14 @@ function ProfileTab({
                   }}
                 >
                   {logoUrl ? (
-                    <img src={logoUrl} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <Image
+                      src={logoUrl}
+                      alt="Logo"
+                      width={44}
+                      height={44}
+                      unoptimized
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
                   ) : (
                     <span style={{ fontSize: 20 }}>🏪</span>
                   )}
@@ -2841,34 +2850,13 @@ function AddOfferingSheet({
         }
       `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 69,
-            background: "rgba(0,0,0,0.45)",
-            pointerEvents: "auto",
-          }}
-          onClick={onClose}
-        />
+        <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 69,
+            ...DEMO_MODAL_SHEET_BASE_STYLE,
             maxHeight: "75%",
-            zIndex: 1,
-            background: "var(--cs-surface, #1E1E2C)",
-            borderRadius: "24px 24px 0 0",
-            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 20px 24px",
-            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-            overflowY: "auto",
-            pointerEvents: "auto",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
@@ -3110,34 +3098,14 @@ function IssueOfferingFromCatalogSheet({
         }
       `}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 69,
-            background: "rgba(0,0,0,0.45)",
-            pointerEvents: "auto",
-          }}
-          onClick={onClose}
-        />
+        <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 69,
+            ...DEMO_MODAL_SHEET_BASE_STYLE,
             maxHeight: "70%",
-            zIndex: 1,
-            background: "var(--cs-surface, #1E1E2C)",
-            borderRadius: "24px 24px 0 0",
             boxShadow: SHADOW_LG,
             padding: "20px 20px 24px",
-            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-            overflowY: "auto",
-            pointerEvents: "auto",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
@@ -3303,38 +3271,18 @@ function ConfirmDialog({
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 69,
-            background: "rgba(0,0,0,0.45)",
-            pointerEvents: "auto",
-          }}
-          onClick={onCancel}
-        />
+        <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onCancel} />
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 69,
+            ...DEMO_MODAL_SHEET_BASE_STYLE,
             maxHeight: "40%",
-            zIndex: 1,
-            background: "var(--cs-surface, #1E1E2C)",
-            borderRadius: "24px 24px 0 0",
             boxShadow: SHADOW_LG,
             padding: "20px 24px 24px",
-            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             gap: 16,
-            overflowY: "auto",
-            pointerEvents: "auto",
           }}
         >
           <div>
@@ -3416,34 +3364,13 @@ function QRModal({
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 69,
-            background: "rgba(0,0,0,0.45)",
-            pointerEvents: "auto",
-          }}
-          onClick={onClose}
-        />
+        <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 69,
+            ...DEMO_MODAL_SHEET_BASE_STYLE,
             maxHeight: "65%",
-            zIndex: 1,
-            background: "var(--cs-surface, #1E1E2C)",
-            borderRadius: "24px 24px 0 0",
-            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
-            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-            overflowY: "auto",
-            pointerEvents: "auto",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
@@ -3831,34 +3758,13 @@ function ComposePostSheet({
     <>
       <style>{`@keyframes walletSlideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }`}</style>
       <div style={{ position: "fixed", inset: 0, zIndex: 220, pointerEvents: "none" }}>
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 69,
-            background: "rgba(0,0,0,0.45)",
-            pointerEvents: "auto",
-          }}
-          onClick={onClose}
-        />
+        <div style={DEMO_MODAL_OVERLAY_STYLE} onClick={onClose} />
         <div
           onClick={e => e.stopPropagation()}
           style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 69,
+            ...DEMO_MODAL_SHEET_BASE_STYLE,
             maxHeight: "65%",
-            zIndex: 1,
-            background: "var(--cs-surface, #1E1E2C)",
-            borderRadius: "24px 24px 0 0",
-            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 20px 24px",
-            animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
-            overflowY: "auto",
-            pointerEvents: "auto",
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
