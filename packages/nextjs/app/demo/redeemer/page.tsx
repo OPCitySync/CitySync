@@ -176,15 +176,24 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
 
 const SURFACE = "var(--cs-surface, #1E1E2C)";
 const BG = "var(--cs-bg, #15151E)";
+const SURFACE_SOFT = "var(--cs-surface-soft, rgba(255,255,255,0.04))";
+const BORDER = "var(--cs-border, rgba(255,255,255,0.08))";
+const TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
+const TEXT_DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
+const SHADOW = "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))";
+const SHADOW_LG = "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))";
+const CONTROL_SURFACE = "var(--cs-control-surface, rgba(255,255,255,0.05))";
+const CONTROL_ACTIVE = "var(--cs-control-active, rgba(255,255,255,0.1))";
+const CONTROL_BORDER = "var(--cs-control-border, rgba(255,255,255,0.14))";
 const MUTED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
 const DIMMED = "var(--cs-text-muted, rgba(255,255,255,0.25))";
 
 const surfaceCard: React.CSSProperties = {
   background: SURFACE,
-  border: "1px solid var(--cs-border, rgba(255,255,255,0.06))",
+  border: `1px solid ${BORDER}`,
   borderRadius: 16,
   padding: "16px",
-  boxShadow: "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))",
+  boxShadow: SHADOW,
 };
 const accentCard: React.CSSProperties = {
   ...surfaceCard,
@@ -337,15 +346,15 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
           bottom: 28,
           right: 24,
           animation: "toastUp 0.2s cubic-bezier(0.34,1.36,0.64,1) both",
-          background: "rgba(20,22,32,0.97)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "var(--cs-surface, rgba(20,22,32,0.97))",
+          border: `1px solid ${BORDER}`,
           borderLeft: `3px solid ${accentBorder}`,
           borderRadius: 10,
           padding: "10px 12px 10px 13px",
           fontSize: 13,
           fontWeight: 500,
           zIndex: 400,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+          boxShadow: SHADOW,
           display: "flex",
           alignItems: "flex-start",
           gap: 9,
@@ -358,13 +367,13 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
         <span style={{ fontSize: 13, color: iconColor, flexShrink: 0, marginTop: 1 }}>
           {isError ? "✕" : isInfo ? "⋯" : "✓"}
         </span>
-        <span style={{ color: "rgba(255,255,255,0.82)", lineHeight: 1.45, flex: 1 }}>{message}</span>
+        <span style={{ color: TEXT_STRONG, lineHeight: 1.45, flex: 1 }}>{message}</span>
         <button
           onClick={onDone}
           style={{
             background: "none",
             border: "none",
-            color: "rgba(255,255,255,0.28)",
+            color: TEXT_DIMMED,
             cursor: "pointer",
             fontSize: 15,
             padding: 0,
@@ -1544,20 +1553,29 @@ function ProfileTab({
   return (
     <div style={{ padding: "24px 20px 100px" }}>
       {/* Profile / Dashboard segment toggle */}
-      <div style={{ background: SURFACE, borderRadius: 16, display: "flex", marginBottom: 20, overflow: "hidden" }}>
+      <div
+        style={{
+          display: "flex",
+          background: CONTROL_SURFACE,
+          border: `1px solid ${CONTROL_BORDER}`,
+          borderRadius: 10,
+          padding: 4,
+          marginBottom: 20,
+        }}
+      >
         {(
           [
             { key: "profile" as const, label: "Profile", color: ACCENT },
             { key: "dashboard" as const, label: "Dashboard", color: ACCENT_BLUE },
           ] as const
-        ).map(({ key, label, color }, i) => (
+        ).map(({ key, label, color }) => (
           <button
             key={key}
             onClick={() => setSection(key)}
             style={{
               flex: 1,
               border: "none",
-              borderRadius: i === 0 ? "16px 0 0 16px" : "0 16px 16px 0",
+              borderRadius: 8,
               padding: "9px 0",
               fontSize: 13,
               fontWeight: 600,
@@ -2199,13 +2217,13 @@ function OfferingsTab({
                       <button
                         onClick={() => onModifyCommitted(item.id)}
                         style={{
-                          background: "rgba(255,255,255,0.08)",
-                          border: "1px solid rgba(255,255,255,0.14)",
+                          background: SURFACE_SOFT,
+                          border: `1px solid ${CONTROL_BORDER}`,
                           borderRadius: 10,
                           padding: "8px 12px",
                           fontSize: 12,
                           fontWeight: 700,
-                          color: "var(--cs-text-strong, #fff)",
+                          color: TEXT_STRONG,
                           cursor: "pointer",
                         }}
                       >
@@ -2219,7 +2237,7 @@ function OfferingsTab({
                         disabled={duplicateCommittedState}
                         style={{
                           background: duplicateCommittedState
-                            ? "rgba(255,255,255,0.1)"
+                            ? CONTROL_ACTIVE
                             : shouldHighlightCatalogCommit
                               ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
                               : ACCENT,
@@ -2255,15 +2273,15 @@ function OfferingsTab({
             style={{
               width: "100%",
               marginBottom: 12,
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              background: SURFACE_SOFT,
+              border: `1px solid ${CONTROL_BORDER}`,
               borderRadius: 10,
               padding: "10px 12px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              color: "var(--cs-text-strong, #fff)",
+              color: TEXT_STRONG,
             }}
           >
             <span style={{ fontSize: 12, fontWeight: 700 }}>
@@ -2523,13 +2541,13 @@ function OfferingsTab({
                       <button
                         onClick={() => onModifyMCE(item.id)}
                         style={{
-                          background: "rgba(255,255,255,0.08)",
-                          border: "1px solid rgba(255,255,255,0.14)",
+                          background: SURFACE_SOFT,
+                          border: `1px solid ${CONTROL_BORDER}`,
                           borderRadius: 10,
                           padding: "8px 12px",
                           fontSize: 12,
                           fontWeight: 700,
-                          color: "var(--cs-text-strong, #fff)",
+                          color: TEXT_STRONG,
                           cursor: "pointer",
                         }}
                       >
@@ -2539,7 +2557,7 @@ function OfferingsTab({
                         onClick={() => setPendingMceCatalogCommitId(item.id)}
                         disabled={duplicateMceState}
                         style={{
-                          background: duplicateMceState ? "rgba(255,255,255,0.1)" : "#DD9E33",
+                          background: duplicateMceState ? CONTROL_ACTIVE : "#DD9E33",
                           border: "none",
                           borderRadius: 10,
                           padding: "8px 12px",
@@ -2564,15 +2582,15 @@ function OfferingsTab({
             style={{
               width: "100%",
               marginBottom: 12,
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              background: SURFACE_SOFT,
+              border: `1px solid ${CONTROL_BORDER}`,
               borderRadius: 10,
               padding: "10px 12px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              color: "var(--cs-text-strong, #fff)",
+              color: TEXT_STRONG,
             }}
           >
             <span style={{ fontSize: 12, fontWeight: 700 }}>Active MCE Offerings ({mceOfferings.length})</span>
@@ -2846,7 +2864,7 @@ function AddOfferingSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 20px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             overflowY: "auto",
@@ -3037,9 +3055,7 @@ function AddOfferingSheet({
             disabled={type === "committed" ? !canSubmitCommitted : !canSubmitMCE}
             style={{
               width: "100%",
-              background: (type === "committed" ? canSubmitCommitted : canSubmitMCE)
-                ? accentCol
-                : "rgba(255,255,255,0.08)",
+              background: (type === "committed" ? canSubmitCommitted : canSubmitMCE) ? accentCol : CONTROL_ACTIVE,
               border: "none",
               borderRadius: 14,
               padding: "14px 0",
@@ -3117,7 +3133,7 @@ function IssueOfferingFromCatalogSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: SHADOW_LG,
             padding: "20px 20px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             overflowY: "auto",
@@ -3206,13 +3222,13 @@ function IssueOfferingFromCatalogSheet({
                         onClose();
                       }}
                       style={{
-                        background: "rgba(255,255,255,0.08)",
-                        border: "1px solid rgba(255,255,255,0.14)",
+                        background: SURFACE_SOFT,
+                        border: `1px solid ${CONTROL_BORDER}`,
                         borderRadius: 10,
                         padding: "8px 12px",
                         fontSize: 12,
                         fontWeight: 700,
-                        color: "var(--cs-text-strong, #fff)",
+                        color: TEXT_STRONG,
                         cursor: "pointer",
                       }}
                     >
@@ -3222,7 +3238,7 @@ function IssueOfferingFromCatalogSheet({
                       onClick={() => setPendingCommitId(item.id)}
                       disabled={!canCommitOnchain}
                       style={{
-                        background: canCommitOnchain ? accent : "rgba(255,255,255,0.08)",
+                        background: canCommitOnchain ? accent : CONTROL_ACTIVE,
                         border: "none",
                         borderRadius: 10,
                         padding: "8px 12px",
@@ -3310,7 +3326,7 @@ function ConfirmDialog({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: SHADOW_LG,
             padding: "20px 24px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
@@ -3334,13 +3350,13 @@ function ConfirmDialog({
                 onClick={onCancel}
                 style={{
                   flex: 1,
-                  background: "rgba(255,255,255,0.07)",
-                  border: "none",
+                  background: SURFACE_SOFT,
+                  border: `1px solid ${CONTROL_BORDER}`,
                   borderRadius: 12,
                   padding: "12px 0",
                   fontSize: 14,
                   fontWeight: 600,
-                  color: MUTED,
+                  color: TEXT_STRONG,
                   cursor: "pointer",
                 }}
               >
@@ -3423,7 +3439,7 @@ function QRModal({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             overflowY: "auto",
@@ -3675,7 +3691,15 @@ function MyCityTab({
 
       {/* Sort */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
+        <div
+          style={{
+            display: "flex",
+            background: CONTROL_SURFACE,
+            border: `1px solid ${CONTROL_BORDER}`,
+            borderRadius: 8,
+            padding: 3,
+          }}
+        >
           {(["recent", "top"] as const).map(s => (
             <button
               key={s}
@@ -3687,8 +3711,8 @@ function MyCityTab({
                 cursor: "pointer",
                 fontSize: 12,
                 fontWeight: 600,
-                background: sort === s ? "rgba(255,255,255,0.1)" : "transparent",
-                color: sort === s ? "white" : "rgba(255,255,255,0.45)",
+                background: sort === s ? CONTROL_ACTIVE : "transparent",
+                color: sort === s ? TEXT_STRONG : TEXT_DIMMED,
               }}
             >
               {s === "recent" ? "Recent" : "Top"}
@@ -3830,7 +3854,7 @@ function ComposePostSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 20px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             overflowY: "auto",
@@ -4518,7 +4542,7 @@ function MCEsTab({
                 zIndex: 1,
                 background: "var(--cs-surface, #1E1E2C)",
                 borderRadius: "12px 12px 0 0",
-                boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+                boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
                 padding: "20px 20px 24px",
                 animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
                 overflowY: "auto",

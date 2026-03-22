@@ -425,6 +425,10 @@ export default function AppShell({
             --cs-text-muted: rgba(255,255,255,0.62);
             --cs-text-dimmed: rgba(255,255,255,0.45);
             --cs-shadow: 0 2px 12px rgba(0,0,0,0.28);
+            --cs-shadow-lg: 0 -8px 40px rgba(0,0,0,0.55);
+            --cs-control-surface: rgba(255,255,255,0.05);
+            --cs-control-active: rgba(255,255,255,0.1);
+            --cs-control-border: rgba(255,255,255,0.14);
             --cs-rail-surface: rgba(255,255,255,0.9);
             --cs-rail-surface-soft: rgba(245,248,255,0.92);
             --cs-rail-border: rgba(31,45,86,0.12);

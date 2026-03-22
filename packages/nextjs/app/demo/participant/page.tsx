@@ -567,7 +567,7 @@ function ClaimConfirmSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
@@ -592,7 +592,7 @@ function ClaimConfirmSheet({
               onClick={onCancel}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.08)",
+                background: SURFACE_SOFT,
                 border: `1px solid ${BORDER}`,
                 color: TEXT_STRONG,
                 borderRadius: 10,
@@ -683,7 +683,7 @@ function UnclaimConfirmSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
@@ -709,7 +709,7 @@ function UnclaimConfirmSheet({
               onClick={onCancel}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.08)",
+                background: SURFACE_SOFT,
                 border: `1px solid ${BORDER}`,
                 color: TEXT_STRONG,
                 borderRadius: 10,
@@ -1208,7 +1208,7 @@ function Toast({ message, onDismiss }: { message: string; onDismiss: () => void 
           fontSize: 13,
           fontWeight: 500,
           zIndex: 400,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+          boxShadow: SHADOW,
           display: "flex",
           alignItems: "flex-start",
           gap: 9,
@@ -1427,7 +1427,8 @@ function ProfileTab({
       <div
         style={{
           display: "flex",
-          background: "rgba(255,255,255,0.05)",
+          background: "var(--cs-control-surface, rgba(255,255,255,0.05))",
+          border: "1px solid var(--cs-control-border, rgba(255,255,255,0.14))",
           borderRadius: 10,
           padding: 4,
           marginBottom: 14,
@@ -1451,7 +1452,12 @@ function ProfileTab({
               fontSize: 13,
               fontWeight: 600,
               background: section === key ? color : "transparent",
-              color: section === key ? (key === "profile" ? "white" : "#15151E") : "rgba(255,255,255,0.45)",
+              color:
+                section === key
+                  ? key === "profile"
+                    ? "white"
+                    : "#15151E"
+                  : "var(--cs-text-dimmed, rgba(255,255,255,0.45))",
             }}
           >
             {label}
@@ -3555,7 +3561,15 @@ function MyCityTab({ onLearnMore }: { onLearnMore?: (selection: ParticipantLearn
       <div
         style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, gap: 10 }}
       >
-        <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
+        <div
+          style={{
+            display: "flex",
+            background: "var(--cs-control-surface, rgba(255,255,255,0.05))",
+            border: "1px solid var(--cs-control-border, rgba(255,255,255,0.14))",
+            borderRadius: 8,
+            padding: 3,
+          }}
+        >
           {(["recent", "top"] as const).map(s => (
             <button
               key={s}
@@ -3567,8 +3581,8 @@ function MyCityTab({ onLearnMore }: { onLearnMore?: (selection: ParticipantLearn
                 cursor: "pointer",
                 fontSize: 12,
                 fontWeight: 600,
-                background: sort === s ? "rgba(255,255,255,0.1)" : "transparent",
-                color: sort === s ? "white" : "rgba(255,255,255,0.45)",
+                background: sort === s ? "var(--cs-control-active, rgba(255,255,255,0.1))" : "transparent",
+                color: sort === s ? TEXT_STRONG : DIMMED,
               }}
             >
               {s === "recent" ? "Recent" : "Top"}
@@ -3688,7 +3702,8 @@ function VoteTab() {
       <div
         style={{
           display: "flex",
-          background: "rgba(255,255,255,0.05)",
+          background: "var(--cs-control-surface, rgba(255,255,255,0.05))",
+          border: "1px solid var(--cs-control-border, rgba(255,255,255,0.14))",
           borderRadius: 10,
           padding: 4,
           marginBottom: 20,
@@ -3712,7 +3727,7 @@ function VoteTab() {
               fontSize: 12,
               fontWeight: 600,
               background: section === s.key ? s.color : "transparent",
-              color: section === s.key ? "#15151E" : "rgba(255,255,255,0.45)",
+              color: section === s.key ? "#15151E" : DIMMED,
               transition: "all 0.15s",
             }}
           >
@@ -4168,7 +4183,8 @@ function RedeemTab({
       <div
         style={{
           display: "flex",
-          background: "rgba(255,255,255,0.05)",
+          background: "var(--cs-control-surface, rgba(255,255,255,0.05))",
+          border: "1px solid var(--cs-control-border, rgba(255,255,255,0.14))",
           borderRadius: 10,
           padding: 4,
           marginBottom: 12,
@@ -4192,7 +4208,7 @@ function RedeemTab({
               fontSize: 13,
               fontWeight: 600,
               background: view === item.key ? item.color : "transparent",
-              color: view === item.key ? "#15151E" : "rgba(255,255,255,0.45)",
+              color: view === item.key ? "#15151E" : DIMMED,
               transition: "all 0.15s",
             }}
           >

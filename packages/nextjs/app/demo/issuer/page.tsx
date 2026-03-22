@@ -131,7 +131,12 @@ const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
 const ACCENT_TEAL = "#34eeb6"; // teal — verify / success states
 const SURFACE = "var(--cs-surface, #1E1E2C)";
+const SURFACE_SOFT = "var(--cs-surface-soft, rgba(255,255,255,0.04))";
 const BG = "var(--cs-bg, #15151E)";
+const BORDER = "var(--cs-border, rgba(255,255,255,0.08))";
+const TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
+const TEXT_DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
+const SHADOW = "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))";
 const MUTED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
 const DIMMED = "var(--cs-text-muted, rgba(255,255,255,0.25))";
 
@@ -185,10 +190,10 @@ function getIssuerRightPanel(_activeTab: string): React.ReactNode {
 
 const surfaceCard: React.CSSProperties = {
   background: SURFACE,
-  border: "1px solid var(--cs-border, rgba(255,255,255,0.07))",
+  border: `1px solid ${BORDER}`,
   borderRadius: 16,
   padding: "16px",
-  boxShadow: "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))",
+  boxShadow: SHADOW,
 };
 
 /** Card with a faint gold left accent — for primary content cards (tasks) */
@@ -622,15 +627,15 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
           bottom: 28,
           right: 24,
           animation: "toastUp 0.2s cubic-bezier(0.34,1.36,0.64,1) both",
-          background: "rgba(20,22,32,0.97)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "var(--cs-surface, rgba(20,22,32,0.97))",
+          border: `1px solid ${BORDER}`,
           borderLeft: `3px solid ${accentBorder}`,
           borderRadius: 10,
           padding: "10px 12px 10px 13px",
           fontSize: 13,
           fontWeight: 500,
           zIndex: 400,
-          boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+          boxShadow: SHADOW,
           display: "flex",
           alignItems: "flex-start",
           gap: 9,
@@ -643,13 +648,13 @@ function Toast({ message, onDone }: { message: string; onDone: () => void }) {
         <span style={{ fontSize: 13, color: iconColor, flexShrink: 0, marginTop: 1 }}>
           {isError ? "✕" : isInfo ? "⋯" : "✓"}
         </span>
-        <span style={{ color: "rgba(255,255,255,0.82)", lineHeight: 1.45, flex: 1 }}>{message}</span>
+        <span style={{ color: TEXT_STRONG, lineHeight: 1.45, flex: 1 }}>{message}</span>
         <button
           onClick={onDone}
           style={{
             background: "none",
             border: "none",
-            color: "rgba(255,255,255,0.28)",
+            color: TEXT_DIMMED,
             cursor: "pointer",
             fontSize: 15,
             padding: 0,
@@ -1723,20 +1728,29 @@ function ProfileTab({
           }
         }
       `}</style>
-      <div style={{ background: SURFACE, borderRadius: 16, display: "flex", marginBottom: 20, overflow: "hidden" }}>
+      <div
+        style={{
+          display: "flex",
+          background: "var(--cs-control-surface, rgba(255,255,255,0.05))",
+          border: "1px solid var(--cs-control-border, rgba(255,255,255,0.14))",
+          borderRadius: 10,
+          padding: 4,
+          marginBottom: 20,
+        }}
+      >
         {(
           [
             { key: "profile" as const, label: "Profile", color: ACCENT },
             { key: "dashboard" as const, label: "Dashboard", color: ACCENT_TEAL },
           ] as const
-        ).map(({ key, label, color }, i) => (
+        ).map(({ key, label, color }) => (
           <button
             key={key}
             onClick={() => setSection(key)}
             style={{
               flex: 1,
               border: "none",
-              borderRadius: i === 0 ? "16px 0 0 16px" : "0 16px 16px 0",
+              borderRadius: 8,
               padding: "9px 0",
               fontSize: 13,
               fontWeight: 600,
@@ -3720,7 +3734,15 @@ function MyCityTab({
 
       {/* Sort tabs */}
       <div style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: 20 }}>
-        <div style={{ display: "flex", background: "rgba(255,255,255,0.05)", borderRadius: 8, padding: 3 }}>
+        <div
+          style={{
+            display: "flex",
+            background: "var(--cs-control-surface, rgba(255,255,255,0.05))",
+            border: "1px solid var(--cs-control-border, rgba(255,255,255,0.14))",
+            borderRadius: 8,
+            padding: 3,
+          }}
+        >
           {(["recent", "top"] as const).map(s => (
             <button
               key={s}
@@ -3732,8 +3754,8 @@ function MyCityTab({
                 cursor: "pointer",
                 fontSize: 12,
                 fontWeight: 600,
-                background: sort === s ? "rgba(255,255,255,0.1)" : "transparent",
-                color: sort === s ? "white" : "rgba(255,255,255,0.45)",
+                background: sort === s ? "var(--cs-control-active, rgba(255,255,255,0.1))" : "transparent",
+                color: sort === s ? TEXT_STRONG : TEXT_DIMMED,
               }}
             >
               {s === "recent" ? "Recent" : "Top"}
@@ -3883,7 +3905,7 @@ function ComposePostSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 20px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             overflowY: "auto",
@@ -4039,7 +4061,7 @@ function UnissueConfirmSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
@@ -4063,9 +4085,9 @@ function UnissueConfirmSheet({
               onClick={onCancel}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "var(--cs-text-strong, white)",
+                background: SURFACE_SOFT,
+                border: `1px solid ${BORDER}`,
+                color: TEXT_STRONG,
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
@@ -4151,7 +4173,7 @@ function NoShowConfirmSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 24px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             display: "flex",
@@ -4175,9 +4197,9 @@ function NoShowConfirmSheet({
               onClick={onCancel}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "var(--cs-text-strong, white)",
+                background: SURFACE_SOFT,
+                border: `1px solid ${BORDER}`,
+                color: TEXT_STRONG,
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
@@ -5088,7 +5110,7 @@ function VerifyTab({
                       zIndex: 1,
                       background: "var(--cs-surface, #1E1E2C)",
                       borderRadius: "24px 24px 0 0",
-                      boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+                      boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
                       padding: "20px 20px 24px",
                       animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
                       pointerEvents: "auto",
@@ -5637,7 +5659,7 @@ function MCEsTab({
                 zIndex: 1,
                 background: "var(--cs-surface, #1E1E2C)",
                 borderRadius: "12px 12px 0 0",
-                boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+                boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
                 padding: "20px 20px 24px",
                 animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
                 overflowY: "auto",
@@ -5834,7 +5856,7 @@ function IssueTaskPopup({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 20px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             overflowY: "auto",
@@ -6153,7 +6175,7 @@ function ModifyTaskSheet({
             zIndex: 1,
             background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
-            boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
+            boxShadow: "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))",
             padding: "20px 20px 24px",
             animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
             overflowY: "auto",
