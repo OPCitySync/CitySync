@@ -859,8 +859,8 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
   return (
     <div
       style={{
-        background: "rgba(255,255,255,0.025)",
-        border: "1px solid rgba(255,255,255,0.06)",
+        background: "rgba(255,255,255,0.9)",
+        border: "1px solid rgba(31,45,86,0.12)",
         borderRadius: 16,
         padding: "14px",
       }}
@@ -876,20 +876,20 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
         }}
       >
         {role === "issuer"
-          ? "Live Issuer Activity · Base Sepolia"
+          ? "Global Issuer Activity · Base Sepolia"
           : role === "redeemer"
-            ? "Live Redeemer Activity · Base Sepolia"
-            : "Live Participant Activity · Base Sepolia"}
+            ? "Global Redeemer Activity · Base Sepolia"
+            : "Global Participant Activity · Base Sepolia"}
       </div>
 
       {rpcError && latestBlock === null ? (
-        <div style={{ fontSize: 12, color: "rgba(255,200,80,0.7)" }}>
+        <div style={{ fontSize: 12, color: "rgba(193,111,41,0.9)" }}>
           ⚠ RPC connection failed — add <code>NEXT_PUBLIC_ALCHEMY_API_KEY</code> to Vercel env vars and redeploy.
         </div>
       ) : latestBlock === null ? (
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.35)" }}>Connecting to Base Sepolia…</div>
+        <div style={{ fontSize: 12, color: "rgba(27,45,95,0.5)" }}>Connecting to Base Sepolia…</div>
       ) : items.length === 0 ? (
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>No recent transactions detected yet.</div>
+        <div style={{ fontSize: 12, color: "rgba(27,45,95,0.58)" }}>No recent transactions detected yet.</div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {items.map((item, idx) => (
@@ -900,11 +900,11 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
               rel="noreferrer"
               style={{
                 textDecoration: "none",
-                background: "rgba(255,255,255,0.03)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(245,248,255,0.92)",
+                border: "1px solid rgba(31,45,86,0.12)",
                 borderRadius: 10,
                 padding: "10px 12px",
-                color: "white",
+                color: "#1d2f63",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -913,14 +913,14 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
             >
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: accent }}>{item.label}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontFamily: "monospace" }}>
+                <div style={{ fontSize: 11, color: "rgba(30,48,97,0.62)", fontFamily: "monospace" }}>
                   {shortHash(item.hash)}
                 </div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>
+                <div style={{ fontSize: 11, color: "rgba(30,48,97,0.58)" }}>
                   Block {item.blockNumber.toString()} · {formatTimestamp(item.timestamp)}
                 </div>
               </div>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", whiteSpace: "nowrap" }}>View Tx ↗</div>
+              <div style={{ fontSize: 11, color: "rgba(30,48,97,0.62)", whiteSpace: "nowrap" }}>View Tx ↗</div>
             </a>
           ))}
         </div>

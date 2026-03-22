@@ -220,8 +220,12 @@ export default function AppShell({
   const highlightRoleSwitcher = tutorialHighlightRoleSwitcher && !switcherOpen;
   const highlightRoleCancel = tutorialHighlightRoleSwitcher && switcherOpen;
   const embedMode = searchParams?.get("embed") === "1";
-  const redesignSkin = searchParams?.get("skin") === "redesign";
+  const skinParam = searchParams?.get("skin");
+  const redesignSkin = skinParam !== "classic";
   const lightSurroundings = phoneFrame && (surroundingsTheme === "light" || redesignSkin);
+  const sideRailWidth = redesignSkin ? 320 : 280;
+  const sideRailOffset = redesignSkin ? 250 : 230;
+  const sideRailPadding = redesignSkin ? "72px 18px 40px" : "72px 20px 40px";
   const shellHeaderBackground = redesignSkin
     ? "rgba(247, 248, 252, 0.92)"
     : phoneFrame
@@ -285,17 +289,17 @@ export default function AppShell({
       {leftPanel ?? (
         <div
           style={{
-            background: "rgba(255,255,255,0.025)",
-            border: "1px solid rgba(255,255,255,0.07)",
+            background: redesignSkin ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.025)",
+            border: redesignSkin ? "1px solid rgba(31,45,86,0.12)" : "1px solid rgba(255,255,255,0.07)",
             borderRadius: 16,
             padding: 14,
             fontSize: 12,
-            color: "rgba(255,255,255,0.62)",
+            color: redesignSkin ? "rgba(22,38,82,0.72)" : "rgba(255,255,255,0.62)",
             lineHeight: 1.55,
           }}
         >
-          Use any <strong style={{ color: "rgba(255,255,255,0.85)" }}>Learn More</strong> link inside the app to add
-          contextual info cards here.
+          Use any <strong style={{ color: redesignSkin ? "#1a2f66" : "rgba(255,255,255,0.85)" }}>Learn More</strong>{" "}
+          link inside the app to add contextual info cards here.
         </div>
       )}
     </div>
@@ -865,9 +869,9 @@ export default function AppShell({
               position: "absolute",
               top: 0,
               bottom: 0,
-              right: "calc(50% + 230px)",
-              width: 280,
-              padding: "72px 20px 40px",
+              right: `calc(50% + ${sideRailOffset}px)`,
+              width: sideRailWidth,
+              padding: sideRailPadding,
               display: "flex",
               flexDirection: "column",
               overflowY: "auto",
@@ -885,9 +889,9 @@ export default function AppShell({
               position: "absolute",
               top: 0,
               bottom: 0,
-              left: "calc(50% + 230px)",
-              width: 280,
-              padding: "72px 20px 40px",
+              left: `calc(50% + ${sideRailOffset}px)`,
+              width: sideRailWidth,
+              padding: sideRailPadding,
               display: "flex",
               flexDirection: "column",
               overflowY: "auto",

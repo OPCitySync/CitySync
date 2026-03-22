@@ -4866,12 +4866,12 @@ export default function ParticipantPage() {
       ) : (
         <div
           style={{
-            background: "rgba(255,255,255,0.025)",
-            border: "1px solid rgba(255,255,255,0.07)",
+            background: "rgba(255,255,255,0.9)",
+            border: "1px solid rgba(31,45,86,0.12)",
             borderRadius: 16,
             padding: 14,
             fontSize: 12,
-            color: "rgba(255,255,255,0.62)",
+            color: "rgba(27,45,95,0.72)",
             lineHeight: 1.55,
           }}
         >
@@ -4880,8 +4880,8 @@ export default function ParticipantPage() {
       )}
       <div
         style={{
-          background: "rgba(255,255,255,0.025)",
-          border: "1px solid rgba(255,255,255,0.07)",
+          background: "rgba(255,255,255,0.9)",
+          border: "1px solid rgba(31,45,86,0.12)",
           borderRadius: 16,
           padding: 14,
         }}
@@ -4892,13 +4892,13 @@ export default function ParticipantPage() {
             fontWeight: 700,
             letterSpacing: "0.08em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.52)",
+            color: "rgba(27,45,95,0.5)",
             marginBottom: 6,
           }}
         >
           Related Deep Dives
         </div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Additional Reading</div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#1b2e63", marginBottom: 8 }}>Additional Reading</div>
         {additionalReadingLinks.length > 0 ? (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {additionalReadingLinks.map(link => (
@@ -4914,20 +4914,20 @@ export default function ParticipantPage() {
                   textDecoration: "none",
                   fontSize: 11,
                   fontWeight: 600,
-                  color: "rgba(255,255,255,0.92)",
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.14)",
+                  color: "rgba(27,45,95,0.92)",
+                  background: "rgba(246,249,255,0.95)",
+                  border: "1px solid rgba(31,45,86,0.16)",
                   borderRadius: 9,
                   padding: "6px 8px",
                 }}
               >
                 <span>{link.label}</span>
-                <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10 }}>↗</span>
+                <span style={{ color: "rgba(27,45,95,0.45)", fontSize: 10 }}>↗</span>
               </a>
             ))}
           </div>
         ) : (
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.62)", lineHeight: 1.55 }}>
+          <div style={{ fontSize: 12, color: "rgba(27,45,95,0.62)", lineHeight: 1.55 }}>
             Use Learn More in the app to populate additional reading links.
           </div>
         )}

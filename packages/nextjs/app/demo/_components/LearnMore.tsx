@@ -67,8 +67,8 @@ export function LearnMorePanel<TKey extends string>({
           <div
             key={key}
             style={{
-              background: "rgba(255,255,255,0.025)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: "rgba(255,255,255,0.9)",
+              border: "1px solid rgba(31,45,86,0.12)",
               borderRadius: 16,
               padding: 16,
               marginBottom: 12,
@@ -76,7 +76,7 @@ export function LearnMorePanel<TKey extends string>({
           >
             <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between", gap: 8 }}>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{info.title}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#1b2e63", marginBottom: 4 }}>{info.title}</div>
                 <div style={{ fontSize: 11, color: accent, fontWeight: 600, marginBottom: 8 }}>{info.subtitle}</div>
               </div>
               <button
@@ -84,7 +84,7 @@ export function LearnMorePanel<TKey extends string>({
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: "rgba(255,255,255,0.45)",
+                  color: "rgba(27,45,95,0.45)",
                   cursor: "pointer",
                   fontSize: 16,
                 }}
@@ -92,7 +92,7 @@ export function LearnMorePanel<TKey extends string>({
                 ×
               </button>
             </div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", lineHeight: 1.6 }}>{info.body}</div>
+            <div style={{ fontSize: 12, color: "rgba(27,45,95,0.72)", lineHeight: 1.6 }}>{info.body}</div>
             {info.relatedLinks && info.relatedLinks.length > 0 ? (
               <div style={{ marginTop: 12 }}>
                 <div
@@ -101,7 +101,7 @@ export function LearnMorePanel<TKey extends string>({
                     fontWeight: 700,
                     letterSpacing: "0.08em",
                     textTransform: "uppercase",
-                    color: "rgba(255,255,255,0.52)",
+                    color: "rgba(27,45,95,0.5)",
                     marginBottom: 8,
                   }}
                 >
@@ -121,15 +121,15 @@ export function LearnMorePanel<TKey extends string>({
                         textDecoration: "none",
                         fontSize: 11,
                         fontWeight: 600,
-                        color: "rgba(255,255,255,0.92)",
-                        background: "rgba(255,255,255,0.06)",
-                        border: "1px solid rgba(255,255,255,0.14)",
+                        color: "rgba(27,45,95,0.92)",
+                        background: "rgba(246,249,255,0.95)",
+                        border: "1px solid rgba(31,45,86,0.16)",
                         borderRadius: 9,
                         padding: "6px 8px",
                       }}
                     >
                       <span>{link.label}</span>
-                      <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10 }}>↗</span>
+                      <span style={{ color: "rgba(27,45,95,0.45)", fontSize: 10 }}>↗</span>
                     </a>
                   ))}
                 </div>
