@@ -87,7 +87,7 @@ function RightPanel() {
   );
 }
 
-export default function RedesignPhonePrototype() {
+export default function RedesignPhonePrototype({ shellOnly = false }: { shellOnly?: boolean }) {
   const [activeTab, setActiveTab] = React.useState<string>("profile");
   const content = TAB_CONTENT[activeTab] ?? TAB_CONTENT.profile;
 
@@ -104,8 +104,8 @@ export default function RedesignPhonePrototype() {
       onTabChange={setActiveTab}
       accentColor="#DD9E33"
       title="Redesign Prototype"
-      leftPanel={<LeftPanel />}
-      rightPanel={<RightPanel />}
+      leftPanel={shellOnly ? <span /> : <LeftPanel />}
+      rightPanel={shellOnly ? undefined : <RightPanel />}
       phoneFrame
       surroundingsTheme="light"
     >
