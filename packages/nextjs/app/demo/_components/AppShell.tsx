@@ -58,6 +58,8 @@ interface AppShellProps {
   rightPanel?: React.ReactNode;
   /** When true, renders a phone device bezel around the app */
   phoneFrame?: boolean;
+  /** Optional shell surroundings theme; does not affect in-app content */
+  surroundingsTheme?: "default" | "light";
   tutorialHighlightWalletButton?: boolean;
   tutorialHighlightWalletCloseButton?: boolean;
   tutorialHighlightRoleSwitcher?: boolean;
@@ -188,6 +190,7 @@ export default function AppShell({
   leftPanel,
   rightPanel,
   phoneFrame = false,
+  surroundingsTheme = "default",
   tutorialHighlightWalletButton = false,
   tutorialHighlightWalletCloseButton = false,
   tutorialHighlightRoleSwitcher = false,
@@ -209,6 +212,7 @@ export default function AppShell({
   const roleSheetCancelOnly = tutorialLocked && tutorialHighlightRoleSwitcher;
   const highlightRoleSwitcher = tutorialHighlightRoleSwitcher && !switcherOpen;
   const highlightRoleCancel = tutorialHighlightRoleSwitcher && switcherOpen;
+  const lightSurroundings = phoneFrame && surroundingsTheme === "light";
 
   const handleRoleSwitch = (r: (typeof ROLES)[number]) => {
     if (r.key === role) {
@@ -720,12 +724,19 @@ export default function AppShell({
       <div
         className="fixed inset-0 z-50 flex items-center justify-center"
         style={{
-          background: `
-            radial-gradient(ellipse 700px 500px at 50% 20%, ${accentColor}1a, transparent 60%),
-            radial-gradient(ellipse 500px 400px at 20% 80%, rgba(100,80,220,0.12), transparent 65%),
-            radial-gradient(ellipse 500px 400px at 80% 70%, rgba(52,238,182,0.08), transparent 65%),
-            #08080f
-          `,
+          background: lightSurroundings
+            ? `
+              radial-gradient(ellipse 720px 520px at 50% 8%, ${accentColor}22, transparent 58%),
+              radial-gradient(ellipse 540px 360px at 18% 82%, rgba(106, 142, 248, 0.2), transparent 64%),
+              radial-gradient(ellipse 520px 340px at 84% 76%, rgba(241, 172, 58, 0.18), transparent 66%),
+              #f6f8fe
+            `
+            : `
+              radial-gradient(ellipse 700px 500px at 50% 20%, ${accentColor}1a, transparent 60%),
+              radial-gradient(ellipse 500px 400px at 20% 80%, rgba(100,80,220,0.12), transparent 65%),
+              radial-gradient(ellipse 500px 400px at 80% 70%, rgba(52,238,182,0.08), transparent 65%),
+              #08080f
+            `,
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
@@ -741,6 +752,7 @@ export default function AppShell({
             display: "flex",
             flexDirection: "column",
             overflowY: "auto",
+            color: lightSurroundings ? "#112049" : undefined,
           }}
         >
           {learnMoreColumn}
@@ -759,6 +771,7 @@ export default function AppShell({
               display: "flex",
               flexDirection: "column",
               overflowY: "auto",
+              color: lightSurroundings ? "#112049" : undefined,
             }}
           >
             {rightPanel}

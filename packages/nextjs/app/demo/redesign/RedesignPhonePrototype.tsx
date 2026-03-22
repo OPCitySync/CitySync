@@ -107,6 +107,7 @@ export default function RedesignPhonePrototype() {
       leftPanel={<LeftPanel />}
       rightPanel={<RightPanel />}
       phoneFrame
+      surroundingsTheme="light"
     >
       <div className={styles.canvas}>
         <section className={styles.heroCard}>

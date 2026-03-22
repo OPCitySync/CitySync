@@ -15,17 +15,17 @@
 
 .sideCard {
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(28, 43, 86, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 12px 30px rgba(25, 39, 76, 0.12);
   padding: 12px;
-  color: rgba(235, 240, 255, 0.9);
+  color: #1c2a57;
 }
 
 .sideCard h3 {
   margin: 4px 0;
   font-size: 14px;
-  color: #fff;
+  color: #152451;
   line-height: 1.3;
 }
 
@@ -33,7 +33,7 @@
   margin: 0;
   font-size: 12px;
   line-height: 1.45;
-  color: rgba(228, 236, 255, 0.75);
+  color: #586ca6;
 }
 
 .sideCard ul {
@@ -44,7 +44,7 @@
 .sideCard li {
   margin: 0;
   font-size: 12px;
-  color: rgba(228, 236, 255, 0.78);
+  color: #586ca6;
 }
 
 .sideLabel {
@@ -53,7 +53,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 700;
-  color: #dd9e33;
+  color: #2e4fa8;
 }
 
 .sideLinks {
@@ -64,12 +64,12 @@
 
 .sideLinks a {
   font-size: 12px;
-  color: #9cb7ff;
+  color: #3558b8;
   text-decoration: none;
 }
 
 .sideLinks a:hover {
-  color: #d0deff;
+  color: #1e3990;
 }
 
 .imageCard {
@@ -77,9 +77,9 @@
   min-height: 170px;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(28, 42, 86, 0.16);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 12px 26px rgba(26, 41, 80, 0.14);
 }
 
 .canvas {
