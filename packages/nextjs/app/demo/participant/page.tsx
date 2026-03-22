@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAccount } from "@account-kit/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
@@ -4467,6 +4467,8 @@ function RedeemTab({
 export default function ParticipantPage() {
   const { state, setRole } = useDemo();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const hideShellPanels = searchParams?.get("embed") === "1";
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const previousActiveTabRef = useRef(activeTab);
@@ -4922,6 +4924,8 @@ export default function ParticipantPage() {
         title="CitySync · Citizen"
         leftPanel={leftPanel}
         rightPanel={rightPanel}
+        showLeftPanel={!hideShellPanels}
+        showRightPanel={!hideShellPanels}
         phoneFrame
         tutorialLocked={tutorialLockActive}
         tutorialHighlightWalletButton={tutorialStep === "box23"}

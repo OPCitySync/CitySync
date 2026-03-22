@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAccount, useAuthModal, useSignerStatus } from "@account-kit/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
@@ -692,6 +692,8 @@ type VerifyDecision = "verify" | "reject";
 
 export default function IssuerApp() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const hideShellPanels = searchParams?.get("embed") === "1";
   const {
     state,
     dispatch,
@@ -1254,6 +1256,8 @@ export default function IssuerApp() {
         title="Issuer"
         leftPanel={leftPanel}
         rightPanel={rightPanel}
+        showLeftPanel={!hideShellPanels}
+        showRightPanel={!hideShellPanels}
         phoneFrame
         tutorialLocked={tutorialLockActive}
         tutorialAllowedTabs={tutorialStep === "box3" ? ["tasks"] : []}

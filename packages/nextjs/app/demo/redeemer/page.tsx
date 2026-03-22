@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAccount } from "@account-kit/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
@@ -491,6 +491,8 @@ const REDEEMER_LEARN_CARDS: Record<RedeemerLearnCardKey, LearnInfoCard> = {
 export default function RedeemerApp() {
   const { state, setRole, redeemerAddOffer, redeemerUpdateOfferRate, dispatch } = useDemo();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const hideShellPanels = searchParams?.get("embed") === "1";
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const previousActiveTabRef = useRef(activeTab);
@@ -1263,6 +1265,8 @@ export default function RedeemerApp() {
         title="Redeemer"
         leftPanel={leftPanel}
         rightPanel={rightPanel}
+        showLeftPanel={!hideShellPanels}
+        showRightPanel={!hideShellPanels}
         phoneFrame
         tutorialLocked={tutorialLockActive}
       >

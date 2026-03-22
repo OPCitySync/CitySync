@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLogout } from "@account-kit/react";
 import BottomNav, { NavTab } from "./BottomNav";
 import WalletModal from "./WalletModal";
@@ -210,6 +210,7 @@ export default function AppShell({
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const { setRole } = useDemo();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { logout } = useLogout({ onSuccess: () => router.push("/demo") });
 
   const currentRole = ROLES.find(r => r.key === role)!;
@@ -219,6 +220,8 @@ export default function AppShell({
   const highlightRoleSwitcher = tutorialHighlightRoleSwitcher && !switcherOpen;
   const highlightRoleCancel = tutorialHighlightRoleSwitcher && switcherOpen;
   const lightSurroundings = phoneFrame && surroundingsTheme === "light";
+  const roleSwitchQuery = searchParams?.toString();
+  const roleSwitchHrefSuffix = roleSwitchQuery ? `?${roleSwitchQuery}` : "";
 
   const handleRoleSwitch = (r: (typeof ROLES)[number]) => {
     if (r.key === role) {
@@ -227,7 +230,7 @@ export default function AppShell({
     }
     setRole(r.key);
     setSwitcherOpen(false);
-    router.push(r.href);
+    router.push(`${r.href}${roleSwitchHrefSuffix}`);
   };
 
   const learnMoreColumn = (

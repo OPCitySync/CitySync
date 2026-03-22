@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "City/Sync Redesign Prototype",
-  description: "Civic Wallet OS concept page with an embedded AppShell preview.",
+  description: "Civic Wallet OS concept page with an embedded live demo shell.",
 };
 
 const roleCards = [
@@ -125,7 +125,7 @@ export default function DemoRedesignPage() {
           <div className={styles.deviceStage}>
             <div className={styles.embedFrame}>
               <iframe
-                src="/demo/redesign-shell"
+                src="/demo/issuer?embed=1"
                 title="AppShell Preview"
                 className={styles.embedIframe}
                 loading="lazy"
