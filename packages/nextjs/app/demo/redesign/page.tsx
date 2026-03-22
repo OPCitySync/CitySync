@@ -76,9 +76,10 @@ export default function DemoRedesignPage() {
               <Image src="/pitch/image-4.png" alt="City/Sync concept art" fill sizes="(max-width: 900px) 90vw, 38vw" />
             </div>
             <div className={styles.heroFloatingCard}>
-              <p className={styles.cardLabel}>Design Intent</p>
+              <p className={styles.cardLabel}>Phase 1: Local Coordination Infrastructure</p>
               <p className={styles.cardText}>
-                Mobile-native motion, calmer contrast, clearer hierarchy, and stateful cards.
+                The City/Sync protocol starts with the validation of a new incentive mechanism that facilitates local
+                coordination around public initiatives.
               </p>
             </div>
           </div>
