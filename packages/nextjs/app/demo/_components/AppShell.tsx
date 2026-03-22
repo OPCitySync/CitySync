@@ -328,14 +328,16 @@ export default function AppShell({
       {redesignSkin && (
         <style>{`
           .citysync-redesign-main {
-            background: linear-gradient(180deg, #f7f8fc 0%, #edf2fb 100%) !important;
+            background: linear-gradient(180deg, #f8f4eb 0%, #f3ead7 100%) !important;
             color: #1a2d62 !important;
-            filter: invert(1) hue-rotate(180deg) saturate(0.88) contrast(0.96);
           }
-          .citysync-redesign-main img,
-          .citysync-redesign-main video,
-          .citysync-redesign-main canvas {
-            filter: invert(1) hue-rotate(180deg) saturate(1.06) contrast(1.02);
+          .citysync-redesign-content {
+            filter: invert(1) hue-rotate(180deg) saturate(0.88) contrast(0.96) brightness(1.02) sepia(0.16);
+          }
+          .citysync-redesign-content img,
+          .citysync-redesign-content video,
+          .citysync-redesign-content canvas {
+            filter: invert(1) hue-rotate(180deg) saturate(1.06) contrast(1.02) sepia(0.1);
           }
         `}</style>
       )}
@@ -560,7 +562,7 @@ export default function AppShell({
           overscrollBehaviorY: "contain",
         }}
       >
-        {children}
+        <div className={redesignSkin ? "citysync-redesign-content" : undefined}>{children}</div>
       </main>
 
       {/* Bottom navigation */}
@@ -945,7 +947,7 @@ export default function AppShell({
               style={{
                 width: 390,
                 flex: 1,
-                background: redesignSkin ? "#f7f8fc" : "#12121c",
+                background: redesignSkin ? "#f8f2e4" : "#12121c",
                 borderRadius: 50,
                 overflow: "hidden",
                 position: "relative",
