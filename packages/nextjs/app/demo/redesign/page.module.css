@@ -239,6 +239,7 @@
 }
 
 .issuanceCard,
+.tutorialCard,
 .linksCard,
 .panelCard {
   background: rgba(255, 255, 255, 0.88);
@@ -249,9 +250,47 @@
 }
 
 .issuanceCard h3,
+.tutorialCard h3,
 .panelCard h3 {
   margin: 0.25rem 0 0;
   font-size: 1rem;
+}
+
+.tutorialCard {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.tutorialActions {
+  margin-top: 0.2rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.tutorialActions button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 0.78rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.tutorialActions button:first-child {
+  color: #ffffff;
+  background: linear-gradient(135deg, #f0a630, #dd8d13);
+  box-shadow: 0 8px 18px rgba(221, 142, 23, 0.28);
+}
+
+.secondaryAction {
+  color: #2d4c96;
+  background: rgba(99, 133, 238, 0.14);
+  border: 1px solid rgba(73, 104, 204, 0.24);
+}
+
+.tutorialActions button:hover {
+  transform: translateY(-1px);
 }
 
 .progressTrack {
@@ -287,6 +326,62 @@
 .panelCard li {
   color: #526295;
   font-size: 0.82rem;
+}
+
+.activityList {
+  list-style: none;
+  margin: 0.65rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.52rem;
+}
+
+.activityItem {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.55rem;
+  border: 1px solid rgba(36, 57, 108, 0.14);
+  border-radius: 0.75rem;
+  background: rgba(246, 249, 255, 0.88);
+  padding: 0.55rem;
+}
+
+.activityItem strong {
+  display: block;
+  color: #1c2d5f;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.activityItem p {
+  margin: 0.2rem 0 0;
+  color: #55669a;
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+.activityMeta {
+  min-width: 72px;
+  display: grid;
+  justify-items: end;
+  gap: 0.16rem;
+}
+
+.activityMeta span {
+  color: #5a6da5;
+  font-size: 0.68rem;
+}
+
+.activityMeta em {
+  font-style: normal;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #2d4f9e;
+  border-radius: 999px;
+  border: 1px solid rgba(45, 79, 158, 0.28);
+  background: rgba(45, 79, 158, 0.1);
+  padding: 0.16rem 0.44rem;
 }
 
 .panelCardImage {

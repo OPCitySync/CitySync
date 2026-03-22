@@ -20,6 +20,12 @@ const deepLinks = [
   { href: "/demo/task-management", label: "Task Management" },
 ] as const;
 
+const activityLog = [
+  { title: "Task Issued", detail: "Neighborhood Garden Support · 3 slots", time: "2m ago", status: "Confirmed" },
+  { title: "Task Claimed", detail: "Transit Accessibility Survey", time: "8m ago", status: "Pending" },
+  { title: "Redemption Burn", detail: "Farmers Market Voucher · 10 CITY", time: "14m ago", status: "Confirmed" },
+] as const;
+
 export default function DemoRedesignPage() {
   return (
     <div className={styles.page}>
@@ -89,12 +95,18 @@ export default function DemoRedesignPage() {
               ))}
             </div>
 
-            <div className={styles.issuanceCard}>
-              <p className={styles.cardLabel}>Epoch Control</p>
-              <h3>Issuance Cap</h3>
-              <p className={styles.cardText}>2,800 CITY available / 1,942 issued</p>
-              <div className={styles.progressTrack}>
-                <span style={{ width: "69%" }} />
+            <div className={styles.tutorialCard}>
+              <p className={styles.cardLabel}>Tutorial Walkthrough</p>
+              <h3>Try the full role sequence</h3>
+              <p className={styles.cardText}>
+                Start an end-to-end pass from Issuer task issuance through Civic Participant execution and Redeemer
+                redemption.
+              </p>
+              <div className={styles.tutorialActions}>
+                <button type="button">Start Tutorial</button>
+                <button type="button" className={styles.secondaryAction}>
+                  Reset Tutorial
+                </button>
               </div>
             </div>
 
@@ -119,18 +131,25 @@ export default function DemoRedesignPage() {
                 loading="lazy"
               />
             </div>
-            <p className={styles.embedCaption}>Embedded AppShell preview inside the Civic Wallet OS page layout.</p>
           </div>
 
           <aside className={styles.rightRail}>
             <div className={styles.panelCard}>
-              <p className={styles.cardLabel}>System Notes</p>
-              <h3>What changed in this visual pass</h3>
-              <ul>
-                <li>Light app canvas with high-legibility text contrast.</li>
-                <li>Unified card language and rounded in-app sheets.</li>
-                <li>Clear transaction state chips and tighter metric hierarchy.</li>
-                <li>Role accents without changing information architecture.</li>
+              <p className={styles.cardLabel}>Activity Panel</p>
+              <h3>Live App Activity</h3>
+              <ul className={styles.activityList}>
+                {activityLog.map(item => (
+                  <li key={`${item.title}-${item.time}`} className={styles.activityItem}>
+                    <div>
+                      <strong>{item.title}</strong>
+                      <p>{item.detail}</p>
+                    </div>
+                    <div className={styles.activityMeta}>
+                      <span>{item.time}</span>
+                      <em>{item.status}</em>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
 
