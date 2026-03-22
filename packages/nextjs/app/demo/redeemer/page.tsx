@@ -1704,7 +1704,7 @@ function ProfileTab({
                     background: "rgba(255,255,255,0.08)",
                     border: "1px solid rgba(52,238,182,0.5)",
                     borderRadius: 8,
-                    color: "#fff",
+                    color: "var(--cs-text-strong, #fff)",
                     fontSize: 22,
                     fontWeight: 700,
                     padding: "4px 10px",
@@ -1764,7 +1764,7 @@ function ProfileTab({
                 </button>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ fontSize: 22, fontWeight: 700, color: "#fff" }}>
+                    <div style={{ fontSize: 22, fontWeight: 700, color: "var(--cs-text-strong, #fff)" }}>
                       {redeemer.orgName || "Your Venue"}
                     </div>
                     <button
@@ -1849,7 +1849,9 @@ function ProfileTab({
               marginBottom: 20,
             }}
           >
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>Your Role as a Redeemer</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}>
+              Your Role as a Redeemer
+            </div>
             <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.6, margin: 0 }}>
               Accept CITYx credits from civic participants in exchange for goods and services. Create committed
               offerings for the current Epoch and MCE-linked offerings for city events. Generate QR codes for in-person
@@ -1914,7 +1916,7 @@ function ProfileTab({
                         background: "rgba(255,255,255,0.06)",
                         border: "1px solid rgba(52,238,182,0.4)",
                         borderRadius: 8,
-                        color: "#fff",
+                        color: "var(--cs-text-strong, #fff)",
                         fontSize: 13,
                         padding: "8px 10px",
                         outline: "none",
@@ -1945,7 +1947,7 @@ function ProfileTab({
                     style={{
                       flex: 1,
                       background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.1)",
+                      border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                       borderRadius: 10,
                       padding: "9px 0",
                       fontSize: 13,
@@ -2132,7 +2134,7 @@ function OfferingsTab({
           }}
         >
           <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Offer Write</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
             {offerWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
             {offerWriteStatus.state === "confirmed" && "Confirmed onchain"}
             {offerWriteStatus.state === "failed" && "Failed onchain"}
@@ -2247,7 +2249,11 @@ function OfferingsTab({
                       background: "rgba(52,238,182,0.04)",
                     }}
                   >
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{item.name}</div>
+                    <div
+                      style={{ fontSize: 14, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}
+                    >
+                      {item.name}
+                    </div>
                     {item.stipulations && (
                       <div style={{ fontSize: 11, color: DIMMED, marginBottom: 6, lineHeight: 1.45 }}>
                         {item.stipulations}
@@ -2266,7 +2272,7 @@ function OfferingsTab({
                           padding: "8px 12px",
                           fontSize: 12,
                           fontWeight: 700,
-                          color: "#fff",
+                          color: "var(--cs-text-strong, #fff)",
                           cursor: "pointer",
                         }}
                       >
@@ -2324,7 +2330,7 @@ function OfferingsTab({
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              color: "#fff",
+              color: "var(--cs-text-strong, #fff)",
             }}
           >
             <span style={{ fontSize: 12, fontWeight: 700 }}>
@@ -2368,7 +2374,9 @@ function OfferingsTab({
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{offering.name}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>
+                            {offering.name}
+                          </div>
                           <span
                             style={{
                               display: "inline-flex",
@@ -2460,7 +2468,7 @@ function OfferingsTab({
                         onClick={() => onRemoveAttempt(offering.id)}
                         style={{
                           background: "rgba(255,255,255,0.05)",
-                          border: "1px solid rgba(255,255,255,0.1)",
+                          border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                           borderRadius: 10,
                           padding: "9px 14px",
                           fontSize: 12,
@@ -2560,7 +2568,11 @@ function OfferingsTab({
                       background: "rgba(221,158,51,0.04)",
                     }}
                   >
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{item.name}</div>
+                    <div
+                      style={{ fontSize: 14, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}
+                    >
+                      {item.name}
+                    </div>
                     {item.mceNames.length > 0 && (
                       <div style={{ fontSize: 11, color: DIMMED, marginBottom: 4 }}>
                         Events: {item.mceNames.join(", ")}
@@ -2584,7 +2596,7 @@ function OfferingsTab({
                           padding: "8px 12px",
                           fontSize: 12,
                           fontWeight: 700,
-                          color: "#fff",
+                          color: "var(--cs-text-strong, #fff)",
                           cursor: "pointer",
                         }}
                       >
@@ -2627,7 +2639,7 @@ function OfferingsTab({
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              color: "#fff",
+              color: "var(--cs-text-strong, #fff)",
             }}
           >
             <span style={{ fontSize: 12, fontWeight: 700 }}>Active MCE Offerings ({mceOfferings.length})</span>
@@ -2670,7 +2682,9 @@ function OfferingsTab({
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{offering.name}</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>
+                            {offering.name}
+                          </div>
                           <span
                             style={{
                               fontSize: 10,
@@ -2847,7 +2861,7 @@ function AddOfferingSheet({
     background: "rgba(255,255,255,0.06)",
     border: "1px solid rgba(255,255,255,0.12)",
     borderRadius: 10,
-    color: "#fff",
+    color: "var(--cs-text-strong, #fff)",
     fontSize: 13,
     padding: "10px 12px",
     outline: "none",
@@ -2897,7 +2911,7 @@ function AddOfferingSheet({
             bottom: 69,
             maxHeight: "75%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 20px 24px",
@@ -2907,7 +2921,9 @@ function AddOfferingSheet({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-            <span style={{ fontWeight: 700, fontSize: 18, color: "white" }}>Add Offering to your Catalog</span>
+            <span style={{ fontWeight: 700, fontSize: 18, color: "var(--cs-text-strong, white)" }}>
+              Add Offering to your Catalog
+            </span>
             <button
               onClick={onClose}
               style={{
@@ -3006,7 +3022,9 @@ function AddOfferingSheet({
                             gap: 12,
                             padding: "12px 14px",
                             borderRadius: 10,
-                            border: checked ? "1px solid rgba(221,158,51,0.5)" : "1px solid rgba(255,255,255,0.1)",
+                            border: checked
+                              ? "1px solid rgba(221,158,51,0.5)"
+                              : "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                             background: checked ? "rgba(221,158,51,0.08)" : "rgba(255,255,255,0.04)",
                             cursor: isEditing ? "not-allowed" : "pointer",
                             textAlign: "left",
@@ -3029,7 +3047,11 @@ function AddOfferingSheet({
                           >
                             {checked && <span style={{ fontSize: 11, color: "#0d1117", fontWeight: 800 }}>✓</span>}
                           </div>
-                          <span style={{ fontSize: 13, color: "#fff", fontWeight: 500, flex: 1 }}>{mce.title}</span>
+                          <span
+                            style={{ fontSize: 13, color: "var(--cs-text-strong, #fff)", fontWeight: 500, flex: 1 }}
+                          >
+                            {mce.title}
+                          </span>
                           <span
                             style={{
                               fontSize: 10,
@@ -3160,7 +3182,7 @@ function IssueOfferingFromCatalogSheet({
             bottom: 69,
             maxHeight: "70%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 20px 24px",
@@ -3170,7 +3192,7 @@ function IssueOfferingFromCatalogSheet({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-            <span style={{ fontWeight: 700, fontSize: 18, color: "white" }}>
+            <span style={{ fontWeight: 700, fontSize: 18, color: "var(--cs-text-strong, white)" }}>
               {isCommitted ? "Committed Offerings Catalog" : "MCE Offerings Catalog"}
             </span>
             <button
@@ -3226,7 +3248,9 @@ function IssueOfferingFromCatalogSheet({
                     background: isCommitted ? "rgba(52,238,182,0.04)" : "rgba(221,158,51,0.04)",
                   }}
                 >
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 4 }}>{item.name}</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}>
+                    {item.name}
+                  </div>
                   {Array.isArray((item as MCECustomOffering).mceNames) &&
                     (item as MCECustomOffering).mceNames.length > 0 && (
                       <div style={{ fontSize: 11, color: DIMMED, marginBottom: 4 }}>
@@ -3255,7 +3279,7 @@ function IssueOfferingFromCatalogSheet({
                         padding: "8px 12px",
                         fontSize: 12,
                         fontWeight: 700,
-                        color: "#fff",
+                        color: "var(--cs-text-strong, #fff)",
                         cursor: "pointer",
                       }}
                     >
@@ -3351,7 +3375,7 @@ function ConfirmDialog({
             bottom: 69,
             maxHeight: "40%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 24px 24px",
@@ -3365,7 +3389,9 @@ function ConfirmDialog({
           }}
         >
           <div>
-            <div style={{ fontSize: 17, fontWeight: 700, color: "#fff", marginBottom: 8 }}>🔒 {title}</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 8 }}>
+              🔒 {title}
+            </div>
             <p style={{ fontSize: 13, color: MUTED, lineHeight: 1.6, margin: 0 }}>{message}</p>
           </div>
 
@@ -3462,7 +3488,7 @@ function QRModal({
             bottom: 69,
             maxHeight: "65%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 24px 24px",
@@ -3473,7 +3499,7 @@ function QRModal({
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <div>
-              <div style={{ fontSize: 18, fontWeight: 700, color: "#fff" }}>{offering.name}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, color: "var(--cs-text-strong, #fff)" }}>{offering.name}</div>
               <div style={{ fontSize: 12, color: MUTED }}>{offering.orgName}</div>
             </div>
             <button
@@ -3763,7 +3789,9 @@ function MyCityTab({
               >
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{post.authorName}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>
+                      {post.authorName}
+                    </div>
                     {isOwn && (
                       <span
                         style={{
@@ -3867,7 +3895,7 @@ function ComposePostSheet({
             bottom: 69,
             maxHeight: "65%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 20px 24px",
@@ -3877,7 +3905,7 @@ function ComposePostSheet({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>New Post</span>
+            <span style={{ fontWeight: 700, fontSize: 16, color: "var(--cs-text-strong, white)" }}>New Post</span>
             <button
               onClick={onClose}
               style={{
@@ -3943,9 +3971,9 @@ function ComposePostSheet({
             style={{
               width: "100%",
               background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
               borderRadius: 12,
-              color: "#fff",
+              color: "var(--cs-text-strong, #fff)",
               fontSize: 13,
               padding: "12px 14px",
               lineHeight: 1.55,
@@ -4097,7 +4125,7 @@ function DashboardTab({
                 <div
                   style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}
                 >
-                  <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{o.name}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>{o.name}</div>
                   <span
                     style={{
                       fontSize: 10,
@@ -4239,9 +4267,9 @@ function MCEsTab({
   const inputStyle: React.CSSProperties = {
     width: "100%",
     background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
     borderRadius: 10,
-    color: "#fff",
+    color: "var(--cs-text-strong, #fff)",
     fontSize: 13,
     padding: "10px 12px",
     outline: "none",
@@ -4323,7 +4351,14 @@ function MCEsTab({
                         <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginBottom: 3 }}>
                           MCE-0{i + 1}
                         </div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: "var(--cs-text-strong, white)",
+                            lineHeight: 1.35,
+                          }}
+                        >
                           {mce.title}
                         </div>
                         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 3 }}>
@@ -4431,7 +4466,15 @@ function MCEsTab({
                 </span>
                 <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>just now</span>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35, marginBottom: 4 }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "var(--cs-text-strong, white)",
+                  lineHeight: 1.35,
+                  marginBottom: 4,
+                }}
+              >
                 {p.title}
               </div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>by {orgName}</div>
@@ -4486,7 +4529,15 @@ function MCEsTab({
                   })()}
                 </span>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35, marginBottom: 4 }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "var(--cs-text-strong, white)",
+                  lineHeight: 1.35,
+                  marginBottom: 4,
+                }}
+              >
                 {prop.title}
               </div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 10 }}>
@@ -4532,7 +4583,7 @@ function MCEsTab({
                 top: 112,
                 bottom: 69,
                 zIndex: 1,
-                background: "#1E1E2C",
+                background: "var(--cs-surface, #1E1E2C)",
                 borderRadius: "12px 12px 0 0",
                 boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
                 padding: "20px 20px 24px",
@@ -4542,7 +4593,9 @@ function MCEsTab({
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>New MCE Proposal</span>
+                <span style={{ fontWeight: 700, fontSize: 16, color: "var(--cs-text-strong, white)" }}>
+                  New MCE Proposal
+                </span>
                 <button
                   onClick={() => setProposeOpen(false)}
                   style={{
@@ -4735,7 +4788,9 @@ function EmptyState({ emoji, title, desc }: { emoji: string; title: string; desc
       }}
     >
       <div style={{ fontSize: 48, marginBottom: 14 }}>{emoji}</div>
-      <div style={{ fontSize: 16, fontWeight: 600, color: "#fff", marginBottom: 8 }}>{title}</div>
+      <div style={{ fontSize: 16, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 8 }}>
+        {title}
+      </div>
       <div style={{ fontSize: 13, color: MUTED, maxWidth: 240, lineHeight: 1.55 }}>{desc}</div>
     </div>
   );

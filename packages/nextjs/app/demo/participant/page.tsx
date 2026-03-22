@@ -35,6 +35,12 @@ const ACCENT = "#4169E1"; // blue — primary
 const TEAL = "#34eeb6"; // teal — tasks / rewards / verify
 const GOLD = "#DD9E33"; // gold — MCE / redemptions
 const PURPLE = "#a78bfa"; // purple — governance / vote
+const SURFACE_SOFT = "var(--cs-surface-soft, rgba(255,255,255,0.04))";
+const BORDER = "var(--cs-border, rgba(255,255,255,0.08))";
+const TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
+const MUTED = "var(--cs-text-muted, rgba(255,255,255,0.62))";
+const DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
+const SHADOW = "var(--cs-shadow, 0 2px 10px rgba(0,0,0,0.22))";
 const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
 type IssuerTutorialStep =
   | "intro"
@@ -455,11 +461,11 @@ function fmtDateTime(iso: string): string {
 // ─── Shared card style ────────────────────────────────────────────────────────
 
 const card: React.CSSProperties = {
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  background: SURFACE_SOFT,
+  border: `1px solid ${BORDER}`,
   borderRadius: 14,
   padding: "16px",
-  boxShadow: "0 2px 10px rgba(0,0,0,0.22)",
+  boxShadow: SHADOW,
 };
 const cardAccent: React.CSSProperties = {
   ...card,
@@ -477,14 +483,14 @@ const cardPurple: React.CSSProperties = {
   paddingLeft: 13,
 };
 const miniMetricCardStyle: React.CSSProperties = {
-  background: "rgba(255,255,255,0.03)",
-  border: "1px solid rgba(255,255,255,0.08)",
+  background: SURFACE_SOFT,
+  border: `1px solid ${BORDER}`,
   borderRadius: 10,
   padding: "10px 11px",
 };
 const miniMetricLabelStyle: React.CSSProperties = {
   fontSize: 11,
-  color: "rgba(255,255,255,0.5)",
+  color: DIMMED,
 };
 const miniMetricValueStyle: React.CSSProperties = {
   fontSize: 20,
@@ -558,7 +564,7 @@ function ClaimConfirmSheet({
             minHeight: 180,
             maxHeight: "32%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 24px 24px",
@@ -572,10 +578,10 @@ function ClaimConfirmSheet({
           }}
         >
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "white", marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: TEXT_STRONG, marginBottom: 8 }}>
               Claim &quot;{task.title}&quot;?
             </div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
+            <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.4 }}>
               Please note: you are only allowed to claim two tasks at any one time.
             </div>
           </div>
@@ -585,9 +591,9 @@ function ClaimConfirmSheet({
               onClick={onCancel}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "white",
+                background: "rgba(255,255,255,0.08)",
+                border: `1px solid ${BORDER}`,
+                color: TEXT_STRONG,
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
@@ -674,7 +680,7 @@ function UnclaimConfirmSheet({
             minHeight: 180,
             maxHeight: "32%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 24px 24px",
@@ -688,10 +694,10 @@ function UnclaimConfirmSheet({
           }}
         >
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "white", marginBottom: 8 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: TEXT_STRONG, marginBottom: 8 }}>
               Unclaim &quot;{task.title}&quot;?
             </div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
+            <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.4 }}>
               If you are unclaiming close to the date of task execution, please message the Issuer Organization
               directly.
             </div>
@@ -702,9 +708,9 @@ function UnclaimConfirmSheet({
               onClick={onCancel}
               style={{
                 flex: 1,
-                background: "rgba(255,255,255,0.1)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "white",
+                background: "rgba(255,255,255,0.08)",
+                border: `1px solid ${BORDER}`,
+                color: TEXT_STRONG,
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
@@ -720,7 +726,7 @@ function UnclaimConfirmSheet({
                 flex: 1,
                 background: "#ff6b9d",
                 border: "none",
-                color: "white",
+                color: TEXT_STRONG,
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
@@ -782,7 +788,7 @@ function ExecuteModal({
           right: 0,
           bottom: 69,
           zIndex: 221,
-          background: "#14172e",
+          background: "var(--cs-bg, #14172e)",
           borderRadius: "12px 12px 0 0",
           animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
           overflowY: "auto",
@@ -797,17 +803,17 @@ function ExecuteModal({
             justifyContent: "space-between",
             alignItems: "center",
             padding: "20px 20px 16px",
-            borderBottom: "1px solid rgba(255,255,255,0.08)",
+            borderBottom: `1px solid ${BORDER}`,
             flexShrink: 0,
           }}
         >
-          <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Submit for Verification</span>
+          <span style={{ fontWeight: 700, fontSize: 16, color: TEXT_STRONG }}>Submit for Verification</span>
           <button
             onClick={onClose}
             style={{
               background: "none",
               border: "none",
-              color: "rgba(255,255,255,0.4)",
+              color: DIMMED,
               cursor: "pointer",
               padding: 4,
             }}
@@ -822,13 +828,13 @@ function ExecuteModal({
             style={{
               marginBottom: 16,
               padding: "14px 16px",
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.07)",
+              background: SURFACE_SOFT,
+              border: `1px solid ${BORDER}`,
               borderRadius: 10,
             }}
           >
-            <div style={{ fontWeight: 600, fontSize: 14, color: "white", marginBottom: 4 }}>{task.title}</div>
-            <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>
+            <div style={{ fontWeight: 600, fontSize: 14, color: TEXT_STRONG, marginBottom: 4 }}>{task.title}</div>
+            <div style={{ fontSize: 12, color: DIMMED }}>
               {task.issuerName} · {task.estimatedTime}
             </div>
           </div>
@@ -845,7 +851,7 @@ function ExecuteModal({
               }}
             >
               <div style={{ fontSize: 18, fontWeight: 700, color: TEAL }}>+{task.credits}</div>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>CITYx</div>
+              <div style={{ fontSize: 11, color: DIMMED, marginTop: 2 }}>CITYx</div>
             </div>
             <div
               style={{
@@ -858,7 +864,7 @@ function ExecuteModal({
               }}
             >
               <div style={{ fontSize: 18, fontWeight: 700, color: ACCENT }}>+{task.voteTokens}</div>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>VOTE</div>
+              <div style={{ fontSize: 11, color: DIMMED, marginTop: 2 }}>VOTE</div>
             </div>
             {task.isMCE && (
               <div
@@ -872,14 +878,14 @@ function ExecuteModal({
                 }}
               >
                 <div style={{ fontSize: 18, fontWeight: 700, color: GOLD }}>+{task.credits}</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>MCE</div>
+                <div style={{ fontSize: 11, color: DIMMED, marginTop: 2 }}>MCE</div>
               </div>
             )}
           </div>
 
           {/* File upload */}
           <div style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.55)", marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: MUTED, marginBottom: 8 }}>
               Proof of Completion (optional)
             </div>
             <button
@@ -887,10 +893,10 @@ function ExecuteModal({
               style={{
                 width: "100%",
                 padding: "12px 0",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px dashed rgba(255,255,255,0.18)",
+                background: SURFACE_SOFT,
+                border: `1px dashed ${BORDER}`,
                 borderRadius: 10,
-                color: fileName ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.4)",
+                color: fileName ? TEXT_STRONG : DIMMED,
                 fontSize: 13,
                 cursor: "pointer",
                 display: "flex",
@@ -926,7 +932,7 @@ function ExecuteModal({
 
           {/* Notes */}
           <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.55)", marginBottom: 8 }}>
+            <div style={{ fontSize: 12, fontWeight: 600, color: MUTED, marginBottom: 8 }}>
               Notes to Issuer (optional)
             </div>
             <textarea
@@ -937,10 +943,10 @@ function ExecuteModal({
               style={{
                 width: "100%",
                 padding: "12px 14px",
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                background: SURFACE_SOFT,
+                border: `1px solid ${BORDER}`,
                 borderRadius: 10,
-                color: "white",
+                color: TEXT_STRONG,
                 fontSize: 13,
                 lineHeight: 1.5,
                 resize: "none",
@@ -960,7 +966,7 @@ function ExecuteModal({
               background: tutorialAllowSubmit
                 ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
                 : ACCENT,
-              color: tutorialAllowSubmit ? "#15151E" : "white",
+              color: tutorialAllowSubmit ? "#15151E" : TEXT_STRONG,
               border: tutorialAllowSubmit ? "1px solid rgba(255,226,162,0.88)" : "none",
               borderRadius: 12,
               fontWeight: 700,
@@ -1057,9 +1063,9 @@ function RedeemModal({
             top: 112,
             bottom: 69,
             zIndex: 1,
-            background: "rgb(26, 29, 50)",
+            background: "var(--cs-bg, rgb(26, 29, 50))",
             borderRadius: "20px 20px 0 0",
-            border: "1px solid rgba(255,255,255,0.1)",
+            border: `1px solid ${BORDER}`,
             padding: "24px 20px 24px",
             overflowY: "auto",
             animation: confirmed
@@ -1069,11 +1075,11 @@ function RedeemModal({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
-            <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Confirm Redemption</span>
+            <span style={{ fontWeight: 700, fontSize: 16, color: TEXT_STRONG }}>Confirm Redemption</span>
             <button
               onClick={onClose}
               disabled={pending}
-              style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer" }}
+              style={{ background: "none", border: "none", color: DIMMED, cursor: "pointer" }}
             >
               <IconXSmall size={18} />
             </button>
@@ -1081,8 +1087,8 @@ function RedeemModal({
 
           <div style={{ textAlign: "center", padding: "20px 0 16px" }}>
             <div style={{ fontSize: 40, marginBottom: 10 }}>{offer.emoji}</div>
-            <div style={{ fontWeight: 700, fontSize: 18, color: "white", marginBottom: 4 }}>{offer.offerTitle}</div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 16 }}>{offer.redeemerName}</div>
+            <div style={{ fontWeight: 700, fontSize: 18, color: TEXT_STRONG, marginBottom: 4 }}>{offer.offerTitle}</div>
+            <div style={{ fontSize: 13, color: DIMMED, marginBottom: 16 }}>{offer.redeemerName}</div>
             <div
               style={{
                 display: "inline-flex",
@@ -1095,7 +1101,7 @@ function RedeemModal({
               }}
             >
               <span style={{ fontSize: 16, fontWeight: 700, color: TEAL }}>{offer.costCity} CITYx</span>
-              <span style={{ fontSize: 13, color: "rgba(255,255,255,0.45)" }}>will be spent</span>
+              <span style={{ fontSize: 13, color: DIMMED }}>will be spent</span>
             </div>
           </div>
 
@@ -1104,21 +1110,21 @@ function RedeemModal({
               display: "flex",
               gap: 14,
               alignItems: "flex-start",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.12)",
+              background: SURFACE_SOFT,
+              border: `1px solid ${BORDER}`,
               borderRadius: 10,
               padding: "14px",
               marginBottom: 20,
             }}
           >
-            <div style={{ color: "rgba(255,255,255,0.38)", flexShrink: 0, marginTop: 2 }}>
+            <div style={{ color: DIMMED, flexShrink: 0, marginTop: 2 }}>
               <QRIcon />
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: "rgba(255,255,255,0.86)", marginBottom: 4 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: TEXT_STRONG, marginBottom: 4 }}>
                 QR Code at Point of Sale
               </div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.58)", lineHeight: 1.5 }}>
+              <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.5 }}>
                 In production, a redemption QR code is generated for each offering that calls the &ldquo;Burn
                 Function&rdquo; on the token contract for the credit rate of that offering. These QR codes will be
                 available near PoS systems for the redeemer organization. In this demo, the function is called
@@ -1193,8 +1199,8 @@ function Toast({ message, onDismiss }: { message: string; onDismiss: () => void 
           bottom: 28,
           right: 24,
           animation: "toastUp 0.2s cubic-bezier(0.34,1.36,0.64,1) both",
-          background: "rgba(20,22,32,0.97)",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "var(--cs-surface, rgba(20,22,32,0.97))",
+          border: `1px solid ${BORDER}`,
           borderLeft: `3px solid ${accentBorder}`,
           borderRadius: 10,
           padding: "10px 12px 10px 13px",
@@ -1214,13 +1220,13 @@ function Toast({ message, onDismiss }: { message: string; onDismiss: () => void 
         <span style={{ fontSize: 13, color: iconColor, flexShrink: 0, marginTop: 1 }}>
           {isError ? "✕" : isInfo ? "⋯" : "✓"}
         </span>
-        <span style={{ color: "rgba(255,255,255,0.82)", lineHeight: 1.45, flex: 1 }}>{message}</span>
+        <span style={{ color: TEXT_STRONG, lineHeight: 1.45, flex: 1 }}>{message}</span>
         <button
           onClick={onDismiss}
           style={{
             background: "none",
             border: "none",
-            color: "rgba(255,255,255,0.28)",
+            color: DIMMED,
             cursor: "pointer",
             fontSize: 15,
             padding: 0,
@@ -1542,7 +1548,7 @@ function ProfileTab({
                         border: "1px solid rgba(65,105,225,0.5)",
                         borderRadius: 8,
                         padding: "6px 10px",
-                        color: "white",
+                        color: "var(--cs-text-strong, white)",
                         fontSize: 16,
                         fontWeight: 700,
                         outline: "none",
@@ -1698,7 +1704,7 @@ function ProfileTab({
               marginBottom: 14,
             }}
           >
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}>
               Your Role as a Civic Participant
             </div>
             <p style={{ fontSize: 12, color: "rgba(255,255,255,0.65)", lineHeight: 1.6, margin: 0 }}>
@@ -1715,10 +1721,10 @@ function ProfileTab({
                 onClick={() => onTabChange("explore")}
                 style={{
                   background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                   borderRadius: 10,
                   padding: "12px 10px",
-                  color: "white",
+                  color: "var(--cs-text-strong, white)",
                   fontSize: 12,
                   fontWeight: 700,
                   cursor: "pointer",
@@ -1730,10 +1736,10 @@ function ProfileTab({
                 onClick={() => onTabChange("redeem")}
                 style={{
                   background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                   borderRadius: 10,
                   padding: "12px 10px",
-                  color: "white",
+                  color: "var(--cs-text-strong, white)",
                   fontSize: 12,
                   fontWeight: 700,
                   cursor: "pointer",
@@ -1787,7 +1793,9 @@ function ProfileTab({
               </div>
               <div style={miniMetricCardStyle}>
                 <div style={miniMetricLabelStyle}>RS</div>
-                <div style={{ ...miniMetricValueStyle, color: "#fff" }}>{scoreSnapshot.rs.toFixed(1)}</div>
+                <div style={{ ...miniMetricValueStyle, color: "var(--cs-text-strong, #fff)" }}>
+                  {scoreSnapshot.rs.toFixed(1)}
+                </div>
               </div>
               <div style={miniMetricCardStyle}>
                 <div style={miniMetricLabelStyle}>Status</div>
@@ -1804,7 +1812,9 @@ function ProfileTab({
                 marginBottom: 10,
               }}
             >
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 6 }}>Sanctions Summary</div>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
+                Sanctions Summary
+              </div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", lineHeight: 1.55 }}>
                 Verify & Mint improves score (RS +0.5, RD -0.5). Reject & Mint (RS -1.5, RD +2) and No-Show (RS -1, RD
                 +1) would normally increase restrictions. Current policy: {sanctionsPolicy.summary}
@@ -1853,7 +1863,9 @@ function ProfileTab({
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "white" }}>{task.title}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, white)" }}>
+                      {task.title}
+                    </div>
                     <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)", marginTop: 2 }}>
                       {task.issuerName} · {fmtDateTime(task.completedAt)}
                       {task.txHash ? (
@@ -2172,7 +2184,7 @@ function TaskCard({
                 color: "rgba(255,255,255,0.55)",
                 border: tutorialHighlightActions
                   ? "1px solid rgba(255,226,162,0.85)"
-                  : "1px solid rgba(255,255,255,0.1)",
+                  : "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                 borderRadius: 10,
                 fontSize: 13,
                 fontWeight: 600,
@@ -2194,7 +2206,7 @@ function TaskCard({
                 background: tutorialHighlightActions
                   ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
                   : ACCENT,
-                color: "white",
+                color: "var(--cs-text-strong, white)",
                 border: tutorialHighlightActions ? "1px solid rgba(255,226,162,0.92)" : "none",
                 borderRadius: 10,
                 fontSize: 13,
@@ -2217,7 +2229,7 @@ function TaskCard({
               padding: "10px 0",
               background: "rgba(255,255,255,0.04)",
               color: "rgba(255,255,255,0.45)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
               borderRadius: 10,
               fontSize: 12,
               fontWeight: 600,
@@ -3076,7 +3088,7 @@ function ExploreTab({
                 padding: "8px 10px",
                 borderRadius: 10,
                 background: "rgba(255,255,255,0.05)",
-                border: "1px solid rgba(255,255,255,0.1)",
+                border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
               }}
             >
               <span style={{ color: "rgba(255,255,255,0.5)" }}>
@@ -3091,7 +3103,7 @@ function ExploreTab({
                   background: "transparent",
                   border: "none",
                   outline: "none",
-                  color: "white",
+                  color: "var(--cs-text-strong, white)",
                   fontSize: 12,
                 }}
               />
@@ -3146,7 +3158,9 @@ function ExploreTab({
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.55)", marginBottom: 4 }}>
             {claimNotice.type === "warn" ? "Notice" : "Claim Confirmed"}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "white" }}>{claimNotice.message}</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, white)" }}>
+            {claimNotice.message}
+          </div>
           <button
             onClick={() => setClaimNotice(null)}
             style={{
@@ -3212,7 +3226,7 @@ function ExploreTab({
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>
             {taskWriteStatus.label ? `Last Write — ${taskWriteStatus.label}` : "Last Task Write"}
           </div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
             {taskWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
             {taskWriteStatus.state === "confirmed" && "Confirmed onchain"}
             {taskWriteStatus.state === "failed" && "Failed onchain"}
@@ -3336,7 +3350,16 @@ function ExploreTab({
                           </span>
                         )}
                       </div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.3 }}>{task.title}</div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: "var(--cs-text-strong, white)",
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {task.title}
+                      </div>
                     </div>
                     <div style={{ textAlign: "right", flexShrink: 0 }}>
                       <div style={{ fontSize: 16, fontWeight: 700, color: TEAL }}>{task.credits}</div>
@@ -3581,7 +3604,9 @@ function MyCityTab({ onLearnMore }: { onLearnMore?: (selection: ParticipantLearn
                   {post.authorName[0]}
                 </div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{post.authorName}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, white)" }}>
+                    {post.authorName}
+                  </div>
                   <div style={{ fontSize: 11, color: "rgba(255,255,255,0.35)" }}>
                     {post.authorType === "issuer" ? "Issuer Org" : "Redeemer Org"} · {timeAgo(post.postedAt)}
                   </div>
@@ -3614,7 +3639,9 @@ function MyCityTab({ onLearnMore }: { onLearnMore?: (selection: ParticipantLearn
                   alignItems: "center",
                   gap: 6,
                   background: liked ? "rgba(255,90,100,0.12)" : "rgba(255,255,255,0.05)",
-                  border: liked ? "1px solid rgba(255,90,100,0.3)" : "1px solid rgba(255,255,255,0.1)",
+                  border: liked
+                    ? "1px solid rgba(255,90,100,0.3)"
+                    : "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                   borderRadius: 20,
                   padding: "6px 14px",
                   cursor: "pointer",
@@ -3707,7 +3734,9 @@ function VoteTab() {
           >
             <div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginBottom: 4 }}>VOTE Balance</div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: "white" }}>{p.voteBalance.toLocaleString()}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "var(--cs-text-strong, white)" }}>
+                {p.voteBalance.toLocaleString()}
+              </div>
             </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginBottom: 4 }}>Unallocated</div>
@@ -3771,7 +3800,16 @@ function VoteTab() {
                   >
                     <div style={{ flex: 1, paddingRight: 10 }}>
                       <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginBottom: 3 }}>MCE-0{i + 1}</div>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35 }}>{mce.title}</div>
+                      <div
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 700,
+                          color: "var(--cs-text-strong, white)",
+                          lineHeight: 1.35,
+                        }}
+                      >
+                        {mce.title}
+                      </div>
                       <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 3 }}>
                         by {mce.proposerName}
                       </div>
@@ -3911,7 +3949,15 @@ function VoteTab() {
                   </span>
                   <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>{timeAgo(prop.proposedAt)}</span>
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35, marginBottom: 4 }}>
+                <div
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: "var(--cs-text-strong, white)",
+                    lineHeight: 1.35,
+                    marginBottom: 4,
+                  }}
+                >
                   {prop.title}
                 </div>
                 <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 10 }}>
@@ -3944,7 +3990,9 @@ function VoteTab() {
                       alignItems: "center",
                       gap: 6,
                       background: liked ? "rgba(255,90,100,0.12)" : "rgba(255,255,255,0.05)",
-                      border: liked ? "1px solid rgba(255,90,100,0.3)" : "1px solid rgba(255,255,255,0.1)",
+                      border: liked
+                        ? "1px solid rgba(255,90,100,0.3)"
+                        : "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                       borderRadius: 20,
                       padding: "7px 16px",
                       cursor: "pointer",
@@ -4197,7 +4245,7 @@ function RedeemTab({
             </svg>
           </button>
           <div style={{ fontSize: 11, color: "rgba(255,255,255,0.55)", marginBottom: 6 }}>Last Redemption Write</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "white", marginBottom: 6 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, white)", marginBottom: 6 }}>
             {redeemWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
             {redeemWriteStatus.state === "confirmed" && "Confirmed onchain"}
             {redeemWriteStatus.state === "failed" && "Failed onchain"}
@@ -4275,7 +4323,9 @@ function RedeemTab({
                       }}
                     >
                       <div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "white" }}>{offer.offerTitle}</div>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: "var(--cs-text-strong, white)" }}>
+                          {offer.offerTitle}
+                        </div>
                         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>
                           {offer.redeemerName}
                         </div>
@@ -4395,7 +4445,9 @@ function RedeemTab({
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2, flexWrap: "wrap" }}>
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{r.offerTitle}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, white)" }}>
+                        {r.offerTitle}
+                      </div>
                       <span
                         style={{
                           fontSize: 10,

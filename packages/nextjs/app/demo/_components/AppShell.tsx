@@ -416,15 +416,15 @@ export default function AppShell({
       {redesignSkin && (
         <style>{`
           .citysync-redesign-main {
-            --cs-bg: #f8f2e4;
-            --cs-surface: rgba(255,255,255,0.92);
-            --cs-surface-soft: rgba(246,249,255,0.92);
-            --cs-border: rgba(31,45,86,0.14);
-            --cs-text-strong: #1b2e63;
-            --cs-text: rgba(27,45,95,0.78);
-            --cs-text-muted: rgba(27,45,95,0.62);
-            --cs-text-dimmed: rgba(27,45,95,0.46);
-            --cs-shadow: none;
+            --cs-bg: #15151e;
+            --cs-surface: #1e1e2c;
+            --cs-surface-soft: rgba(255,255,255,0.04);
+            --cs-border: rgba(255,255,255,0.08);
+            --cs-text-strong: #ffffff;
+            --cs-text: rgba(255,255,255,0.78);
+            --cs-text-muted: rgba(255,255,255,0.62);
+            --cs-text-dimmed: rgba(255,255,255,0.45);
+            --cs-shadow: 0 2px 12px rgba(0,0,0,0.28);
             background: linear-gradient(180deg, #f8f4eb 0%, #f3ead7 100%) !important;
             color: var(--cs-text-strong) !important;
           }

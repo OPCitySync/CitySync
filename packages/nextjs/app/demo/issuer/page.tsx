@@ -1900,7 +1900,7 @@ function ProfileTab({
                     background: "rgba(255,255,255,0.08)",
                     border: "1px solid rgba(221,158,51,0.5)",
                     borderRadius: 8,
-                    color: "#fff",
+                    color: "var(--cs-text-strong, #fff)",
                     fontSize: 22,
                     fontWeight: 700,
                     padding: "4px 10px",
@@ -1960,7 +1960,7 @@ function ProfileTab({
                   )}
                 </button>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: "#fff" }}>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: "var(--cs-text-strong, #fff)" }}>
                     {issuer.orgName || "Your Organization"}
                   </div>
                   <div style={{ fontSize: 10, color: "rgba(221,158,51,0.5)", marginTop: 1 }}>
@@ -2055,7 +2055,9 @@ function ProfileTab({
               marginBottom: 20,
             }}
           >
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff", marginBottom: 4 }}>Your Role as an Issuer</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}>
+              Your Role as an Issuer
+            </div>
             <p style={{ fontSize: 12, color: MUTED, lineHeight: 1.6, margin: 0 }}>
               Certified Issuer Organizations are able to publish civic tasks that expand their impact and mission. They
               are also responsible for managing and verifying tasks completions. When an Issuer organization verifies
@@ -2084,7 +2086,9 @@ function ProfileTab({
           >
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Jan 1, 2026 – Mar 31, 2026</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>
+                  Jan 1, 2026 – Mar 31, 2026
+                </div>
                 <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{EPOCH1_CAP} CITYx / month</div>
               </div>
               <div style={{ textAlign: "right" }}>
@@ -2143,7 +2147,7 @@ function ProfileTab({
               alignItems: "center",
               justifyContent: "space-between",
               cursor: "pointer",
-              color: "#fff",
+              color: "var(--cs-text-strong, #fff)",
             }}
           >
             <span style={{ fontSize: 12, fontWeight: 700 }}>Active Tasks ({activeTaskInstances.length})</span>
@@ -2164,7 +2168,9 @@ function ProfileTab({
                     }}
                   >
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{t.title}</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>
+                        {t.title}
+                      </div>
                       <div style={{ fontSize: 11, color: MUTED }}>{t.status}</div>
                     </div>
                     <div style={{ fontSize: 13, fontWeight: 700, color: ACCENT }}>{t.credits} CITYx</div>
@@ -2255,7 +2261,9 @@ function IssuerDashboardTab({
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Issued (Total)</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 2 }}>{totalTasksIssued}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginTop: 2 }}>
+              {totalTasksIssued}
+            </div>
           </div>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Credits Verified</div>
@@ -2263,11 +2271,13 @@ function IssuerDashboardTab({
           </div>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Open Tasks</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 2 }}>{openCount}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginTop: 2 }}>
+              {openCount}
+            </div>
           </div>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Claimed / Pending</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#fff", marginTop: 2 }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginTop: 2 }}>
               {claimedCount} / {pendingVerificationCount}
             </div>
           </div>
@@ -2289,7 +2299,9 @@ function IssuerDashboardTab({
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>Participants Tracked</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginTop: 2 }}>{scoreSnapshots.length}</div>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginTop: 2 }}>
+              {scoreSnapshots.length}
+            </div>
           </div>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>At Risk (Yellow+)</div>
@@ -2301,7 +2313,7 @@ function IssuerDashboardTab({
           </div>
           <div style={metricCardStyle}>
             <div style={{ fontSize: 11, color: MUTED }}>No-Show / Reject Events</div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", marginTop: 2 }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginTop: 2 }}>
               {noShowEvents} / {rejectEvents}
             </div>
           </div>
@@ -2323,7 +2335,7 @@ function IssuerDashboardTab({
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 12, color: "#fff", fontFamily: "monospace" }}>
+                  <div style={{ fontSize: 12, color: "var(--cs-text-strong, #fff)", fontFamily: "monospace" }}>
                     {snapshot.participantAddress.slice(0, 8)}...{snapshot.participantAddress.slice(-6)}
                   </div>
                   <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>
@@ -2575,7 +2587,9 @@ function TasksTab({
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Jan 1, 2026 – Mar 31, 2026</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>
+              Jan 1, 2026 – Mar 31, 2026
+            </div>
             <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{EPOCH1_CAP} CITYx / month</div>
           </div>
           <div style={{ textAlign: "right" }}>
@@ -2674,7 +2688,7 @@ function TasksTab({
               }}
             >
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Task Write</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
                 {taskWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
                 {taskWriteStatus.state === "confirmed" && "Confirmed onchain"}
                 {taskWriteStatus.state === "failed" && "Failed onchain"}
@@ -2802,7 +2816,16 @@ function TasksTab({
                         }}
                       >
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 2 }}>{t.title}</div>
+                          <div
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 600,
+                              color: "var(--cs-text-strong, #fff)",
+                              marginBottom: 2,
+                            }}
+                          >
+                            {t.title}
+                          </div>
                           <div style={{ fontSize: 11, color: MUTED }}>
                             {t.category} · {t.estimatedTime}
                           </div>
@@ -2886,7 +2909,7 @@ function TasksTab({
               }}
             >
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Proposal Write</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
                 {proposeWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
                 {proposeWriteStatus.state === "confirmed" && "Confirmed onchain"}
                 {proposeWriteStatus.state === "failed" && "Failed onchain"}
@@ -2946,7 +2969,11 @@ function TasksTab({
                     }}
                   >
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 4 }}>{pt.title}</div>
+                      <div
+                        style={{ fontSize: 14, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}
+                      >
+                        {pt.title}
+                      </div>
                       <div style={{ fontSize: 11, color: MUTED, marginBottom: 2 }}>
                         {pt.estimatedTime} · {pt.location}
                       </div>
@@ -3013,7 +3040,7 @@ function TasksTab({
                     <div
                       style={{
                         fontSize: 10,
-                        color: "#fff",
+                        color: "var(--cs-text-strong, #fff)",
                         textAlign: "center",
                         lineHeight: 1.5,
                         fontStyle: "italic",
@@ -3048,7 +3075,11 @@ function TasksTab({
                     }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 3 }}>{task.title}</div>
+                      <div
+                        style={{ fontSize: 14, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 3 }}
+                      >
+                        {task.title}
+                      </div>
                       <div style={{ fontSize: 11, color: MUTED }}>
                         {task.category} · {task.estimatedTime}
                       </div>
@@ -3157,7 +3188,7 @@ function CreateTaskSheet({
           right: 0,
           bottom: 69,
           zIndex: 221,
-          background: "#1E1E2C",
+          background: "var(--cs-surface, #1E1E2C)",
           borderRadius: "12px 12px 0 0",
           animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
           overflowY: "auto",
@@ -3176,7 +3207,7 @@ function CreateTaskSheet({
             flexShrink: 0,
           }}
         >
-          <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Task Catalog</span>
+          <span style={{ fontWeight: 700, fontSize: 16, color: "var(--cs-text-strong, white)" }}>Task Catalog</span>
           <button
             onClick={onClose}
             style={{
@@ -3235,7 +3266,11 @@ function CreateTaskSheet({
                     }}
                   >
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 3 }}>{task.title}</div>
+                      <div
+                        style={{ fontSize: 14, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 3 }}
+                      >
+                        {task.title}
+                      </div>
                       <div style={{ fontSize: 11, color: MUTED }}>
                         {task.category} · {task.estimatedTime}
                       </div>
@@ -3379,9 +3414,9 @@ function ProposeTaskSheet({
   const inputStyle: React.CSSProperties = {
     width: "100%",
     background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
     borderRadius: 10,
-    color: "#fff",
+    color: "var(--cs-text-strong, #fff)",
     fontSize: 13,
     padding: "10px 12px",
     outline: "none",
@@ -3416,7 +3451,7 @@ function ProposeTaskSheet({
           right: 0,
           bottom: 69,
           zIndex: 221,
-          background: "#1E1E2C",
+          background: "var(--cs-surface, #1E1E2C)",
           borderRadius: "12px 12px 0 0",
           animation: "walletSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1) both",
           overflowY: "auto",
@@ -3435,7 +3470,7 @@ function ProposeTaskSheet({
             flexShrink: 0,
           }}
         >
-          <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Propose New Task</span>
+          <span style={{ fontWeight: 700, fontSize: 16, color: "var(--cs-text-strong, white)" }}>Propose New Task</span>
           <button
             onClick={onClose}
             style={{
@@ -3805,7 +3840,9 @@ function MyCityTab({
               >
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{post.authorName}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--cs-text-strong, #fff)" }}>
+                      {post.authorName}
+                    </div>
                     {isOwn && (
                       <span
                         style={{
@@ -3914,7 +3951,7 @@ function ComposePostSheet({
             bottom: 69,
             maxHeight: "60%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 20px 24px",
@@ -3924,7 +3961,7 @@ function ComposePostSheet({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>New Post</span>
+            <span style={{ fontWeight: 700, fontSize: 16, color: "var(--cs-text-strong, white)" }}>New Post</span>
             <button
               onClick={onClose}
               style={{
@@ -3990,9 +4027,9 @@ function ComposePostSheet({
             style={{
               width: "100%",
               background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
               borderRadius: 12,
-              color: "#fff",
+              color: "var(--cs-text-strong, #fff)",
               fontSize: 13,
               padding: "12px 14px",
               lineHeight: 1.55,
@@ -4070,7 +4107,7 @@ function UnissueConfirmSheet({
             bottom: 69,
             maxHeight: "32%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 24px 24px",
@@ -4084,7 +4121,9 @@ function UnissueConfirmSheet({
           }}
         >
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "white", marginBottom: 8 }}>Unissue Task?</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--cs-text-strong, white)", marginBottom: 8 }}>
+              Unissue Task?
+            </div>
             <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
               This will deactivate the task onchain. It will be removed from the open task pool.
             </div>
@@ -4096,7 +4135,7 @@ function UnissueConfirmSheet({
                 flex: 1,
                 background: "rgba(255,255,255,0.1)",
                 border: "1px solid rgba(255,255,255,0.2)",
-                color: "white",
+                color: "var(--cs-text-strong, white)",
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
@@ -4180,7 +4219,7 @@ function NoShowConfirmSheet({
             bottom: 69,
             maxHeight: "32%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 24px 24px",
@@ -4194,7 +4233,9 @@ function NoShowConfirmSheet({
           }}
         >
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "white", marginBottom: 8 }}>Mark as No-Show?</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--cs-text-strong, white)", marginBottom: 8 }}>
+              Mark as No-Show?
+            </div>
             <div style={{ fontSize: 13, color: "rgba(255,255,255,0.65)", lineHeight: 1.4 }}>
               The participant did not complete this task. It will be removed from active tasks.
             </div>
@@ -4206,7 +4247,7 @@ function NoShowConfirmSheet({
                 flex: 1,
                 background: "rgba(255,255,255,0.1)",
                 border: "1px solid rgba(255,255,255,0.2)",
-                color: "white",
+                color: "var(--cs-text-strong, white)",
                 borderRadius: 10,
                 padding: "10px 14px",
                 fontSize: 13,
@@ -4627,7 +4668,7 @@ function VerifyTab({
           }}
         >
           <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Unissue Task Write</div>
-          <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
             {unissueWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
             {unissueWriteStatus.state === "confirmed" && "Confirmed onchain"}
             {unissueWriteStatus.state === "failed" && "Failed onchain"}
@@ -4692,7 +4733,14 @@ function VerifyTab({
                       }}
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 2 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "var(--cs-text-strong, #fff)",
+                            marginBottom: 2,
+                          }}
+                        >
                           {task.title}
                         </div>
                         <div style={{ fontSize: 11, color: MUTED }}>{task.estimatedTime} · Opportunity Open</div>
@@ -4776,7 +4824,14 @@ function VerifyTab({
                       }}
                     >
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 2 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "var(--cs-text-strong, #fff)",
+                            marginBottom: 2,
+                          }}
+                        >
                           {task.title}
                         </div>
                         <div style={{ fontSize: 11, color: MUTED }}>{task.estimatedTime} · Task Claimed</div>
@@ -4908,7 +4963,7 @@ function VerifyTab({
               }}
             >
               <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Last Verify / Reject & Mint Write</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
                 {verifyWriteStatus.state === "pending" && "Pending wallet/user-op confirmation..."}
                 {verifyWriteStatus.state === "confirmed" && "Confirmed onchain"}
                 {verifyWriteStatus.state === "failed" && "Failed onchain"}
@@ -4969,7 +5024,11 @@ function VerifyTab({
                     }}
                   >
                     <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#fff", marginBottom: 4 }}>{task.title}</div>
+                      <div
+                        style={{ fontSize: 14, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 4 }}
+                      >
+                        {task.title}
+                      </div>
                       <div style={{ fontSize: 11, color: MUTED }}>
                         Awaiting verification for Opportunity #{task.opportunityId.toString()}
                       </div>
@@ -5097,7 +5156,7 @@ function VerifyTab({
                       right: 0,
                       bottom: 69,
                       zIndex: 1,
-                      background: "#1E1E2C",
+                      background: "var(--cs-surface, #1E1E2C)",
                       borderRadius: "24px 24px 0 0",
                       boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
                       padding: "20px 20px 24px",
@@ -5105,7 +5164,9 @@ function VerifyTab({
                       pointerEvents: "auto",
                     }}
                   >
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", marginBottom: 8 }}>
+                    <div
+                      style={{ fontSize: 15, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 8 }}
+                    >
                       {confirmVerify.decision === "reject" ? "Confirm Reject & Mint" : "Confirm Verify & Mint"}
                     </div>
                     <div style={{ fontSize: 12, color: MUTED, marginBottom: 10 }}>{confirmVerify.title}</div>
@@ -5138,9 +5199,9 @@ function VerifyTab({
                       style={{
                         width: "100%",
                         background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.1)",
+                        border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
                         borderRadius: 10,
-                        color: "#fff",
+                        color: "var(--cs-text-strong, #fff)",
                         fontSize: 12,
                         padding: "8px 12px",
                         outline: "none",
@@ -5322,9 +5383,9 @@ function MCEsTab({
   const inputStyle: React.CSSProperties = {
     width: "100%",
     background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
     borderRadius: 10,
-    color: "#fff",
+    color: "var(--cs-text-strong, #fff)",
     fontSize: 13,
     padding: "10px 12px",
     outline: "none",
@@ -5407,7 +5468,14 @@ function MCEsTab({
                         <div style={{ fontSize: 11, color: "rgba(255,255,255,0.3)", marginBottom: 3 }}>
                           MCE-0{i + 1}
                         </div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35 }}>
+                        <div
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: "var(--cs-text-strong, white)",
+                            lineHeight: 1.35,
+                          }}
+                        >
                           {mce.title}
                         </div>
                         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 3 }}>
@@ -5515,7 +5583,15 @@ function MCEsTab({
                 </span>
                 <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>just now</span>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35, marginBottom: 4 }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "var(--cs-text-strong, white)",
+                  lineHeight: 1.35,
+                  marginBottom: 4,
+                }}
+              >
                 {p.title}
               </div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 8 }}>by {orgName}</div>
@@ -5570,7 +5646,15 @@ function MCEsTab({
                   })()}
                 </span>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.35, marginBottom: 4 }}>
+              <div
+                style={{
+                  fontSize: 14,
+                  fontWeight: 700,
+                  color: "var(--cs-text-strong, white)",
+                  lineHeight: 1.35,
+                  marginBottom: 4,
+                }}
+              >
                 {prop.title}
               </div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginBottom: 10 }}>
@@ -5621,7 +5705,7 @@ function MCEsTab({
                 top: 112,
                 bottom: 69,
                 zIndex: 1,
-                background: "#1E1E2C",
+                background: "var(--cs-surface, #1E1E2C)",
                 borderRadius: "12px 12px 0 0",
                 boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
                 padding: "20px 20px 24px",
@@ -5631,7 +5715,9 @@ function MCEsTab({
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>New MCE Proposal</span>
+                <span style={{ fontWeight: 700, fontSize: 16, color: "var(--cs-text-strong, white)" }}>
+                  New MCE Proposal
+                </span>
                 <button
                   onClick={() => setProposeOpen(false)}
                   style={{
@@ -5816,7 +5902,7 @@ function IssueTaskPopup({
             bottom: 69,
             maxHeight: "65%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 20px 24px",
@@ -5826,7 +5912,7 @@ function IssueTaskPopup({
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>Issue Tasks</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "var(--cs-text-strong, #fff)" }}>Issue Tasks</div>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ fontSize: 11, color: DIMMED, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                 {step === "select" ? "Step 1 of 2" : "Step 2 of 2"}
@@ -5851,7 +5937,9 @@ function IssueTaskPopup({
           {step === "select" ? (
             <>
               <div style={{ ...surfaceCard, marginBottom: 14, padding: "12px 14px" }}>
-                <div style={{ fontSize: 13, color: "#fff", fontWeight: 700, marginBottom: 4 }}>{task.title}</div>
+                <div style={{ fontSize: 13, color: "var(--cs-text-strong, #fff)", fontWeight: 700, marginBottom: 4 }}>
+                  {task.title}
+                </div>
                 <div style={{ fontSize: 11, color: MUTED, marginBottom: 8 }}>
                   {task.location || "Location TBD"} · {task.taskDate || "Date/Time TBD"}
                 </div>
@@ -5874,7 +5962,7 @@ function IssueTaskPopup({
               >
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: MUTED }}>
                   <span>Epoch budget remaining</span>
-                  <span style={{ color: "#fff", fontWeight: 600 }}>{remainingBudget} CITYx</span>
+                  <span style={{ color: "var(--cs-text-strong, #fff)", fontWeight: 600 }}>{remainingBudget} CITYx</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginTop: 4 }}>
                   <span style={{ color: wouldExceedBudget ? "#ff6b9d" : MUTED }}>Projected issuance</span>
@@ -5907,7 +5995,7 @@ function IssueTaskPopup({
                     borderRadius: 14,
                     border: "1px solid rgba(255,255,255,0.15)",
                     background: "rgba(255,255,255,0.06)",
-                    color: "white",
+                    color: "var(--cs-text-strong, white)",
                     fontSize: 24,
                     cursor: "pointer",
                     display: "flex",
@@ -5958,19 +6046,21 @@ function IssueTaskPopup({
           ) : (
             <>
               <div style={{ ...surfaceCard, marginBottom: 12, padding: "12px 14px" }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#fff", marginBottom: 8 }}>{task.title}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "var(--cs-text-strong, #fff)", marginBottom: 8 }}>
+                  {task.title}
+                </div>
                 <div style={{ display: "grid", gap: 6, fontSize: 12 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", color: MUTED }}>
                     <span>Slots</span>
-                    <span style={{ color: "#fff", fontWeight: 600 }}>{slots}</span>
+                    <span style={{ color: "var(--cs-text-strong, #fff)", fontWeight: 600 }}>{slots}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", color: MUTED }}>
                     <span>Total CITY</span>
-                    <span style={{ color: "#fff", fontWeight: 600 }}>{totalCity} CITYx</span>
+                    <span style={{ color: "var(--cs-text-strong, #fff)", fontWeight: 600 }}>{totalCity} CITYx</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", color: MUTED }}>
                     <span>Total VOTE</span>
-                    <span style={{ color: "#fff", fontWeight: 600 }}>{totalVote} VOTE</span>
+                    <span style={{ color: "var(--cs-text-strong, #fff)", fontWeight: 600 }}>{totalVote} VOTE</span>
                   </div>
                 </div>
               </div>
@@ -6082,9 +6172,9 @@ function ModifyTaskSheet({
   const inputStyle: React.CSSProperties = {
     width: "100%",
     background: "rgba(255,255,255,0.05)",
-    border: "1px solid rgba(255,255,255,0.1)",
+    border: "1px solid var(--cs-border, rgba(255,255,255,0.1))",
     borderRadius: 10,
-    color: "#fff",
+    color: "var(--cs-text-strong, #fff)",
     fontSize: 13,
     padding: "10px 12px",
     outline: "none",
@@ -6131,7 +6221,7 @@ function ModifyTaskSheet({
             bottom: 69,
             maxHeight: "55%",
             zIndex: 1,
-            background: "#1E1E2C",
+            background: "var(--cs-surface, #1E1E2C)",
             borderRadius: "24px 24px 0 0",
             boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
             padding: "20px 20px 24px",
@@ -6141,7 +6231,7 @@ function ModifyTaskSheet({
           }}
         >
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <span style={{ fontWeight: 700, fontSize: 16, color: "white" }}>Modify Task</span>
+            <span style={{ fontWeight: 700, fontSize: 16, color: "var(--cs-text-strong, white)" }}>Modify Task</span>
             <button
               onClick={onClose}
               style={{
@@ -6312,7 +6402,9 @@ function EmptyState({ emoji, title, desc }: { emoji: string; title: string; desc
       >
         {emoji}
       </div>
-      <div style={{ fontSize: 15, fontWeight: 600, color: "#fff", marginBottom: 6 }}>{title}</div>
+      <div style={{ fontSize: 15, fontWeight: 600, color: "var(--cs-text-strong, #fff)", marginBottom: 6 }}>
+        {title}
+      </div>
       <div style={{ fontSize: 13, color: MUTED, maxWidth: 240, lineHeight: 1.6 }}>{desc}</div>
     </div>
   );
