@@ -561,6 +561,20 @@ export default function RedeemerApp() {
     setTutorialStep("dismissed");
   }, [address, persistTutorialStep]);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
+  const additionalReadingLinks = React.useMemo(() => {
+    const seen = new Set<string>();
+    const links: Array<{ label: string; href: string }> = [];
+    for (const key of openInfoCards) {
+      const card = REDEEMER_LEARN_CARDS[key];
+      if (!card?.relatedLinks) continue;
+      for (const link of card.relatedLinks) {
+        if (seen.has(link.href)) continue;
+        seen.add(link.href);
+        links.push(link);
+      }
+    }
+    return links;
+  }, [openInfoCards]);
   const tutorialCard = (() => {
     if (tutorialStep === "dismissed") return null;
 
@@ -726,6 +740,60 @@ export default function RedeemerApp() {
           Use Learn More links in the app to load contextual cards in this panel.
         </div>
       )}
+      <div
+        style={{
+          background: "rgba(255,255,255,0.025)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: 16,
+          padding: 14,
+        }}
+      >
+        <div
+          style={{
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "rgba(255,255,255,0.52)",
+            marginBottom: 6,
+          }}
+        >
+          Related Deep Dives
+        </div>
+        <div style={{ fontSize: 12, fontWeight: 700, color: "#fff", marginBottom: 8 }}>Additional Reading</div>
+        {additionalReadingLinks.length > 0 ? (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {additionalReadingLinks.map(link => (
+              <a
+                key={`redeemer-deep-${link.href}`}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  textDecoration: "none",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.92)",
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.14)",
+                  borderRadius: 9,
+                  padding: "6px 8px",
+                }}
+              >
+                <span>{link.label}</span>
+                <span style={{ color: "rgba(255,255,255,0.45)", fontSize: 10 }}>↗</span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.62)", lineHeight: 1.55 }}>
+            Use Learn More in the app to populate additional reading links.
+          </div>
+        )}
+      </div>
       {tutorialStep === "dismissed" && (
         <div
           style={{
@@ -1263,8 +1331,8 @@ export default function RedeemerApp() {
         }}
         accentColor={ACCENT}
         title="Redeemer"
-        leftPanel={leftPanel}
-        rightPanel={rightPanel}
+        leftPanel={rightPanel}
+        rightPanel={leftPanel}
         showLeftPanel={!hideShellPanels}
         showRightPanel={!hideShellPanels}
         phoneFrame
