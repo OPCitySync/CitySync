@@ -97,19 +97,23 @@ export default function DemoRedesignPage() {
               ))}
             </div>
 
-            <div className={styles.tutorialCard}>
-              <p className={styles.cardLabel}>Tutorial Walkthrough</p>
-              <h3>Try the full role sequence</h3>
-              <p className={styles.cardText}>
-                Start an end-to-end pass from Issuer task issuance through Civic Participant execution and Redeemer
-                redemption.
-              </p>
-              <div className={styles.tutorialActions}>
-                <button type="button">Start Tutorial</button>
-                <button type="button" className={styles.secondaryAction}>
-                  Reset Tutorial
-                </button>
-              </div>
+            <div className={styles.panelCard}>
+              <p className={styles.cardLabel}>Activity Panel</p>
+              <h3>Live App Activity</h3>
+              <ul className={styles.activityList}>
+                {activityLog.map(item => (
+                  <li key={`${item.title}-${item.time}`} className={styles.activityItem}>
+                    <div>
+                      <strong>{item.title}</strong>
+                      <p>{item.detail}</p>
+                    </div>
+                    <div className={styles.activityMeta}>
+                      <span>{item.time}</span>
+                      <em>{item.status}</em>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className={styles.linksCard}>
@@ -131,23 +135,19 @@ export default function DemoRedesignPage() {
           </div>
 
           <aside className={styles.rightRail}>
-            <div className={styles.panelCard}>
-              <p className={styles.cardLabel}>Activity Panel</p>
-              <h3>Live App Activity</h3>
-              <ul className={styles.activityList}>
-                {activityLog.map(item => (
-                  <li key={`${item.title}-${item.time}`} className={styles.activityItem}>
-                    <div>
-                      <strong>{item.title}</strong>
-                      <p>{item.detail}</p>
-                    </div>
-                    <div className={styles.activityMeta}>
-                      <span>{item.time}</span>
-                      <em>{item.status}</em>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+            <div className={styles.tutorialCard}>
+              <p className={styles.cardLabel}>Tutorial Walkthrough</p>
+              <h3>Try the full role sequence</h3>
+              <p className={styles.cardText}>
+                Start an end-to-end pass from Issuer task issuance through Civic Participant execution and Redeemer
+                redemption.
+              </p>
+              <div className={styles.tutorialActions}>
+                <button type="button">Start Tutorial</button>
+                <button type="button" className={styles.secondaryAction}>
+                  Reset Tutorial
+                </button>
+              </div>
             </div>
 
             <div className={styles.panelCardImage}>
