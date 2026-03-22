@@ -8,6 +8,7 @@ import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
 import { NavTab } from "../_components/BottomNav";
+import DemoToast from "../_components/DemoToast";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import { RailInfoPlaceholderCard, RelatedDeepDivesCard, TutorialWalkthroughButton } from "../_components/RailCards";
 import { baseSepoliaPublicClient } from "../_config/baseSepoliaClient";
@@ -1116,76 +1117,6 @@ function RedeemModal({
             <div style={{ marginTop: 10, fontSize: 11, color: "rgba(255,107,157,0.9)", lineHeight: 1.45 }}>{error}</div>
           ) : null}
         </div>
-      </div>
-    </>
-  );
-}
-
-// ─── Toast ────────────────────────────────────────────────────────────────────
-
-function Toast({ message, onDismiss }: { message: string; onDismiss: () => void }) {
-  const isError = /fail|error|not ready/i.test(message);
-  const isInfo = /submitting|approving|pending/i.test(message);
-  const accentBorder = isError ? "rgba(255,107,157,0.65)" : isInfo ? "rgba(130,160,255,0.55)" : "rgba(52,238,182,0.55)";
-  const iconColor = isError ? "#ff6b9d" : isInfo ? "#8aa8ff" : TEAL;
-
-  useEffect(() => {
-    const t = setTimeout(onDismiss, isInfo ? 8000 : 3500);
-    return () => clearTimeout(t);
-  }, [onDismiss, isInfo]);
-
-  return (
-    <>
-      <style>{`
-        @keyframes toastUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-      <div
-        style={{
-          position: "fixed",
-          bottom: 28,
-          right: 24,
-          animation: "toastUp 0.2s cubic-bezier(0.34,1.36,0.64,1) both",
-          background: "var(--cs-surface, rgba(20,22,32,0.97))",
-          border: `1px solid ${BORDER}`,
-          borderLeft: `3px solid ${accentBorder}`,
-          borderRadius: 10,
-          padding: "10px 12px 10px 13px",
-          fontSize: 13,
-          fontWeight: 500,
-          zIndex: 400,
-          boxShadow: SHADOW,
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 9,
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-          maxWidth: 300,
-          minWidth: 180,
-        }}
-      >
-        <span style={{ fontSize: 13, color: iconColor, flexShrink: 0, marginTop: 1 }}>
-          {isError ? "✕" : isInfo ? "⋯" : "✓"}
-        </span>
-        <span style={{ color: TEXT_STRONG, lineHeight: 1.45, flex: 1 }}>{message}</span>
-        <button
-          onClick={onDismiss}
-          style={{
-            background: "none",
-            border: "none",
-            color: DIMMED,
-            cursor: "pointer",
-            fontSize: 15,
-            padding: 0,
-            flexShrink: 0,
-            lineHeight: 1,
-          }}
-          aria-label="Dismiss"
-        >
-          ×
-        </button>
       </div>
     </>
   );
@@ -3413,7 +3344,17 @@ function ExploreTab({
           onCancel={() => setUnclaimConfirmTask(null)}
         />
       )}
-      {toast && <Toast message={toast} onDismiss={() => setToast(null)} />}
+      {toast && (
+        <DemoToast
+          message={toast}
+          accentColor={TEAL}
+          borderColor={BORDER}
+          strongTextColor={TEXT_STRONG}
+          dimTextColor={DIMMED}
+          shadow={SHADOW}
+          onDismiss={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }
