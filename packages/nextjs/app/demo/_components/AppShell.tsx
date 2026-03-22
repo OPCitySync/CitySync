@@ -330,12 +330,12 @@ export default function AppShell({
           .citysync-redesign-main {
             background: linear-gradient(180deg, #f7f8fc 0%, #edf2fb 100%) !important;
             color: #1a2d62 !important;
-            filter: invert(0.96) hue-rotate(180deg) saturate(0.84) contrast(0.98);
+            filter: invert(1) hue-rotate(180deg) saturate(0.88) contrast(0.96);
           }
           .citysync-redesign-main img,
           .citysync-redesign-main video,
           .citysync-redesign-main canvas {
-            filter: invert(1) hue-rotate(180deg) saturate(1.08) contrast(1.03);
+            filter: invert(1) hue-rotate(180deg) saturate(1.06) contrast(1.02);
           }
         `}</style>
       )}
@@ -823,6 +823,8 @@ export default function AppShell({
                 radial-gradient(ellipse 500px 400px at 80% 70%, rgba(52,238,182,0.08), transparent 65%),
                 #08080f
               `,
+          height: embedMode ? "100vh" : undefined,
+          overflow: embedMode ? "hidden" : undefined,
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
@@ -922,13 +924,17 @@ export default function AppShell({
             style={{
               padding: 2,
               borderRadius: 52,
-              background: `linear-gradient(145deg, ${accentColor}90 0%, rgba(130,100,240,0.6) 45%, rgba(52,238,182,0.5) 100%)`,
-              boxShadow: `
-                0 0 0 1px rgba(0,0,0,0.6),
-                0 0 60px ${accentColor}28,
-                0 0 120px rgba(100,80,220,0.15),
-                0 40px 80px rgba(0,0,0,0.8)
-              `,
+              background: redesignSkin
+                ? "linear-gradient(145deg, rgba(239,243,252,0.98) 0%, rgba(226,234,250,0.96) 55%, rgba(215,227,247,0.94) 100%)"
+                : `linear-gradient(145deg, ${accentColor}90 0%, rgba(130,100,240,0.6) 45%, rgba(52,238,182,0.5) 100%)`,
+              boxShadow: redesignSkin
+                ? "0 0 0 1px rgba(28,42,78,0.14), 0 16px 36px rgba(32,47,83,0.18)"
+                : `
+                  0 0 0 1px rgba(0,0,0,0.6),
+                  0 0 60px ${accentColor}28,
+                  0 0 120px rgba(100,80,220,0.15),
+                  0 40px 80px rgba(0,0,0,0.8)
+                `,
               height: "100%",
               display: "flex",
             }}
