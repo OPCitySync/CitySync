@@ -60,6 +60,10 @@ interface AppShellProps {
   phoneFrame?: boolean;
   /** Optional shell surroundings theme; does not affect in-app content */
   surroundingsTheme?: "default" | "light";
+  /** Show the left informational side panel around the phone shell */
+  showLeftPanel?: boolean;
+  /** Show the right contextual side panel around the phone shell */
+  showRightPanel?: boolean;
   tutorialHighlightWalletButton?: boolean;
   tutorialHighlightWalletCloseButton?: boolean;
   tutorialHighlightRoleSwitcher?: boolean;
@@ -191,6 +195,8 @@ export default function AppShell({
   rightPanel,
   phoneFrame = false,
   surroundingsTheme = "default",
+  showLeftPanel = true,
+  showRightPanel = true,
   tutorialHighlightWalletButton = false,
   tutorialHighlightWalletCloseButton = false,
   tutorialHighlightRoleSwitcher = false,
@@ -741,25 +747,27 @@ export default function AppShell({
         }}
       >
         {/* Learn More column (same fixed slot as previous left panel) */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            bottom: 0,
-            right: "calc(50% + 230px)",
-            width: 280,
-            padding: "72px 20px 40px",
-            display: "flex",
-            flexDirection: "column",
-            overflowY: "auto",
-            color: lightSurroundings ? "#112049" : undefined,
-          }}
-        >
-          {learnMoreColumn}
-        </div>
+        {showLeftPanel && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: "calc(50% + 230px)",
+              width: 280,
+              padding: "72px 20px 40px",
+              display: "flex",
+              flexDirection: "column",
+              overflowY: "auto",
+              color: lightSurroundings ? "#112049" : undefined,
+            }}
+          >
+            {learnMoreColumn}
+          </div>
+        )}
 
         {/* Right context panel */}
-        {rightPanel && (
+        {showRightPanel && rightPanel && (
           <div
             style={{
               position: "absolute",
@@ -884,24 +892,26 @@ export default function AppShell({
       </div>
 
       {/* Learn More column (same fixed slot as previous left panel) */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          bottom: 0,
-          right: "calc(50% + 260px)",
-          width: 280,
-          padding: "72px 20px 40px",
-          display: "flex",
-          flexDirection: "column",
-          overflowY: "auto",
-        }}
-      >
-        {learnMoreColumn}
-      </div>
+      {showLeftPanel && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: "calc(50% + 260px)",
+            width: 280,
+            padding: "72px 20px 40px",
+            display: "flex",
+            flexDirection: "column",
+            overflowY: "auto",
+          }}
+        >
+          {learnMoreColumn}
+        </div>
+      )}
 
       {/* Right context panel */}
-      {rightPanel && (
+      {showRightPanel && rightPanel && (
         <div
           style={{
             position: "absolute",

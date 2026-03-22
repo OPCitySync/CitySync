@@ -104,10 +104,12 @@ export default function RedesignPhonePrototype({ shellOnly = false }: { shellOnl
       onTabChange={setActiveTab}
       accentColor="#DD9E33"
       title="Redesign Prototype"
-      leftPanel={shellOnly ? <span /> : <LeftPanel />}
+      leftPanel={shellOnly ? undefined : <LeftPanel />}
       rightPanel={shellOnly ? undefined : <RightPanel />}
       phoneFrame
-      surroundingsTheme="light"
+      surroundingsTheme={shellOnly ? "default" : "light"}
+      showLeftPanel={!shellOnly}
+      showRightPanel={!shellOnly}
     >
       <div className={styles.canvas}>
         <section className={styles.heroCard}>
