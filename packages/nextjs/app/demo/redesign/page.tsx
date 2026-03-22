@@ -8,11 +8,24 @@ export const metadata: Metadata = {
   description: "Civic Wallet OS concept page with an embedded live demo shell.",
 };
 
-const roleCards = [
-  { title: "Issuer", blurb: "Define, issue, and verify civic tasks.", accent: "gold" },
-  { title: "Civic Participant", blurb: "Claim tasks, execute work, earn CITY + VOTE.", accent: "blue" },
-  { title: "Redeemer", blurb: "Commit offerings and process redemption flows.", accent: "mint" },
-] as const;
+type RoleKey = "issuer" | "participant" | "redeemer";
+
+const roleCards: Array<{ key: RoleKey; title: string; blurb: string; accent: "gold" | "blue" | "mint" }> = [
+  { key: "issuer", title: "Issuer", blurb: "Define, issue, and verify civic tasks.", accent: "gold" },
+  {
+    key: "participant",
+    title: "Civic Participant",
+    blurb: "Claim tasks, execute work, earn CITY + VOTE.",
+    accent: "blue",
+  },
+  { key: "redeemer", title: "Redeemer", blurb: "Commit offerings and process redemption flows.", accent: "mint" },
+];
+
+const roleEmbedPath: Record<RoleKey, string> = {
+  issuer: "/demo/issuer",
+  participant: "/demo/participant",
+  redeemer: "/demo/redeemer",
+};
 
 const deepLinks = [
   { href: "/demo/mce", label: "Mass Coordination Events" },
@@ -26,8 +39,20 @@ const activityLog = [
   { title: "Redemption Burn", detail: "Farmers Market Voucher · 10 CITY", time: "14m ago", status: "Confirmed" },
 ] as const;
 
-export default function DemoRedesignPage() {
-  const embedSrc = "/demo/issuer?embed=1&skin=redesign";
+type RedesignPageProps = {
+  searchParams?: Promise<{
+    role?: string | string[];
+  }>;
+};
+
+export default async function DemoRedesignPage({ searchParams }: RedesignPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const requestedRole = Array.isArray(resolvedSearchParams?.role)
+    ? resolvedSearchParams.role[0]
+    : resolvedSearchParams?.role;
+  const activeRole: RoleKey =
+    requestedRole === "participant" || requestedRole === "redeemer" ? requestedRole : "issuer";
+  const embedSrc = `${roleEmbedPath[activeRole]}?embed=1&skin=redesign`;
 
   return (
     <div className={styles.page}>
@@ -87,13 +112,19 @@ export default function DemoRedesignPage() {
 
         <section className={styles.workspace}>
           <aside className={styles.leftRail}>
-            <h2 className={styles.railTitle}>Role Modes</h2>
+            <h2 className={styles.railTitle}>Choose your Role</h2>
             <div className={styles.roleStack}>
               {roleCards.map(role => (
-                <article key={role.title} className={`${styles.roleCard} ${styles[role.accent]}`}>
+                <Link
+                  key={role.key}
+                  href={`/demo/redesign?role=${role.key}`}
+                  className={`${styles.roleCard} ${styles[role.accent]} ${
+                    activeRole === role.key ? styles.roleCardActive : ""
+                  }`}
+                >
                   <h3>{role.title}</h3>
                   <p>{role.blurb}</p>
-                </article>
+                </Link>
               ))}
             </div>
 

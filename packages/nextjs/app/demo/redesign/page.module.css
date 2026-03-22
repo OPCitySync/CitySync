@@ -253,9 +253,21 @@
 }
 
 .roleCard {
+  display: block;
+  text-decoration: none;
+  color: inherit;
   border-radius: 0.85rem;
   padding: 0.75rem;
   border: 1px solid transparent;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.roleCard:hover {
+  transform: translateY(-1px);
+}
+
+.roleCardActive {
+  border-color: rgba(23, 42, 95, 0.36);
 }
 
 .roleCard h3 {
