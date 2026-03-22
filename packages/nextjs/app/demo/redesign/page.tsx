@@ -194,24 +194,6 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
                 </div>
               </div>
             )}
-
-            <div className={styles.panelCardImage}>
-              <Image
-                src="/pitch/image-1.png"
-                alt="City/Sync civic landscape"
-                fill
-                sizes="(max-width: 1100px) 100vw, 24vw"
-              />
-            </div>
-
-            <div className={styles.panelCardImage}>
-              <Image
-                src="/pitch/image-9.png"
-                alt="Issuer participant redeemer loop"
-                fill
-                sizes="(max-width: 1100px) 100vw, 24vw"
-              />
-            </div>
           </aside>
         </section>
       </main>
