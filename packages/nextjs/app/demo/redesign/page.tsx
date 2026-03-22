@@ -27,6 +27,12 @@ const roleEmbedPath: Record<RoleKey, string> = {
   redeemer: "/demo/redeemer",
 };
 
+const roleLabelByKey: Record<RoleKey, string> = {
+  issuer: "Issuer",
+  participant: "Civic Participant",
+  redeemer: "Redeemer",
+};
+
 const deepLinks = [
   { href: "/demo/mce", label: "Mass Coordination Events" },
   { href: "/demo/public-sector-economy", label: "Public-Sector Economy" },
@@ -52,6 +58,7 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
     : resolvedSearchParams?.role;
   const activeRole: RoleKey =
     requestedRole === "participant" || requestedRole === "redeemer" ? requestedRole : "issuer";
+  const activeRoleLabel = roleLabelByKey[activeRole];
   const embedSrc = `${roleEmbedPath[activeRole]}?embed=1&skin=redesign`;
 
   return (
@@ -129,8 +136,8 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
             </div>
 
             <div className={styles.panelCard}>
-              <p className={styles.cardLabel}>Activity Panel</p>
-              <h3>Live App Activity</h3>
+              <p className={styles.cardLabel}>Onchain Activity Panel</p>
+              <h3>Global {activeRoleLabel} Activity</h3>
               <ul className={styles.activityList}>
                 {activityLog.map(item => (
                   <li key={`${item.title}-${item.time}`} className={styles.activityItem}>
