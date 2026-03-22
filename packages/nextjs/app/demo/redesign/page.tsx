@@ -48,6 +48,7 @@ const activityLog = [
 type RedesignPageProps = {
   searchParams?: Promise<{
     role?: string | string[];
+    tour?: string | string[];
   }>;
 };
 
@@ -59,6 +60,10 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
   const activeRole: RoleKey =
     requestedRole === "participant" || requestedRole === "redeemer" ? requestedRole : "issuer";
   const activeRoleLabel = roleLabelByKey[activeRole];
+  const requestedTour = Array.isArray(resolvedSearchParams?.tour)
+    ? resolvedSearchParams.tour[0]
+    : resolvedSearchParams?.tour;
+  const isTourStarted = requestedTour === "1";
   const embedSrc = `${roleEmbedPath[activeRole]}?embed=1&skin=redesign`;
 
   return (
@@ -98,9 +103,9 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
               for the proposed public-sector economy.
             </p>
             <div className={styles.heroCtas}>
-              <button className={styles.primaryBtn} type="button">
+              <Link href={`/demo/redesign?role=${activeRole}&tour=1`} className={styles.primaryBtn}>
                 Start the Guided Tour
-              </button>
+              </Link>
             </div>
           </div>
           <div className={styles.heroArt}>
@@ -124,7 +129,7 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
               {roleCards.map(role => (
                 <Link
                   key={role.key}
-                  href={`/demo/redesign?role=${role.key}`}
+                  href={`/demo/redesign?role=${role.key}${isTourStarted ? "&tour=1" : ""}`}
                   className={`${styles.roleCard} ${styles[role.accent]} ${
                     activeRole === role.key ? styles.roleCardActive : ""
                   }`}
@@ -173,20 +178,22 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
           </div>
 
           <aside className={styles.rightRail}>
-            <div className={styles.tutorialCard}>
-              <p className={styles.cardLabel}>Tutorial Walkthrough</p>
-              <h3>Try the full role sequence</h3>
-              <p className={styles.cardText}>
-                Start an end-to-end pass from Issuer task issuance through Civic Participant execution and Redeemer
-                redemption.
-              </p>
-              <div className={styles.tutorialActions}>
-                <button type="button">Start Tutorial</button>
-                <button type="button" className={styles.secondaryAction}>
-                  Reset Tutorial
-                </button>
+            {isTourStarted && (
+              <div className={styles.tutorialCard}>
+                <p className={styles.cardLabel}>Tutorial Walkthrough</p>
+                <h3>Try the full role sequence</h3>
+                <p className={styles.cardText}>
+                  Start an end-to-end pass from Issuer task issuance through Civic Participant execution and Redeemer
+                  redemption.
+                </p>
+                <div className={styles.tutorialActions}>
+                  <button type="button">Start Tutorial</button>
+                  <button type="button" className={styles.secondaryAction}>
+                    Reset Tutorial
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
 
             <div className={styles.panelCardImage}>
               <Image
