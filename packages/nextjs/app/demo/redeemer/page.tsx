@@ -11,6 +11,7 @@ import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import { RailInfoPlaceholderCard, RelatedDeepDivesCard, TutorialWalkthroughButton } from "../_components/RailCards";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, RedemptionOffer } from "../_data/mockData";
+import { useLearnMoreCards } from "../_hooks/useLearnMoreCards";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
 import {
   DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
@@ -27,6 +28,17 @@ import {
   setDemoTutorialHandoff,
   startDemoTutorialRunForAddress,
 } from "../_utils/tutorialRun";
+import {
+  DEMO_BG,
+  DEMO_BORDER,
+  DEMO_SHADOW,
+  DEMO_SHADOW_LG,
+  DEMO_SURFACE,
+  DEMO_SURFACE_SOFT,
+  DEMO_TEXT_DIMMED,
+  DEMO_TEXT_STRONG,
+  DEMO_TEXT_SUBTLE,
+} from "../_utils/themeTokens";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -181,19 +193,19 @@ function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   return "intro";
 }
 
-const SURFACE = "var(--cs-surface, #1E1E2C)";
-const BG = "var(--cs-bg, #15151E)";
-const SURFACE_SOFT = "var(--cs-surface-soft, rgba(255,255,255,0.04))";
-const BORDER = "var(--cs-border, rgba(255,255,255,0.08))";
-const TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
-const TEXT_DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
-const SHADOW = "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))";
-const SHADOW_LG = "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))";
+const SURFACE = DEMO_SURFACE;
+const BG = DEMO_BG;
+const SURFACE_SOFT = DEMO_SURFACE_SOFT;
+const BORDER = DEMO_BORDER;
+const TEXT_STRONG = DEMO_TEXT_STRONG;
+const TEXT_DIMMED = DEMO_TEXT_DIMMED;
+const SHADOW = DEMO_SHADOW;
+const SHADOW_LG = DEMO_SHADOW_LG;
 const CONTROL_SURFACE = "var(--cs-control-surface, rgba(255,255,255,0.05))";
 const CONTROL_ACTIVE = "var(--cs-control-active, rgba(255,255,255,0.1))";
 const CONTROL_BORDER = "var(--cs-control-border, rgba(255,255,255,0.14))";
-const MUTED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
-const DIMMED = "var(--cs-text-muted, rgba(255,255,255,0.25))";
+const MUTED = DEMO_TEXT_DIMMED;
+const DIMMED = DEMO_TEXT_SUBTLE;
 
 const surfaceCard: React.CSSProperties = {
   background: SURFACE,
@@ -442,7 +454,8 @@ export default function RedeemerApp() {
   const hideShellPanels = searchParams?.get("embed") === "1";
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
-  const previousActiveTabRef = useRef(activeTab);
+  const { openInfoCards, openLearnMore, closeLearnMore, clearLearnMore } =
+    useLearnMoreCards<RedeemerLearnCardKey>(activeTab);
   const [catalogEditor, setCatalogEditor] = useState<CatalogEditorState>(null);
   const [qrTarget, setQrTarget] = useState<QROfferingData | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -455,7 +468,6 @@ export default function RedeemerApp() {
   const [catalogIssueSheet, setCatalogIssueSheet] = useState<"committed" | "mce" | null>(null);
   const [removeTarget, setRemoveTarget] = useState<string | null>(null);
   const [offerWriteStatus, setOfferWriteStatus] = useState<OfferWriteStatus>({ state: "idle" });
-  const [openInfoCards, setOpenInfoCards] = useState<RedeemerLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialCatalogOfferingId, setTutorialCatalogOfferingId] = useState<string | null>(null);
   const [tutorialActiveOfferingId, setTutorialActiveOfferingId] = useState<string | null>(null);
@@ -672,12 +684,7 @@ export default function RedeemerApp() {
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       {tutorialCard}
       {openInfoCards.length > 0 ? (
-        <LearnMorePanel
-          keys={openInfoCards}
-          cards={REDEEMER_LEARN_CARDS}
-          onClose={key => setOpenInfoCards(prev => prev.filter(item => item !== key))}
-          accent={ACCENT}
-        />
+        <LearnMorePanel keys={openInfoCards} cards={REDEEMER_LEARN_CARDS} onClose={closeLearnMore} accent={ACCENT} />
       ) : (
         <RailInfoPlaceholderCard>
           Use Learn More links in the app to load contextual cards in this panel.
@@ -706,17 +713,6 @@ export default function RedeemerApp() {
       )}
     </div>
   );
-
-  const openLearnMore = React.useCallback((selection: RedeemerLearnMoreSelection) => {
-    setOpenInfoCards(Array.isArray(selection) ? selection : [selection]);
-  }, []);
-
-  React.useEffect(() => {
-    if (previousActiveTabRef.current !== activeTab) {
-      setOpenInfoCards([]);
-      previousActiveTabRef.current = activeTab;
-    }
-  }, [activeTab]);
 
   React.useEffect(() => {
     setRole("redeemer");
@@ -1207,7 +1203,7 @@ export default function RedeemerApp() {
         activeTab={activeTab}
         onTabChange={tab => {
           setActiveTab(tab);
-          setOpenInfoCards([]);
+          clearLearnMore();
         }}
         accentColor={ACCENT}
         title="Redeemer"

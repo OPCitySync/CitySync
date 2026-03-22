@@ -14,6 +14,7 @@ import { baseSepoliaPublicClient } from "../_config/baseSepoliaClient";
 import { BASE_SEPOLIA_CONTRACTS } from "../_config/baseSepoliaContracts";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, Task } from "../_data/mockData";
+import { useLearnMoreCards } from "../_hooks/useLearnMoreCards";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
 import {
   applyParticipantScoreEvent,
@@ -39,6 +40,16 @@ import {
   DEMO_MODAL_SHEET_BASE_STYLE,
   DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE,
 } from "../_utils/sheetStyles";
+import {
+  DEMO_BG,
+  DEMO_BORDER,
+  DEMO_SHADOW,
+  DEMO_SURFACE,
+  DEMO_SURFACE_SOFT,
+  DEMO_TEXT_DIMMED,
+  DEMO_TEXT_STRONG,
+  DEMO_TEXT_SUBTLE,
+} from "../_utils/themeTokens";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -139,15 +150,15 @@ const EPOCH_RESET_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
 const ACCENT_TEAL = "#34eeb6"; // teal — verify / success states
-const SURFACE = "var(--cs-surface, #1E1E2C)";
-const SURFACE_SOFT = "var(--cs-surface-soft, rgba(255,255,255,0.04))";
-const BG = "var(--cs-bg, #15151E)";
-const BORDER = "var(--cs-border, rgba(255,255,255,0.08))";
-const TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
-const TEXT_DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
-const SHADOW = "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))";
-const MUTED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
-const DIMMED = "var(--cs-text-muted, rgba(255,255,255,0.25))";
+const SURFACE = DEMO_SURFACE;
+const SURFACE_SOFT = DEMO_SURFACE_SOFT;
+const BG = DEMO_BG;
+const BORDER = DEMO_BORDER;
+const TEXT_STRONG = DEMO_TEXT_STRONG;
+const TEXT_DIMMED = DEMO_TEXT_DIMMED;
+const SHADOW = DEMO_SHADOW;
+const MUTED = DEMO_TEXT_DIMMED;
+const DIMMED = DEMO_TEXT_SUBTLE;
 
 type OpportunityRaw = readonly [
   issuer: `0x${string}`,
@@ -654,7 +665,6 @@ export default function IssuerApp() {
   const { openAuthModal } = useAuthModal();
   const { isConnected, isAuthenticating } = useSignerStatus();
   const [activeTab, setActiveTab] = useState("profile");
-  const previousActiveTabRef = useRef(activeTab);
   const [createSheet, setCreateSheet] = useState(false);
   const [proposeSheet, setProposeSheet] = useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -670,7 +680,6 @@ export default function IssuerApp() {
   const [proposeWriteStatus, setProposeWriteStatus] = useState<TaskWriteStatus>({ state: "idle" });
   const [optimisticHiddenVerifyTaskIds, setOptimisticHiddenVerifyTaskIds] = useState<string[]>([]);
   const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
-  const [openInfoCards, setOpenInfoCards] = useState<IssuerLearnCardKey[]>([]);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [unissueConfirmId, setUnissueConfirmId] = useState<string | null>(null);
   const [noShowConfirmItem, setNoShowConfirmItem] = useState<{
@@ -690,6 +699,8 @@ export default function IssuerApp() {
 
   // Always-current ref so the settle-timer can read tasks after DemoContext hydrates.
   const issuerTasksRef = React.useRef([] as typeof issuer.tasks);
+  const { openInfoCards, openLearnMore, closeLearnMore, clearLearnMore } =
+    useLearnMoreCards<IssuerLearnCardKey>(activeTab);
 
   const { issuer } = state;
   issuerTasksRef.current = issuer.tasks;
@@ -758,12 +769,7 @@ export default function IssuerApp() {
         onExit={exitIssuerTutorial}
       />
       {openInfoCards.length > 0 ? (
-        <LearnMorePanel
-          keys={openInfoCards}
-          cards={ISSUER_LEARN_CARDS}
-          onClose={key => setOpenInfoCards(prev => prev.filter(item => item !== key))}
-          accent={ACCENT}
-        />
+        <LearnMorePanel keys={openInfoCards} cards={ISSUER_LEARN_CARDS} onClose={closeLearnMore} accent={ACCENT} />
       ) : (
         <RailInfoPlaceholderCard>
           Use Learn More links in the app to load contextual cards in this panel.
@@ -792,17 +798,6 @@ export default function IssuerApp() {
       )}
     </div>
   );
-
-  const openLearnMore = React.useCallback((selection: IssuerLearnMoreSelection) => {
-    setOpenInfoCards(Array.isArray(selection) ? selection : [selection]);
-  }, []);
-
-  React.useEffect(() => {
-    if (previousActiveTabRef.current !== activeTab) {
-      setOpenInfoCards([]);
-      previousActiveTabRef.current = activeTab;
-    }
-  }, [activeTab]);
 
   React.useEffect(() => {
     setRole("issuer");
@@ -1191,7 +1186,7 @@ export default function IssuerApp() {
         activeTab={activeTab}
         onTabChange={tab => {
           setActiveTab(tab);
-          setOpenInfoCards([]);
+          clearLearnMore();
         }}
         accentColor={ACCENT}
         title="Issuer"

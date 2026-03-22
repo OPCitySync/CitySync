@@ -1,0 +1,10 @@
+export const DEMO_SURFACE = "var(--cs-surface, #1E1E2C)";
+export const DEMO_BG = "var(--cs-bg, #15151E)";
+export const DEMO_SURFACE_SOFT = "var(--cs-surface-soft, rgba(255,255,255,0.04))";
+export const DEMO_BORDER = "var(--cs-border, rgba(255,255,255,0.08))";
+export const DEMO_TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
+export const DEMO_TEXT_MUTED = "var(--cs-text-muted, rgba(255,255,255,0.62))";
+export const DEMO_TEXT_DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
+export const DEMO_TEXT_SUBTLE = "var(--cs-text-subtle, rgba(255,255,255,0.25))";
+export const DEMO_SHADOW = "var(--cs-shadow, 0 2px 12px rgba(0,0,0,0.28))";
+export const DEMO_SHADOW_LG = "var(--cs-shadow-lg, 0 -8px 40px rgba(0,0,0,0.55))";

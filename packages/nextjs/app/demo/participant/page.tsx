@@ -15,6 +15,7 @@ import { baseSepoliaPublicClient } from "../_config/baseSepoliaClient";
 import { BASE_SEPOLIA_CONTRACTS } from "../_config/baseSepoliaContracts";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, PastRedemption, RedemptionOffer, Task, TaskCategory } from "../_data/mockData";
+import { useLearnMoreCards } from "../_hooks/useLearnMoreCards";
 import { compressPhotoToBase64 } from "../_utils/compressPhoto";
 import {
   PREMIUM_TASK_RATE_THRESHOLD,
@@ -40,6 +41,14 @@ import {
   setDemoTutorialHandoff,
   startDemoTutorialRunForAddress,
 } from "../_utils/tutorialRun";
+import {
+  DEMO_BORDER,
+  DEMO_SHADOW,
+  DEMO_SURFACE_SOFT,
+  DEMO_TEXT_DIMMED,
+  DEMO_TEXT_MUTED,
+  DEMO_TEXT_STRONG,
+} from "../_utils/themeTokens";
 
 // ─── Brand ────────────────────────────────────────────────────────────────────
 
@@ -47,12 +56,12 @@ const ACCENT = "#4169E1"; // blue — primary
 const TEAL = "#34eeb6"; // teal — tasks / rewards / verify
 const GOLD = "#DD9E33"; // gold — MCE / redemptions
 const PURPLE = "#a78bfa"; // purple — governance / vote
-const SURFACE_SOFT = "var(--cs-surface-soft, rgba(255,255,255,0.04))";
-const BORDER = "var(--cs-border, rgba(255,255,255,0.08))";
-const TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
-const MUTED = "var(--cs-text-muted, rgba(255,255,255,0.62))";
-const DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
-const SHADOW = "var(--cs-shadow, 0 2px 10px rgba(0,0,0,0.22))";
+const SURFACE_SOFT = DEMO_SURFACE_SOFT;
+const BORDER = DEMO_BORDER;
+const TEXT_STRONG = DEMO_TEXT_STRONG;
+const MUTED = DEMO_TEXT_MUTED;
+const DIMMED = DEMO_TEXT_DIMMED;
+const SHADOW = DEMO_SHADOW;
 type IssuerTutorialStep =
   | "intro"
   | "box1"
@@ -4436,8 +4445,8 @@ export default function ParticipantPage() {
   const hideShellPanels = searchParams?.get("embed") === "1";
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
-  const previousActiveTabRef = useRef(activeTab);
-  const [openInfoCards, setOpenInfoCards] = useState<ParticipantLearnCardKey[]>([]);
+  const { openInfoCards, openLearnMore, closeLearnMore, clearLearnMore } =
+    useLearnMoreCards<ParticipantLearnCardKey>(activeTab);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
   const [tutorialWalletOpened, setTutorialWalletOpened] = useState(false);
   const [hiddenTutorialTaskIds, setHiddenTutorialTaskIds] = useState<string[]>(() => getDemoTutorialHiddenTaskIds());
@@ -4742,12 +4751,7 @@ export default function ParticipantPage() {
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", gap: 12 }}>
       {tutorialCard}
       {openInfoCards.length > 0 ? (
-        <LearnMorePanel
-          keys={openInfoCards}
-          cards={PARTICIPANT_LEARN_CARDS}
-          onClose={key => setOpenInfoCards(prev => prev.filter(item => item !== key))}
-          accent={ACCENT}
-        />
+        <LearnMorePanel keys={openInfoCards} cards={PARTICIPANT_LEARN_CARDS} onClose={closeLearnMore} accent={ACCENT} />
       ) : (
         <RailInfoPlaceholderCard>
           Use Learn More links in the app to load contextual cards in this panel.
@@ -4771,21 +4775,13 @@ export default function ParticipantPage() {
       )}
     </div>
   );
-
-  const openLearnMore = React.useCallback((selection: ParticipantLearnMoreSelection) => {
-    setOpenInfoCards(Array.isArray(selection) ? selection : [selection]);
-  }, []);
-  const handleRoleTabChange = React.useCallback((tab: string) => {
-    setActiveTab(tab);
-    setOpenInfoCards([]);
-  }, []);
-
-  useEffect(() => {
-    if (previousActiveTabRef.current !== activeTab) {
-      setOpenInfoCards([]);
-      previousActiveTabRef.current = activeTab;
-    }
-  }, [activeTab]);
+  const handleRoleTabChange = React.useCallback(
+    (tab: string) => {
+      setActiveTab(tab);
+      clearLearnMore();
+    },
+    [clearLearnMore],
+  );
 
   return (
     <>
