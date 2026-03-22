@@ -425,6 +425,14 @@ export default function AppShell({
             --cs-text-muted: rgba(255,255,255,0.62);
             --cs-text-dimmed: rgba(255,255,255,0.45);
             --cs-shadow: 0 2px 12px rgba(0,0,0,0.28);
+            --cs-rail-surface: rgba(255,255,255,0.9);
+            --cs-rail-surface-soft: rgba(245,248,255,0.92);
+            --cs-rail-border: rgba(31,45,86,0.12);
+            --cs-rail-text-strong: #1b2e63;
+            --cs-rail-text: rgba(27,45,95,0.72);
+            --cs-rail-text-muted: rgba(27,45,95,0.5);
+            --cs-rail-chip-bg: rgba(246,249,255,0.95);
+            --cs-rail-chip-border: rgba(31,45,86,0.16);
             background: linear-gradient(180deg, #f8f4eb 0%, #f3ead7 100%) !important;
             color: var(--cs-text-strong) !important;
           }
