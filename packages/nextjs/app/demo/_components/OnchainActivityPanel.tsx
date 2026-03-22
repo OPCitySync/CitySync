@@ -871,15 +871,25 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
           fontWeight: 700,
           textTransform: "uppercase",
           letterSpacing: "0.12em",
+          color: "rgba(27,45,95,0.5)",
+          marginBottom: 6,
+        }}
+      >
+        Onchain Activity Panel
+      </div>
+      <div
+        style={{
+          fontSize: 12,
+          fontWeight: 700,
           color: accent,
           marginBottom: 10,
         }}
       >
         {role === "issuer"
-          ? "Global Issuer Activity · Base Sepolia"
+          ? "Global Issuer Activity"
           : role === "redeemer"
-            ? "Global Redeemer Activity · Base Sepolia"
-            : "Global Participant Activity · Base Sepolia"}
+            ? "Global Redeemer Activity"
+            : "Global Participant Activity"}
       </div>
 
       {rpcError && latestBlock === null ? (
