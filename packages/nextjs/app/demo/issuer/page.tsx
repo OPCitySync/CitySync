@@ -30,6 +30,7 @@ import {
   readDemoTutorialRun,
   setDemoTutorialHandoff,
   startDemoTutorialRunForAddress,
+  ISSUER_TUTORIAL_STEP_STORAGE_KEY,
 } from "../_utils/tutorialRun";
 import {
   DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
@@ -134,7 +135,6 @@ const TABS = [
 const EPOCH1_CAP = 312;
 const EPOCH_RESET_KEY = "citysync:demo:issuer:epochReset:v1";
 const EPOCH_RESET_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
-const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
 
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
@@ -385,7 +385,7 @@ const ISSUER_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
 function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
-    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
+    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY);
     if (raw === "dismissed") return "dismissed";
     const handoffStep = consumeDemoTutorialHandoff("issuer");
     if (handoffStep && (handoffStep === "intro" || handoffStep === "dismissed" || /^box\d+$/.test(handoffStep))) {
@@ -696,7 +696,7 @@ export default function IssuerApp() {
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
   const persistTutorialStep = React.useCallback((nextStep: IssuerTutorialStep) => {
     try {
-      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, nextStep);
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, nextStep);
     } catch {
       // Ignore storage access failures.
     }
@@ -813,7 +813,7 @@ export default function IssuerApp() {
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, tutorialStep);
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, tutorialStep);
     } catch {
       // Ignore storage access failures.
     }

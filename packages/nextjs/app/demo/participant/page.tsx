@@ -35,6 +35,8 @@ import {
   getDemoTutorialHiddenTaskIds,
   getDemoTutorialOfferingIds,
   getDemoTutorialTaskIds,
+  ISSUER_TUTORIAL_STEP_STORAGE_KEY,
+  SHARED_TUTORIAL_INTRO_TEXT,
   setDemoTutorialHandoff,
   startDemoTutorialRunForAddress,
 } from "../_utils/tutorialRun";
@@ -51,7 +53,6 @@ const TEXT_STRONG = "var(--cs-text-strong, #ffffff)";
 const MUTED = "var(--cs-text-muted, rgba(255,255,255,0.62))";
 const DIMMED = "var(--cs-text-dimmed, rgba(255,255,255,0.45))";
 const SHADOW = "var(--cs-shadow, 0 2px 10px rgba(0,0,0,0.22))";
-const ISSUER_TUTORIAL_STORAGE_KEY = "citysync:demo:issuer:tutorial:v1";
 type IssuerTutorialStep =
   | "intro"
   | "box1"
@@ -94,14 +95,12 @@ const PARTICIPANT_ROLE_TUTORIAL_STEPS = new Set<IssuerTutorialStep>([
   "box26",
   "dismissed",
 ]);
-const SHARED_TUTORIAL_INTRO_TEXT =
-  "Everything in this demo has a shared onchain state for critical functions, and local storage that allows edits to your profile, picture, etc. to persist.\n\nEvery transaction you make is visible to all users and roles. When you sign up for City/Sync you are automatically provided a wallet, and all transaction costs are sponsored.\n\nWhile transaction verification will be shown in this demo, users in the Pilot Program will be completely unaware of smart-contract interactions. The purpose of this demo is to simulate as closely as possible to the UX for each role in the pilot, and provide testers an understanding of the underlying functionality. Let's get started!";
 const DEMO_DISABLE_SANCTION_ENFORCEMENT = true;
 
 function readIssuerTutorialStepFromStorage(): IssuerTutorialStep {
   if (typeof window === "undefined") return "intro";
   try {
-    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STORAGE_KEY);
+    const raw = window.localStorage.getItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY);
     if (raw === "dismissed") return "dismissed";
     const handoffStep = consumeDemoTutorialHandoff("participant");
     if (handoffStep && (handoffStep === "intro" || handoffStep === "dismissed" || /^box\d+$/.test(handoffStep))) {
@@ -4445,7 +4444,7 @@ export default function ParticipantPage() {
   const tutorialLockActive = tutorialStep !== "intro" && tutorialStep !== "dismissed";
   const persistTutorialStep = React.useCallback((nextStep: IssuerTutorialStep) => {
     try {
-      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, nextStep);
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, nextStep);
     } catch {
       // Ignore storage failures.
     }
@@ -4458,7 +4457,7 @@ export default function ParticipantPage() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(ISSUER_TUTORIAL_STORAGE_KEY, tutorialStep);
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, tutorialStep);
     } catch {
       // Ignore storage failures.
     }
