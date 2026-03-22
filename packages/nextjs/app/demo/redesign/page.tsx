@@ -158,17 +158,6 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
                 ))}
               </ul>
             </div>
-
-            <div className={styles.linksCard}>
-              <p className={styles.cardLabel}>Related Deep Dives</p>
-              <ul>
-                {deepLinks.map(link => (
-                  <li key={link.href}>
-                    <Link href={link.href}>{link.label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </aside>
 
           <div className={styles.deviceStage}>
@@ -194,6 +183,16 @@ export default async function DemoRedesignPage({ searchParams }: RedesignPagePro
                 </div>
               </div>
             )}
+            <div className={styles.linksCard}>
+              <p className={styles.cardLabel}>Related Deep Dives</p>
+              <ul>
+                {deepLinks.map(link => (
+                  <li key={link.href}>
+                    <Link href={link.href}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </aside>
         </section>
       </main>
