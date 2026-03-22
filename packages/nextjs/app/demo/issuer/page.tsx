@@ -7,6 +7,7 @@ import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
+import { RailInfoPlaceholderCard, RelatedDeepDivesCard, TutorialWalkthroughButton } from "../_components/RailCards";
 import { baseSepoliaPublicClient } from "../_config/baseSepoliaClient";
 import { BASE_SEPOLIA_CONTRACTS } from "../_config/baseSepoliaContracts";
 import { useDemo } from "../_context/DemoContext";
@@ -403,8 +404,8 @@ function TutorialCard({
   return (
     <div
       style={{
-        background: "rgba(255,255,255,0.92)",
-        border: "1px solid rgba(31,45,86,0.14)",
+        background: "var(--cs-rail-surface, rgba(255,255,255,0.92))",
+        border: "1px solid var(--cs-rail-border, rgba(31,45,86,0.14))",
         borderRadius: 16,
         padding: 14,
       }}
@@ -413,7 +414,7 @@ function TutorialCard({
         <div
           style={{
             fontSize: 10,
-            color: "rgba(27,45,95,0.58)",
+            color: "var(--cs-rail-text-muted, rgba(27,45,95,0.58))",
             textTransform: "uppercase",
             letterSpacing: "0.08em",
             fontWeight: 700,
@@ -423,8 +424,10 @@ function TutorialCard({
           {subtitle}
         </div>
       )}
-      <div style={{ fontSize: 15, color: "#1b2e63", fontWeight: 700, marginBottom: 8 }}>{title}</div>
-      <div style={{ fontSize: 12, color: "rgba(27,45,95,0.78)", lineHeight: 1.6 }}>
+      <div style={{ fontSize: 15, color: "var(--cs-rail-text-strong, #1b2e63)", fontWeight: 700, marginBottom: 8 }}>
+        {title}
+      </div>
+      <div style={{ fontSize: 12, color: "var(--cs-rail-text, rgba(27,45,95,0.78))", lineHeight: 1.6 }}>
         {paragraphs.map((paragraph, index) => (
           <p key={`${paragraph.slice(0, 18)}-${index}`} style={{ margin: 0, marginTop: index === 0 ? 0 : 10 }}>
             {paragraph}
@@ -819,102 +822,29 @@ export default function IssuerApp() {
           accent={ACCENT}
         />
       ) : (
-        <div
-          style={{
-            background: "rgba(255,255,255,0.9)",
-            border: "1px solid rgba(31,45,86,0.12)",
-            borderRadius: 16,
-            padding: 14,
-            fontSize: 12,
-            color: "rgba(27,45,95,0.72)",
-            lineHeight: 1.55,
-          }}
-        >
+        <RailInfoPlaceholderCard>
           Use Learn More links in the app to load contextual cards in this panel.
-        </div>
+        </RailInfoPlaceholderCard>
       )}
-      <div
-        style={{
-          background: "rgba(255,255,255,0.9)",
-          border: "1px solid rgba(31,45,86,0.12)",
-          borderRadius: 16,
-          padding: 14,
-        }}
-      >
-        <div
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "rgba(27,45,95,0.5)",
-            marginBottom: 6,
-          }}
-        >
-          Related Deep Dives
-        </div>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#1b2e63", marginBottom: 8 }}>Additional Reading</div>
-        {additionalReadingLinks.length > 0 ? (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {additionalReadingLinks.map(link => (
-              <a
-                key={`issuer-deep-${link.href}`}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                  textDecoration: "none",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "rgba(27,45,95,0.92)",
-                  background: "rgba(246,249,255,0.95)",
-                  border: "1px solid rgba(31,45,86,0.16)",
-                  borderRadius: 9,
-                  padding: "6px 8px",
-                }}
-              >
-                <span>{link.label}</span>
-                <span style={{ color: "rgba(27,45,95,0.45)", fontSize: 10 }}>↗</span>
-              </a>
-            ))}
-          </div>
-        ) : (
-          <div style={{ fontSize: 12, color: "rgba(27,45,95,0.62)", lineHeight: 1.55 }}>
-            Use Learn More in the app to populate additional reading links.
-          </div>
-        )}
-      </div>
+      <RelatedDeepDivesCard
+        links={additionalReadingLinks}
+        keyPrefix="issuer-deep"
+        emptyText="Use Learn More in the app to populate additional reading links."
+      />
       {tutorialStep === "dismissed" && (
         <div
           style={{
             marginTop: "auto",
             paddingTop: 10,
-            borderTop: "1px solid rgba(255,255,255,0.08)",
+            borderTop: "1px solid var(--cs-rail-border, rgba(31,45,86,0.12))",
           }}
         >
-          <button
+          <TutorialWalkthroughButton
             onClick={() => {
               persistTutorialStep("intro");
               setTutorialStep("intro");
             }}
-            style={{
-              width: "100%",
-              border: "1px solid rgba(255,226,162,0.9)",
-              background: "linear-gradient(145deg, rgba(221,158,51,0.98), rgba(221,158,51,0.82))",
-              color: "#15151E",
-              borderRadius: 10,
-              padding: "9px 10px",
-              fontSize: 12,
-              fontWeight: 800,
-              cursor: "pointer",
-              boxShadow: "0 0 0 1px rgba(255,226,162,0.35), 0 0 12px rgba(221,158,51,0.35)",
-            }}
-          >
-            Tutorial Walkthrough
-          </button>
+          />
         </div>
       )}
     </div>
