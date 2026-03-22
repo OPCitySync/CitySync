@@ -57,18 +57,17 @@ export default function DemoRedesignPage() {
       <main className={styles.main}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>Concept Direction</p>
+            <p className={styles.eyebrow}>Live Mobile Application DEMO</p>
             <h1 className={styles.title}>Civic Wallet OS</h1>
             <p className={styles.subtitle}>
-              A full aesthetic exploration of a cleaner, lighter, and more tactile City/Sync product. This page is
-              intentionally decoupled from live contract logic so we can test look-and-feel first.
+              In this DEMO you can move between the 3 different roles that serve as the fundamental incentive engine for
+              the City/Sync protocol. It utilizes sponsored transactions on the Base Sepolia testnet, and no real funds
+              are required. All three roles share the same state, so please switch freely to understand the full loop
+              for the proposed public-sector economy.
             </p>
             <div className={styles.heroCtas}>
               <button className={styles.primaryBtn} type="button">
-                Start Guided Tour
-              </button>
-              <button className={styles.ghostBtn} type="button">
-                View Style Tokens
+                Start the Guided Tour
               </button>
             </div>
           </div>
