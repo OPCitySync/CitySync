@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLogout } from "@account-kit/react";
 import BottomNav, { NavTab } from "./BottomNav";
@@ -246,15 +246,39 @@ export default function AppShell({
   const roleSwitchQuery = searchParams?.toString();
   const roleSwitchHrefSuffix = roleSwitchQuery ? `?${roleSwitchQuery}` : "";
 
+  const switchRoleByKey = useCallback(
+    (nextRole: AppShellProps["role"]) => {
+      const targetRole = ROLES.find(r => r.key === nextRole);
+      if (!targetRole) return;
+      if (nextRole === role) {
+        setRole(nextRole);
+        return;
+      }
+      setRole(nextRole);
+      router.push(`${targetRole.href}${roleSwitchHrefSuffix}`);
+    },
+    [role, roleSwitchHrefSuffix, router, setRole],
+  );
+
   const handleRoleSwitch = (r: (typeof ROLES)[number]) => {
-    if (r.key === role) {
-      setSwitcherOpen(false);
-      return;
-    }
-    setRole(r.key);
+    switchRoleByKey(r.key);
     setSwitcherOpen(false);
-    router.push(`${r.href}${roleSwitchHrefSuffix}`);
   };
+
+  useEffect(() => {
+    const handleEmbedRoleMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      if ((payload as { type?: string }).type !== "citysync:set-role") return;
+      const requestedRole = (payload as { role?: string }).role;
+      if (requestedRole !== "participant" && requestedRole !== "issuer" && requestedRole !== "redeemer") return;
+      switchRoleByKey(requestedRole);
+    };
+
+    window.addEventListener("message", handleEmbedRoleMessage);
+    return () => window.removeEventListener("message", handleEmbedRoleMessage);
+  }, [switchRoleByKey]);
 
   const learnMoreColumn = (
     <div style={{ overflowY: "auto", paddingRight: 4 }}>

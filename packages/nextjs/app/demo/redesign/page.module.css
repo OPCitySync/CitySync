@@ -252,6 +252,12 @@
 }
 
 .roleCard {
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
   display: block;
   text-decoration: none;
   color: inherit;
