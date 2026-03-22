@@ -219,7 +219,30 @@ export default function AppShell({
   const roleSheetCancelOnly = tutorialLocked && tutorialHighlightRoleSwitcher;
   const highlightRoleSwitcher = tutorialHighlightRoleSwitcher && !switcherOpen;
   const highlightRoleCancel = tutorialHighlightRoleSwitcher && switcherOpen;
-  const lightSurroundings = phoneFrame && surroundingsTheme === "light";
+  const embedMode = searchParams?.get("embed") === "1";
+  const redesignSkin = searchParams?.get("skin") === "redesign";
+  const lightSurroundings = phoneFrame && (surroundingsTheme === "light" || redesignSkin);
+  const shellHeaderBackground = redesignSkin
+    ? "rgba(247, 248, 252, 0.92)"
+    : phoneFrame
+      ? "rgba(18,18,28,0.96)"
+      : "rgba(21,21,30,0.92)";
+  const shellHeaderBorder = redesignSkin ? "1px solid rgba(31,45,86,0.14)" : "1px solid rgba(255,255,255,0.07)";
+  const shellRoleText = redesignSkin ? "#2c4f9f" : currentRole.accent;
+  const shellLogoStroke = redesignSkin ? "#24386e" : "#15151E";
+  const shellQrButtonBackground = redesignSkin ? "rgba(65,105,225,0.1)" : "rgba(255,255,255,0.06)";
+  const shellQrButtonBorder = redesignSkin ? "1px solid rgba(65,105,225,0.24)" : "1px solid rgba(255,255,255,0.1)";
+  const shellQrButtonColor = redesignSkin ? "rgba(36,56,110,0.72)" : "rgba(255,255,255,0.55)";
+  const sheetBackground = redesignSkin ? "#f8f9fd" : "#15151E";
+  const sheetBorder = redesignSkin ? "1px solid rgba(31,45,86,0.12)" : "1px solid rgba(255,255,255,0.07)";
+  const sheetBodyText = redesignSkin ? "#1b2e63" : "#fff";
+  const sheetTaglineText = redesignSkin ? "rgba(36,56,110,0.62)" : "rgba(255,255,255,0.38)";
+  const sheetCancelBackground = redesignSkin ? "rgba(65,105,225,0.12)" : "rgba(255,255,255,0.04)";
+  const sheetCancelBorder = redesignSkin ? "1px solid rgba(65,105,225,0.26)" : "1px solid rgba(255,255,255,0.08)";
+  const sheetCancelColor = redesignSkin ? "#284695" : "rgba(255,255,255,0.45)";
+  const sheetExitBorder = redesignSkin ? "1px solid rgba(220,106,84,0.35)" : "1px solid rgba(255,80,80,0.18)";
+  const sheetExitBackground = redesignSkin ? "rgba(220,106,84,0.12)" : "rgba(255,80,80,0.06)";
+  const sheetExitColor = redesignSkin ? "rgba(170,68,53,0.88)" : "rgba(255,100,100,0.7)";
   const roleSwitchQuery = searchParams?.toString();
   const roleSwitchHrefSuffix = roleSwitchQuery ? `?${roleSwitchQuery}` : "";
 
@@ -302,6 +325,20 @@ export default function AppShell({
           }
         `}</style>
       )}
+      {redesignSkin && (
+        <style>{`
+          .citysync-redesign-main {
+            background: linear-gradient(180deg, #f7f8fc 0%, #edf2fb 100%) !important;
+            color: #1a2d62 !important;
+            filter: invert(0.96) hue-rotate(180deg) saturate(0.84) contrast(0.98);
+          }
+          .citysync-redesign-main img,
+          .citysync-redesign-main video,
+          .citysync-redesign-main canvas {
+            filter: invert(1) hue-rotate(180deg) saturate(1.08) contrast(1.03);
+          }
+        `}</style>
+      )}
 
       {/* Header */}
       <header
@@ -313,8 +350,8 @@ export default function AppShell({
           gridTemplateColumns: "1fr auto 1fr",
           alignItems: "center",
           padding: phoneFrame ? "10px 14px 10px" : "max(12px, env(safe-area-inset-top)) 14px 10px",
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
-          background: phoneFrame ? "rgba(18,18,28,0.96)" : "rgba(21,21,30,0.92)",
+          borderBottom: shellHeaderBorder,
+          background: shellHeaderBackground,
           backdropFilter: "blur(10px)",
           flexShrink: 0,
         }}
@@ -333,8 +370,16 @@ export default function AppShell({
             minHeight: 42,
             padding: "6px 10px 6px 8px",
             borderRadius: 10,
-            border: highlightRoleSwitcher ? "1px solid rgba(255,226,162,0.92)" : `1px solid ${currentRole.accent}30`,
-            background: highlightRoleSwitcher ? "rgba(255,226,162,0.2)" : `${currentRole.accent}14`,
+            border: highlightRoleSwitcher
+              ? "1px solid rgba(255,226,162,0.92)"
+              : redesignSkin
+                ? "1px solid rgba(65,105,225,0.28)"
+                : `1px solid ${currentRole.accent}30`,
+            background: highlightRoleSwitcher
+              ? "rgba(255,226,162,0.2)"
+              : redesignSkin
+                ? "rgba(65,105,225,0.12)"
+                : `${currentRole.accent}14`,
             cursor: roleSwitcherAllowed ? "pointer" : "not-allowed",
             transition: "background 0.15s ease",
             opacity: roleSwitcherAllowed ? 1 : 0.55,
@@ -359,7 +404,7 @@ export default function AppShell({
               fontSize: 10,
               fontWeight: 700,
               letterSpacing: "0.03em",
-              color: currentRole.accent,
+              color: shellRoleText,
               lineHeight: 1,
               whiteSpace: "nowrap",
             }}
@@ -372,7 +417,7 @@ export default function AppShell({
             height="10"
             viewBox="0 0 24 24"
             fill="none"
-            stroke={currentRole.accent}
+            stroke={shellRoleText}
             strokeWidth="2.5"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -395,8 +440,13 @@ export default function AppShell({
           }}
         >
           <svg viewBox="47 2 30 32" width="20" height="22" aria-hidden="true">
-            <polygon points="51,32 55,32 62,10 58,10" fill="none" stroke="#15151E" strokeWidth="2" />
-            <polygon points="62,28 66,28 73,6 69,6" fill="none" stroke="rgba(21,21,30,0.5)" strokeWidth="2" />
+            <polygon points="51,32 55,32 62,10 58,10" fill="none" stroke={shellLogoStroke} strokeWidth="2" />
+            <polygon
+              points="62,28 66,28 73,6 69,6"
+              fill="none"
+              stroke={redesignSkin ? "rgba(36,56,110,0.45)" : "rgba(21,21,30,0.5)"}
+              strokeWidth="2"
+            />
           </svg>
         </div>
 
@@ -407,11 +457,11 @@ export default function AppShell({
             style={{
               minHeight: 42,
               padding: "8px 10px",
-              background: "rgba(255,255,255,0.06)",
-              border: "1px solid rgba(255,255,255,0.1)",
+              background: shellQrButtonBackground,
+              border: shellQrButtonBorder,
               borderRadius: 10,
               cursor: "pointer",
-              color: "rgba(255,255,255,0.55)",
+              color: shellQrButtonColor,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -451,13 +501,23 @@ export default function AppShell({
             style={{
               minHeight: 42,
               padding: "8px 10px",
-              background: tutorialHighlightWalletButton ? "rgba(255,226,162,0.2)" : "rgba(255,255,255,0.06)",
+              background: tutorialHighlightWalletButton
+                ? "rgba(255,226,162,0.2)"
+                : redesignSkin
+                  ? "rgba(65,105,225,0.12)"
+                  : "rgba(255,255,255,0.06)",
               border: tutorialHighlightWalletButton
                 ? "1px solid rgba(255,226,162,0.85)"
-                : "1px solid rgba(255,255,255,0.1)",
+                : redesignSkin
+                  ? "1px solid rgba(65,105,225,0.24)"
+                  : "1px solid rgba(255,255,255,0.1)",
               borderRadius: 10,
               cursor: walletAllowed ? "pointer" : "not-allowed",
-              color: tutorialHighlightWalletButton ? "#ffe2a2" : "rgba(255,255,255,0.65)",
+              color: tutorialHighlightWalletButton
+                ? "#ffe2a2"
+                : redesignSkin
+                  ? "rgba(36,56,110,0.78)"
+                  : "rgba(255,255,255,0.65)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -492,7 +552,7 @@ export default function AppShell({
 
       {/* Scrollable content area */}
       <main
-        className={`flex-1 overflow-y-auto ${tutorialLocked ? "citysync-tutorial-lock-scope" : ""}`}
+        className={`flex-1 overflow-y-auto ${tutorialLocked ? "citysync-tutorial-lock-scope" : ""} ${redesignSkin ? "citysync-redesign-main" : ""}`}
         style={{
           position: "relative",
           paddingBottom: phoneFrame ? "108px" : "calc(108px + env(safe-area-inset-bottom, 0px))",
@@ -509,6 +569,7 @@ export default function AppShell({
         active={activeTab}
         onChange={onTabChange}
         accentColor={accentColor}
+        theme={redesignSkin ? "light" : "dark"}
         locked={tutorialLocked}
         allowedWhenLocked={tutorialAllowedTabs}
       />
@@ -524,7 +585,7 @@ export default function AppShell({
         style={{
           position: "absolute",
           inset: 0,
-          background: "rgba(13,13,20,0.45)",
+          background: redesignSkin ? "rgba(21,31,58,0.2)" : "rgba(13,13,20,0.45)",
           backdropFilter: "blur(2px)",
           WebkitBackdropFilter: "blur(2px)",
           zIndex: 50,
@@ -541,8 +602,8 @@ export default function AppShell({
           right: 0,
           bottom: 0,
           zIndex: 51,
-          background: "#15151E",
-          borderTop: "1px solid rgba(255,255,255,0.07)",
+          background: sheetBackground,
+          borderTop: sheetBorder,
           borderRadius: "18px 18px 0 0",
           padding: "0 0 calc(16px + env(safe-area-inset-bottom, 0px))",
           transform: switcherOpen ? "translateY(0)" : "translateY(100%)",
@@ -552,18 +613,30 @@ export default function AppShell({
       >
         {/* Drag handle */}
         <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 8px" }}>
-          <div style={{ width: 32, height: 3, borderRadius: 2, background: "rgba(255,255,255,0.12)" }} />
+          <div
+            style={{
+              width: 32,
+              height: 3,
+              borderRadius: 2,
+              background: redesignSkin ? "rgba(36,56,110,0.2)" : "rgba(255,255,255,0.12)",
+            }}
+          />
         </div>
 
         {/* Sheet header */}
-        <div style={{ padding: "4px 20px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+        <div
+          style={{
+            padding: "4px 20px 12px",
+            borderBottom: redesignSkin ? "1px solid rgba(31,45,86,0.1)" : "1px solid rgba(255,255,255,0.06)",
+          }}
+        >
           <p
             style={{
               fontSize: 11,
               fontWeight: 600,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
-              color: "rgba(255,255,255,0.3)",
+              color: redesignSkin ? "rgba(36,56,110,0.46)" : "rgba(255,255,255,0.3)",
             }}
           >
             Switch Between Roles
@@ -617,16 +690,14 @@ export default function AppShell({
                     style={{
                       fontSize: 15,
                       fontWeight: 700,
-                      color: isActive ? r.accent : "#fff",
+                      color: isActive ? r.accent : sheetBodyText,
                       lineHeight: 1.2,
                       marginBottom: 3,
                     }}
                   >
                     {r.label}
                   </div>
-                  <div style={{ fontSize: 11, color: "rgba(255,255,255,0.38)", letterSpacing: "0.03em" }}>
-                    {r.tagline}
-                  </div>
+                  <div style={{ fontSize: 11, color: sheetTaglineText, letterSpacing: "0.03em" }}>{r.tagline}</div>
                 </div>
 
                 {isActive && (
@@ -669,9 +740,9 @@ export default function AppShell({
               width: "100%",
               padding: "13px",
               borderRadius: 14,
-              border: highlightRoleCancel ? "1px solid rgba(255,226,162,0.92)" : "1px solid rgba(255,255,255,0.08)",
-              background: highlightRoleCancel ? "rgba(255,226,162,0.2)" : "rgba(255,255,255,0.04)",
-              color: highlightRoleCancel ? "#ffe2a2" : "rgba(255,255,255,0.45)",
+              border: highlightRoleCancel ? "1px solid rgba(255,226,162,0.92)" : sheetCancelBorder,
+              background: highlightRoleCancel ? "rgba(255,226,162,0.2)" : sheetCancelBackground,
+              color: highlightRoleCancel ? "#ffe2a2" : sheetCancelColor,
               fontSize: 14,
               fontWeight: 600,
               cursor: "pointer",
@@ -692,9 +763,9 @@ export default function AppShell({
               width: "100%",
               padding: "11px",
               borderRadius: 14,
-              border: "1px solid rgba(255,80,80,0.18)",
-              background: "rgba(255,80,80,0.06)",
-              color: "rgba(255,100,100,0.7)",
+              border: sheetExitBorder,
+              background: sheetExitBackground,
+              color: sheetExitColor,
               fontSize: 13,
               fontWeight: 600,
               cursor: roleSheetCancelOnly ? "not-allowed" : "pointer",
@@ -731,26 +802,32 @@ export default function AppShell({
   if (phoneFrame) {
     return (
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center"
+        className={
+          embedMode
+            ? "relative flex h-full w-full items-center justify-center"
+            : "fixed inset-0 z-50 flex items-center justify-center"
+        }
         style={{
-          background: lightSurroundings
-            ? `
-              radial-gradient(ellipse 720px 520px at 50% 8%, ${accentColor}22, transparent 58%),
-              radial-gradient(ellipse 540px 360px at 18% 82%, rgba(106, 142, 248, 0.2), transparent 64%),
-              radial-gradient(ellipse 520px 340px at 84% 76%, rgba(241, 172, 58, 0.18), transparent 66%),
-              #f6f8fe
-            `
-            : `
-              radial-gradient(ellipse 700px 500px at 50% 20%, ${accentColor}1a, transparent 60%),
-              radial-gradient(ellipse 500px 400px at 20% 80%, rgba(100,80,220,0.12), transparent 65%),
-              radial-gradient(ellipse 500px 400px at 80% 70%, rgba(52,238,182,0.08), transparent 65%),
-              #08080f
-            `,
+          background: embedMode
+            ? "transparent"
+            : lightSurroundings
+              ? `
+                radial-gradient(ellipse 720px 520px at 50% 8%, ${accentColor}22, transparent 58%),
+                radial-gradient(ellipse 540px 360px at 18% 82%, rgba(106, 142, 248, 0.2), transparent 64%),
+                radial-gradient(ellipse 520px 340px at 84% 76%, rgba(241, 172, 58, 0.18), transparent 66%),
+                #f6f8fe
+              `
+              : `
+                radial-gradient(ellipse 700px 500px at 50% 20%, ${accentColor}1a, transparent 60%),
+                radial-gradient(ellipse 500px 400px at 20% 80%, rgba(100,80,220,0.12), transparent 65%),
+                radial-gradient(ellipse 500px 400px at 80% 70%, rgba(52,238,182,0.08), transparent 65%),
+                #08080f
+              `,
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
         {/* Learn More column (same fixed slot as previous left panel) */}
-        {showLeftPanel && (
+        {showLeftPanel && !embedMode && (
           <div
             style={{
               position: "absolute",
@@ -770,7 +847,7 @@ export default function AppShell({
         )}
 
         {/* Right context panel */}
-        {showRightPanel && rightPanel && (
+        {showRightPanel && rightPanel && !embedMode && (
           <div
             style={{
               position: "absolute",
@@ -790,7 +867,15 @@ export default function AppShell({
         )}
 
         {/* Device wrapper — side buttons */}
-        <div style={{ position: "relative", height: "calc(100vh - 32px)", maxHeight: 900 }}>
+        <div
+          style={{
+            position: "relative",
+            height: embedMode ? "100%" : "calc(100vh - 32px)",
+            maxHeight: embedMode ? undefined : 900,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           {/* Volume buttons (left side) */}
           <div
             style={{
@@ -854,7 +939,7 @@ export default function AppShell({
               style={{
                 width: 390,
                 flex: 1,
-                background: "#12121c",
+                background: redesignSkin ? "#f7f8fc" : "#12121c",
                 borderRadius: 50,
                 overflow: "hidden",
                 position: "relative",

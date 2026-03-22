@@ -13,6 +13,7 @@ interface BottomNavProps {
   active: string;
   onChange: (key: string) => void;
   accentColor?: string;
+  theme?: "dark" | "light";
   locked?: boolean;
   allowedWhenLocked?: string[];
 }
@@ -22,10 +23,12 @@ export default function BottomNav({
   active,
   onChange,
   accentColor = "#4169E1",
+  theme = "dark",
   locked = false,
   allowedWhenLocked = [],
 }: BottomNavProps) {
-  const activeBg = `${accentColor}20`;
+  const lightTheme = theme === "light";
+  const activeBg = lightTheme ? `${accentColor}16` : `${accentColor}20`;
   const lastIdx = tabs.length - 1;
   const allowedSet = new Set(allowedWhenLocked);
 
@@ -35,9 +38,15 @@ export default function BottomNav({
       style={{
         bottom: 0,
         minHeight: 69,
-        background: locked ? "#181826" : "rgba(24,24,38,0.97)",
-        borderTop: "1px solid rgba(255,255,255,0.07)",
-        boxShadow: "0 -8px 24px rgba(0,0,0,0.35)",
+        background: locked
+          ? lightTheme
+            ? "#e9edf8"
+            : "#181826"
+          : lightTheme
+            ? "rgba(246,248,253,0.96)"
+            : "rgba(24,24,38,0.97)",
+        borderTop: lightTheme ? "1px solid rgba(27,43,84,0.14)" : "1px solid rgba(255,255,255,0.07)",
+        boxShadow: lightTheme ? "0 -8px 24px rgba(28,42,78,0.14)" : "0 -8px 24px rgba(0,0,0,0.35)",
         backdropFilter: locked ? "none" : "blur(14px)",
       }}
     >
@@ -64,7 +73,14 @@ export default function BottomNav({
             disabled={!isAllowedWhenLocked}
             className="flex flex-col items-center justify-center gap-0.5 transition-all"
             style={{
-              color: locked && isAllowedWhenLocked ? "#ffe2a2" : isActive ? accentColor : "rgba(255,255,255,0.45)",
+              color:
+                locked && isAllowedWhenLocked
+                  ? "#ffe2a2"
+                  : isActive
+                    ? accentColor
+                    : lightTheme
+                      ? "rgba(30,45,86,0.55)"
+                      : "rgba(255,255,255,0.45)",
               flex: 1,
               background:
                 isActive || !locked

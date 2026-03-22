@@ -125,7 +125,7 @@ export default function DemoRedesignPage() {
           <div className={styles.deviceStage}>
             <div className={styles.embedFrame}>
               <iframe
-                src="/demo/issuer?embed=1"
+                src="/demo/issuer?embed=1&skin=redesign"
                 title="AppShell Preview"
                 className={styles.embedIframe}
                 loading="lazy"
