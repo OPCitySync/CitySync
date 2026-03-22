@@ -579,35 +579,45 @@ export default function RedeemerApp() {
     if (tutorialStep === "dismissed") return null;
 
     const cardStyle: React.CSSProperties = {
-      background: "rgba(221,158,51,0.08)",
-      border: "1px solid rgba(221,158,51,0.28)",
+      background: "rgba(255,255,255,0.92)",
+      border: "1px solid rgba(31,45,86,0.14)",
       borderRadius: 16,
       padding: 14,
     };
     const subtitleStyle: React.CSSProperties = {
       fontSize: 10,
-      color: "rgba(221,158,51,0.8)",
+      color: "rgba(27,45,95,0.58)",
       textTransform: "uppercase",
       letterSpacing: "0.08em",
       fontWeight: 700,
       marginBottom: 6,
     };
-    const titleStyle: React.CSSProperties = { fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 };
+    const titleStyle: React.CSSProperties = { fontSize: 15, color: "#1b2e63", fontWeight: 700, marginBottom: 8 };
     const bodyStyle: React.CSSProperties = {
       fontSize: 12,
-      color: "rgba(255,255,255,0.72)",
+      color: "rgba(27,45,95,0.78)",
       lineHeight: 1.6,
       whiteSpace: "pre-line",
     };
-    const ghostButtonStyle: React.CSSProperties = {
-      border: "none",
+    const primaryButtonStyle: React.CSSProperties = {
+      border: "1px solid rgba(221,158,51,0.92)",
       borderRadius: 10,
       padding: "8px 12px",
       fontSize: 12,
       fontWeight: 700,
       cursor: "pointer",
-      background: "rgba(255,255,255,0.08)",
-      color: "rgba(255,255,255,0.8)",
+      background: "#DD9E33",
+      color: "#15151E",
+    };
+    const ghostButtonStyle: React.CSSProperties = {
+      border: "1px solid rgba(65,105,225,0.24)",
+      borderRadius: 10,
+      padding: "8px 12px",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+      background: "rgba(65,105,225,0.1)",
+      color: "#284695",
       marginTop: 12,
     };
 
@@ -695,16 +705,7 @@ export default function RedeemerApp() {
                 setDemoTutorialHandoff("issuer", "box1");
                 router.push("/demo/issuer");
               }}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
-              }}
+              style={primaryButtonStyle}
             >
               Lets Begin Tutorial
             </button>

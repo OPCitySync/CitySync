@@ -4570,27 +4570,47 @@ export default function ParticipantPage() {
   }, [openInfoCards]);
   const tutorialCard = (() => {
     const cardStyle: React.CSSProperties = {
-      background: "rgba(221,158,51,0.08)",
-      border: "1px solid rgba(221,158,51,0.28)",
+      background: "rgba(255,255,255,0.92)",
+      border: "1px solid rgba(31,45,86,0.14)",
       borderRadius: 16,
       padding: 14,
     };
     const subtitleStyle: React.CSSProperties = {
       fontSize: 10,
-      color: "rgba(221,158,51,0.8)",
+      color: "rgba(27,45,95,0.58)",
       textTransform: "uppercase",
       letterSpacing: "0.08em",
       fontWeight: 700,
       marginBottom: 6,
     };
-    const titleStyle: React.CSSProperties = { fontSize: 15, color: "#fff", fontWeight: 700, marginBottom: 8 };
+    const titleStyle: React.CSSProperties = { fontSize: 15, color: "#1b2e63", fontWeight: 700, marginBottom: 8 };
     const bodyStyle: React.CSSProperties = {
       fontSize: 12,
-      color: "rgba(255,255,255,0.72)",
+      color: "rgba(27,45,95,0.78)",
       lineHeight: 1.6,
       whiteSpace: "pre-line",
     };
     const buttonRowStyle: React.CSSProperties = { display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" };
+    const primaryButtonStyle: React.CSSProperties = {
+      border: "1px solid rgba(221,158,51,0.92)",
+      borderRadius: 10,
+      padding: "8px 12px",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+      background: "#DD9E33",
+      color: "#15151E",
+    };
+    const ghostButtonStyle: React.CSSProperties = {
+      border: "1px solid rgba(65,105,225,0.24)",
+      borderRadius: 10,
+      padding: "8px 12px",
+      fontSize: 12,
+      fontWeight: 700,
+      cursor: "pointer",
+      background: "rgba(65,105,225,0.1)",
+      color: "#284695",
+    };
 
     if (tutorialStep === "intro") {
       return (
@@ -4599,19 +4619,7 @@ export default function ParticipantPage() {
           <div style={titleStyle}>Welcome to the City/Sync Demo</div>
           <div style={{ ...bodyStyle, whiteSpace: "pre-line" }}>{SHARED_TUTORIAL_INTRO_TEXT}</div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={startIssuerTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
-              }}
-            >
+            <button onClick={startIssuerTutorial} style={primaryButtonStyle}>
               Lets Begin Tutorial
             </button>
           </div>
@@ -4629,19 +4637,7 @@ export default function ParticipantPage() {
             {"\n"}Please go ahead and claim 2 of the 3 tasks you issued.
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
+            <button onClick={exitTutorial} style={ghostButtonStyle}>
               Exit Tutorial
             </button>
           </div>
@@ -4659,19 +4655,7 @@ export default function ParticipantPage() {
             feedback to Issuers about their experience. Go ahead and Execute on of your two tasks.
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
+            <button onClick={exitTutorial} style={ghostButtonStyle}>
               Exit Tutorial
             </button>
           </div>
@@ -4688,19 +4672,7 @@ export default function ParticipantPage() {
             Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
+            <button onClick={exitTutorial} style={ghostButtonStyle}>
               Exit Tutorial
             </button>
             <button
@@ -4711,16 +4683,7 @@ export default function ParticipantPage() {
                 setDemoTutorialHandoff("issuer", "box15");
                 router.push("/demo/issuer");
               }}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
-              }}
+              style={primaryButtonStyle}
             >
               Continue
             </button>
@@ -4739,19 +4702,7 @@ export default function ParticipantPage() {
             their balances in their wallet.
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
+            <button onClick={exitTutorial} style={ghostButtonStyle}>
               Exit Tutorial
             </button>
           </div>
@@ -4769,19 +4720,7 @@ export default function ParticipantPage() {
             offering you created by clicking redeem.
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
+            <button onClick={exitTutorial} style={ghostButtonStyle}>
               Exit Tutorial
             </button>
           </div>
@@ -4800,19 +4739,7 @@ export default function ParticipantPage() {
             provide those goods and services.
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "rgba(255,255,255,0.08)",
-                color: "rgba(255,255,255,0.8)",
-              }}
-            >
+            <button onClick={exitTutorial} style={ghostButtonStyle}>
               Exit Tutorial
             </button>
           </div>
@@ -4831,19 +4758,7 @@ export default function ParticipantPage() {
             }
           </div>
           <div style={buttonRowStyle}>
-            <button
-              onClick={exitTutorial}
-              style={{
-                border: "none",
-                borderRadius: 10,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                cursor: "pointer",
-                background: "#DD9E33",
-                color: "#15151E",
-              }}
-            >
+            <button onClick={exitTutorial} style={primaryButtonStyle}>
               Finish Tutorial
             </button>
           </div>
