@@ -11,7 +11,7 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: #15151e;
+  background: #223052;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -328,7 +328,7 @@
 .tutorialCard {
   display: grid;
   gap: 0.55rem;
-  background: #15151e;
+  background: #223052;
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: rgba(255, 255, 255, 0.92);
 }
