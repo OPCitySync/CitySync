@@ -10,7 +10,7 @@ import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/Lea
 import { NavTab } from "../_components/BottomNav";
 import DemoToast from "../_components/DemoToast";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
-import { RailInfoPlaceholderCard, RelatedDeepDivesCard, TutorialWalkthroughButton } from "../_components/RailCards";
+import { RailInfoPlaceholderCard, TutorialWalkthroughButton } from "../_components/RailCards";
 import { baseSepoliaPublicClient } from "../_config/baseSepoliaClient";
 import { BASE_SEPOLIA_CONTRACTS } from "../_config/baseSepoliaContracts";
 import { useDemo } from "../_context/DemoContext";
@@ -4781,11 +4781,6 @@ export default function ParticipantPage() {
           Use Learn More links in the app to load contextual cards in this panel.
         </RailInfoPlaceholderCard>
       )}
-      <RelatedDeepDivesCard
-        links={additionalReadingLinks}
-        keyPrefix="participant-deep"
-        emptyText="Use Learn More in the app to populate additional reading links."
-      />
       {tutorialStep === "dismissed" && (
         <div
           style={{

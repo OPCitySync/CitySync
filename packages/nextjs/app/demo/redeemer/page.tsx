@@ -8,7 +8,7 @@ import AppShell from "../_components/AppShell";
 import DemoToast from "../_components/DemoToast";
 import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
-import { RailInfoPlaceholderCard, RelatedDeepDivesCard, TutorialWalkthroughButton } from "../_components/RailCards";
+import { RailInfoPlaceholderCard, TutorialWalkthroughButton } from "../_components/RailCards";
 import { useDemo } from "../_context/DemoContext";
 import { FAKE_WALLETS, Post, PostCategory, RedemptionOffer } from "../_data/mockData";
 import { useLearnMoreCards } from "../_hooks/useLearnMoreCards";
@@ -721,11 +721,6 @@ export default function RedeemerApp() {
           Use Learn More links in the app to load contextual cards in this panel.
         </RailInfoPlaceholderCard>
       )}
-      <RelatedDeepDivesCard
-        links={additionalReadingLinks}
-        keyPrefix="redeemer-deep"
-        emptyText="Use Learn More in the app to populate additional reading links."
-      />
       {tutorialStep === "dismissed" && (
         <div
           style={{

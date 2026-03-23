@@ -2,7 +2,6 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY,
@@ -15,28 +14,11 @@ import styles from "./page.module.css";
 
 type RoleKey = "issuer" | "participant" | "redeemer";
 
-const roleCards: Array<{ key: RoleKey; title: string; blurb: string; accent: "gold" | "blue" | "mint" }> = [
-  { key: "issuer", title: "Issuer", blurb: "Define, issue, and verify civic tasks.", accent: "gold" },
-  {
-    key: "participant",
-    title: "Civic Participant",
-    blurb: "Claim tasks, execute work, earn CITY + VOTE.",
-    accent: "blue",
-  },
-  { key: "redeemer", title: "Redeemer", blurb: "Commit offerings and process redemption flows.", accent: "mint" },
-];
-
 const roleAccentByKey: Record<RoleKey, string> = {
   issuer: "#DD9E33",
   participant: "#4169E1",
   redeemer: "#34eeb6",
 };
-
-const deepLinks = [
-  { href: "/demo/mce", label: "Mass Coordination Events" },
-  { href: "/demo/public-sector-economy", label: "Public-Sector Economy" },
-  { href: "/demo/task-management", label: "Task Management" },
-] as const;
 
 const EMBED_SRC = "/demo/issuer?embed=1&skin=redesign";
 const BOX_STEP_PATTERN = /^box(\d+)$/;
@@ -377,8 +359,6 @@ export default function RedesignClientPage() {
     });
     return map;
   }, [activeLearnState.cards]);
-  const activeRelatedLinks = activeLearnState.relatedLinks.length > 0 ? activeLearnState.relatedLinks : deepLinks;
-
   return (
     <div className={styles.page}>
       <header className={styles.topNav}>
@@ -433,23 +413,6 @@ export default function RedesignClientPage() {
 
         <section className={styles.workspace}>
           <aside className={styles.leftRail}>
-            <h2 className={styles.railTitle}>Choose your Role</h2>
-            <div className={styles.roleStack}>
-              {roleCards.map(role => (
-                <button
-                  key={role.key}
-                  type="button"
-                  onClick={() => setActiveRole(role.key)}
-                  className={`${styles.roleCard} ${styles[role.accent]} ${
-                    activeRole === role.key ? styles.roleCardActive : ""
-                  }`}
-                >
-                  <h3>{role.title}</h3>
-                  <p>{role.blurb}</p>
-                </button>
-              ))}
-            </div>
-
             <OnchainActivityPanel role={activeRole} accent={roleAccentByKey[activeRole]} />
           </aside>
 
@@ -507,16 +470,6 @@ export default function RedesignClientPage() {
                 <p className={styles.cardText}>Use Learn More links in the app to load contextual cards here.</p>
               </div>
             )}
-            <div className={styles.linksCard}>
-              <p className={styles.cardLabel}>Related Deep Dives</p>
-              <ul>
-                {activeRelatedLinks.map(link => (
-                  <li key={link.href}>
-                    <Link href={link.href}>{link.label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </aside>
         </section>
       </main>

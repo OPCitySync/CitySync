@@ -296,65 +296,6 @@ export default function AppShell({
 
   const learnMoreColumn = (
     <div style={{ overflowY: "auto", paddingRight: 4, display: "flex", flexDirection: "column", gap: 12 }}>
-      {redesignSkin && !tutorialLocked && (
-        <div
-          style={{
-            background: "rgba(255,255,255,0.9)",
-            border: "1px solid rgba(31,45,86,0.12)",
-            borderRadius: 16,
-            padding: 14,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "rgba(27,45,95,0.5)",
-              marginBottom: 8,
-            }}
-          >
-            Choose your Role
-          </div>
-          <div style={{ display: "grid", gap: 8 }}>
-            {ROLES.map(r => {
-              const isActive = r.key === role;
-              return (
-                <button
-                  key={r.key}
-                  onClick={() => switchRoleByKey(r.key)}
-                  style={{
-                    border: isActive ? `1px solid ${r.accent}66` : "1px solid rgba(31,45,86,0.14)",
-                    borderRadius: 12,
-                    background: isActive ? `${r.accent}1f` : "rgba(247,249,255,0.95)",
-                    color: isActive ? "#1b2e63" : "rgba(27,45,95,0.82)",
-                    textAlign: "left",
-                    padding: "9px 10px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    transition: "all 0.14s ease",
-                  }}
-                >
-                  <span style={{ fontSize: 14, lineHeight: 1 }}>{r.emoji}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700 }}>{r.shortLabel}</span>
-                  <span
-                    style={{
-                      marginLeft: "auto",
-                      width: 7,
-                      height: 7,
-                      borderRadius: "50%",
-                      background: isActive ? r.accent : "rgba(27,45,95,0.22)",
-                    }}
-                  />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
       {leftPanel ?? (
         <div
           style={{
