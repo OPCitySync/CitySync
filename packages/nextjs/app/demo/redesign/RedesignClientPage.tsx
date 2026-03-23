@@ -7,6 +7,7 @@ import {
   DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY,
   ISSUER_TUTORIAL_STEP_STORAGE_KEY,
   SHARED_TUTORIAL_INTRO_TEXT,
+  setDemoTutorialHandoff,
 } from "../_utils/tutorialRun";
 import { LearnInfoCard, LearnMorePanel } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
@@ -362,6 +363,29 @@ export default function RedesignClientPage() {
     iframeRef.current?.contentWindow?.postMessage({ type: "citysync:tutorial-reset" }, window.location.origin);
   }, []);
 
+  const continueFromStep10 = React.useCallback(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, "box15");
+    } catch {
+      // Ignore storage failures.
+    }
+    setDemoTutorialHandoff("issuer", "box15");
+    setTutorialStep("box15");
+    setIsTourStarted(true);
+    setActiveRole("issuer");
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: "citysync:set-role", role: "issuer" },
+      window.location.origin,
+    );
+    window.setTimeout(() => {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: "citysync:tutorial-force-step", step: "box15" },
+        window.location.origin,
+      );
+    }, 250);
+  }, []);
+
   const tutorialContent = getTutorialContent(tutorialStep);
   const tutorialActive = /^box\d+$/.test(tutorialStep);
   const activeLearnState = learnMoreByRole[activeRole];
@@ -463,6 +487,11 @@ export default function RedesignClientPage() {
                   {!tutorialActive && (
                     <button type="button" onClick={startTutorial}>
                       Start Tutorial
+                    </button>
+                  )}
+                  {tutorialStep === "box14" && (
+                    <button type="button" onClick={continueFromStep10}>
+                      Continue
                     </button>
                   )}
                   <button type="button" className={styles.secondaryAction} onClick={resetTutorial}>
