@@ -902,7 +902,7 @@ export default function AppShell({
         style={{
           background: embedMode
             ? redesignSkin
-              ? "#f7f8fc"
+              ? "#ffffff"
               : "transparent"
             : lightSurroundings
               ? `

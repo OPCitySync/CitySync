@@ -481,7 +481,7 @@
   overflow: hidden;
   border: 1px solid rgba(26, 41, 76, 0.14);
   box-shadow: none;
-  background: #edf0f9;
+  background: #ffffff;
 }
 
 .deviceStage {
@@ -501,7 +501,7 @@
   padding: 0;
   box-sizing: border-box;
   border-radius: 0;
-  background: #f7f8fc;
+  background: #ffffff;
   border: none;
   box-shadow: none;
   overflow: hidden;
