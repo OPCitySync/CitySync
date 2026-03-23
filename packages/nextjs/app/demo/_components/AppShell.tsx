@@ -270,6 +270,13 @@ export default function AppShell({
     setSwitcherOpen(false);
   };
 
+  const handleExitDemo = useCallback(() => {
+    if (typeof window !== "undefined" && window.parent !== window) {
+      window.parent.postMessage({ type: "citysync:exit-demo" }, window.location.origin);
+    }
+    router.push("/demo");
+  }, [router]);
+
   useEffect(() => {
     const handleEmbedRoleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
@@ -868,7 +875,12 @@ export default function AppShell({
           <button
             onClick={() => {
               setSwitcherOpen(false);
-              logout();
+              try {
+                logout();
+              } catch {
+                // Best-effort logout; always route to landing page.
+              }
+              handleExitDemo();
             }}
             style={{
               width: "100%",

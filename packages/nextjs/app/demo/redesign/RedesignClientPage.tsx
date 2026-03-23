@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY,
   ISSUER_TUTORIAL_STEP_STORAGE_KEY,
@@ -183,6 +184,7 @@ const getTutorialContent = (step: string): TutorialContent => {
 };
 
 export default function RedesignClientPage() {
+  const router = useRouter();
   const [activeRole, setActiveRole] = React.useState<RoleKey>("issuer");
   const [isTourStarted, setIsTourStarted] = React.useState(false);
   const [tutorialStep, setTutorialStep] = React.useState<string>("dismissed");
@@ -236,6 +238,19 @@ export default function RedesignClientPage() {
       window.clearInterval(intervalId);
     };
   }, []);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleExitDemoMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      if ((payload as { type?: string }).type !== "citysync:exit-demo") return;
+      router.push("/demo");
+    };
+    window.addEventListener("message", handleExitDemoMessage);
+    return () => window.removeEventListener("message", handleExitDemoMessage);
+  }, [router]);
 
   const openGuidedTour = React.useCallback(() => {
     setIsTourStarted(true);
