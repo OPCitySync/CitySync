@@ -12,10 +12,64 @@ When major product, contract-integration, or deployment-impacting changes are ma
 ---
 
 ## Last Updated
-2026-03-18 (Session 43)
+2026-03-23 (Session 44)
 
 ## Current Branch
 `main`
+
+## 2026-03-23 — Demo Redesign Embed: Sheet Anchoring + Container Background Fixes
+
+- Updated:
+  - `packages/nextjs/app/demo/_utils/sheetStyles.ts`
+  - `packages/nextjs/app/demo/_components/AppShell.tsx`
+  - `packages/nextjs/app/demo/redesign/page.module.css`
+- What changed:
+  - standardized tutorial highlight and content-sheet layering so sheet overlays are viewport-pinned within the phone shell (instead of drifting with scrollable content)
+  - re-scoped fixed overlays to the app screen container in `AppShell` for redesign/embed consistency
+  - set redesign embed surrounding container/background to white to remove prior blue frame mismatch.
+- Commits:
+  - `80281d3` — sheet anchoring/scoping adjustments
+  - `ccc3005` — redesign embed/frame background set to white
+  - `68f15b8` — embed wrapper background set to white across skins (`classic` + redesign paths).
+
+## 2026-03-23 — Landing Role Entry Routing to Redesign
+
+- Updated:
+  - `packages/nextjs/app/demo/landing/page.tsx`
+  - `packages/nextjs/app/demo/redesign/RedesignClientPage.tsx`
+- What changed:
+  - "Enter as [Role]" actions on demo landing now route to redesign with role query handoff:
+    - `/demo/redesign?role=issuer`
+    - `/demo/redesign?role=participant`
+    - `/demo/redesign?role=redeemer`
+  - redesign page now reads `role` from query params and opens with that active role.
+- Commit:
+  - `590206d`.
+
+## 2026-03-23 — `/pitch` Alternative Site: Narrative Restructure + Brand/Header/CTA Revisions
+
+- Updated:
+  - `landing/index-pitch.html`
+  - `landing/assets/citysync-wordmark-frame3.png` (added)
+- Major content and structure changes:
+  - restructured page narrative to separate:
+    - broader City/Sync mission/problem/solution framing
+    - pilot mechanics as first concrete deployment
+    - long-term vision section for post-pilot expansion
+  - section flow now emphasizes:
+    - Hero → Purpose → Problem → Solution → Pilot → Vision → CTA/Footer
+  - moved pilot-specific mechanics into Pilot section (including role flow and pilot architecture context)
+  - added explicit Vision navigation target (`#vision`) in desktop + mobile menus
+  - expanded footer with social/contact links (X, Discord, Email).
+- Branding and navigation updates:
+  - top banner now matches redesign-app style:
+    - brand blue header (`#15151E`)
+    - wordmark logo asset in header
+    - retained menu-based top navigation
+  - top-nav "Join" replaced with "Explore the Demo" linking to `/demo/login`
+  - shifted page accent system from brown/orange to brand-gold alignment (`#DD9E33`) for related text/buttons/highlights.
+- Commit:
+  - `beff2a2`.
 
 ## 2026-03-18 — MCE Page Content Revisions
 
