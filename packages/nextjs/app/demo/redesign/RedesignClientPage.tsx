@@ -314,6 +314,13 @@ export default function RedesignClientPage() {
 
   const openGuidedTour = React.useCallback(() => {
     setIsTourStarted(true);
+    setTutorialStep("intro");
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, "intro");
+    } catch {
+      // Ignore localStorage write failures.
+    }
   }, []);
 
   const startTutorial = React.useCallback(() => {
