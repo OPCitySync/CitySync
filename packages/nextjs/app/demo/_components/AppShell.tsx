@@ -6,6 +6,7 @@ import { useLogout } from "@account-kit/react";
 import BottomNav, { NavTab } from "./BottomNav";
 import WalletModal from "./WalletModal";
 import { useDemo } from "../_context/DemoContext";
+import { BOTTOM_NAV_OFFSET_CSS } from "../_utils/sheetStyles";
 
 // ─── Role definitions (single source of truth for the switcher) ────────────────
 
@@ -250,6 +251,7 @@ export default function AppShell({
   const sheetExitBorder = redesignSkin ? "1px solid rgba(220,106,84,0.35)" : "1px solid rgba(255,80,80,0.18)";
   const sheetExitBackground = redesignSkin ? "rgba(220,106,84,0.12)" : "rgba(255,80,80,0.06)";
   const sheetExitColor = redesignSkin ? "rgba(170,68,53,0.88)" : "rgba(255,100,100,0.7)";
+  const sheetBottomOffset = BOTTOM_NAV_OFFSET_CSS;
   const roleSwitchQuery = searchParams?.toString();
   const roleSwitchHrefSuffix = roleSwitchQuery ? `?${roleSwitchQuery}` : "";
 
@@ -661,7 +663,10 @@ export default function AppShell({
         }}
         style={{
           position: "absolute",
-          inset: 0,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: sheetBottomOffset,
           background: redesignSkin ? "rgba(21,31,58,0.2)" : "rgba(13,13,20,0.45)",
           backdropFilter: "blur(2px)",
           WebkitBackdropFilter: "blur(2px)",
@@ -677,7 +682,7 @@ export default function AppShell({
           position: "absolute",
           left: 0,
           right: 0,
-          bottom: 0,
+          bottom: sheetBottomOffset,
           zIndex: 51,
           background: sheetBackground,
           borderTop: sheetBorder,

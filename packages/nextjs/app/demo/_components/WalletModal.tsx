@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { BOTTOM_NAV_OFFSET_CSS } from "../_utils/sheetStyles";
 
 interface WalletModalProps {
   address: string;
@@ -49,6 +50,7 @@ export default function WalletModal({
         style={{
           position: "absolute",
           inset: 0,
+          bottom: BOTTOM_NAV_OFFSET_CSS,
           background: "rgba(0,0,0,0.45)",
           zIndex: 220,
         }}
@@ -62,7 +64,7 @@ export default function WalletModal({
           position: "absolute",
           left: 0,
           right: 0,
-          bottom: 69,
+          bottom: BOTTOM_NAV_OFFSET_CSS,
           maxHeight: "50%",
           overflowY: "auto",
           zIndex: 221,
