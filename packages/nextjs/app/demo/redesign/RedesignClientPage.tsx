@@ -256,7 +256,7 @@ export default function RedesignClientPage() {
       const payload = event.data;
       if (!payload || typeof payload !== "object") return;
       if ((payload as { type?: string }).type !== "citysync:exit-demo") return;
-      router.push("/demo");
+      router.push("/demo/landing");
     };
     window.addEventListener("message", handleExitDemoMessage);
     return () => window.removeEventListener("message", handleExitDemoMessage);

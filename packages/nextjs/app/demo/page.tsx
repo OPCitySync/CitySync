@@ -1,5 +1,5 @@
-import RedesignClientPage from "./redesign/RedesignClientPage";
+import { redirect } from "next/navigation";
 
 export default function DemoHomePage() {
-  return <RedesignClientPage />;
+  redirect("/demo/login");
 }

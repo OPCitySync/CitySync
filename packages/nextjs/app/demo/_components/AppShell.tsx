@@ -211,7 +211,7 @@ export default function AppShell({
   const { setRole } = useDemo();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { logout } = useLogout({ onSuccess: () => router.push("/demo") });
+  const { logout } = useLogout({ onSuccess: () => router.push("/demo/landing") });
 
   const currentRole = ROLES.find(r => r.key === role)!;
   const embedMode = searchParams?.get("embed") === "1";
@@ -274,7 +274,7 @@ export default function AppShell({
     if (typeof window !== "undefined" && window.parent !== window) {
       window.parent.postMessage({ type: "citysync:exit-demo" }, window.location.origin);
     }
-    router.push("/demo");
+    router.push("/demo/landing");
   }, [router]);
 
   useEffect(() => {
