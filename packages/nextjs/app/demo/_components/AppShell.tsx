@@ -80,12 +80,18 @@ interface AppShellProps {
 function PhoneStatusBar({
   backgroundColor = "#15151E",
   foregroundColor = "#FFFFFF",
+  pillBackgroundColor,
+  pillBorderColor,
 }: {
   backgroundColor?: string;
   foregroundColor?: string;
+  pillBackgroundColor?: string;
+  pillBorderColor?: string;
 }) {
   const now = new Date();
   const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+  const pillBackground = pillBackgroundColor ?? "rgba(255,255,255,0.12)";
+  const pillBorder = pillBorderColor ?? "1px solid rgba(255,255,255,0.2)";
 
   return (
     <div
@@ -106,8 +112,8 @@ function PhoneStatusBar({
           width: 126,
           height: 32,
           borderRadius: 20,
-          background: "rgba(255,255,255,0.12)",
-          border: "1px solid rgba(255,255,255,0.2)",
+          background: pillBackground,
+          border: pillBorder,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -233,14 +239,16 @@ export default function AppShell({
   const sideRailWidth = redesignSkin ? 320 : 280;
   const sideRailOffset = redesignSkin ? 250 : 230;
   const sideRailPadding = redesignSkin ? "72px 18px 40px" : "72px 20px 40px";
-  const brandBlue = "#15151E";
-  const shellHeaderBackground = redesignSkin ? brandBlue : phoneFrame ? "rgba(18,18,28,0.96)" : "rgba(21,21,30,0.92)";
-  const shellHeaderBorder = redesignSkin ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.07)";
-  const shellRoleText = redesignSkin ? "#FFFFFF" : currentRole.accent;
-  const shellLogoStroke = redesignSkin ? "rgba(255,255,255,0.95)" : "#15151E";
-  const shellQrButtonBackground = redesignSkin ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.06)";
-  const shellQrButtonBorder = redesignSkin ? "1px solid rgba(255,255,255,0.24)" : "1px solid rgba(255,255,255,0.1)";
-  const shellQrButtonColor = redesignSkin ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.55)";
+  const shellHeaderBackground = currentRole.accent;
+  const shellChromeOnColor = currentRole.key === "participant" ? "#FFFFFF" : "#15151E";
+  const shellHeaderBorder =
+    currentRole.key === "participant" ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(21,21,30,0.22)";
+  const shellRoleText = shellChromeOnColor;
+  const shellLogoStroke = shellChromeOnColor;
+  const shellQrButtonBackground = currentRole.key === "participant" ? "rgba(255,255,255,0.14)" : "rgba(21,21,30,0.12)";
+  const shellQrButtonBorder =
+    currentRole.key === "participant" ? "1px solid rgba(255,255,255,0.28)" : "1px solid rgba(21,21,30,0.2)";
+  const shellQrButtonColor = shellChromeOnColor;
   const sheetBackground = redesignSkin ? "#f8f9fd" : "#15151E";
   const sheetBorder = redesignSkin ? "1px solid rgba(31,45,86,0.12)" : "1px solid rgba(255,255,255,0.07)";
   const sheetBodyText = redesignSkin ? "#1b2e63" : "#fff";
@@ -332,7 +340,16 @@ export default function AppShell({
 
   const phoneInner = (
     <>
-      {phoneFrame && <PhoneStatusBar backgroundColor={redesignSkin ? "#15151E" : undefined} />}
+      {phoneFrame && (
+        <PhoneStatusBar
+          backgroundColor={currentRole.accent}
+          foregroundColor={shellChromeOnColor}
+          pillBackgroundColor={currentRole.key === "participant" ? "rgba(255,255,255,0.12)" : "rgba(21,21,30,0.14)"}
+          pillBorderColor={
+            currentRole.key === "participant" ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(21,21,30,0.2)"
+          }
+        />
+      )}
       {tutorialLocked && (
         <style>{`
           @keyframes tutorialAllowedPulse {
@@ -444,16 +461,8 @@ export default function AppShell({
             minHeight: 42,
             padding: "6px 10px 6px 8px",
             borderRadius: 10,
-            border: highlightRoleSwitcher
-              ? "1px solid rgba(255,226,162,0.92)"
-              : redesignSkin
-                ? "1px solid rgba(255,255,255,0.24)"
-                : `1px solid ${currentRole.accent}30`,
-            background: highlightRoleSwitcher
-              ? "rgba(255,226,162,0.2)"
-              : redesignSkin
-                ? "rgba(255,255,255,0.1)"
-                : `${currentRole.accent}14`,
+            border: highlightRoleSwitcher ? "1px solid rgba(255,226,162,0.92)" : shellQrButtonBorder,
+            background: highlightRoleSwitcher ? "rgba(255,226,162,0.2)" : shellQrButtonBackground,
             cursor: roleSwitcherAllowed ? "pointer" : "not-allowed",
             transition: "background 0.15s ease",
             opacity: roleSwitcherAllowed ? 1 : 0.55,
@@ -464,15 +473,12 @@ export default function AppShell({
           }}
           onMouseEnter={e => {
             if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
-            (e.currentTarget as HTMLButtonElement).style.background = redesignSkin
-              ? "rgba(255,255,255,0.16)"
-              : `${currentRole.accent}22`;
+            (e.currentTarget as HTMLButtonElement).style.background =
+              currentRole.key === "participant" ? "rgba(255,255,255,0.22)" : "rgba(21,21,30,0.2)";
           }}
           onMouseLeave={e => {
             if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
-            (e.currentTarget as HTMLButtonElement).style.background = redesignSkin
-              ? "rgba(255,255,255,0.1)"
-              : `${currentRole.accent}14`;
+            (e.currentTarget as HTMLButtonElement).style.background = shellQrButtonBackground;
           }}
           data-tutorial-allow={highlightRoleSwitcher ? "true" : undefined}
         >
@@ -510,7 +516,7 @@ export default function AppShell({
           style={{
             justifySelf: "center",
             background: redesignSkin ? "rgba(255,255,255,0.12)" : accentColor,
-            border: redesignSkin ? "1px solid rgba(255,255,255,0.24)" : "none",
+            border: shellQrButtonBorder,
             borderRadius: 10,
             padding: "6px 10px",
             display: "flex",
@@ -523,7 +529,7 @@ export default function AppShell({
             <polygon
               points="62,28 66,28 73,6 69,6"
               fill="none"
-              stroke={redesignSkin ? "rgba(255,255,255,0.65)" : "rgba(21,21,30,0.5)"}
+              stroke={currentRole.key === "participant" ? "rgba(255,255,255,0.72)" : "rgba(21,21,30,0.56)"}
               strokeWidth="2"
             />
           </svg>
@@ -580,23 +586,11 @@ export default function AppShell({
             style={{
               minHeight: 42,
               padding: "8px 10px",
-              background: tutorialHighlightWalletButton
-                ? "rgba(255,226,162,0.2)"
-                : redesignSkin
-                  ? "rgba(255,255,255,0.12)"
-                  : "rgba(255,255,255,0.06)",
-              border: tutorialHighlightWalletButton
-                ? "1px solid rgba(255,226,162,0.85)"
-                : redesignSkin
-                  ? "1px solid rgba(255,255,255,0.24)"
-                  : "1px solid rgba(255,255,255,0.1)",
+              background: tutorialHighlightWalletButton ? "rgba(255,226,162,0.2)" : shellQrButtonBackground,
+              border: tutorialHighlightWalletButton ? "1px solid rgba(255,226,162,0.85)" : shellQrButtonBorder,
               borderRadius: 10,
               cursor: walletAllowed ? "pointer" : "not-allowed",
-              color: tutorialHighlightWalletButton
-                ? "#ffe2a2"
-                : redesignSkin
-                  ? "rgba(255,255,255,0.95)"
-                  : "rgba(255,255,255,0.65)",
+              color: tutorialHighlightWalletButton ? "#ffe2a2" : shellQrButtonColor,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
