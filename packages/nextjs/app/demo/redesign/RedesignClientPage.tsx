@@ -38,10 +38,28 @@ const activityLog = [
 ] as const;
 
 const EMBED_SRC = "/demo/issuer?embed=1&skin=redesign";
+const BOX_STEP_PATTERN = /^box(\d+)$/;
+
+const getTutorialBody = (step: string) => {
+  if (step === "intro") {
+    return "Press Start Tutorial to begin Step 1 with in-app highlights.";
+  }
+  if (step === "box1") {
+    return "Step 1: Use the highlighted role switcher/cancel flow in the app to begin.";
+  }
+  if (BOX_STEP_PATTERN.test(step)) {
+    return "Follow the highlighted controls inside the app to advance to the next step.";
+  }
+  if (step === "dismissed") {
+    return "Tutorial is currently closed.";
+  }
+  return "Tutorial status is syncing.";
+};
 
 export default function RedesignClientPage() {
   const [activeRole, setActiveRole] = React.useState<RoleKey>("issuer");
   const [isTourStarted, setIsTourStarted] = React.useState(false);
+  const [tutorialStep, setTutorialStep] = React.useState<string>("dismissed");
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
 
   const postRoleToEmbed = React.useCallback((role: RoleKey) => {
@@ -53,22 +71,80 @@ export default function RedesignClientPage() {
     postRoleToEmbed(activeRole);
   }, [activeRole, postRoleToEmbed]);
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const readStep = () => {
+      try {
+        return window.localStorage.getItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY) ?? "dismissed";
+      } catch {
+        return "dismissed";
+      }
+    };
+    const syncStep = () => {
+      const step = readStep();
+      setTutorialStep(step);
+      if (step !== "dismissed") setIsTourStarted(true);
+    };
+
+    syncStep();
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== ISSUER_TUTORIAL_STEP_STORAGE_KEY) return;
+      syncStep();
+    };
+    window.addEventListener("storage", handleStorage);
+    const intervalId = window.setInterval(syncStep, 400);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.clearInterval(intervalId);
+    };
+  }, []);
+
   const openGuidedTour = React.useCallback(() => {
     setIsTourStarted(true);
   }, []);
 
   const startTutorial = React.useCallback(() => {
     if (typeof window === "undefined") return;
+    setIsTourStarted(true);
     setActiveRole("issuer");
+    const postStartTutorial = () => {
+      postRoleToEmbed("issuer");
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: "citysync:start-tutorial", step: "box1" },
+        window.location.origin,
+      );
+    };
     try {
       window.localStorage.setItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY, "1");
       window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, "intro");
     } catch {
       // Ignore localStorage write failures.
     }
-    postRoleToEmbed("issuer");
-    window.setTimeout(() => postRoleToEmbed("issuer"), 120);
+    postStartTutorial();
+    window.setTimeout(postStartTutorial, 120);
+    window.setTimeout(postStartTutorial, 420);
   }, [postRoleToEmbed]);
+
+  const resetTutorial = React.useCallback(() => {
+    if (typeof window === "undefined") return;
+    setIsTourStarted(false);
+    setTutorialStep("dismissed");
+    try {
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, "dismissed");
+      window.localStorage.removeItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY);
+    } catch {
+      // Ignore localStorage failures.
+    }
+    iframeRef.current?.contentWindow?.postMessage({ type: "citysync:tutorial-reset" }, window.location.origin);
+  }, []);
+
+  const boxMatch = tutorialStep.match(BOX_STEP_PATTERN);
+  const tutorialCardTitle = boxMatch
+    ? `Step ${boxMatch[1]}`
+    : tutorialStep === "intro"
+      ? "Tutorial Walkthrough"
+      : "Tutorial Walkthrough";
+  const tutorialActive = Boolean(boxMatch);
 
   return (
     <div className={styles.page}>
@@ -178,17 +254,20 @@ export default function RedesignClientPage() {
             {isTourStarted && (
               <div className={styles.tutorialCard}>
                 <p className={styles.cardLabel}>City/Sync Demo</p>
-                <h3>Tutorial Walkthrough</h3>
-                <p className={styles.cardText}>
-                  Start an end-to-end pass from Issuer task issuance through Civic Participant execution and Redeemer
-                  redemption.
-                </p>
+                <h3>{tutorialCardTitle}</h3>
+                <p className={styles.cardText}>{getTutorialBody(tutorialStep)}</p>
                 <div className={styles.tutorialActions}>
-                  <button type="button" onClick={startTutorial}>
-                    Start Tutorial
-                  </button>
-                  <button type="button" className={styles.secondaryAction}>
-                    Reset Tutorial
+                  {!tutorialActive ? (
+                    <button type="button" onClick={startTutorial}>
+                      Start Tutorial
+                    </button>
+                  ) : (
+                    <button type="button" onClick={startTutorial}>
+                      Restart Tutorial
+                    </button>
+                  )}
+                  <button type="button" className={styles.secondaryAction} onClick={resetTutorial}>
+                    Exit Tutorial
                   </button>
                 </div>
               </div>

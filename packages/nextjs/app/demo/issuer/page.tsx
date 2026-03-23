@@ -817,16 +817,50 @@ export default function IssuerApp() {
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
-    if (!address || !address.startsWith("0x")) return;
-    try {
-      if (window.localStorage.getItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY) !== "1") return;
-      window.localStorage.removeItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY);
-    } catch {
-      return;
-    }
-    startDemoTutorialRunForAddress(address);
-    setActiveTab("profile");
-    setTutorialStep("box1");
+    const beginTutorial = () => {
+      startDemoTutorialRunForAddress(address);
+      setActiveTab("profile");
+      setTutorialStep("box1");
+    };
+    const consumeStartFlag = () => {
+      try {
+        if (window.localStorage.getItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY) !== "1") return false;
+        window.localStorage.removeItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY);
+      } catch {
+        return false;
+      }
+      beginTutorial();
+      return true;
+    };
+
+    consumeStartFlag();
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key !== DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY) return;
+      if (event.newValue !== "1") return;
+      consumeStartFlag();
+    };
+
+    const handleTutorialMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      const type = (payload as { type?: string }).type;
+      if (type === "citysync:start-tutorial") {
+        beginTutorial();
+        return;
+      }
+      if (type === "citysync:tutorial-reset") {
+        setTutorialStep("dismissed");
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("message", handleTutorialMessage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("message", handleTutorialMessage);
+    };
   }, [address]);
 
   React.useEffect(() => {
@@ -968,6 +1002,12 @@ export default function IssuerApp() {
   };
 
   const handleProposeTask = async (proposed: ProposedTask) => {
+    if (!address) {
+      setProposeWriteStatus({ state: "failed", error: "Session not ready. Finish sign-in and retry proposal." });
+      if (!isAuthenticating) openAuthModal();
+      setToast("Finish sign-in to activate your issuer account, then retry proposal.");
+      return;
+    }
     setProposeSheet(false);
     setProposeWriteStatus({ state: "pending" });
     const result = await issuerProposeTask({
