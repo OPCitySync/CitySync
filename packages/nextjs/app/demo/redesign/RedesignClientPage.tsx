@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY, ISSUER_TUTORIAL_STEP_STORAGE_KEY } from "../_utils/tutorialRun";
 import styles from "./page.module.css";
 
 type RoleKey = "issuer" | "participant" | "redeemer";
@@ -52,6 +53,23 @@ export default function RedesignClientPage() {
     postRoleToEmbed(activeRole);
   }, [activeRole, postRoleToEmbed]);
 
+  const openGuidedTour = React.useCallback(() => {
+    setIsTourStarted(true);
+  }, []);
+
+  const startTutorial = React.useCallback(() => {
+    if (typeof window === "undefined") return;
+    setActiveRole("issuer");
+    try {
+      window.localStorage.setItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY, "1");
+      window.localStorage.setItem(ISSUER_TUTORIAL_STEP_STORAGE_KEY, "intro");
+    } catch {
+      // Ignore localStorage write failures.
+    }
+    postRoleToEmbed("issuer");
+    window.setTimeout(() => postRoleToEmbed("issuer"), 120);
+  }, [postRoleToEmbed]);
+
   return (
     <div className={styles.page}>
       <header className={styles.topNav}>
@@ -85,7 +103,7 @@ export default function RedesignClientPage() {
               for the proposed public-sector economy.
             </p>
             <div className={styles.heroCtas}>
-              <button className={styles.primaryBtn} type="button" onClick={() => setIsTourStarted(true)}>
+              <button className={styles.primaryBtn} type="button" onClick={openGuidedTour}>
                 Start the Guided Tour
               </button>
             </div>
@@ -159,14 +177,16 @@ export default function RedesignClientPage() {
           <aside className={styles.rightRail}>
             {isTourStarted && (
               <div className={styles.tutorialCard}>
-                <p className={styles.cardLabel}>Tutorial Walkthrough</p>
-                <h3>Try the full role sequence</h3>
+                <p className={styles.cardLabel}>City/Sync Demo</p>
+                <h3>Tutorial Walkthrough</h3>
                 <p className={styles.cardText}>
                   Start an end-to-end pass from Issuer task issuance through Civic Participant execution and Redeemer
                   redemption.
                 </p>
                 <div className={styles.tutorialActions}>
-                  <button type="button">Start Tutorial</button>
+                  <button type="button" onClick={startTutorial}>
+                    Start Tutorial
+                  </button>
                   <button type="button" className={styles.secondaryAction}>
                     Reset Tutorial
                   </button>

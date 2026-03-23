@@ -1214,6 +1214,16 @@ export default function RedeemerApp() {
         phoneFrame
         tutorialLocked={tutorialLockActive}
       >
+        {hideShellPanels && openInfoCards.length > 0 && (
+          <div style={{ marginBottom: 12 }}>
+            <LearnMorePanel
+              keys={openInfoCards}
+              cards={REDEEMER_LEARN_CARDS}
+              onClose={closeLearnMore}
+              accent={ACCENT}
+            />
+          </div>
+        )}
         {activeTab === "profile" && (
           <ProfileTab
             redeemer={redeemer}

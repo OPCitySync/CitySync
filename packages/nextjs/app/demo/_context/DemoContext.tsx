@@ -681,10 +681,20 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const roleRegisterInFlight = useRef<{ issuer: boolean; redeemer: boolean }>({ issuer: false, redeemer: false });
   const autoRegisteredForRef = useRef<string | null>(null);
   const taskStateHydratedRef = useRef(false);
+  const clientRef = useRef(client);
+  const sendUserOperationAsyncRef = useRef(sendUserOperationAsync);
   // ── CU throttle: minimum interval between focus/visibility-triggered RPC syncs ──
   const FOCUS_SYNC_COOLDOWN_MS = 60_000; // 60 seconds between background re-syncs
   const lastSyncStateMs = useRef<number>(0);
   const lastSyncOffersMs = useRef<number>(0);
+
+  useEffect(() => {
+    clientRef.current = client;
+  }, [client]);
+
+  useEffect(() => {
+    sendUserOperationAsyncRef.current = sendUserOperationAsync;
+  }, [sendUserOperationAsync]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -775,21 +785,46 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       functionName: string;
       args: readonly unknown[];
     }) => {
-      if (!client) {
-        throw new Error("Session not ready. Finish sign-in and retry.");
-      }
+      const waitForSessionReady = async (timeoutMs: number) => {
+        const startedAt = Date.now();
+        while (!clientRef.current && Date.now() - startedAt < timeoutMs) {
+          await new Promise(resolve => window.setTimeout(resolve, 200));
+        }
+        if (!clientRef.current) {
+          throw new Error("Session not ready. Finish sign-in and retry.");
+        }
+      };
+
+      await waitForSessionReady(8_000);
       const data = encodeFunctionData({
         abi: params.abi as any,
         functionName: params.functionName as any,
         args: params.args as any,
       });
-      const result = await sendUserOperationAsync({
-        uo: {
-          target: params.address,
-          data,
-          value: 0n,
-        },
-      } as any);
+      const sendUserOperation = async () => {
+        const sendUserOperationFn = sendUserOperationAsyncRef.current;
+        return await sendUserOperationFn({
+          uo: {
+            target: params.address,
+            data,
+            value: 0n,
+          },
+        } as any);
+      };
+
+      let result: unknown;
+      try {
+        result = await sendUserOperation();
+      } catch (error) {
+        const message = error instanceof Error ? error.message.toLowerCase() : "";
+        const shouldRetry =
+          message.includes("session not ready") ||
+          message.includes("smart account client unavailable") ||
+          message.includes("wallet not ready");
+        if (!shouldRetry) throw error;
+        await waitForSessionReady(8_000);
+        result = await sendUserOperation();
+      }
       if (typeof window !== "undefined") {
         const w = window as typeof window & { __citysyncActivityRefreshTimer?: number };
         if (w.__citysyncActivityRefreshTimer) {
@@ -802,7 +837,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       }
       return result;
     },
-    [client, sendUserOperationAsync],
+    [],
   );
 
   const getResultHash = useCallback((result: unknown): `0x${string}` | undefined => {

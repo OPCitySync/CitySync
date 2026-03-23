@@ -26,6 +26,7 @@ import {
   cleanupDemoTutorialArtifacts,
   appendDemoTutorialTaskIds,
   consumeDemoTutorialHandoff,
+  DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY,
   getDemoTutorialHiddenTaskIds,
   getDemoTutorialTaskIds,
   readDemoTutorialRun,
@@ -815,6 +816,20 @@ export default function IssuerApp() {
   }, [tutorialStep]);
 
   React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!address || !address.startsWith("0x")) return;
+    try {
+      if (window.localStorage.getItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY) !== "1") return;
+      window.localStorage.removeItem(DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY);
+    } catch {
+      return;
+    }
+    startDemoTutorialRunForAddress(address);
+    setActiveTab("profile");
+    setTutorialStep("box1");
+  }, [address]);
+
+  React.useEffect(() => {
     // Allow cross-role tutorial handoff steps (box10+). Only dismiss truly invalid values.
     if (ISSUER_ROLE_TUTORIAL_STEPS.has(tutorialStep) || /^box\d+$/.test(tutorialStep)) return;
     setTutorialStep("dismissed");
@@ -1204,6 +1219,11 @@ export default function IssuerApp() {
           }
         }}
       >
+        {hideShellPanels && openInfoCards.length > 0 && (
+          <div style={{ marginBottom: 12 }}>
+            <LearnMorePanel keys={openInfoCards} cards={ISSUER_LEARN_CARDS} onClose={closeLearnMore} accent={ACCENT} />
+          </div>
+        )}
         {isConnected && !address && (
           <div
             style={{
