@@ -74,6 +74,36 @@ export default function RedesignClientPage() {
       </header>
 
       <main className={styles.main}>
+        <section className={styles.hero}>
+          <div className={styles.heroCopy}>
+            <p className={styles.eyebrow}>Live Mobile Application DEMO</p>
+            <h1 className={styles.title}>Civic Wallet OS</h1>
+            <p className={styles.subtitle}>
+              In this DEMO you can move between the 3 different roles that serve as the fundamental incentive engine for
+              the City/Sync protocol. It utilizes sponsored transactions on the Base Sepolia testnet, and no real funds
+              are required. All three roles share the same state, so please switch freely to understand the full loop
+              for the proposed public-sector economy.
+            </p>
+            <div className={styles.heroCtas}>
+              <button className={styles.primaryBtn} type="button" onClick={() => setIsTourStarted(true)}>
+                Start the Guided Tour
+              </button>
+            </div>
+          </div>
+          <div className={styles.heroArt}>
+            <div className={styles.heroImageFrame}>
+              <Image src="/pitch/image-4.png" alt="City/Sync concept art" fill sizes="(max-width: 900px) 90vw, 38vw" />
+            </div>
+            <div className={styles.heroFloatingCard}>
+              <p className={styles.cardLabel}>Phase 1: Local Coordination Infrastructure</p>
+              <p className={styles.cardText}>
+                The City/Sync protocol starts with the validation of a new incentive mechanism that facilitates local
+                coordination around public initiatives.
+              </p>
+            </div>
+          </div>
+        </section>
+
         <section className={styles.workspace}>
           <aside className={styles.leftRail}>
             <h2 className={styles.railTitle}>Choose your Role</h2>
@@ -114,40 +144,6 @@ export default function RedesignClientPage() {
           </aside>
 
           <div className={styles.deviceStage}>
-            <div className={styles.demoIntroCards}>
-              <div className={styles.heroCopy}>
-                <p className={styles.eyebrow}>Live Mobile Application DEMO</p>
-                <h1 className={styles.title}>Civic Wallet OS</h1>
-                <p className={styles.subtitle}>
-                  In this DEMO you can move between the 3 different roles that serve as the fundamental incentive engine
-                  for the City/Sync protocol. It utilizes sponsored transactions on the Base Sepolia testnet, and no
-                  real funds are required. All three roles share the same state, so please switch freely to understand
-                  the full loop for the proposed public-sector economy.
-                </p>
-                <div className={styles.heroCtas}>
-                  <button className={styles.primaryBtn} type="button" onClick={() => setIsTourStarted(true)}>
-                    Start the Guided Tour
-                  </button>
-                </div>
-              </div>
-              <div className={styles.heroArt}>
-                <div className={styles.heroImageFrame}>
-                  <Image
-                    src="/pitch/image-4.png"
-                    alt="City/Sync concept art"
-                    fill
-                    sizes="(max-width: 900px) 90vw, 38vw"
-                  />
-                </div>
-                <div className={styles.heroFloatingCard}>
-                  <p className={styles.cardLabel}>Phase 1: Local Coordination Infrastructure</p>
-                  <p className={styles.cardText}>
-                    The City/Sync protocol starts with the validation of a new incentive mechanism that facilitates
-                    local coordination around public initiatives.
-                  </p>
-                </div>
-              </div>
-            </div>
             <div className={styles.embedFrame}>
               <iframe
                 ref={iframeRef}

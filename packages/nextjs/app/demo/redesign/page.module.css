@@ -471,17 +471,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: stretch;
+  align-items: center;
   gap: 0.65rem;
-}
-
-.demoIntroCards {
-  width: 100%;
-  max-width: 700px;
-  display: grid;
-  grid-template-columns: 1.02fr 0.98fr;
-  gap: 0.75rem;
-  margin-bottom: 0.2rem;
 }
 
 .embedFrame {
@@ -759,11 +750,11 @@
 }
 
 @media (max-width: 1024px) {
-  .workspace {
+  .hero {
     grid-template-columns: 1fr;
   }
 
-  .demoIntroCards {
+  .workspace {
     grid-template-columns: 1fr;
   }
 
