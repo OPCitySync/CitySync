@@ -4437,6 +4437,8 @@ export default function ParticipantPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hideShellPanels = searchParams?.get("embed") === "1";
+  const roleRouteSuffix = searchParams?.toString() ? `?${searchParams.toString()}` : "";
+  const withCurrentQuery = React.useCallback((path: string) => `${path}${roleRouteSuffix}`, [roleRouteSuffix]);
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const { openInfoCards, openLearnMore, closeLearnMore, clearLearnMore } =
@@ -4486,8 +4488,8 @@ export default function ParticipantPage() {
     setTutorialStep("box1");
     setRole("issuer");
     setDemoTutorialHandoff("issuer", "box1");
-    router.push("/demo/issuer");
-  }, [address, persistTutorialStep, router, setRole]);
+    router.push(withCurrentQuery("/demo/issuer"));
+  }, [address, persistTutorialStep, router, setRole, withCurrentQuery]);
 
   const openTutorialIntro = React.useCallback(() => {
     persistTutorialStep("intro");
@@ -4684,7 +4686,7 @@ export default function ParticipantPage() {
                 setTutorialStep("box15");
                 persistTutorialStep("box15");
                 setDemoTutorialHandoff("issuer", "box15");
-                router.push("/demo/issuer");
+                router.push(withCurrentQuery("/demo/issuer"));
               }}
               style={primaryButtonStyle}
             >

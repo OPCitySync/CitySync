@@ -453,6 +453,8 @@ export default function RedeemerApp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hideShellPanels = searchParams?.get("embed") === "1";
+  const roleRouteSuffix = searchParams?.toString() ? `?${searchParams.toString()}` : "";
+  const withCurrentQuery = React.useCallback((path: string) => `${path}${roleRouteSuffix}`, [roleRouteSuffix]);
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
   const { openInfoCards, openLearnMore, closeLearnMore, clearLearnMore } =
@@ -698,7 +700,7 @@ export default function RedeemerApp() {
                 setTutorialStep("box1");
                 setRole("issuer");
                 setDemoTutorialHandoff("issuer", "box1");
-                router.push("/demo/issuer");
+                router.push(withCurrentQuery("/demo/issuer"));
               }}
               style={primaryButtonStyle}
             >
@@ -1355,7 +1357,7 @@ export default function RedeemerApp() {
                 setTutorialStep("box23");
                 persistTutorialStep("box23");
                 setDemoTutorialHandoff("participant", "box23");
-                router.push("/demo/participant");
+                router.push(withCurrentQuery("/demo/participant"));
               }
             }}
           />

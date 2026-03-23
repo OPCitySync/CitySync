@@ -653,6 +653,8 @@ export default function IssuerApp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hideShellPanels = searchParams?.get("embed") === "1";
+  const roleRouteSuffix = searchParams?.toString() ? `?${searchParams.toString()}` : "";
+  const withCurrentQuery = React.useCallback((path: string) => `${path}${roleRouteSuffix}`, [roleRouteSuffix]);
   const {
     state,
     dispatch,
@@ -1367,7 +1369,7 @@ export default function IssuerApp() {
               setTutorialStep("box19");
               persistTutorialStep("box19");
               setDemoTutorialHandoff("redeemer", "box19");
-              router.push("/demo/redeemer");
+              router.push(withCurrentQuery("/demo/redeemer"));
             }}
           />
         )}
@@ -1409,7 +1411,7 @@ export default function IssuerApp() {
                   setTutorialStep("box11");
                   persistTutorialStep("box11");
                   setDemoTutorialHandoff("participant", "box11");
-                  router.push("/demo/participant");
+                  router.push(withCurrentQuery("/demo/participant"));
                 }}
               />
             ) : null;
