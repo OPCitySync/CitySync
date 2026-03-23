@@ -294,6 +294,11 @@ export default function AppShell({
     return () => window.removeEventListener("message", handleEmbedRoleMessage);
   }, [switchRoleByKey]);
 
+  useEffect(() => {
+    if (typeof window === "undefined" || window.parent === window) return;
+    window.parent.postMessage({ type: "citysync:role-changed", role }, window.location.origin);
+  }, [role]);
+
   const learnMoreColumn = (
     <div style={{ overflowY: "auto", paddingRight: 4, display: "flex", flexDirection: "column", gap: 12 }}>
       {leftPanel ?? (

@@ -106,6 +106,10 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
   const redeemerPersistenceReadyRef = useRef(false);
 
   useEffect(() => {
+    setItems([]);
+  }, [role]);
+
+  useEffect(() => {
     let cancelled = false;
     const refreshBlock = async () => {
       try {
@@ -123,12 +127,21 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
     const onActivityRefresh = () => {
       void refreshBlock();
     };
+    const onActivityRefreshMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      if ((payload as { type?: string }).type !== "citysync:activity-refresh") return;
+      void refreshBlock();
+    };
 
     void refreshBlock();
     window.addEventListener("citysync:activity-refresh", onActivityRefresh);
+    window.addEventListener("message", onActivityRefreshMessage);
     return () => {
       cancelled = true;
       window.removeEventListener("citysync:activity-refresh", onActivityRefresh);
+      window.removeEventListener("message", onActivityRefreshMessage);
     };
   }, [role]);
 

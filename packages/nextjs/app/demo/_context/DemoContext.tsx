@@ -832,6 +832,9 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         }
         w.__citysyncActivityRefreshTimer = window.setTimeout(() => {
           window.dispatchEvent(new Event("citysync:activity-refresh"));
+          if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ type: "citysync:activity-refresh" }, window.location.origin);
+          }
           w.__citysyncActivityRefreshTimer = undefined;
         }, 5000);
       }

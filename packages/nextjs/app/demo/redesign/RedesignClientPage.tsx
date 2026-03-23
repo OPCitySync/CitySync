@@ -246,6 +246,22 @@ export default function RedesignClientPage() {
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
+    const handleRoleChanged = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      if ((payload as { type?: string }).type !== "citysync:role-changed") return;
+      const nextRole = (payload as { role?: string }).role;
+      if (nextRole !== "issuer" && nextRole !== "participant" && nextRole !== "redeemer") return;
+      setActiveRole(nextRole);
+    };
+    const handleActivityRefresh = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      if ((payload as { type?: string }).type !== "citysync:activity-refresh") return;
+      window.dispatchEvent(new Event("citysync:activity-refresh"));
+    };
     const handleLearnMoreState = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       const payload = event.data;
@@ -290,8 +306,14 @@ export default function RedesignClientPage() {
         [role]: { cards, relatedLinks },
       }));
     };
+    window.addEventListener("message", handleRoleChanged);
+    window.addEventListener("message", handleActivityRefresh);
     window.addEventListener("message", handleLearnMoreState);
-    return () => window.removeEventListener("message", handleLearnMoreState);
+    return () => {
+      window.removeEventListener("message", handleRoleChanged);
+      window.removeEventListener("message", handleActivityRefresh);
+      window.removeEventListener("message", handleLearnMoreState);
+    };
   }, []);
 
   const openGuidedTour = React.useCallback(() => {
