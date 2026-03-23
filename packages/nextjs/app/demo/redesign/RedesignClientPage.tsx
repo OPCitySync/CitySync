@@ -468,13 +468,9 @@ export default function RedesignClientPage() {
                   {tutorialContent.body}
                 </p>
                 <div className={styles.tutorialActions}>
-                  {!tutorialActive ? (
+                  {!tutorialActive && (
                     <button type="button" onClick={startTutorial}>
                       Start Tutorial
-                    </button>
-                  ) : (
-                    <button type="button" onClick={startTutorial}>
-                      Restart Tutorial
                     </button>
                   )}
                   <button type="button" className={styles.secondaryAction} onClick={resetTutorial}>
