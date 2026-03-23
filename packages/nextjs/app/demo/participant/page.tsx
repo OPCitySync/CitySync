@@ -4456,6 +4456,28 @@ export default function ParticipantPage() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleTutorialMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      const type = (payload as { type?: string }).type;
+      if (type === "citysync:tutorial-reset") {
+        setTutorialStep("dismissed");
+        return;
+      }
+      if (type === "citysync:tutorial-force-step") {
+        const nextStep = (payload as { step?: string }).step;
+        if (nextStep && (nextStep === "intro" || nextStep === "dismissed" || /^box\d+$/.test(nextStep))) {
+          setTutorialStep(nextStep as IssuerTutorialStep);
+        }
+      }
+    };
+    window.addEventListener("message", handleTutorialMessage);
+    return () => window.removeEventListener("message", handleTutorialMessage);
+  }, []);
+
+  useEffect(() => {
     if (!state.role) setRole("participant");
   }, [state.role, setRole]);
 

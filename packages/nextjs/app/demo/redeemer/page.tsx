@@ -483,6 +483,28 @@ export default function RedeemerApp() {
     }
   }, []);
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleTutorialMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      const type = (payload as { type?: string }).type;
+      if (type === "citysync:tutorial-reset") {
+        setTutorialStep("dismissed");
+        return;
+      }
+      if (type === "citysync:tutorial-force-step") {
+        const nextStep = (payload as { step?: string }).step;
+        if (nextStep && (nextStep === "intro" || nextStep === "dismissed" || /^box\d+$/.test(nextStep))) {
+          setTutorialStep(nextStep as IssuerTutorialStep);
+        }
+      }
+    };
+    window.addEventListener("message", handleTutorialMessage);
+    return () => window.removeEventListener("message", handleTutorialMessage);
+  }, []);
+
   const { redeemer, mces } = state;
   // Only require `address` — the smart-account client can lag behind by
   // 1-3 s after login or after a prior UserOp. If it still isn't ready
