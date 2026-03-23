@@ -22,8 +22,10 @@
       --paper: #ffffff;
       --ink: #213238;
       --ink-soft: #4d6067;
-      --accent: #cb7b48;
-      --accent-soft: #eec9a9;
+      --brand-blue: #15151e;
+      --brand-gold: #dd9e33;
+      --accent: #dd9e33;
+      --accent-soft: #f3d596;
       --forest: #678d61;
       --sky: #417ba0;
       --line: #dfd7c7;
@@ -86,14 +88,12 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      background: rgba(252, 250, 244, 0.84);
-      border-bottom: 1px solid rgba(33, 50, 56, 0.1);
+      background: var(--brand-blue);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .nav-row {
-      min-height: 72px;
+      min-height: 76px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -128,12 +128,33 @@
       display: flex;
       align-items: center;
       gap: 20px;
-      color: var(--ink-soft);
+      color: rgba(255, 255, 255, 0.86);
       font-size: 0.95rem;
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover { color: var(--brand-gold); }
+
+    .nav-demo-link {
+      color: var(--brand-gold);
+      font-weight: 700;
+    }
+
+    .nav-demo-link:hover {
+      color: #f3d596;
+    }
+
+    .brand-nav {
+      gap: 0;
+      font-size: 0;
+      font-weight: 400;
+    }
+
+    .brand-wordmark {
+      height: 34px;
+      width: auto;
+      display: block;
+    }
 
     .btn {
       display: inline-flex;
@@ -150,7 +171,7 @@
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 20px rgba(203, 123, 72, 0.22);
+      box-shadow: 0 12px 20px rgba(221, 158, 51, 0.22);
     }
 
     .btn-primary {
@@ -189,7 +210,7 @@
       width: 460px;
       height: 460px;
       border-radius: 50%;
-      background: radial-gradient(circle at 60% 40%, rgba(203, 123, 72, 0.2), transparent 70%);
+      background: radial-gradient(circle at 60% 40%, rgba(221, 158, 51, 0.2), transparent 70%);
       pointer-events: none;
       z-index: -1;
     }
@@ -349,8 +370,8 @@
       height: 18px;
       border-radius: 50%;
       margin-top: 2px;
-      background: linear-gradient(120deg, var(--accent), #e9b87d);
-      box-shadow: 0 0 0 4px rgba(203, 123, 72, 0.14);
+      background: linear-gradient(120deg, var(--accent), #f3d596);
+      box-shadow: 0 0 0 4px rgba(221, 158, 51, 0.14);
     }
 
     .problem-grid {
@@ -463,7 +484,7 @@
       height: 10px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(203, 123, 72, 0.18);
+      box-shadow: 0 0 0 3px rgba(221, 158, 51, 0.18);
     }
 
     .timeline-item strong {
@@ -574,12 +595,12 @@
       .mobile-summary {
         list-style: none;
         cursor: pointer;
-        border: 1px solid rgba(33, 50, 56, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.24);
         border-radius: 999px;
         padding: 9px 14px;
         font-size: 0.9rem;
-        color: var(--ink);
-        background: rgba(255, 255, 255, 0.9);
+        color: rgba(255, 255, 255, 0.92);
+        background: rgba(255, 255, 255, 0.08);
       }
 
       .mobile-summary::-webkit-details-marker { display: none; }
@@ -604,6 +625,11 @@
         background: var(--bg-soft);
         color: var(--accent);
       }
+
+      .mobile-menu .nav-demo-link {
+        color: var(--brand-gold);
+        font-weight: 700;
+      }
     }
   </style>
 </head>
@@ -611,10 +637,8 @@
   <div class="page">
     <header class="nav">
       <div class="container nav-row">
-        <a class="brand" href="#top" aria-label="City/Sync Home">
-          <span>CITY</span>
-          <span class="slashes" aria-hidden="true"><span></span><span></span></span>
-          <span>SYNC</span>
+        <a class="brand brand-nav" href="#top" aria-label="City/Sync Home">
+          <img class="brand-wordmark" src="assets/citysync-wordmark-frame3.png" alt="City/Sync" />
         </a>
 
         <nav class="nav-links" aria-label="Primary">
@@ -622,7 +646,8 @@
           <a href="#problem">Problem</a>
           <a href="#solution">Solution</a>
           <a href="#pilot">Pilot</a>
-          <a href="#join" class="btn btn-primary" style="padding: 10px 18px;">Join</a>
+          <a href="#vision">Vision</a>
+          <a class="nav-demo-link" href="/demo/login">Explore the Demo</a>
         </nav>
 
         <details class="mobile-nav">
@@ -632,7 +657,8 @@
             <a href="#problem">Problem</a>
             <a href="#solution">Solution</a>
             <a href="#pilot">Pilot</a>
-            <a href="#join">Join</a>
+            <a href="#vision">Vision</a>
+            <a class="nav-demo-link" href="/demo/login">Explore the Demo</a>
           </div>
         </details>
       </div>
@@ -645,12 +671,12 @@
             <div>
               <div class="eyebrow">Civic Coordination Infrastructure</div>
               <h1>
-                <span class="thin">From fragmented civic effort</span>
-                to a shared public operating system.
+                City/Sync is a shared coordination framework for public life.
               </h1>
               <p class="hero-copy">
-                City/Sync turns civic participation into a measurable and reusable signal for public-sector execution.
-                We help cities coordinate tasks, contributions, and local redemption pathways through one transparent framework.
+                <strong>City/Sync helps cities coordinate civic capacity as real operating infrastructure.</strong>
+                It is designed to make public contribution legible, governable, and repeatable so local institutions can
+                align around shared priorities, execute with greater reliability, and continuously improve over time.
               </p>
               <div class="hero-actions">
                 <a class="btn btn-primary" href="#purpose">Explore the Model</a>
@@ -660,13 +686,7 @@
 
             <div class="hero-image-stack" aria-hidden="true">
               <div class="hero-main-image">
-                <img src="assets/pitch/image-4.png" alt="City/Sync pilot interface in a civic neighborhood" />
-              </div>
-              <div class="hero-card">
-                <h3>Pilot-Ready Architecture</h3>
-                <p>
-                  Built for real use in Berkeley and Mexico City, then designed to replicate across cities with local variation and shared standards.
-                </p>
+                <img src="assets/pitch/image-1.png" alt="City/scale civic activity connected through shared public infrastructure" />
               </div>
             </div>
           </div>
@@ -682,7 +702,7 @@
             </div>
             <div class="stat">
               <div class="stat-value">32 / 68</div>
-              <div class="stat-label">Formal org work vs peer-to-peer civic labor share</div>
+              <div class="stat-label">Estimated share of formal volunteering vs informal civic mutual aid</div>
             </div>
           </div>
         </div>
@@ -694,17 +714,18 @@
             <div class="eyebrow">Purpose</div>
             <h2 class="section-title">Build the missing coordination layer for public life.</h2>
             <p class="section-lead">
-              Markets do not reliably price civic contribution, and traditional administrative systems cannot absorb local civic capacity at scale.
-              City/Sync creates a repeatable mechanism to identify, coordinate, verify, and reward civic labor without replacing public institutions.
+              City/Sync exists to help public-sector organizations coordinate distributed civic capacity without forcing
+              institutional replacement. The long-term mission is to provide a shared operating framework that cities can
+              adopt, adapt, and govern locally while preserving transparent standards for accountability and learning.
             </p>
             <ul class="bullet-list">
-              <li><span class="dot"></span><span>Make civic activity legible so it can be planned and improved.</span></li>
-              <li><span class="dot"></span><span>Help institutions route community effort into high-need outcomes.</span></li>
-              <li><span class="dot"></span><span>Create a common framework for replication across cities and programs.</span></li>
+              <li><span class="dot"></span><span>Establish shared coordination infrastructure across civic actors and institutions.</span></li>
+              <li><span class="dot"></span><span>Create durable governance pathways for local adaptation and public accountability.</span></li>
+              <li><span class="dot"></span><span>Enable transferable frameworks that can replicate across cities and service domains.</span></li>
             </ul>
           </div>
           <div class="glass-card">
-            <img src="assets/pitch/image-1.png" alt="City blocks showing coordinated neighborhood activity" style="border-radius: 14px;" />
+            <img src="assets/pitch/image-6.png" alt="System pressures converging into coordinated public action" style="border-radius: 14px;" />
           </div>
         </div>
       </section>
@@ -745,29 +766,30 @@
       <section id="solution" class="section alt">
         <div class="container grid-2">
           <div class="glass-card">
-            <img src="assets/pitch/image-9.png" alt="Issuer to resident to redeemer shared loop" style="border-radius: 14px;" />
+            <img src="assets/pitch/image-3.png" alt="Interconnected civic districts linked through a shared coordination framework" style="border-radius: 14px;" />
           </div>
 
           <div>
             <div class="eyebrow">Solution</div>
-            <h2 class="section-title">A shared loop that cities can govern and grow.</h2>
+            <h2 class="section-title">A shared coordination framework cities can govern and grow.</h2>
             <p class="section-lead">
-              City/Sync introduces a role-based public-sector economy where issuer organizations post civic tasks,
-              participants execute verified work, and redeemers provide local goods and services. Credits are minted by verified contribution and burned at redemption.
+              City/Sync proposes a civic coordination layer that combines shared standards, local administrative pathways,
+              and governance feedback loops into one repeatable public framework. The objective is to make coordination
+              reliable across institutions while preserving local control over implementation choices.
             </p>
 
             <div class="flow-strip">
               <div class="flow-step">
-                <h3>Issuers</h3>
-                <p>Define, issue, and verify mission-aligned civic tasks.</p>
+                <h3>Shared Standards</h3>
+                <p>Common definitions for contribution, verification, and public-value outcomes across participating organizations.</p>
               </div>
               <div class="flow-step">
-                <h3>Participants</h3>
-                <p>Claim and execute work; earn CITY and VOTE through verified completion.</p>
+                <h3>Administrative Pathways</h3>
+                <p>Operational methods that connect local institutions, civic participants, and service organizations into one workflow.</p>
               </div>
               <div class="flow-step">
-                <h3>Redeemers</h3>
-                <p>Honor offerings and burn CITY through redemption to close the loop.</p>
+                <h3>Governance + Learning</h3>
+                <p>Structured decision cycles that let cities calibrate policy, improve execution, and scale what works.</p>
               </div>
             </div>
           </div>
@@ -784,6 +806,13 @@
               with real organizations, participants, and redemption behaviors.
               The goal is not a concept demo. The goal is a procedural artifact cities can actually adopt.
             </p>
+
+            <div class="glass-card" style="margin-top: 18px;">
+              <h3 style="margin: 0 0 6px; font-size: 1.02rem;">Pilot-Ready Architecture</h3>
+              <p style="margin: 0; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.45;">
+                Built for real use in Berkeley and Mexico City, then designed to replicate across cities with local variation and shared standards.
+              </p>
+            </div>
 
             <div class="pilot-cities">
               <span class="city-pill">Berkeley, California</span>
@@ -804,31 +833,46 @@
                 <span>Package governance and process logic for broader rollout and dPAN expansion.</span>
               </div>
             </div>
+
+            <div class="flow-strip" style="margin-top: 22px;">
+              <div class="flow-step">
+                <h3>Issuers</h3>
+                <p>Define, issue, and verify mission-aligned civic tasks.</p>
+              </div>
+              <div class="flow-step">
+                <h3>Participants</h3>
+                <p>Claim and execute verified work; earn CITY and VOTE through completion.</p>
+              </div>
+              <div class="flow-step">
+                <h3>Redeemers</h3>
+                <p>Honor offerings and burn CITY through redemption to close the loop.</p>
+              </div>
+            </div>
           </div>
 
           <div class="glass-card">
-            <img src="assets/pitch/image-8.png" alt="Grid of civic participation and task ecosystems" style="border-radius: 14px;" />
+            <img src="assets/pitch/image-4.png" alt="Pilot deployment context in Berkeley and Mexico City" style="border-radius: 14px;" />
           </div>
         </div>
       </section>
 
-      <section class="section alt">
+      <section id="vision" class="section alt">
         <div class="container grid-2">
           <div class="glass-card">
-            <img src="assets/pitch/image-3.png" alt="Interconnected civic districts linked as a network" style="border-radius: 14px;" />
+            <img src="assets/pitch/image-8.png" alt="Grid of civic participation and interoperable local ecosystems" style="border-radius: 14px;" />
           </div>
           <div>
-            <div class="eyebrow">After the Pilot</div>
-            <h2 class="section-title">From one pilot to a framework for decentralized public administration.</h2>
+            <div class="eyebrow">Long-Term Vision</div>
+            <h2 class="section-title">From pilot validation to decentralized Public Administration Networks (dPANs).</h2>
             <p class="section-lead">
-              Once validated, the City/Sync mechanism can support local-chain implementations,
-              domain-specific dPAN applications, and eventually a broader market for exporting tested civic models.
-              The long-term output is a common framework that lets cities share methods, not just ideas.
+              Once the base mechanism is validated, City/Sync can support local-chain implementations, domain-specific
+              decentralized Public Administration Network (<a href="https://www.city-sync.org/demo/citysync-framework" target="_blank" rel="noopener noreferrer">dPAN</a>)
+              applications, and eventually a broader market for exporting tested civic models and public-service delivery methods.
             </p>
             <ul class="bullet-list">
-              <li><span class="dot"></span><span>Codified task and redemption standards with city-level adaptation.</span></li>
-              <li><span class="dot"></span><span>Interoperable governance patterns across applications and institutions.</span></li>
-              <li><span class="dot"></span><span>A transferable coordination stack for global public-service innovation.</span></li>
+              <li><span class="dot"></span><span>Local chains that preserve city-level governance while retaining interoperability.</span></li>
+              <li><span class="dot"></span><span>dPAN applications that evolve independently by domain and public-service context.</span></li>
+              <li><span class="dot"></span><span>A shared global framework for exporting proven civic models across cities.</span></li>
             </ul>
           </div>
         </div>
@@ -845,7 +889,7 @@
               </p>
             </div>
             <div class="cta-actions">
-              <a class="btn btn-primary" href="https://www.city-sync.org" target="_blank" rel="noopener noreferrer">Visit City-Sync.org</a>
+              <a class="btn btn-primary" href="https://www.city-sync.org" target="_blank" rel="noopener noreferrer">Visit Main City/Sync Site</a>
               <a class="btn btn-ghost" href="https://artizen.fund/index/p/citysync?season=6" target="_blank" rel="noopener noreferrer">Support the Work</a>
             </div>
           </div>
@@ -862,6 +906,9 @@
         </div>
         <div>© City/Sync. Civic Coordination Infrastructure.</div>
         <div class="links">
+          <a href="https://x.com/city_sync_" target="_blank" rel="noopener noreferrer">X</a>
+          <a href="https://discord.gg/ywzxhNQk6w" target="_blank" rel="noopener noreferrer">Discord</a>
+          <a href="mailto:city-sync@pm.me">Email</a>
           <a href="https://paragraph.com/@city-sync" target="_blank" rel="noopener noreferrer">Essays</a>
           <a href="https://github.com/natenatesoo/CitySync" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
