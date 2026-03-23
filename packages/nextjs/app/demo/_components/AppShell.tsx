@@ -283,6 +283,12 @@ export default function AppShell({
   };
 
   useEffect(() => {
+    // Never carry sheets across tab changes.
+    setWalletOpen(false);
+    setSwitcherOpen(false);
+  }, [activeTab]);
+
+  useEffect(() => {
     if (!roleSwitcherAllowed && switcherOpen) {
       setSwitcherOpen(false);
     }
@@ -419,14 +425,6 @@ export default function AppShell({
             --cs-rail-chip-border: rgba(31,45,86,0.16);
             background: linear-gradient(180deg, #f8f4eb 0%, #f3ead7 100%) !important;
             color: var(--cs-text-strong) !important;
-          }
-          .citysync-redesign-content {
-            filter: invert(1) hue-rotate(180deg) saturate(0.88) contrast(0.96) brightness(1.02) sepia(0.16);
-          }
-          .citysync-redesign-content img,
-          .citysync-redesign-content video,
-          .citysync-redesign-content canvas {
-            filter: invert(1) hue-rotate(180deg) saturate(1.06) contrast(1.02) sepia(0.1);
           }
         `}</style>
       )}
@@ -1036,7 +1034,6 @@ export default function AppShell({
                 borderRadius: 50,
                 overflow: "hidden",
                 position: "relative",
-                transform: "translateZ(0)",
               }}
             >
               {phoneInner}
@@ -1066,7 +1063,6 @@ export default function AppShell({
           borderLeft: "1px solid rgba(255,255,255,0.05)",
           borderRight: "1px solid rgba(255,255,255,0.05)",
           boxShadow: "0 20px 60px rgba(0,0,0,0.45)",
-          transform: "translateZ(0)",
         }}
       >
         {phoneInner}

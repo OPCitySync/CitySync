@@ -24,8 +24,8 @@ import {
   type ParticipantScoreSnapshot,
 } from "../_utils/participantScoring";
 import {
+  DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
   DEMO_CONTENT_SHEET_ABSOLUTE_STYLE,
-  DEMO_CONTENT_SHEET_FIXED_STYLE,
   DEMO_MODAL_OVERLAY_STYLE,
   DEMO_MODAL_SHEET_BASE_STYLE,
   DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE,
@@ -759,7 +759,8 @@ function ExecuteModal({
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          ...DEMO_CONTENT_SHEET_FIXED_STYLE,
+          ...DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
+          zIndex: 221,
           background: "var(--cs-bg, #14172e)",
         }}
       >

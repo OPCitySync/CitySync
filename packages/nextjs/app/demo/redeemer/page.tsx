@@ -530,6 +530,19 @@ export default function RedeemerApp() {
     [walletStorageSuffix],
   );
   const allPosts = [...localPosts, ...state.posts];
+  const previousActiveTabRef = React.useRef(activeTab);
+
+  React.useEffect(() => {
+    if (previousActiveTabRef.current === activeTab) return;
+    previousActiveTabRef.current = activeTab;
+    // Ensure cross-tab navigation always dismisses any open sheet/modal state.
+    setCatalogEditor(null);
+    setQrTarget(null);
+    setComposeOpen(false);
+    setCatalogIssueSheet(null);
+    setRemoveTarget(null);
+  }, [activeTab]);
+
   React.useEffect(() => {
     if (tutorialStep === "box18") {
       setTutorialStep("box19");

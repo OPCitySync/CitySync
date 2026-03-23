@@ -36,7 +36,6 @@ import {
 } from "../_utils/tutorialRun";
 import {
   DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
-  DEMO_CONTENT_SHEET_FIXED_STYLE,
   DEMO_MODAL_OVERLAY_STYLE,
   DEMO_MODAL_SHEET_BASE_STYLE,
   DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE,
@@ -833,6 +832,20 @@ export default function IssuerApp() {
     // Intentional mount-only role selection; avoids reruns when callback identity updates.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const previousActiveTabRef = React.useRef(activeTab);
+  React.useEffect(() => {
+    if (previousActiveTabRef.current === activeTab) return;
+    previousActiveTabRef.current = activeTab;
+    // Prevent stale modals/sheets from persisting across tab navigation.
+    setCreateSheet(false);
+    setProposeSheet(false);
+    setComposeOpen(false);
+    setIssueTaskId(null);
+    setCatalogModifyTaskId(null);
+    setUnissueConfirmId(null);
+    setNoShowConfirmItem(null);
+  }, [activeTab]);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
@@ -3171,7 +3184,8 @@ function CreateTaskSheet({
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          ...DEMO_CONTENT_SHEET_FIXED_STYLE,
+          ...DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
+          zIndex: 221,
           background: "var(--cs-surface, #1E1E2C)",
         }}
       >
@@ -3424,7 +3438,8 @@ function ProposeTaskSheet({
         onClick={e => e.stopPropagation()}
         data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
         style={{
-          ...DEMO_CONTENT_SHEET_FIXED_STYLE,
+          ...DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
+          zIndex: 221,
           background: "var(--cs-surface, #1E1E2C)",
         }}
       >
