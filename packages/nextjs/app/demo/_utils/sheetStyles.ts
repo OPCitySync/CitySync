@@ -31,7 +31,7 @@ export const DEMO_MODAL_SHEET_BASE_STYLE: CSSProperties = {
 };
 
 export const DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE: CSSProperties = {
-  position: "absolute",
+  position: "fixed",
   inset: 0,
   zIndex: 220,
   pointerEvents: "none",
@@ -52,7 +52,9 @@ export const DEMO_CONTENT_SHEET_FIXED_STYLE: CSSProperties = {
 };
 
 export const DEMO_CONTENT_SHEET_ABSOLUTE_STYLE: CSSProperties = {
-  position: "absolute",
+  // Use fixed so sheets pin to nav chrome instead of scrolling with tab content.
+  // AppShell's phone screen uses a transform so this stays scoped to the app frame.
+  position: "fixed",
   left: 0,
   right: 0,
   top: APP_NAV_OFFSET_PX,

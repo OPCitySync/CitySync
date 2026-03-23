@@ -1045,6 +1045,7 @@ export default function AppShell({
                 borderRadius: 50,
                 overflow: "hidden",
                 position: "relative",
+                transform: "translateZ(0)",
               }}
             >
               {phoneInner}
