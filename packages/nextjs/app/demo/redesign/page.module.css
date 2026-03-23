@@ -192,6 +192,8 @@
 .rightRail {
   display: grid;
   gap: 0.75rem;
+  align-content: start;
+  padding-top: 8px;
 }
 
 .viewModeCard {
@@ -485,9 +487,10 @@
 .deviceStage {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.65rem;
+  padding-top: 8px;
 }
 
 .embedFrame {
@@ -495,7 +498,7 @@
   max-width: 700px;
   min-height: 800px;
   height: min(84vh, 860px);
-  padding: 8px 0;
+  padding: 0;
   box-sizing: border-box;
   border-radius: 0;
   background: #f7f8fc;
