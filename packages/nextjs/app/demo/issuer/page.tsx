@@ -877,15 +877,6 @@ export default function IssuerApp() {
   }, [tutorialStep]);
 
   React.useEffect(() => {
-    if (tutorialStep !== "box1") return;
-    // Fallback: if the role-switcher cancel callback misses in embed mode, continue the run.
-    const timer = window.setTimeout(() => {
-      setTutorialStep(prev => (prev === "box1" ? "box2" : prev));
-    }, 5000);
-    return () => window.clearTimeout(timer);
-  }, [tutorialStep]);
-
-  React.useEffect(() => {
     // Allow cross-role tutorial handoff steps (box10+). Only dismiss truly invalid values.
     if (ISSUER_ROLE_TUTORIAL_STEPS.has(tutorialStep) || /^box\d+$/.test(tutorialStep)) return;
     setTutorialStep("dismissed");

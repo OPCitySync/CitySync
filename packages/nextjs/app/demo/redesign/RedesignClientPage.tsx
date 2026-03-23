@@ -9,6 +9,7 @@ import {
   ISSUER_TUTORIAL_STEP_STORAGE_KEY,
   SHARED_TUTORIAL_INTRO_TEXT,
 } from "../_utils/tutorialRun";
+import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import styles from "./page.module.css";
 
 type RoleKey = "issuer" | "participant" | "redeemer";
@@ -24,22 +25,16 @@ const roleCards: Array<{ key: RoleKey; title: string; blurb: string; accent: "go
   { key: "redeemer", title: "Redeemer", blurb: "Commit offerings and process redemption flows.", accent: "mint" },
 ];
 
-const roleLabelByKey: Record<RoleKey, string> = {
-  issuer: "Issuer",
-  participant: "Civic Participant",
-  redeemer: "Redeemer",
+const roleAccentByKey: Record<RoleKey, string> = {
+  issuer: "#DD9E33",
+  participant: "#4169E1",
+  redeemer: "#34eeb6",
 };
 
 const deepLinks = [
   { href: "/demo/mce", label: "Mass Coordination Events" },
   { href: "/demo/public-sector-economy", label: "Public-Sector Economy" },
   { href: "/demo/task-management", label: "Task Management" },
-] as const;
-
-const activityLog = [
-  { title: "Task Issued", detail: "Neighborhood Garden Support · 3 slots", time: "2m ago", status: "Confirmed" },
-  { title: "Task Claimed", detail: "Transit Accessibility Survey", time: "8m ago", status: "Pending" },
-  { title: "Redemption Burn", detail: "Farmers Market Voucher · 10 CITY", time: "14m ago", status: "Confirmed" },
 ] as const;
 
 const EMBED_SRC = "/demo/issuer?embed=1&skin=redesign";
@@ -365,24 +360,7 @@ export default function RedesignClientPage() {
               ))}
             </div>
 
-            <div className={styles.panelCard}>
-              <p className={styles.cardLabel}>Onchain Activity Panel</p>
-              <h3>Global {roleLabelByKey[activeRole]} Activity</h3>
-              <ul className={styles.activityList}>
-                {activityLog.map(item => (
-                  <li key={`${item.title}-${item.time}`} className={styles.activityItem}>
-                    <div>
-                      <strong>{item.title}</strong>
-                      <p>{item.detail}</p>
-                    </div>
-                    <div className={styles.activityMeta}>
-                      <span>{item.time}</span>
-                      <em>{item.status}</em>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <OnchainActivityPanel role={activeRole} accent={roleAccentByKey[activeRole]} />
           </aside>
 
           <div className={styles.deviceStage}>
