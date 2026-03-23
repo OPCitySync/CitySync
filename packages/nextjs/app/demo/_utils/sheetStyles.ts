@@ -31,7 +31,7 @@ export const DEMO_MODAL_SHEET_BASE_STYLE: CSSProperties = {
 };
 
 export const DEMO_TUTORIAL_HIGHLIGHT_LAYER_STYLE: CSSProperties = {
-  position: "fixed",
+  position: "absolute",
   inset: 0,
   zIndex: 220,
   pointerEvents: "none",

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { BOTTOM_NAV_OFFSET_CSS } from "../_utils/sheetStyles";
 
 export interface NavTab {
   key: string;
@@ -38,7 +39,8 @@ export default function BottomNav({
       className="absolute left-0 right-0 z-40 flex items-stretch"
       style={{
         bottom: 0,
-        minHeight: 69,
+        height: BOTTOM_NAV_OFFSET_CSS,
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
         background: brandTheme
           ? "#15151E"
           : locked
@@ -108,7 +110,7 @@ export default function BottomNav({
               border: "none",
               boxShadow: locked && isAllowedWhenLocked ? "inset 0 0 0 1px rgba(255,226,162,0.88)" : undefined,
               paddingTop: 8,
-              paddingBottom: "calc(10px + env(safe-area-inset-bottom, 0px))",
+              paddingBottom: 10,
               borderRadius,
               cursor: isAllowedWhenLocked ? "pointer" : "not-allowed",
               opacity: locked && !isAllowedWhenLocked ? 0.72 : 1,
