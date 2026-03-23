@@ -656,217 +656,216 @@ export default function AppShell({
       {phoneFrame && <HomeIndicator accentColor={redesignSkin ? "#ffffff" : accentColor} />}
 
       {/* ── Role Switcher Bottom Sheet ────────────────────────────────────── */}
-      <div
-        onClick={() => {
-          if (roleSheetCancelOnly) return;
-          setSwitcherOpen(false);
-        }}
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: sheetBottomOffset,
-          background: redesignSkin ? "rgba(21,31,58,0.2)" : "rgba(13,13,20,0.45)",
-          backdropFilter: "blur(2px)",
-          WebkitBackdropFilter: "blur(2px)",
-          zIndex: 50,
-          opacity: switcherOpen ? 1 : 0,
-          pointerEvents: switcherOpen ? "auto" : "none",
-          transition: "opacity 0.2s ease",
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: sheetBottomOffset,
-          maxHeight: "min(52%, 420px)",
-          overflowY: "auto",
-          overscrollBehaviorY: "contain",
-          zIndex: 51,
-          background: sheetBackground,
-          borderTop: sheetBorder,
-          borderRadius: "18px 18px 0 0",
-          padding: "0 0 calc(16px + env(safe-area-inset-bottom, 0px))",
-          transform: switcherOpen ? "translateY(0)" : "translateY(100%)",
-          transition: "transform 0.26s cubic-bezier(0.32,0.72,0,1)",
-          boxShadow: "0 -4px 24px rgba(0,0,0,0.3)",
-        }}
-      >
-        {/* Drag handle */}
-        <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 8px" }}>
+      {switcherOpen && (
+        <>
           <div
+            onClick={() => {
+              if (roleSheetCancelOnly) return;
+              setSwitcherOpen(false);
+            }}
             style={{
-              width: 32,
-              height: 3,
-              borderRadius: 2,
-              background: redesignSkin ? "rgba(36,56,110,0.2)" : "rgba(255,255,255,0.12)",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: sheetBottomOffset,
+              background: redesignSkin ? "rgba(21,31,58,0.2)" : "rgba(13,13,20,0.45)",
+              backdropFilter: "blur(2px)",
+              WebkitBackdropFilter: "blur(2px)",
+              zIndex: 50,
             }}
           />
-        </div>
 
-        {/* Sheet header */}
-        <div
-          style={{
-            padding: "4px 20px 12px",
-            borderBottom: redesignSkin ? "1px solid rgba(31,45,86,0.1)" : "1px solid rgba(255,255,255,0.06)",
-          }}
-        >
-          <p
+          <div
             style={{
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: redesignSkin ? "rgba(36,56,110,0.46)" : "rgba(255,255,255,0.3)",
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: sheetBottomOffset,
+              maxHeight: "min(52%, 420px)",
+              overflowY: "auto",
+              overscrollBehaviorY: "contain",
+              zIndex: 51,
+              background: sheetBackground,
+              borderTop: sheetBorder,
+              borderRadius: "18px 18px 0 0",
+              padding: "0 0 calc(16px + env(safe-area-inset-bottom, 0px))",
+              boxShadow: "0 -4px 24px rgba(0,0,0,0.3)",
             }}
           >
-            Switch Between Roles
-          </p>
-        </div>
-
-        {/* Role options */}
-        <div style={{ padding: "8px 12px" }}>
-          {ROLES.map(r => {
-            const isActive = r.key === role;
-            return (
-              <button
-                key={r.key}
-                onClick={() => handleRoleSwitch(r)}
-                disabled={roleSheetCancelOnly}
+            {/* Drag handle */}
+            <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 8px" }}>
+              <div
                 style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
-                  padding: "14px 12px",
-                  borderRadius: 14,
-                  border: isActive ? `1px solid ${r.accent}35` : "1px solid transparent",
-                  background: isActive ? `${r.accent}12` : "transparent",
-                  cursor: roleSheetCancelOnly ? "not-allowed" : "pointer",
-                  textAlign: "left",
-                  transition: "background 0.12s ease",
-                  marginBottom: 4,
-                  opacity: roleSheetCancelOnly ? 0.55 : 1,
+                  width: 32,
+                  height: 3,
+                  borderRadius: 2,
+                  background: redesignSkin ? "rgba(36,56,110,0.2)" : "rgba(255,255,255,0.12)",
+                }}
+              />
+            </div>
+
+            {/* Sheet header */}
+            <div
+              style={{
+                padding: "4px 20px 12px",
+                borderBottom: redesignSkin ? "1px solid rgba(31,45,86,0.1)" : "1px solid rgba(255,255,255,0.06)",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: redesignSkin ? "rgba(36,56,110,0.46)" : "rgba(255,255,255,0.3)",
                 }}
               >
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 12,
-                    background: `${r.accent}18`,
-                    border: `1px solid ${r.accent}28`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 20,
-                    flexShrink: 0,
-                  }}
-                >
-                  {r.emoji}
-                </div>
+                Switch Between Roles
+              </p>
+            </div>
 
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div
+            {/* Role options */}
+            <div style={{ padding: "8px 12px" }}>
+              {ROLES.map(r => {
+                const isActive = r.key === role;
+                return (
+                  <button
+                    key={r.key}
+                    onClick={() => handleRoleSwitch(r)}
+                    disabled={roleSheetCancelOnly}
                     style={{
-                      fontSize: 15,
-                      fontWeight: 700,
-                      color: isActive ? r.accent : sheetBodyText,
-                      lineHeight: 1.2,
-                      marginBottom: 3,
-                    }}
-                  >
-                    {r.label}
-                  </div>
-                  <div style={{ fontSize: 11, color: sheetTaglineText, letterSpacing: "0.03em" }}>{r.tagline}</div>
-                </div>
-
-                {isActive && (
-                  <div
-                    style={{
-                      width: 22,
-                      height: 22,
-                      borderRadius: "50%",
-                      background: r.accent,
+                      width: "100%",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
+                      gap: 14,
+                      padding: "14px 12px",
+                      borderRadius: 14,
+                      border: isActive ? `1px solid ${r.accent}35` : "1px solid transparent",
+                      background: isActive ? `${r.accent}12` : "transparent",
+                      cursor: roleSheetCancelOnly ? "not-allowed" : "pointer",
+                      textAlign: "left",
+                      transition: "background 0.12s ease",
+                      marginBottom: 4,
+                      opacity: roleSheetCancelOnly ? 0.55 : 1,
                     }}
                   >
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M20 6L9 17l-5-5"
-                        stroke="#0D0D14"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 12,
+                        background: `${r.accent}18`,
+                        border: `1px solid ${r.accent}28`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: 20,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {r.emoji}
+                    </div>
 
-        <div style={{ padding: "4px 20px 0", display: "flex", flexDirection: "column", gap: 8 }}>
-          <button
-            onClick={() => {
-              setSwitcherOpen(false);
-              onTutorialRoleSwitcherCancel?.();
-            }}
-            data-tutorial-allow={highlightRoleCancel ? "true" : undefined}
-            style={{
-              width: "100%",
-              padding: "13px",
-              borderRadius: 14,
-              border: highlightRoleCancel ? "1px solid rgba(255,226,162,0.92)" : sheetCancelBorder,
-              background: highlightRoleCancel ? "rgba(255,226,162,0.2)" : sheetCancelBackground,
-              color: highlightRoleCancel ? "#ffe2a2" : sheetCancelColor,
-              fontSize: 14,
-              fontWeight: 600,
-              cursor: "pointer",
-              boxShadow: highlightRoleCancel
-                ? "0 0 0 1px rgba(255,226,162,0.45), 0 0 16px rgba(221,158,51,0.52)"
-                : undefined,
-              animation: highlightRoleCancel ? "tutorialAllowedPulse 1.55s ease-in-out infinite" : undefined,
-            }}
-          >
-            Cancel
-          </button>
-          <button
-            onClick={() => {
-              setSwitcherOpen(false);
-              try {
-                logout();
-              } catch {
-                // Best-effort logout; always route to landing page.
-              }
-              handleExitDemo();
-            }}
-            style={{
-              width: "100%",
-              padding: "11px",
-              borderRadius: 14,
-              border: sheetExitBorder,
-              background: sheetExitBackground,
-              color: sheetExitColor,
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: roleSheetCancelOnly ? "not-allowed" : "pointer",
-              opacity: roleSheetCancelOnly ? 0.45 : 1,
-            }}
-            disabled={roleSheetCancelOnly}
-          >
-            Exit Demo
-          </button>
-        </div>
-      </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 700,
+                          color: isActive ? r.accent : sheetBodyText,
+                          lineHeight: 1.2,
+                          marginBottom: 3,
+                        }}
+                      >
+                        {r.label}
+                      </div>
+                      <div style={{ fontSize: 11, color: sheetTaglineText, letterSpacing: "0.03em" }}>{r.tagline}</div>
+                    </div>
+
+                    {isActive && (
+                      <div
+                        style={{
+                          width: 22,
+                          height: 22,
+                          borderRadius: "50%",
+                          background: r.accent,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M20 6L9 17l-5-5"
+                            stroke="#0D0D14"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div style={{ padding: "4px 20px 0", display: "flex", flexDirection: "column", gap: 8 }}>
+              <button
+                onClick={() => {
+                  setSwitcherOpen(false);
+                  onTutorialRoleSwitcherCancel?.();
+                }}
+                data-tutorial-allow={highlightRoleCancel ? "true" : undefined}
+                style={{
+                  width: "100%",
+                  padding: "13px",
+                  borderRadius: 14,
+                  border: highlightRoleCancel ? "1px solid rgba(255,226,162,0.92)" : sheetCancelBorder,
+                  background: highlightRoleCancel ? "rgba(255,226,162,0.2)" : sheetCancelBackground,
+                  color: highlightRoleCancel ? "#ffe2a2" : sheetCancelColor,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  boxShadow: highlightRoleCancel
+                    ? "0 0 0 1px rgba(255,226,162,0.45), 0 0 16px rgba(221,158,51,0.52)"
+                    : undefined,
+                  animation: highlightRoleCancel ? "tutorialAllowedPulse 1.55s ease-in-out infinite" : undefined,
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setSwitcherOpen(false);
+                  try {
+                    logout();
+                  } catch {
+                    // Best-effort logout; always route to landing page.
+                  }
+                  handleExitDemo();
+                }}
+                style={{
+                  width: "100%",
+                  padding: "11px",
+                  borderRadius: 14,
+                  border: sheetExitBorder,
+                  background: sheetExitBackground,
+                  color: sheetExitColor,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: roleSheetCancelOnly ? "not-allowed" : "pointer",
+                  opacity: roleSheetCancelOnly ? 0.45 : 1,
+                }}
+                disabled={roleSheetCancelOnly}
+              >
+                Exit Demo
+              </button>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Wallet modal */}
       {walletOpen && (
