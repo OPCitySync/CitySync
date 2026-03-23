@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 
-export const BOTTOM_NAV_OFFSET_PX = 88;
+// Bottom sheets should pin directly to the top edge of the bottom nav.
+// Keep this in sync with BottomNav's actual base height.
+export const BOTTOM_NAV_OFFSET_PX = 69;
 export const APP_NAV_OFFSET_PX = 112;
 export const BOTTOM_NAV_OFFSET_CSS = `calc(${BOTTOM_NAV_OFFSET_PX}px + env(safe-area-inset-bottom, 0px))`;
 
