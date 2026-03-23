@@ -21,7 +21,7 @@ const roleAccentByKey: Record<RoleKey, string> = {
   redeemer: "#34eeb6",
 };
 
-const EMBED_SRC = "/demo/issuer?embed=1&skin=redesign";
+const EMBED_SRC = "/demo/issuer?embed=1&skin=classic";
 const BOX_STEP_PATTERN = /^box(\d+)$/;
 
 type TutorialContent = {
