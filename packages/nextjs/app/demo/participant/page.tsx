@@ -4814,16 +4814,6 @@ export default function ParticipantPage() {
           }
         }}
       >
-        {hideShellPanels && openInfoCards.length > 0 && (
-          <div style={{ marginBottom: 12 }}>
-            <LearnMorePanel
-              keys={openInfoCards}
-              cards={PARTICIPANT_LEARN_CARDS}
-              onClose={closeLearnMore}
-              accent={ACCENT}
-            />
-          </div>
-        )}
         {activeTab === "profile" && <ProfileTab onTabChange={handleRoleTabChange} onLearnMore={openLearnMore} />}
         {activeTab === "explore" && (
           <ExploreTab

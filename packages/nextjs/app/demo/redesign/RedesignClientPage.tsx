@@ -3,7 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY, ISSUER_TUTORIAL_STEP_STORAGE_KEY } from "../_utils/tutorialRun";
+import {
+  DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY,
+  ISSUER_TUTORIAL_STEP_STORAGE_KEY,
+  SHARED_TUTORIAL_INTRO_TEXT,
+} from "../_utils/tutorialRun";
 import styles from "./page.module.css";
 
 type RoleKey = "issuer" | "participant" | "redeemer";
@@ -40,20 +44,142 @@ const activityLog = [
 const EMBED_SRC = "/demo/issuer?embed=1&skin=redesign";
 const BOX_STEP_PATTERN = /^box(\d+)$/;
 
-const getTutorialBody = (step: string) => {
-  if (step === "intro") {
-    return "Press Start Tutorial to begin Step 1 with in-app highlights.";
+type TutorialContent = {
+  stepLabel: string;
+  title: string;
+  body: string;
+};
+
+const TUTORIAL_CONTENT_BY_STEP: Record<string, TutorialContent> = {
+  intro: {
+    stepLabel: "Tutorial",
+    title: "Welcome to the City/Sync Demo",
+    body: SHARED_TUTORIAL_INTRO_TEXT,
+  },
+  box1: {
+    stepLabel: "Step 1",
+    title: "Switch Roles in the Demo",
+    body: "In the demo, users are able to switch between roles, acting as Issuer organizations, Civic-Participants, or Redeemer organizations.\n\nAfter the tutorial, feel free to switch between roles to explore full functionality.",
+  },
+  box2: {
+    stepLabel: "Step 2",
+    title: "Let's start with Issuers",
+    body: "Issuers are public-sector organizations that facilitate volunteer programs and are well-suited for issuing and verifying civic-labor tasks.\n\nTo start, please give your Issuer Organization a name using the edit profile button highlighted in the Profile tab.",
+  },
+  box3: {
+    stepLabel: "Step 3",
+    title: "Welcome!",
+    body: "Issuer organizations can begin to issue tasks by selecting the Tasks Tab at the bottom.",
+  },
+  box5: {
+    stepLabel: "Step 4",
+    title: "Propose a New Task",
+    body: "Issuer Organizations can propose the creation of a new task to be added to their catalog at any time. There is a standardized template for proposing tasks. Let's create one by clicking the + Propose New Task for Approval button.\n\nWe will auto-fill this task for you to start. When you're ready, let's talk about how they are approved.",
+  },
+  box6: {
+    stepLabel: "Step 5",
+    title: "Approve Your Proposed Task",
+    body: "Great. Your proposed task is now ready for catalog approval.\n\nGo ahead and approve your task for the catalog.",
+  },
+  box7: {
+    stepLabel: "Step 6",
+    title: "Issue from Your Catalog",
+    body: "Once a task has been approved, it is placed within your organizational task catalog. You can issue tasks from your catalog at any time.",
+  },
+  box8: {
+    stepLabel: "Step 7",
+    title: "Choose Issuance Slots",
+    body: "When issuing tasks, Issuers are able to create multiple instances of that task to be made available for the public to claim.\n\nGo ahead and approve the 3 tasks for issuance.",
+  },
+  box11: {
+    stepLabel: "Step 8",
+    title: "Claim Two Tasks",
+    body: "Civic-Participants are able to Browse all issued tasks and claim up to 2 tasks at any given time.\nPlease go ahead and claim 2 of the 3 tasks you issued.",
+  },
+  box13: {
+    stepLabel: "Step 9",
+    title: "Execute a Claimed Task",
+    body: "When executing a task, Civic-Participants will be able to submit proof of task completion and provide feedback to Issuers about their experience. Go ahead and Execute on of your two tasks.",
+  },
+  box14: {
+    stepLabel: "Step 10",
+    title: "Return to Issuer Verification",
+    body: "Now, lets take a look again at how the Issuers are handling the Claimed and executed tasks.",
+  },
+  box15: {
+    stepLabel: "Step 11",
+    title: "Issued, Claimed, and Completed",
+    body: "All issued task will be in one of three states: Issued, Claimed, and Completed. Issued tasks can be unissued by the Issuer. Unissued tasks are removed from circulation.\n\nGo ahead an Unissue one of your tasks.",
+  },
+  box16: {
+    stepLabel: "Step 12",
+    title: "Handling No-Shows",
+    body: "If a Civic-Participant fails to show up for their claimed task, Issuers can select the No Show button to remove the claimed task out of circulation. No Shows by Civic-Participants are tracked to prevent abuse.\n\nGo ahead and select Mark No-Show for this task.",
+  },
+  box17: {
+    stepLabel: "Step 13",
+    title: "Verify or Reject with Mint",
+    body: "Issuers are responsible for verifying that the work was actually completed by the Civic-Participant. Once verification is complete they can either reject completion as unsatisfactory with feedback or verify. Rejections are designed to keep Civic-Participants accountable. In both circumstances, credits will be minted to the Civic-Participant.\n\nGo ahead and Verify & Mint.",
+  },
+  box19: {
+    stepLabel: "Step 14",
+    title: "Offering Catalog",
+    body: "Redeemer Organizations also have an offering Catalog to keep track of past offerings and the ability to issue new offerings for each Epoch.",
+  },
+  box20: {
+    stepLabel: "Step 15",
+    title: "Create Your Offering",
+    body: "For each offering, Redeemer organizations can name their offering, set the credit rate for that offering, or add any stipulations for redeeming that offer.\n\nGo ahead and name your offering and submit it to the catalog.",
+  },
+  box21: {
+    stepLabel: "Step 16",
+    title: "Commit and Lock",
+    body: "Once an offering is added to their catalog, Redeemer organizations can modify their offering before they commit it. Once a commitment is made, Redeemers agree to honor that offering until the end of the current Epoch.\n\nGo ahead and Commit the offering.",
+  },
+  box22: {
+    stepLabel: "Step 17",
+    title: "How QR Redemption Works",
+    body: "QR Codes are issued for each offering, and Redeemer organizations can present these QR codes near their Point-of-Sale systems. When a civic-participant scans the QR code, it calls the burn function for CITY for the amount offered, and the credits can then be redeemed for the offer.",
+  },
+  box23: {
+    stepLabel: "Step 18",
+    title: "Your Wallet and Balances",
+    body: "After completed tasks are verified, users are Minted CITY and VOTE. Civic-Participants can keep track of their balances in their wallet.",
+  },
+  box24: {
+    stepLabel: "Step 19",
+    title: "Redeem an Offering",
+    body: "Civic-Participants can spend their credits on available offerings. Go ahead and spend your credits on the offering you created by clicking redeem.",
+  },
+  box25: {
+    stepLabel: "Step 20",
+    title: "Point-of-Sale Confirmation",
+    body: "When a Civic-Participant scans a QR code to redeem an offer, a visual and audible cue will flash on their screen to show Redeemer Organization employees that the CITY has been burned and they are permitted to provide those goods and services.",
+  },
+  box26: {
+    stepLabel: "Step 21",
+    title: "You’re Ready to Explore",
+    body: "Now that you have a good understanding of the major functions that facilitate the City/Sync protocol, feel free to explore more of the application and learn more about the abilities of the different roles.",
+  },
+  dismissed: {
+    stepLabel: "Tutorial",
+    title: "City/Sync Demo",
+    body: "Start the tutorial whenever you're ready.",
+  },
+};
+
+const getTutorialContent = (step: string): TutorialContent => {
+  const mapped = TUTORIAL_CONTENT_BY_STEP[step];
+  if (mapped) return mapped;
+  const boxMatch = step.match(BOX_STEP_PATTERN);
+  if (boxMatch) {
+    return {
+      stepLabel: `Step ${boxMatch[1]}`,
+      title: "Tutorial Walkthrough",
+      body: "Follow the highlighted controls inside the app to advance to the next step.",
+    };
   }
-  if (step === "box1") {
-    return "Step 1: Use the highlighted role switcher/cancel flow in the app to begin.";
-  }
-  if (BOX_STEP_PATTERN.test(step)) {
-    return "Follow the highlighted controls inside the app to advance to the next step.";
-  }
-  if (step === "dismissed") {
-    return "Tutorial is currently closed.";
-  }
-  return "Tutorial status is syncing.";
+  return TUTORIAL_CONTENT_BY_STEP.dismissed;
 };
 
 export default function RedesignClientPage() {
@@ -150,13 +276,8 @@ export default function RedesignClientPage() {
     iframeRef.current?.contentWindow?.postMessage({ type: "citysync:tutorial-reset" }, window.location.origin);
   }, []);
 
-  const boxMatch = tutorialStep.match(BOX_STEP_PATTERN);
-  const tutorialCardTitle = boxMatch
-    ? `Step ${boxMatch[1]}`
-    : tutorialStep === "intro"
-      ? "Tutorial Walkthrough"
-      : "Tutorial Walkthrough";
-  const tutorialActive = Boolean(boxMatch);
+  const tutorialContent = getTutorialContent(tutorialStep);
+  const tutorialActive = /^box\d+$/.test(tutorialStep);
 
   return (
     <div className={styles.page}>
@@ -265,9 +386,11 @@ export default function RedesignClientPage() {
           <aside className={styles.rightRail}>
             {isTourStarted && (
               <div className={styles.tutorialCard}>
-                <p className={styles.cardLabel}>City/Sync Demo</p>
-                <h3>{tutorialCardTitle}</h3>
-                <p className={styles.cardText}>{getTutorialBody(tutorialStep)}</p>
+                <p className={styles.cardLabel}>{tutorialContent.stepLabel}</p>
+                <h3>{tutorialContent.title}</h3>
+                <p className={styles.cardText} style={{ whiteSpace: "pre-line" }}>
+                  {tutorialContent.body}
+                </p>
                 <div className={styles.tutorialActions}>
                   {!tutorialActive ? (
                     <button type="button" onClick={startTutorial}>

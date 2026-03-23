@@ -1281,11 +1281,6 @@ export default function IssuerApp() {
           }
         }}
       >
-        {hideShellPanels && openInfoCards.length > 0 && (
-          <div style={{ marginBottom: 12 }}>
-            <LearnMorePanel keys={openInfoCards} cards={ISSUER_LEARN_CARDS} onClose={closeLearnMore} accent={ACCENT} />
-          </div>
-        )}
         {isConnected && !address && (
           <div
             style={{
