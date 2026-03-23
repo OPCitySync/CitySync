@@ -56,6 +56,7 @@ const ACCENT = "#4169E1"; // blue — primary
 const TEAL = "#34eeb6"; // teal — tasks / rewards / verify
 const GOLD = "#DD9E33"; // gold — MCE / redemptions
 const PURPLE = "#a78bfa"; // purple — governance / vote
+const BRAND_BLUE = "#15151E";
 const SURFACE_SOFT = DEMO_SURFACE_SOFT;
 const BORDER = DEMO_BORDER;
 const TEXT_STRONG = DEMO_TEXT_STRONG;
@@ -1324,10 +1325,10 @@ function ProfileTab({
       >
         {(
           [
-            { key: "profile" as const, label: "Profile", color: ACCENT },
-            { key: "dashboard" as const, label: "Dashboard", color: TEAL },
+            { key: "profile" as const, label: "Profile" },
+            { key: "dashboard" as const, label: "Dashboard" },
           ] as const
-        ).map(({ key, label, color }) => (
+        ).map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setSection(key)}
@@ -1339,13 +1340,8 @@ function ProfileTab({
               cursor: "pointer",
               fontSize: 13,
               fontWeight: 600,
-              background: section === key ? color : "transparent",
-              color:
-                section === key
-                  ? key === "profile"
-                    ? "white"
-                    : "#15151E"
-                  : "var(--cs-text-dimmed, rgba(255,255,255,0.45))",
+              background: section === key ? BRAND_BLUE : "transparent",
+              color: section === key ? "#fff" : "var(--cs-text-dimmed, rgba(255,255,255,0.45))",
             }}
           >
             {label}
@@ -1536,7 +1532,7 @@ function ProfileTab({
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: copied ? TEAL : ACCENT,
+                  color: copied ? TEAL : BRAND_BLUE,
                   cursor: "pointer",
                   fontSize: 13,
                   padding: "0 2px",
@@ -1553,7 +1549,7 @@ function ProfileTab({
                 target="_blank"
                 rel="noreferrer"
                 style={{
-                  color: ACCENT,
+                  color: BRAND_BLUE,
                   fontSize: 11,
                   textDecoration: "none",
                   fontFamily: "system-ui, -apple-system, sans-serif",
@@ -1572,11 +1568,11 @@ function ProfileTab({
                 style={{
                   fontSize: 11,
                   fontWeight: 600,
-                  background: "rgba(65,105,225,0.16)",
-                  color: ACCENT,
+                  background: "rgba(21,21,30,0.16)",
+                  color: BRAND_BLUE,
                   borderRadius: 20,
                   padding: "3px 10px",
-                  border: "1px solid rgba(65,105,225,0.3)",
+                  border: "1px solid rgba(21,21,30,0.3)",
                 }}
               >
                 Civic Participant
@@ -2929,15 +2925,13 @@ function ExploreTab({
             {
               key: "browse" as const,
               label: `Browse Tasks${sortedOpenTasks.length > 0 ? ` (${sortedOpenTasks.length})` : ""}`,
-              color: ACCENT,
             },
             {
               key: "claimed" as const,
               label: `Claimed Tasks${myTasks.length > 0 ? ` (${myTasks.length})` : ""}`,
-              color: TEAL,
             },
           ] as const
-        ).map(({ key, label, color }) => (
+        ).map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setView(key)}
@@ -2949,8 +2943,8 @@ function ExploreTab({
               cursor: "pointer",
               fontSize: 13,
               fontWeight: 600,
-              background: view === key ? color : "transparent",
-              color: view === key ? (key === "browse" ? "white" : "#15151E") : "rgba(255,255,255,0.45)",
+              background: view === key ? BRAND_BLUE : "transparent",
+              color: view === key ? "#fff" : "rgba(255,255,255,0.45)",
               transition: "all 0.15s",
             }}
           >
@@ -3394,10 +3388,10 @@ function CommunityTab({ onLearnMore }: { onLearnMore: (selection: ParticipantLea
         >
           {(
             [
-              { key: "feed" as const, label: "MyCity Feed", color: ACCENT },
-              { key: "vote" as const, label: "Vote", color: PURPLE },
+              { key: "feed" as const, label: "MyCity Feed" },
+              { key: "vote" as const, label: "Vote" },
             ] as const
-          ).map(({ key, label, color }, i) => (
+          ).map(({ key, label }, i) => (
             <button
               key={key}
               onClick={() => setSection(key)}
@@ -3410,8 +3404,8 @@ function CommunityTab({ onLearnMore }: { onLearnMore: (selection: ParticipantLea
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "all 0.2s",
-                background: section === key ? color : "transparent",
-                color: section === key ? "#15151E" : "rgba(255,255,255,0.45)",
+                background: section === key ? BRAND_BLUE : "transparent",
+                color: section === key ? "#fff" : "rgba(255,255,255,0.45)",
               }}
             >
               {label}
@@ -3616,8 +3610,8 @@ function VoteTab() {
       >
         {(
           [
-            { key: "epoch1", label: "Epoch 1 · Voting", color: PURPLE },
-            { key: "epoch2", label: "Epoch 2 · Upcoming", color: GOLD },
+            { key: "epoch1", label: "Epoch 1 · Voting" },
+            { key: "epoch2", label: "Epoch 2 · Upcoming" },
           ] as const
         ).map(s => (
           <button
@@ -3631,8 +3625,8 @@ function VoteTab() {
               cursor: "pointer",
               fontSize: 12,
               fontWeight: 600,
-              background: section === s.key ? s.color : "transparent",
-              color: section === s.key ? "#15151E" : DIMMED,
+              background: section === s.key ? BRAND_BLUE : "transparent",
+              color: section === s.key ? "#fff" : DIMMED,
               transition: "all 0.15s",
             }}
           >
@@ -4097,8 +4091,8 @@ function RedeemTab({
       >
         {(
           [
-            { key: "browse", label: "Browse Offerings", color: ACCENT },
-            { key: "history", label: "Redemption History", color: GOLD },
+            { key: "browse", label: "Browse Offerings" },
+            { key: "history", label: "Redemption History" },
           ] as const
         ).map(item => (
           <button
@@ -4112,8 +4106,8 @@ function RedeemTab({
               cursor: "pointer",
               fontSize: 13,
               fontWeight: 600,
-              background: view === item.key ? item.color : "transparent",
-              color: view === item.key ? "#15151E" : DIMMED,
+              background: view === item.key ? BRAND_BLUE : "transparent",
+              color: view === item.key ? "#fff" : DIMMED,
               transition: "all 0.15s",
             }}
           >

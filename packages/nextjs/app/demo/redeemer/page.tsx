@@ -140,6 +140,7 @@ const ACCENT = "#34eeb6"; // teal — primary / committed
 const ACCENT_GOLD = "#DD9E33"; // gold — MCE / business
 const ACCENT_BLUE = "#7eb3ff"; // blue — stats / info
 const ACCENT_PURPLE = "#a78bfa"; // purple — catalog / network
+const BRAND_BLUE = "#15151E";
 type IssuerTutorialStep =
   | "intro"
   | "box1"
@@ -1538,10 +1539,10 @@ function ProfileTab({
       >
         {(
           [
-            { key: "profile" as const, label: "Profile", color: ACCENT },
-            { key: "dashboard" as const, label: "Dashboard", color: ACCENT_BLUE },
+            { key: "profile" as const, label: "Profile" },
+            { key: "dashboard" as const, label: "Dashboard" },
           ] as const
-        ).map(({ key, label, color }) => (
+        ).map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setSection(key)}
@@ -1554,8 +1555,8 @@ function ProfileTab({
               fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s",
-              background: section === key ? color : "transparent",
-              color: section === key ? BG : MUTED,
+              background: section === key ? BRAND_BLUE : "transparent",
+              color: section === key ? "#fff" : MUTED,
             }}
           >
             {label}
@@ -1745,7 +1746,7 @@ function ProfileTab({
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: copiedAddress ? ACCENT : DIMMED,
+                  color: copiedAddress ? BRAND_BLUE : DIMMED,
                   cursor: "pointer",
                   fontSize: 13,
                   padding: "0 2px",
@@ -1759,14 +1760,14 @@ function ProfileTab({
                 href={`https://sepolia.basescan.org/address/${redeemerAddress}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: ACCENT, textDecoration: "none", fontSize: 11 }}
+                style={{ color: BRAND_BLUE, textDecoration: "none", fontSize: 11 }}
               >
                 View Account ↗
               </a>
             </div>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <StatusPill label="Registered Redeemer" color={ACCENT} />
+              <StatusPill label="Registered Redeemer" color={BRAND_BLUE} />
             </div>
           </div>
 
@@ -2019,10 +2020,10 @@ function OfferingsTab({
       <div style={{ background: SURFACE, borderRadius: 16, display: "flex", marginBottom: 20, overflow: "hidden" }}>
         {(
           [
-            { key: "committed", label: `Committed (${committedOfferings.length})`, color: ACCENT },
-            { key: "mce", label: `MCE (${mceOfferings.length})`, color: ACCENT_GOLD },
+            { key: "committed", label: `Committed (${committedOfferings.length})` },
+            { key: "mce", label: `MCE (${mceOfferings.length})` },
           ] as const
-        ).map(({ key, label, color }, i) => (
+        ).map(({ key, label }, i) => (
           <button
             key={key}
             onClick={() => setView(key)}
@@ -2035,8 +2036,8 @@ function OfferingsTab({
               fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s",
-              background: view === key ? color : "transparent",
-              color: view === key ? BG : MUTED,
+              background: view === key ? BRAND_BLUE : "transparent",
+              color: view === key ? "#fff" : MUTED,
             }}
           >
             {label}
@@ -3497,10 +3498,10 @@ function CommunityTab({
       >
         {(
           [
-            { key: "feed" as const, label: "MyCity Feed", color: ACCENT },
-            { key: "mces" as const, label: "MCEs", color: ACCENT_PURPLE },
+            { key: "feed" as const, label: "MyCity Feed" },
+            { key: "mces" as const, label: "MCEs" },
           ] as const
-        ).map(({ key, label, color }, i) => (
+        ).map(({ key, label }, i) => (
           <button
             key={key}
             onClick={() => setSection(key)}
@@ -3513,8 +3514,8 @@ function CommunityTab({
               fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s",
-              background: section === key ? color : "transparent",
-              color: section === key ? BG : MUTED,
+              background: section === key ? BRAND_BLUE : "transparent",
+              color: section === key ? "#fff" : MUTED,
             }}
           >
             {label}
@@ -4137,8 +4138,8 @@ function MCEsTab({
       >
         {(
           [
-            { key: "epoch1", label: "Epoch 1 · Voting", color: ACCENT },
-            { key: "epoch2", label: "Epoch 2 · Upcoming", color: ACCENT_GOLD },
+            { key: "epoch1", label: "Epoch 1 · Voting" },
+            { key: "epoch2", label: "Epoch 2 · Upcoming" },
           ] as const
         ).map(s => (
           <button
@@ -4152,8 +4153,8 @@ function MCEsTab({
               cursor: "pointer",
               fontSize: 12,
               fontWeight: 600,
-              background: section === s.key ? s.color : "transparent",
-              color: section === s.key ? BG : MUTED,
+              background: section === s.key ? BRAND_BLUE : "transparent",
+              color: section === s.key ? "#fff" : MUTED,
               transition: "all 0.15s",
             }}
           >

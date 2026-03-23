@@ -151,6 +151,7 @@ const EPOCH_RESET_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in ms
 const ACCENT = "#DD9E33"; // gold — primary issuer colour
 const ACCENT_PURPLE = "#a78bfa"; // purple — community / MCE content
 const ACCENT_TEAL = "#34eeb6"; // teal — verify / success states
+const BRAND_BLUE = "#15151E";
 const SURFACE = DEMO_SURFACE;
 const SURFACE_SOFT = DEMO_SURFACE_SOFT;
 const BG = DEMO_BG;
@@ -1781,10 +1782,10 @@ function ProfileTab({
       >
         {(
           [
-            { key: "profile" as const, label: "Profile", color: ACCENT },
-            { key: "dashboard" as const, label: "Dashboard", color: ACCENT_TEAL },
+            { key: "profile" as const, label: "Profile" },
+            { key: "dashboard" as const, label: "Dashboard" },
           ] as const
-        ).map(({ key, label, color }) => (
+        ).map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setSection(key)}
@@ -1797,8 +1798,8 @@ function ProfileTab({
               fontWeight: 600,
               cursor: "pointer",
               transition: "all 0.2s",
-              background: section === key ? color : "transparent",
-              color: section === key ? BG : MUTED,
+              background: section === key ? BRAND_BLUE : "transparent",
+              color: section === key ? "#fff" : MUTED,
             }}
           >
             {label}
@@ -2009,7 +2010,7 @@ function ProfileTab({
                 style={{
                   background: "transparent",
                   border: "none",
-                  color: copied ? ACCENT_TEAL : ACCENT,
+                  color: copied ? ACCENT_TEAL : BRAND_BLUE,
                   cursor: "pointer",
                   fontSize: 13,
                   padding: "0 2px",
@@ -2025,14 +2026,14 @@ function ProfileTab({
                 href={`https://sepolia.basescan.org/address/${issuerAddress}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{ color: ACCENT, textDecoration: "none", fontSize: 11 }}
+                style={{ color: BRAND_BLUE, textDecoration: "none", fontSize: 11 }}
               >
                 View Account ↗
               </a>
             </div>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <StatusPill label="Verified Issuer" color={ACCENT} />
+              <StatusPill label="Verified Issuer" color={BRAND_BLUE} />
               <StatusPill label="Base Sepolia" color={DIMMED} />
             </div>
           </div>
@@ -2084,7 +2085,7 @@ function ProfileTab({
                 <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{EPOCH1_CAP} CITYx / month</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: 20, fontWeight: 700, color: ACCENT }}>{creditsCommitted}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: BRAND_BLUE }}>{creditsCommitted}</div>
                 <div style={{ fontSize: 11, color: MUTED }}>of {EPOCH1_CAP} CITYx used</div>
               </div>
             </div>
@@ -2278,7 +2279,7 @@ function IssuerDashboardTab({
 
       <div style={{ ...surfaceCard, marginBottom: 14 }}>
         <SectionLabel text="Epoch Budget" accentColor={ACCENT} />
-        <div style={{ fontSize: 30, fontWeight: 800, color: ACCENT, lineHeight: 1 }}>{creditsCommitted}</div>
+        <div style={{ fontSize: 30, fontWeight: 800, color: BRAND_BLUE, lineHeight: 1 }}>{creditsCommitted}</div>
         <div style={{ fontSize: 12, color: MUTED, marginTop: 6 }}>of {EPOCH1_CAP} CITYx committed in current epoch</div>
       </div>
 
@@ -2585,7 +2586,7 @@ function TasksTab({
             <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{EPOCH1_CAP} CITYx / month</div>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 20, fontWeight: 700, color: ACCENT }}>{creditsCommitted}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: BRAND_BLUE }}>{creditsCommitted}</div>
             <div style={{ fontSize: 11, color: MUTED }}>of {EPOCH1_CAP} CITYx used</div>
           </div>
         </div>
@@ -2631,7 +2632,6 @@ function TasksTab({
             issue: "Issue Tasks",
             catalog: `Task Catalog (${approvedCatalogTasks.length})`,
           };
-          const segAccent = v === "issue" ? ACCENT : ACCENT_PURPLE;
           return (
             <button
               key={v}
@@ -2645,8 +2645,8 @@ function TasksTab({
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "all 0.18s",
-                background: view === v ? segAccent : "transparent",
-                color: view === v ? BG : MUTED,
+                background: view === v ? BRAND_BLUE : "transparent",
+                color: view === v ? "#fff" : MUTED,
                 letterSpacing: view === v ? "0.01em" : 0,
               }}
             >
@@ -3675,7 +3675,6 @@ function CommunityTab({
         }}
       >
         {(["feed", "mces"] as const).map((s, i) => {
-          const segAccent = s === "feed" ? ACCENT : ACCENT_PURPLE;
           return (
             <button
               key={s}
@@ -3689,8 +3688,8 @@ function CommunityTab({
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "all 0.18s",
-                background: section === s ? segAccent : "transparent",
-                color: section === s ? BG : MUTED,
+                background: section === s ? BRAND_BLUE : "transparent",
+                color: section === s ? "#fff" : MUTED,
               }}
             >
               {s === "feed" ? "MyCity Feed" : "MCE Proposals"}
@@ -4544,9 +4543,9 @@ function VerifyTab({
                 background: shouldHighlightToggle
                   ? "linear-gradient(145deg, rgba(221,158,51,0.95), rgba(221,158,51,0.78))"
                   : view === opt.key
-                    ? ACCENT
+                    ? BRAND_BLUE
                     : "transparent",
-                color: shouldHighlightToggle ? BG : view === opt.key ? BG : MUTED,
+                color: shouldHighlightToggle ? BG : view === opt.key ? "#fff" : MUTED,
                 transition: "all 0.15s",
                 boxShadow: shouldHighlightToggle
                   ? "0 0 0 1px rgba(255,226,162,0.4), 0 0 14px rgba(221,158,51,0.48)"
@@ -5341,8 +5340,8 @@ function MCEsTab({
               cursor: "pointer",
               fontSize: 12,
               fontWeight: 600,
-              background: section === s.key ? ACCENT : "transparent",
-              color: section === s.key ? BG : MUTED,
+              background: section === s.key ? BRAND_BLUE : "transparent",
+              color: section === s.key ? "#fff" : MUTED,
               transition: "all 0.15s",
             }}
           >
