@@ -91,10 +91,22 @@ export default function RedesignClientPage() {
       if (event.key !== ISSUER_TUTORIAL_STEP_STORAGE_KEY) return;
       syncStep();
     };
+    const handleTutorialMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      if ((payload as { type?: string }).type !== "citysync:tutorial-step") return;
+      const step = (payload as { step?: string }).step;
+      if (typeof step !== "string") return;
+      setTutorialStep(step);
+      if (step !== "dismissed") setIsTourStarted(true);
+    };
     window.addEventListener("storage", handleStorage);
+    window.addEventListener("message", handleTutorialMessage);
     const intervalId = window.setInterval(syncStep, 400);
     return () => {
       window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("message", handleTutorialMessage);
       window.clearInterval(intervalId);
     };
   }, []);

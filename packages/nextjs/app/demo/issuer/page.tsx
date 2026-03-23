@@ -850,6 +850,13 @@ export default function IssuerApp() {
         beginTutorial();
         return;
       }
+      if (type === "citysync:tutorial-force-step") {
+        const nextStep = (payload as { step?: string }).step;
+        if (nextStep && (nextStep === "intro" || nextStep === "dismissed" || /^box\d+$/.test(nextStep))) {
+          setTutorialStep(nextStep as IssuerTutorialStep);
+        }
+        return;
+      }
       if (type === "citysync:tutorial-reset") {
         setTutorialStep("dismissed");
       }
@@ -862,6 +869,21 @@ export default function IssuerApp() {
       window.removeEventListener("message", handleTutorialMessage);
     };
   }, [address]);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.parent === window) return;
+    window.parent.postMessage({ type: "citysync:tutorial-step", step: tutorialStep }, window.location.origin);
+  }, [tutorialStep]);
+
+  React.useEffect(() => {
+    if (tutorialStep !== "box1") return;
+    // Fallback: if the role-switcher cancel callback misses in embed mode, continue the run.
+    const timer = window.setTimeout(() => {
+      setTutorialStep(prev => (prev === "box1" ? "box2" : prev));
+    }, 5000);
+    return () => window.clearTimeout(timer);
+  }, [tutorialStep]);
 
   React.useEffect(() => {
     // Allow cross-role tutorial handoff steps (box10+). Only dismiss truly invalid values.
