@@ -21,7 +21,7 @@ const ROLES: Array<{
 }> = [
   {
     key: "issuer",
-    href: "/demo/issuer",
+    href: "/demo/redesign?role=issuer",
     emoji: "📋",
     title: "Issuer Organization",
     tagline: "Create. Verify. Distribute.",
@@ -37,7 +37,7 @@ const ROLES: Array<{
   },
   {
     key: "participant",
-    href: "/demo/participant",
+    href: "/demo/redesign?role=participant",
     emoji: "🏙️",
     title: "Civic Participant",
     tagline: "Earn. Vote. Redeem.",
@@ -53,7 +53,7 @@ const ROLES: Array<{
   },
   {
     key: "redeemer",
-    href: "/demo/redeemer",
+    href: "/demo/redesign?role=redeemer",
     emoji: "🏪",
     title: "Redeemer Organization",
     tagline: "Commit. Fulfill. Track.",

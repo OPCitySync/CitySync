@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   DEMO_TUTORIAL_EXTERNAL_START_STORAGE_KEY,
   ISSUER_TUTORIAL_STEP_STORAGE_KEY,
@@ -173,6 +173,7 @@ const getTutorialContent = (step: string): TutorialContent => {
 
 export default function RedesignClientPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeRole, setActiveRole] = React.useState<RoleKey>("issuer");
   const [isTourStarted, setIsTourStarted] = React.useState(false);
   const [tutorialStep, setTutorialStep] = React.useState<string>("dismissed");
@@ -182,6 +183,13 @@ export default function RedesignClientPage() {
     redeemer: { cards: [], relatedLinks: [] },
   });
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
+
+  React.useEffect(() => {
+    const requestedRole = searchParams?.get("role");
+    if (requestedRole === "issuer" || requestedRole === "participant" || requestedRole === "redeemer") {
+      setActiveRole(requestedRole);
+    }
+  }, [searchParams]);
 
   const postRoleToEmbed = React.useCallback((role: RoleKey) => {
     if (typeof window === "undefined") return;
