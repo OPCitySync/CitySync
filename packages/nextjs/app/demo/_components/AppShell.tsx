@@ -272,6 +272,12 @@ export default function AppShell({
     setSwitcherOpen(false);
   };
 
+  useEffect(() => {
+    if (!roleSwitcherAllowed && switcherOpen) {
+      setSwitcherOpen(false);
+    }
+  }, [roleSwitcherAllowed, switcherOpen]);
+
   const handleExitDemo = useCallback(() => {
     if (typeof window !== "undefined" && window.parent !== window) {
       window.parent.postMessage({ type: "citysync:exit-demo" }, window.location.origin);
