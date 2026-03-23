@@ -228,7 +228,7 @@ export default function AppShell({
   const currentRole = ROLES.find(r => r.key === role)!;
   const embedMode = searchParams?.get("embed") === "1";
   const skinParam = searchParams?.get("skin");
-  const redesignSkin = skinParam !== "classic";
+  const redesignSkin = skinParam === "redesign";
   const hasExternalRoleChooser = redesignSkin && showLeftPanel && !embedMode;
   const walletAllowed = !tutorialLocked || tutorialHighlightWalletButton;
   const roleSwitcherAllowed = tutorialHighlightRoleSwitcher || (!tutorialLocked && !hasExternalRoleChooser);
@@ -239,16 +239,22 @@ export default function AppShell({
   const sideRailWidth = redesignSkin ? 320 : 280;
   const sideRailOffset = redesignSkin ? 250 : 230;
   const sideRailPadding = redesignSkin ? "72px 18px 40px" : "72px 20px 40px";
-  const shellHeaderBackground = currentRole.accent;
-  const shellChromeOnColor = currentRole.key === "participant" ? "#FFFFFF" : "#15151E";
-  const shellHeaderBorder =
-    currentRole.key === "participant" ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(21,21,30,0.22)";
-  const shellRoleText = shellChromeOnColor;
-  const shellLogoStroke = shellChromeOnColor;
-  const shellQrButtonBackground = currentRole.key === "participant" ? "rgba(255,255,255,0.14)" : "rgba(21,21,30,0.12)";
-  const shellQrButtonBorder =
-    currentRole.key === "participant" ? "1px solid rgba(255,255,255,0.28)" : "1px solid rgba(21,21,30,0.2)";
-  const shellQrButtonColor = shellChromeOnColor;
+  const shellHeaderBackground = redesignSkin
+    ? currentRole.accent
+    : phoneFrame
+      ? "rgba(18,18,28,0.96)"
+      : "rgba(21,21,30,0.92)";
+  const shellChromeOnColor = redesignSkin ? (currentRole.key === "participant" ? "#FFFFFF" : "#15151E") : "#FFFFFF";
+  const shellHeaderBorder = redesignSkin
+    ? currentRole.key === "participant"
+      ? "1px solid rgba(255,255,255,0.22)"
+      : "1px solid rgba(21,21,30,0.22)"
+    : "1px solid rgba(255,255,255,0.07)";
+  const shellRoleText = redesignSkin ? shellChromeOnColor : currentRole.accent;
+  const shellLogoStroke = redesignSkin ? shellChromeOnColor : "#15151E";
+  const shellQrButtonBackground = redesignSkin ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.06)";
+  const shellQrButtonBorder = redesignSkin ? "1px solid rgba(255,255,255,0.28)" : "1px solid rgba(255,255,255,0.1)";
+  const shellQrButtonColor = redesignSkin ? shellChromeOnColor : "rgba(255,255,255,0.55)";
   const sheetBackground = redesignSkin ? "#f8f9fd" : "#15151E";
   const sheetBorder = redesignSkin ? "1px solid rgba(31,45,86,0.12)" : "1px solid rgba(255,255,255,0.07)";
   const sheetBodyText = redesignSkin ? "#1b2e63" : "#fff";
@@ -348,12 +354,10 @@ export default function AppShell({
     <>
       {phoneFrame && (
         <PhoneStatusBar
-          backgroundColor={currentRole.accent}
-          foregroundColor={shellChromeOnColor}
-          pillBackgroundColor={currentRole.key === "participant" ? "rgba(255,255,255,0.12)" : "rgba(21,21,30,0.14)"}
-          pillBorderColor={
-            currentRole.key === "participant" ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(21,21,30,0.2)"
-          }
+          backgroundColor={redesignSkin ? currentRole.accent : "transparent"}
+          foregroundColor={redesignSkin ? shellChromeOnColor : "rgba(255,255,255,0.85)"}
+          pillBackgroundColor={redesignSkin ? "rgba(255,255,255,0.12)" : "#000"}
+          pillBorderColor={redesignSkin ? "1px solid rgba(255,255,255,0.22)" : "1px solid rgba(255,255,255,0.08)"}
         />
       )}
       {tutorialLocked && (
@@ -471,8 +475,9 @@ export default function AppShell({
           }}
           onMouseEnter={e => {
             if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
-            (e.currentTarget as HTMLButtonElement).style.background =
-              currentRole.key === "participant" ? "rgba(255,255,255,0.22)" : "rgba(21,21,30,0.2)";
+            (e.currentTarget as HTMLButtonElement).style.background = redesignSkin
+              ? "rgba(255,255,255,0.22)"
+              : "rgba(255,255,255,0.12)";
           }}
           onMouseLeave={e => {
             if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
@@ -527,7 +532,13 @@ export default function AppShell({
             <polygon
               points="62,28 66,28 73,6 69,6"
               fill="none"
-              stroke={currentRole.key === "participant" ? "rgba(255,255,255,0.72)" : "rgba(21,21,30,0.56)"}
+              stroke={
+                redesignSkin
+                  ? currentRole.key === "participant"
+                    ? "rgba(255,255,255,0.72)"
+                    : "rgba(21,21,30,0.56)"
+                  : "rgba(255,255,255,0.72)"
+              }
               strokeWidth="2"
             />
           </svg>

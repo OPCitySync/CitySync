@@ -140,7 +140,7 @@ const ACCENT = "#34eeb6"; // teal — primary / committed
 const ACCENT_GOLD = "#DD9E33"; // gold — MCE / business
 const ACCENT_BLUE = "#7eb3ff"; // blue — stats / info
 const ACCENT_PURPLE = "#a78bfa"; // purple — catalog / network
-const BRAND_BLUE = "#15151E";
+const BRAND_BLUE = "#4169E1";
 type IssuerTutorialStep =
   | "intro"
   | "box1"
