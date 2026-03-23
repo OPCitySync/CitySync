@@ -76,7 +76,13 @@ interface AppShellProps {
 
 // ─── Phone Status Bar ───────────────────────────────────────────────────────────
 
-function PhoneStatusBar({ accentColor }: { accentColor: string }) {
+function PhoneStatusBar({
+  backgroundColor = "#15151E",
+  foregroundColor = "#FFFFFF",
+}: {
+  backgroundColor?: string;
+  foregroundColor?: string;
+}) {
   const now = new Date();
   const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
 
@@ -90,6 +96,7 @@ function PhoneStatusBar({ accentColor }: { accentColor: string }) {
         flexShrink: 0,
         paddingBottom: 6,
         position: "relative",
+        background: backgroundColor,
       }}
     >
       {/* Dynamic Island pill */}
@@ -98,18 +105,16 @@ function PhoneStatusBar({ accentColor }: { accentColor: string }) {
           width: 126,
           height: 32,
           borderRadius: 20,
-          background: "#000",
-          border: "1px solid rgba(255,255,255,0.08)",
+          background: "rgba(255,255,255,0.12)",
+          border: "1px solid rgba(255,255,255,0.2)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           padding: "0 12px",
-          boxShadow: `0 0 12px ${accentColor}30`,
+          boxShadow: "0 2px 10px rgba(0,0,0,0.35)",
         }}
       >
-        <span style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.85)", letterSpacing: "0.04em" }}>
-          {time}
-        </span>
+        <span style={{ fontSize: 11, fontWeight: 700, color: foregroundColor, letterSpacing: "0.04em" }}>{time}</span>
         {/* Signal + battery */}
         <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
           {/* Signal bars */}
@@ -121,7 +126,7 @@ function PhoneStatusBar({ accentColor }: { accentColor: string }) {
                   width: 3,
                   height: h,
                   borderRadius: 1,
-                  background: i < 3 ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.2)",
+                  background: i < 3 ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.38)",
                 }}
               />
             ))}
@@ -132,7 +137,7 @@ function PhoneStatusBar({ accentColor }: { accentColor: string }) {
               width: 18,
               height: 10,
               borderRadius: 2,
-              border: "1px solid rgba(255,255,255,0.4)",
+              border: "1px solid rgba(255,255,255,0.7)",
               position: "relative",
               display: "flex",
               alignItems: "center",
@@ -148,10 +153,10 @@ function PhoneStatusBar({ accentColor }: { accentColor: string }) {
                 width: 3,
                 height: 5,
                 borderRadius: "0 1px 1px 0",
-                background: "rgba(255,255,255,0.3)",
+                background: "rgba(255,255,255,0.62)",
               }}
             />
-            <div style={{ width: "75%", height: "100%", borderRadius: 1, background: accentColor }} />
+            <div style={{ width: "75%", height: "100%", borderRadius: 1, background: foregroundColor }} />
           </div>
         </div>
       </div>
@@ -227,17 +232,14 @@ export default function AppShell({
   const sideRailWidth = redesignSkin ? 320 : 280;
   const sideRailOffset = redesignSkin ? 250 : 230;
   const sideRailPadding = redesignSkin ? "72px 18px 40px" : "72px 20px 40px";
-  const shellHeaderBackground = redesignSkin
-    ? "rgba(247, 248, 252, 0.92)"
-    : phoneFrame
-      ? "rgba(18,18,28,0.96)"
-      : "rgba(21,21,30,0.92)";
-  const shellHeaderBorder = redesignSkin ? "1px solid rgba(31,45,86,0.14)" : "1px solid rgba(255,255,255,0.07)";
-  const shellRoleText = redesignSkin ? "#2c4f9f" : currentRole.accent;
-  const shellLogoStroke = redesignSkin ? "#24386e" : "#15151E";
-  const shellQrButtonBackground = redesignSkin ? "rgba(65,105,225,0.1)" : "rgba(255,255,255,0.06)";
-  const shellQrButtonBorder = redesignSkin ? "1px solid rgba(65,105,225,0.24)" : "1px solid rgba(255,255,255,0.1)";
-  const shellQrButtonColor = redesignSkin ? "rgba(36,56,110,0.72)" : "rgba(255,255,255,0.55)";
+  const brandBlue = "#15151E";
+  const shellHeaderBackground = redesignSkin ? brandBlue : phoneFrame ? "rgba(18,18,28,0.96)" : "rgba(21,21,30,0.92)";
+  const shellHeaderBorder = redesignSkin ? "1px solid rgba(255,255,255,0.12)" : "1px solid rgba(255,255,255,0.07)";
+  const shellRoleText = redesignSkin ? "#FFFFFF" : currentRole.accent;
+  const shellLogoStroke = redesignSkin ? "rgba(255,255,255,0.95)" : "#15151E";
+  const shellQrButtonBackground = redesignSkin ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.06)";
+  const shellQrButtonBorder = redesignSkin ? "1px solid rgba(255,255,255,0.24)" : "1px solid rgba(255,255,255,0.1)";
+  const shellQrButtonColor = redesignSkin ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.55)";
   const sheetBackground = redesignSkin ? "#f8f9fd" : "#15151E";
   const sheetBorder = redesignSkin ? "1px solid rgba(31,45,86,0.12)" : "1px solid rgba(255,255,255,0.07)";
   const sheetBodyText = redesignSkin ? "#1b2e63" : "#fff";
@@ -376,7 +378,7 @@ export default function AppShell({
 
   const phoneInner = (
     <>
-      {phoneFrame && <PhoneStatusBar accentColor={accentColor} />}
+      {phoneFrame && <PhoneStatusBar backgroundColor={redesignSkin ? "#15151E" : undefined} />}
       {tutorialLocked && (
         <style>{`
           @keyframes tutorialAllowedPulse {
@@ -491,12 +493,12 @@ export default function AppShell({
             border: highlightRoleSwitcher
               ? "1px solid rgba(255,226,162,0.92)"
               : redesignSkin
-                ? "1px solid rgba(65,105,225,0.28)"
+                ? "1px solid rgba(255,255,255,0.24)"
                 : `1px solid ${currentRole.accent}30`,
             background: highlightRoleSwitcher
               ? "rgba(255,226,162,0.2)"
               : redesignSkin
-                ? "rgba(65,105,225,0.12)"
+                ? "rgba(255,255,255,0.1)"
                 : `${currentRole.accent}14`,
             cursor: roleSwitcherAllowed ? "pointer" : "not-allowed",
             transition: "background 0.15s ease",
@@ -508,11 +510,15 @@ export default function AppShell({
           }}
           onMouseEnter={e => {
             if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
-            (e.currentTarget as HTMLButtonElement).style.background = `${currentRole.accent}22`;
+            (e.currentTarget as HTMLButtonElement).style.background = redesignSkin
+              ? "rgba(255,255,255,0.16)"
+              : `${currentRole.accent}22`;
           }}
           onMouseLeave={e => {
             if (!roleSwitcherAllowed || highlightRoleSwitcher) return;
-            (e.currentTarget as HTMLButtonElement).style.background = `${currentRole.accent}14`;
+            (e.currentTarget as HTMLButtonElement).style.background = redesignSkin
+              ? "rgba(255,255,255,0.1)"
+              : `${currentRole.accent}14`;
           }}
           data-tutorial-allow={highlightRoleSwitcher ? "true" : undefined}
         >
@@ -549,7 +555,8 @@ export default function AppShell({
         <div
           style={{
             justifySelf: "center",
-            background: accentColor,
+            background: redesignSkin ? "rgba(255,255,255,0.12)" : accentColor,
+            border: redesignSkin ? "1px solid rgba(255,255,255,0.24)" : "none",
             borderRadius: 10,
             padding: "6px 10px",
             display: "flex",
@@ -562,7 +569,7 @@ export default function AppShell({
             <polygon
               points="62,28 66,28 73,6 69,6"
               fill="none"
-              stroke={redesignSkin ? "rgba(36,56,110,0.45)" : "rgba(21,21,30,0.5)"}
+              stroke={redesignSkin ? "rgba(255,255,255,0.65)" : "rgba(21,21,30,0.5)"}
               strokeWidth="2"
             />
           </svg>
@@ -622,19 +629,19 @@ export default function AppShell({
               background: tutorialHighlightWalletButton
                 ? "rgba(255,226,162,0.2)"
                 : redesignSkin
-                  ? "rgba(65,105,225,0.12)"
+                  ? "rgba(255,255,255,0.12)"
                   : "rgba(255,255,255,0.06)",
               border: tutorialHighlightWalletButton
                 ? "1px solid rgba(255,226,162,0.85)"
                 : redesignSkin
-                  ? "1px solid rgba(65,105,225,0.24)"
+                  ? "1px solid rgba(255,255,255,0.24)"
                   : "1px solid rgba(255,255,255,0.1)",
               borderRadius: 10,
               cursor: walletAllowed ? "pointer" : "not-allowed",
               color: tutorialHighlightWalletButton
                 ? "#ffe2a2"
                 : redesignSkin
-                  ? "rgba(36,56,110,0.78)"
+                  ? "rgba(255,255,255,0.95)"
                   : "rgba(255,255,255,0.65)",
               display: "flex",
               alignItems: "center",
@@ -687,12 +694,12 @@ export default function AppShell({
         active={activeTab}
         onChange={onTabChange}
         accentColor={accentColor}
-        theme={redesignSkin ? "light" : "dark"}
+        theme={redesignSkin ? "brand" : "dark"}
         locked={tutorialLocked}
         allowedWhenLocked={tutorialAllowedTabs}
       />
 
-      {phoneFrame && <HomeIndicator accentColor={accentColor} />}
+      {phoneFrame && <HomeIndicator accentColor={redesignSkin ? "#ffffff" : accentColor} />}
 
       {/* ── Role Switcher Bottom Sheet ────────────────────────────────────── */}
       <div

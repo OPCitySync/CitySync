@@ -13,7 +13,7 @@ interface BottomNavProps {
   active: string;
   onChange: (key: string) => void;
   accentColor?: string;
-  theme?: "dark" | "light";
+  theme?: "dark" | "light" | "brand";
   locked?: boolean;
   allowedWhenLocked?: string[];
 }
@@ -28,7 +28,8 @@ export default function BottomNav({
   allowedWhenLocked = [],
 }: BottomNavProps) {
   const lightTheme = theme === "light";
-  const activeBg = lightTheme ? `${accentColor}16` : `${accentColor}20`;
+  const brandTheme = theme === "brand";
+  const activeBg = brandTheme ? "rgba(255,255,255,0.14)" : lightTheme ? `${accentColor}16` : `${accentColor}20`;
   const lastIdx = tabs.length - 1;
   const allowedSet = new Set(allowedWhenLocked);
 
@@ -38,15 +39,25 @@ export default function BottomNav({
       style={{
         bottom: 0,
         minHeight: 69,
-        background: locked
-          ? lightTheme
-            ? "#e9edf8"
-            : "#181826"
+        background: brandTheme
+          ? "#15151E"
+          : locked
+            ? lightTheme
+              ? "#e9edf8"
+              : "#181826"
+            : lightTheme
+              ? "rgba(246,248,253,0.96)"
+              : "rgba(24,24,38,0.97)",
+        borderTop: brandTheme
+          ? "1px solid rgba(255,255,255,0.14)"
           : lightTheme
-            ? "rgba(246,248,253,0.96)"
-            : "rgba(24,24,38,0.97)",
-        borderTop: lightTheme ? "1px solid rgba(27,43,84,0.14)" : "1px solid rgba(255,255,255,0.07)",
-        boxShadow: lightTheme ? "0 -8px 24px rgba(28,42,78,0.14)" : "0 -8px 24px rgba(0,0,0,0.35)",
+            ? "1px solid rgba(27,43,84,0.14)"
+            : "1px solid rgba(255,255,255,0.07)",
+        boxShadow: brandTheme
+          ? "0 -8px 24px rgba(0,0,0,0.38)"
+          : lightTheme
+            ? "0 -8px 24px rgba(28,42,78,0.14)"
+            : "0 -8px 24px rgba(0,0,0,0.35)",
         backdropFilter: locked ? "none" : "blur(14px)",
       }}
     >
@@ -77,10 +88,14 @@ export default function BottomNav({
                 locked && isAllowedWhenLocked
                   ? "#ffe2a2"
                   : isActive
-                    ? accentColor
+                    ? brandTheme
+                      ? "#ffffff"
+                      : accentColor
                     : lightTheme
                       ? "rgba(30,45,86,0.55)"
-                      : "rgba(255,255,255,0.45)",
+                      : brandTheme
+                        ? "rgba(255,255,255,0.72)"
+                        : "rgba(255,255,255,0.45)",
               flex: 1,
               background:
                 isActive || !locked
