@@ -328,6 +328,21 @@
 .tutorialCard {
   display: grid;
   gap: 0.55rem;
+  background: #15151e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.tutorialCard .cardLabel {
+  color: #dd9e33;
+}
+
+.tutorialCard h3 {
+  color: #dd9e33;
+}
+
+.tutorialCard .cardText {
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .tutorialActions {
@@ -355,9 +370,9 @@
 }
 
 .secondaryAction {
-  color: #2d4c96;
-  background: rgba(99, 133, 238, 0.14);
-  border: 1px solid rgba(73, 104, 204, 0.24);
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
 .tutorialActions button:hover {
