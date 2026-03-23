@@ -86,6 +86,8 @@ function toItems(
 }
 
 export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; accent: string }) {
+  const isIssuer = role === "issuer";
+  const issuerGold = "#DD9E33";
   const [items, setItems] = useState<ActivityItem[]>([]);
   const [latestBlock, setLatestBlock] = useState<bigint | null>(null);
   const [rpcError, setRpcError] = useState(false);
@@ -871,7 +873,7 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
           fontWeight: 700,
           textTransform: "uppercase",
           letterSpacing: "0.12em",
-          color: "var(--cs-rail-text-muted, rgba(27,45,95,0.5))",
+          color: isIssuer ? issuerGold : "var(--cs-rail-text-muted, rgba(27,45,95,0.5))",
           marginBottom: 6,
         }}
       >
@@ -893,15 +895,15 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
       </div>
 
       {rpcError && latestBlock === null ? (
-        <div style={{ fontSize: 12, color: "rgba(193,111,41,0.9)" }}>
+        <div style={{ fontSize: 12, color: isIssuer ? issuerGold : "rgba(193,111,41,0.9)" }}>
           ⚠ RPC connection failed — add <code>NEXT_PUBLIC_ALCHEMY_API_KEY</code> to Vercel env vars and redeploy.
         </div>
       ) : latestBlock === null ? (
-        <div style={{ fontSize: 12, color: "var(--cs-rail-text-muted, rgba(27,45,95,0.5))" }}>
+        <div style={{ fontSize: 12, color: isIssuer ? issuerGold : "var(--cs-rail-text-muted, rgba(27,45,95,0.5))" }}>
           Connecting to Base Sepolia…
         </div>
       ) : items.length === 0 ? (
-        <div style={{ fontSize: 12, color: "var(--cs-rail-text, rgba(27,45,95,0.58))" }}>
+        <div style={{ fontSize: 12, color: isIssuer ? issuerGold : "var(--cs-rail-text, rgba(27,45,95,0.58))" }}>
           No recent transactions detected yet.
         </div>
       ) : (
@@ -918,7 +920,7 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
                 border: "1px solid var(--cs-rail-border, rgba(31,45,86,0.12))",
                 borderRadius: 10,
                 padding: "10px 12px",
-                color: "var(--cs-rail-text-strong, #1d2f63)",
+                color: isIssuer ? issuerGold : "var(--cs-rail-text-strong, #1d2f63)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -928,15 +930,27 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: accent }}>{item.label}</div>
                 <div
-                  style={{ fontSize: 11, color: "var(--cs-rail-text, rgba(30,48,97,0.62))", fontFamily: "monospace" }}
+                  style={{
+                    fontSize: 11,
+                    color: isIssuer ? issuerGold : "var(--cs-rail-text, rgba(30,48,97,0.62))",
+                    fontFamily: "monospace",
+                  }}
                 >
                   {shortHash(item.hash)}
                 </div>
-                <div style={{ fontSize: 11, color: "var(--cs-rail-text, rgba(30,48,97,0.58))" }}>
+                <div
+                  style={{ fontSize: 11, color: isIssuer ? issuerGold : "var(--cs-rail-text, rgba(30,48,97,0.58))" }}
+                >
                   Block {item.blockNumber.toString()} · {formatTimestamp(item.timestamp)}
                 </div>
               </div>
-              <div style={{ fontSize: 11, color: "var(--cs-rail-text, rgba(30,48,97,0.62))", whiteSpace: "nowrap" }}>
+              <div
+                style={{
+                  fontSize: 11,
+                  color: isIssuer ? issuerGold : "var(--cs-rail-text, rgba(30,48,97,0.62))",
+                  whiteSpace: "nowrap",
+                }}
+              >
                 View Tx ↗
               </div>
             </a>
