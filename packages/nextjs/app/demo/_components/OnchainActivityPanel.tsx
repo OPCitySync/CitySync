@@ -106,10 +106,6 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
   const redeemerPersistenceReadyRef = useRef(false);
 
   useEffect(() => {
-    setItems([]);
-  }, [role]);
-
-  useEffect(() => {
     let cancelled = false;
     const refreshBlock = async () => {
       try {
@@ -152,7 +148,10 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
     participantPersistenceReadyRef.current = false;
     try {
       const raw = window.localStorage.getItem("citysync:demo:participant:activity:v1");
-      if (!raw) return;
+      if (!raw) {
+        setItems([]);
+        return;
+      }
       const parsed = JSON.parse(raw) as {
         cursor?: string;
         items?: Array<{ hash: `0x${string}`; label: string; blockNumber: string; timestamp?: string | null }>;
@@ -167,9 +166,11 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
             timestamp: item.timestamp ? BigInt(item.timestamp) : undefined,
           })),
         );
+      } else {
+        setItems([]);
       }
     } catch {
-      // Ignore hydration failures.
+      setItems([]);
     } finally {
       participantHydratedRef.current = true;
     }
@@ -182,7 +183,10 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
     issuerPersistenceReadyRef.current = false;
     try {
       const raw = window.localStorage.getItem("citysync:demo:issuer:activity:v1");
-      if (!raw) return;
+      if (!raw) {
+        setItems([]);
+        return;
+      }
       const parsed = JSON.parse(raw) as {
         cursor?: string;
         items?: Array<{ hash: `0x${string}`; label: string; blockNumber: string; timestamp?: string | null }>;
@@ -197,9 +201,11 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
             timestamp: item.timestamp ? BigInt(item.timestamp) : undefined,
           })),
         );
+      } else {
+        setItems([]);
       }
     } catch {
-      // Ignore hydration failures.
+      setItems([]);
     } finally {
       issuerHydratedRef.current = true;
     }
@@ -212,7 +218,10 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
     redeemerPersistenceReadyRef.current = false;
     try {
       const raw = window.localStorage.getItem("citysync:demo:redeemer:activity:v1");
-      if (!raw) return;
+      if (!raw) {
+        setItems([]);
+        return;
+      }
       const parsed = JSON.parse(raw) as {
         cursor?: string;
         items?: Array<{ hash: `0x${string}`; label: string; blockNumber: string; timestamp?: string | null }>;
@@ -227,9 +236,11 @@ export function OnchainActivityPanel({ role, accent }: { role: ActivityRole; acc
             timestamp: item.timestamp ? BigInt(item.timestamp) : undefined,
           })),
         );
+      } else {
+        setItems([]);
       }
     } catch {
-      // Ignore hydration failures.
+      setItems([]);
     } finally {
       redeemerHydratedRef.current = true;
     }
