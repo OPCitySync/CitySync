@@ -11,8 +11,8 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: #2f4f9f;
-  border-bottom: 1px solid rgba(20, 36, 76, 0.6);
+  background: #15151e;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .topNavInner {
