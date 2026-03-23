@@ -9,6 +9,7 @@ import {
   ISSUER_TUTORIAL_STEP_STORAGE_KEY,
   SHARED_TUTORIAL_INTRO_TEXT,
 } from "../_utils/tutorialRun";
+import { LearnInfoCard, LearnMorePanel } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import styles from "./page.module.css";
 
@@ -45,6 +46,15 @@ type TutorialContent = {
   title: string;
   body: string;
 };
+
+type RoleLearnCard = LearnInfoCard & { key: string };
+type LearnMoreStateByRole = Record<
+  RoleKey,
+  {
+    cards: RoleLearnCard[];
+    relatedLinks: Array<{ label: string; href: string }>;
+  }
+>;
 
 const TUTORIAL_CONTENT_BY_STEP: Record<string, TutorialContent> = {
   intro: {
@@ -183,6 +193,11 @@ export default function RedesignClientPage() {
   const [activeRole, setActiveRole] = React.useState<RoleKey>("issuer");
   const [isTourStarted, setIsTourStarted] = React.useState(false);
   const [tutorialStep, setTutorialStep] = React.useState<string>("dismissed");
+  const [learnMoreByRole, setLearnMoreByRole] = React.useState<LearnMoreStateByRole>({
+    issuer: { cards: [], relatedLinks: [] },
+    participant: { cards: [], relatedLinks: [] },
+    redeemer: { cards: [], relatedLinks: [] },
+  });
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
 
   const postRoleToEmbed = React.useCallback((role: RoleKey) => {
@@ -247,6 +262,56 @@ export default function RedesignClientPage() {
     return () => window.removeEventListener("message", handleExitDemoMessage);
   }, [router]);
 
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handleLearnMoreState = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const payload = event.data;
+      if (!payload || typeof payload !== "object") return;
+      if ((payload as { type?: string }).type !== "citysync:learn-more-state") return;
+      const role = (payload as { role?: string }).role;
+      if (role !== "issuer" && role !== "participant" && role !== "redeemer") return;
+      const cardsRaw = (payload as { cards?: unknown }).cards;
+      const relatedLinksRaw = (payload as { relatedLinks?: unknown }).relatedLinks;
+      const cards: RoleLearnCard[] = [];
+      if (Array.isArray(cardsRaw)) {
+        for (const entry of cardsRaw) {
+          if (!entry || typeof entry !== "object") continue;
+          const card = entry as Partial<RoleLearnCard>;
+          if (
+            typeof card.key !== "string" ||
+            typeof card.title !== "string" ||
+            typeof card.subtitle !== "string" ||
+            typeof card.body !== "string"
+          ) {
+            continue;
+          }
+          const relatedLinks = Array.isArray(card.relatedLinks)
+            ? card.relatedLinks.filter(
+                link => !!link && typeof link.label === "string" && typeof link.href === "string",
+              )
+            : undefined;
+          cards.push({
+            key: card.key,
+            title: card.title,
+            subtitle: card.subtitle,
+            body: card.body,
+            relatedLinks,
+          });
+        }
+      }
+      const relatedLinks = Array.isArray(relatedLinksRaw)
+        ? relatedLinksRaw.filter(link => !!link && typeof link.label === "string" && typeof link.href === "string")
+        : [];
+      setLearnMoreByRole(prev => ({
+        ...prev,
+        [role]: { cards, relatedLinks },
+      }));
+    };
+    window.addEventListener("message", handleLearnMoreState);
+    return () => window.removeEventListener("message", handleLearnMoreState);
+  }, []);
+
   const openGuidedTour = React.useCallback(() => {
     setIsTourStarted(true);
   }, []);
@@ -288,6 +353,24 @@ export default function RedesignClientPage() {
 
   const tutorialContent = getTutorialContent(tutorialStep);
   const tutorialActive = /^box\d+$/.test(tutorialStep);
+  const activeLearnState = learnMoreByRole[activeRole];
+  const activeLearnCardKeys = React.useMemo(
+    () => activeLearnState.cards.map(card => card.key),
+    [activeLearnState.cards],
+  );
+  const activeLearnCardMap = React.useMemo(() => {
+    const map: Record<string, LearnInfoCard> = {};
+    activeLearnState.cards.forEach(card => {
+      map[card.key] = {
+        title: card.title,
+        subtitle: card.subtitle,
+        body: card.body,
+        relatedLinks: card.relatedLinks,
+      };
+    });
+    return map;
+  }, [activeLearnState.cards]);
+  const activeRelatedLinks = activeLearnState.relatedLinks.length > 0 ? activeLearnState.relatedLinks : deepLinks;
 
   return (
     <div className={styles.page}>
@@ -400,10 +483,31 @@ export default function RedesignClientPage() {
                 </div>
               </div>
             )}
+            {activeLearnCardKeys.length > 0 ? (
+              <LearnMorePanel
+                keys={activeLearnCardKeys}
+                cards={activeLearnCardMap}
+                onClose={key => {
+                  setLearnMoreByRole(prev => ({
+                    ...prev,
+                    [activeRole]: {
+                      ...prev[activeRole],
+                      cards: prev[activeRole].cards.filter(card => card.key !== key),
+                    },
+                  }));
+                }}
+                accent={roleAccentByKey[activeRole]}
+              />
+            ) : (
+              <div className={styles.linksCard}>
+                <p className={styles.cardLabel}>Information Boxes</p>
+                <p className={styles.cardText}>Use Learn More links in the app to load contextual cards here.</p>
+              </div>
+            )}
             <div className={styles.linksCard}>
               <p className={styles.cardLabel}>Related Deep Dives</p>
               <ul>
-                {deepLinks.map(link => (
+                {activeRelatedLinks.map(link => (
                   <li key={link.href}>
                     <Link href={link.href}>{link.label}</Link>
                   </li>

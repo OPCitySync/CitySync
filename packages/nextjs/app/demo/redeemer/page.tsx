@@ -534,6 +534,36 @@ export default function RedeemerApp() {
     }
     return links;
   }, [openInfoCards]);
+  React.useEffect(() => {
+    if (!hideShellPanels || typeof window === "undefined" || window.parent === window) return;
+    const cards: Array<{
+      key: string;
+      title: string;
+      subtitle: string;
+      body: string;
+      relatedLinks?: Array<{ label: string; href: string }>;
+    }> = [];
+    for (const key of openInfoCards) {
+      const info = REDEEMER_LEARN_CARDS[key];
+      if (!info) continue;
+      cards.push({
+        key: String(key),
+        title: info.title,
+        subtitle: info.subtitle,
+        body: info.body,
+        relatedLinks: info.relatedLinks,
+      });
+    }
+    window.parent.postMessage(
+      {
+        type: "citysync:learn-more-state",
+        role: "redeemer",
+        cards,
+        relatedLinks: additionalReadingLinks,
+      },
+      window.location.origin,
+    );
+  }, [additionalReadingLinks, hideShellPanels, openInfoCards]);
   const tutorialCard = (() => {
     if (tutorialStep === "dismissed") return null;
 

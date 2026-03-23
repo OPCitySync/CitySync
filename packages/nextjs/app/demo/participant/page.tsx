@@ -4542,6 +4542,36 @@ export default function ParticipantPage() {
     }
     return links;
   }, [openInfoCards]);
+  React.useEffect(() => {
+    if (!hideShellPanels || typeof window === "undefined" || window.parent === window) return;
+    const cards: Array<{
+      key: string;
+      title: string;
+      subtitle: string;
+      body: string;
+      relatedLinks?: Array<{ label: string; href: string }>;
+    }> = [];
+    for (const key of openInfoCards) {
+      const info = PARTICIPANT_LEARN_CARDS[key];
+      if (!info) continue;
+      cards.push({
+        key: String(key),
+        title: info.title,
+        subtitle: info.subtitle,
+        body: info.body,
+        relatedLinks: info.relatedLinks,
+      });
+    }
+    window.parent.postMessage(
+      {
+        type: "citysync:learn-more-state",
+        role: "participant",
+        cards,
+        relatedLinks: additionalReadingLinks,
+      },
+      window.location.origin,
+    );
+  }, [additionalReadingLinks, hideShellPanels, openInfoCards]);
   const tutorialCard = (() => {
     const cardStyle: React.CSSProperties = {
       background: "var(--cs-rail-surface, rgba(255,255,255,0.92))",
