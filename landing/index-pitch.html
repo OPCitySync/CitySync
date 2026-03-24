@@ -381,61 +381,27 @@
       box-shadow: 0 0 0 4px rgba(221, 158, 51, 0.14);
     }
 
-    .problem-bullets {
-      margin: 22px 0 0;
-      padding: 0;
-      list-style: none;
-      color: var(--ink-soft);
-      display: grid;
-      gap: 12px;
-    }
-
     .problem-layout {
       display: grid;
       grid-template-columns: minmax(260px, 0.42fr) minmax(0, 0.58fr);
       gap: clamp(18px, 3vw, 34px);
-      align-items: start;
+      align-items: center;
     }
 
     .problem-media {
-      max-width: 420px;
+      max-width: 520px;
       width: 100%;
       margin-right: auto;
-      padding: 14px;
     }
 
     .problem-content {
-      text-align: right;
+      text-align: left;
       justify-self: end;
       max-width: 690px;
     }
 
     .problem-content .section-lead {
-      margin-left: auto;
-    }
-
-    .problem-bullets li {
-      position: relative;
-      padding-right: 1.15rem;
-      line-height: 1.5;
-      font-size: 0.98rem;
-      text-align: right;
-    }
-
-    .problem-bullets li::before {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 0.62em;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-    }
-
-    .problem-bullets strong {
-      color: var(--ink);
-      font-weight: 700;
+      margin-left: 0;
     }
 
     .flow-strip {
@@ -480,7 +446,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: clamp(22px, 3vw, 40px);
-      align-items: start;
+      align-items: center;
     }
 
     .solution-media {
@@ -497,7 +463,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: clamp(22px, 3vw, 40px);
-      align-items: start;
+      align-items: center;
     }
 
     .pilot-media {
@@ -516,11 +482,44 @@
       margin-top: 24px;
     }
 
+    .pilot-how {
+      margin-top: 26px;
+      text-align: center;
+    }
+
+    .pilot-how-separator {
+      position: relative;
+      height: 1px;
+      width: min(520px, 80%);
+      margin: 0 auto 14px;
+      background: linear-gradient(90deg, transparent, rgba(33, 50, 56, 0.22), transparent);
+    }
+
+    .pilot-how-separator::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 4px rgba(221, 158, 51, 0.16);
+    }
+
+    .pilot-how-title {
+      margin: 0;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(1.3rem, 2.2vw, 1.75rem);
+      color: var(--ink);
+    }
+
     .vision-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: clamp(22px, 3vw, 40px);
-      align-items: start;
+      align-items: center;
     }
 
     .vision-media {
@@ -664,17 +663,6 @@
 
       .problem-content .section-lead {
         margin-left: 0;
-      }
-
-      .problem-bullets li {
-        text-align: left;
-        padding-right: 0;
-        padding-left: 1.15rem;
-      }
-
-      .problem-bullets li::before {
-        right: auto;
-        left: 0;
       }
 
       .hero-image-stack { min-height: auto; }
@@ -857,11 +845,11 @@
                 the communities they serve.
               </p>
 
-              <ul class="problem-bullets">
-                <li><strong>Siloed coordination:</strong> Agencies and nonprofits work on the same problems with disconnected systems, duplicating effort and losing shared visibility.</li>
-                <li><strong>Hard to replicate what works:</strong> Even successful programs are difficult to standardize and reuse across neighborhoods or cities because processes are not portable.</li>
-                <li><strong>Accountability is opaque:</strong> It is hard for residents to see what is happening, what is working, and who is responsible across a fragmented service ecosystem.</li>
-                <li><strong>Lack of engagement pathways:</strong> Most residents do not have clear, low-friction ways to contribute to their cities.</li>
+              <ul class="bullet-list">
+                <li><span class="dot"></span><span><strong>Siloed coordination:</strong> Agencies and nonprofits work on the same problems with disconnected systems, duplicating effort and losing shared visibility.</span></li>
+                <li><span class="dot"></span><span><strong>Hard to replicate what works:</strong> Even successful programs are difficult to standardize and reuse across neighborhoods or cities because processes are not portable.</span></li>
+                <li><span class="dot"></span><span><strong>Accountability is opaque:</strong> It is hard for residents to see what is happening, what is working, and who is responsible across a fragmented service ecosystem.</span></li>
+                <li><span class="dot"></span><span><strong>Lack of engagement pathways:</strong> Most residents do not have clear, low-friction ways to contribute to their cities.</span></li>
               </ul>
             </div>
           </div>
@@ -954,6 +942,11 @@
                 </div>
               </div>
             </div>
+          </div>
+
+          <div class="pilot-how">
+            <div class="pilot-how-separator" aria-hidden="true"></div>
+            <h3 class="pilot-how-title">How It Works</h3>
           </div>
 
           <div class="flow-strip pilot-strip">
