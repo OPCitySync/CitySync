@@ -200,6 +200,22 @@
     .hero {
       padding: clamp(44px, 7vw, 90px) 0 80px;
       position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-network {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .hero::before {
@@ -211,7 +227,7 @@
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, rgba(65, 123, 160, 0.22), transparent 72%);
       pointer-events: none;
-      z-index: -1;
+      z-index: 0;
     }
 
     .hero::after {
@@ -224,7 +240,7 @@
       border-radius: 50%;
       background: radial-gradient(circle at 60% 40%, rgba(221, 158, 51, 0.2), transparent 70%);
       pointer-events: none;
-      z-index: -1;
+      z-index: 0;
     }
 
     .hero-grid {
@@ -386,38 +402,61 @@
       box-shadow: 0 0 0 4px rgba(221, 158, 51, 0.14);
     }
 
-    .problem-grid {
-      margin-top: 28px;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .problem-card {
-      background: var(--paper);
-      border-radius: 18px;
-      border: 1px solid rgba(33, 50, 56, 0.12);
-      padding: 18px;
-      box-shadow: var(--shadow-md);
-    }
-
-    .problem-card .number {
-      font-family: "Newsreader", serif;
-      font-size: 1.9rem;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 8px;
-    }
-
-    .problem-card h3 {
-      margin: 0 0 8px;
-      font-size: 1.04rem;
-    }
-
-    .problem-card p {
-      margin: 0;
+    .problem-bullets {
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
       color: var(--ink-soft);
-      font-size: 0.92rem;
+      display: grid;
+      gap: 12px;
+    }
+
+    .problem-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.42fr) minmax(0, 0.58fr);
+      gap: clamp(18px, 3vw, 34px);
+      align-items: start;
+    }
+
+    .problem-media {
+      max-width: 420px;
+      width: 100%;
+      margin-right: auto;
+      padding: 14px;
+    }
+
+    .problem-content {
+      text-align: right;
+      justify-self: end;
+      max-width: 690px;
+    }
+
+    .problem-content .section-lead {
+      margin-left: auto;
+    }
+
+    .problem-bullets li {
+      position: relative;
+      padding-right: 1.15rem;
+      line-height: 1.5;
+      font-size: 0.98rem;
+      text-align: right;
+    }
+
+    .problem-bullets li::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0.62em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .problem-bullets strong {
+      color: var(--ink);
+      font-weight: 700;
     }
 
     .flow-strip {
@@ -456,6 +495,59 @@
       margin: 0;
       color: var(--ink-soft);
       font-size: 0.92rem;
+    }
+
+    .solution-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(22px, 3vw, 40px);
+      align-items: start;
+    }
+
+    .solution-media {
+      max-width: 520px;
+      width: 100%;
+      margin-left: auto;
+    }
+
+    .solution-strip {
+      margin-top: 24px;
+    }
+
+    .pilot-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(22px, 3vw, 40px);
+      align-items: start;
+    }
+
+    .pilot-media {
+      max-width: 520px;
+      width: 100%;
+      margin-right: auto;
+    }
+
+    .pilot-content {
+      justify-self: end;
+      width: 100%;
+      max-width: 690px;
+    }
+
+    .pilot-strip {
+      margin-top: 24px;
+    }
+
+    .vision-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(22px, 3vw, 40px);
+      align-items: start;
+    }
+
+    .vision-media {
+      max-width: 520px;
+      width: 100%;
+      margin-left: auto;
     }
 
     .pilot-cities {
@@ -544,12 +636,13 @@
 
     .footer {
       padding: 38px 0 44px;
-      color: var(--ink-soft);
+      color: rgba(255, 255, 255, 0.78);
       font-size: 0.9rem;
+      background: var(--brand-blue);
     }
 
     .footer-row {
-      border-top: 1px solid rgba(33, 50, 56, 0.13);
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
       padding-top: 20px;
       display: flex;
       align-items: center;
@@ -564,7 +657,7 @@
       gap: 14px;
     }
 
-    .links a:hover { color: var(--accent); }
+    .links a:hover { color: var(--brand-gold); }
 
     .mobile-nav {
       display: none;
@@ -573,8 +666,36 @@
     @media (max-width: 1000px) {
       .hero-grid,
       .grid-2,
-      .cta {
+      .cta,
+      .solution-layout,
+      .pilot-layout,
+      .vision-layout {
         grid-template-columns: 1fr;
+      }
+
+      .problem-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .problem-content {
+        text-align: left;
+        justify-self: stretch;
+        max-width: none;
+      }
+
+      .problem-content .section-lead {
+        margin-left: 0;
+      }
+
+      .problem-bullets li {
+        text-align: left;
+        padding-right: 0;
+        padding-left: 1.15rem;
+      }
+
+      .problem-bullets li::before {
+        right: auto;
+        left: 0;
       }
 
       .hero-image-stack { min-height: auto; }
@@ -585,7 +706,6 @@
         width: 100%;
       }
 
-      .problem-grid,
       .flow-strip,
       .stat-ribbon {
         grid-template-columns: 1fr;
@@ -678,6 +798,7 @@
 
     <main id="top">
       <section class="hero">
+        <canvas id="pitch-hero-canvas" class="hero-network" aria-hidden="true"></canvas>
         <div class="container">
           <div class="hero-grid">
             <div>
@@ -710,12 +831,12 @@
               <div class="stat-label">People volunteering monthly worldwide</div>
             </div>
             <div class="stat">
-              <div class="stat-value">$11T</div>
-              <div class="stat-label">Estimated annual value of unpaid care labor</div>
+              <div class="stat-value">$0</div>
+              <div class="stat-label">Formal rewards those volunteers receive</div>
             </div>
             <div class="stat">
-              <div class="stat-value">32 / 68</div>
-              <div class="stat-label">Estimated share of formal volunteering vs informal civic mutual aid</div>
+              <div class="stat-value">∞</div>
+              <div class="stat-label">Potential of coordinated civic infrastructure</div>
             </div>
           </div>
         </div>
@@ -746,158 +867,147 @@
 
       <section id="problem" class="section">
         <div class="container">
-          <div class="eyebrow">Problem</div>
-          <h2 class="section-title">Civic energy exists. Coordination infrastructure does not.</h2>
-          <p class="section-lead">
-            Our local public-sector institutions are responsible for delivering essential services that communities rely on
-            every day. Yet the operating systems they use to coordinate people, allocate resources, and maintain
-            accountability were built for a different era and are increasingly mismatched to the scale and complexity of
-            21st-century challenges. Even the most capable local governments and nonprofits are held back by these outdated
-            mechanisms, making public service delivery slower, more expensive, harder to measure, and less empowering for
-            the communities they serve.
-          </p>
+          <div class="problem-layout">
+            <div class="glass-card problem-media">
+              <img src="assets/pitch/problem.png" alt="Public-sector coordination challenges and fragmentation" style="border-radius: 14px;" />
+            </div>
 
-          <div class="problem-grid">
-            <article class="problem-card">
-              <div class="number">01</div>
-              <h3>Siloed Coordination</h3>
-              <p>Agencies and nonprofits work on the same problems with disconnected systems, duplicating effort and losing shared visibility.</p>
-            </article>
-            <article class="problem-card">
-              <div class="number">02</div>
-              <h3>Hard to Replicate What Works</h3>
-              <p>Even successful programs are difficult to standardize and reuse across neighborhoods or cities because processes are not portable.</p>
-            </article>
-            <article class="problem-card">
-              <div class="number">03</div>
-              <h3>Accountability Is Opaque</h3>
-              <p>It is hard for residents to see what is happening, what is working, and who is responsible across a fragmented service ecosystem.</p>
-            </article>
-            <article class="problem-card">
-              <div class="number">04</div>
-              <h3>Lack of Engagement Pathways</h3>
-              <p>Most residents do not have clear, low-friction ways to contribute to their cities.</p>
-            </article>
-          </div>
+            <div class="problem-content">
+              <div class="eyebrow">Problem</div>
+              <h2 class="section-title">Outdated Systems, Modern Complexity</h2>
+              <p class="section-lead">
+                Our local public-sector institutions are responsible for delivering essential services that communities rely on
+                every day. Yet the operating systems they use to coordinate people, allocate resources, and maintain
+                accountability were built for a different era and are increasingly mismatched to the scale and complexity of
+                21st-century challenges. Even the most capable local governments and nonprofits are held back by these outdated
+                mechanisms, making public service delivery slower, more expensive, harder to measure, and less empowering for
+                the communities they serve.
+              </p>
 
-          <div class="glass-card" style="margin-top: 18px;">
-            <img src="assets/pitch/problem.png" alt="Public-sector coordination challenges and fragmentation" style="border-radius: 14px;" />
+              <ul class="problem-bullets">
+                <li><strong>Siloed coordination:</strong> Agencies and nonprofits work on the same problems with disconnected systems, duplicating effort and losing shared visibility.</li>
+                <li><strong>Hard to replicate what works:</strong> Even successful programs are difficult to standardize and reuse across neighborhoods or cities because processes are not portable.</li>
+                <li><strong>Accountability is opaque:</strong> It is hard for residents to see what is happening, what is working, and who is responsible across a fragmented service ecosystem.</li>
+                <li><strong>Lack of engagement pathways:</strong> Most residents do not have clear, low-friction ways to contribute to their cities.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="solution" class="section alt">
-        <div class="container grid-2">
-          <div class="glass-card">
-            <img src="assets/pitch/solution.png" alt="City/Sync shared coordination infrastructure solution" style="border-radius: 14px;" />
+        <div class="container">
+          <div class="solution-layout">
+            <div>
+              <div class="eyebrow">Solution</div>
+              <h2 class="section-title">A shared coordination framework cities can govern and grow.</h2>
+              <p class="section-lead">
+                City/Sync seeks to create a permanent piece of digital public infrastructure that provides cities a shared
+                coordination substrate that establishes a common set of rules, roles, and data standards for organizing public
+                work across institutions and communities. The protocol's foundation is an accessible contribution layer that
+                enables agencies and organizations to mobilize participation around local initiatives and solve community
+                challenges through structured, incentivized coordination. On top of that foundation, the protocol can support
+                portable coordination modules that standardize how tasks are defined, how participation is validated, how
+                responsibility is assigned, and how performance is measured across different organizations and jurisdictions.
+              </p>
+              <p class="section-lead" style="margin-top: 14px;">
+                By developing this infrastructure, City/Sync helps communities cultivate self-reliance by giving them the
+                tools and infrastructure that allows for collective action to become accessible, normalized, rewarded, and
+                capable of scaling beyond the limits of any single institution.
+              </p>
+            </div>
+
+            <div class="glass-card solution-media">
+              <img src="assets/pitch/solution.png" alt="City/Sync shared coordination infrastructure solution" style="border-radius: 14px;" />
+            </div>
           </div>
 
-          <div>
-            <div class="eyebrow">Solution</div>
-            <h2 class="section-title">A shared coordination framework cities can govern and grow.</h2>
-            <p class="section-lead">
-              City/Sync seeks to create a permanent piece of digital public infrastructure that provides cities a shared
-              coordination substrate that establishes a common set of rules, roles, and data standards for organizing public
-              work across institutions and communities. The protocol's foundation is an accessible contribution layer that
-              enables agencies and organizations to mobilize participation around local initiatives and solve community
-              challenges through structured, incentivized coordination. On top of that foundation, the protocol can support
-              portable coordination modules that standardize how tasks are defined, how participation is validated, how
-              responsibility is assigned, and how performance is measured across different organizations and jurisdictions.
-            </p>
-            <p class="section-lead" style="margin-top: 14px;">
-              By developing this infrastructure, City/Sync helps communities cultivate self-reliance by giving them the
-              tools and infrastructure that allows for collective action to become accessible, normalized, rewarded, and
-              capable of scaling beyond the limits of any single institution.
-            </p>
-
-            <div class="flow-strip">
-              <div class="flow-step">
-                <h3>Shared Standards</h3>
-                <p>Common definitions for contribution, verification, and public-value outcomes across participating organizations.</p>
-              </div>
-              <div class="flow-step">
-                <h3>Administrative Pathways</h3>
-                <p>Operational methods that connect local institutions, civic participants, and service organizations into one workflow.</p>
-              </div>
-              <div class="flow-step">
-                <h3>Governance + Learning</h3>
-                <p>Structured decision cycles that let cities calibrate policy, improve execution, and scale what works.</p>
-              </div>
+          <div class="flow-strip solution-strip">
+            <div class="flow-step">
+              <h3>Shared Standards</h3>
+              <p>Common definitions for contribution, verification, and public-value outcomes across participating organizations.</p>
+            </div>
+            <div class="flow-step">
+              <h3>Administrative Pathways</h3>
+              <p>Operational methods that connect local institutions, civic participants, and service organizations into one workflow.</p>
+            </div>
+            <div class="flow-step">
+              <h3>Governance + Learning</h3>
+              <p>Structured decision cycles that let cities calibrate policy, improve execution, and scale what works.</p>
             </div>
           </div>
         </div>
       </section>
 
       <section id="pilot" class="section">
-        <div class="container grid-2">
-          <div>
-            <div class="eyebrow">Pilot Execution</div>
-            <h2 class="section-title">Establishing a Public-Sector Economy</h2>
-            <p class="section-lead">
-              The City/Sync pilot will seek to validate the foundational mechanism for a shared public operating system.
-              The pilot will seek to facilitate a unique public-sector economy that can operate under real-world
-              constraints, expanding the impact and mission of real organizations by rewarding civic participants through
-              a civic-credit system that will allow them to access local goods and services. The purpose of this pilot is
-              to generate a procedural artifact that will allow other cities to adopt and adapt the protocol according to
-              their needs.
-            </p>
+        <div class="container">
+          <div class="pilot-layout">
+            <div class="glass-card pilot-media">
+              <img src="assets/pitch/image-5.png" alt="Pilot role lifecycle and coordination dynamics" style="border-radius: 14px;" />
+            </div>
 
-            <div class="glass-card" style="margin-top: 18px;">
-              <h3 style="margin: 0 0 6px; font-size: 1.02rem;">Pilot-Ready Architecture</h3>
-              <p style="margin: 0; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.45;">
-                For the initial pilot, City/Sync will be implemented in Berkeley, California and Mexico City, Mexico. It
-                is designed to replicate across cities with local variation and shared standards.
+            <div class="pilot-content">
+              <div class="eyebrow">Pilot Execution</div>
+              <h2 class="section-title">Establishing a Public-Sector Economy</h2>
+              <p class="section-lead">
+                The City/Sync pilot will seek to validate the foundational mechanism for a shared public operating system.
+                The pilot will seek to facilitate a unique public-sector economy that can operate under real-world
+                constraints, expanding the impact and mission of real organizations by rewarding civic participants through
+                a civic-credit system that will allow them to access local goods and services. The purpose of this pilot is
+                to generate a procedural artifact that will allow other cities to adopt and adapt the protocol according to
+                their needs.
               </p>
-            </div>
 
-            <div class="timeline">
-              <div class="timeline-item">
-                <strong>Phase 1: Establish Role Operations</strong>
-                <span>Onboard issuers, redeemers, and participants into a controlled operating loop.</span>
+              <div class="glass-card" style="margin-top: 18px;">
+                <h3 style="margin: 0 0 6px; font-size: 1.02rem;">Pilot-Ready Architecture</h3>
+                <p style="margin: 0; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.45;">
+                  For the initial pilot, City/Sync will be implemented in Berkeley, California and Mexico City, Mexico. It
+                  is designed to replicate across cities with local variation and shared standards.
+                </p>
               </div>
-              <div class="timeline-item">
-                <strong>Phase 2: Verify Throughput + Reliability</strong>
-                <span>Track issuance, verification quality, and redemption rhythm under live conditions.</span>
-              </div>
-              <div class="timeline-item">
-                <strong>Phase 3: Codify Replication Standards</strong>
-                <span>Package governance and process logic for broader rollout to other cities.</span>
-              </div>
-            </div>
 
-            <div class="flow-strip" style="margin-top: 22px;">
-              <div class="flow-step">
-                <h3>Issuer Organizations</h3>
-                <p>Issuer organizations define mission-aligned task functions, maintain local task catalogs, and issue
-                  time-bound opportunities under shared public standards. They verify completion quality, publish feedback,
-                  and maintain operational accountability so civic work translates into measurable public outcomes.</p>
-              </div>
-              <div class="flow-step">
-                <h3>Civic Participants</h3>
-                <p>Civic participants browse and claim available tasks, execute approved civic labor, and submit proof for
-                  verification. Verified completion mints CITY and VOTE, turning contribution into usable access to local
-                  goods and services while building participatory influence in governance processes.</p>
-              </div>
-              <div class="flow-step">
-                <h3>Redeemer Organizations</h3>
-                <p>Redeemer organizations maintain offering catalogs, commit live offerings each Epoch, and honor
-                  redemptions through QR-enabled point-of-service flows. Their participation closes the earn-to-burn loop,
-                  provides real utility for civic credits, and helps stabilize circulation in the public-sector economy.</p>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <strong>Phase 1: Establish Role Operations</strong>
+                  <span>Onboard issuers, redeemers, and participants into a controlled operating loop.</span>
+                </div>
+                <div class="timeline-item">
+                  <strong>Phase 2: Verify Throughput + Reliability</strong>
+                  <span>Track issuance, verification quality, and redemption rhythm under live conditions.</span>
+                </div>
+                <div class="timeline-item">
+                  <strong>Phase 3: Codify Replication Standards</strong>
+                  <span>Package governance and process logic for broader rollout to other cities.</span>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="glass-card">
-            <img src="assets/pitch/image-5.png" alt="Pilot role lifecycle and coordination dynamics" style="border-radius: 14px;" />
+          <div class="flow-strip pilot-strip">
+            <div class="flow-step">
+              <h3>Issuer Organizations</h3>
+              <p>Issuer organizations define mission-aligned task functions, maintain local task catalogs, and issue
+                time-bound opportunities under shared public standards. They verify completion quality, publish feedback,
+                and maintain operational accountability so civic work translates into measurable public outcomes.</p>
+            </div>
+            <div class="flow-step">
+              <h3>Civic Participants</h3>
+              <p>Civic participants browse and claim available tasks, execute approved civic labor, and submit proof for
+                verification. Verified completion mints CITY and VOTE, turning contribution into usable access to local
+                goods and services while building participatory influence in governance processes.</p>
+            </div>
+            <div class="flow-step">
+              <h3>Redeemer Organizations</h3>
+              <p>Redeemer organizations maintain offering catalogs, commit live offerings each Epoch, and honor
+                redemptions through QR-enabled point-of-service flows. Their participation closes the earn-to-burn loop,
+                provides real utility for civic credits, and helps stabilize circulation in the public-sector economy.</p>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="vision" class="section alt">
-        <div class="container grid-2">
-          <div class="glass-card">
-            <img src="assets/pitch/image-6.png" alt="Long-term decentralized public administration ecosystem" style="border-radius: 14px;" />
-          </div>
+        <div class="container vision-layout">
           <div>
             <div class="eyebrow">Long-Term Vision</div>
             <h2 class="section-title">Pilot validation to decentralized Public Administration Networks (dPANs).</h2>
@@ -914,6 +1024,9 @@
               <li><span class="dot"></span><span>dPAN applications that evolve independently by domain and public-service context.</span></li>
               <li><span class="dot"></span><span>A shared global framework for exporting proven civic models across cities.</span></li>
             </ul>
+          </div>
+          <div class="glass-card vision-media">
+            <img src="assets/pitch/image-6.png" alt="Long-term decentralized public administration ecosystem" style="border-radius: 14px;" />
           </div>
         </div>
       </section>
@@ -939,21 +1052,182 @@
 
     <footer class="footer">
       <div class="container footer-row">
-        <div class="brand" aria-label="City/Sync">
-          <span>CITY</span>
-          <span class="slashes" aria-hidden="true"><span></span><span></span></span>
-          <span>SYNC</span>
-        </div>
-        <div>© City/Sync. Civic Coordination Infrastructure.</div>
+        <a class="brand brand-nav" href="#top" aria-label="City/Sync Home">
+          <img class="brand-wordmark" src="assets/citysync-wordmark-frame3.png" alt="City/Sync" />
+        </a>
+        <div>© City/Sync. A nonprofit 501(c)3.</div>
         <div class="links">
           <a href="https://x.com/city_sync_" target="_blank" rel="noopener noreferrer">X</a>
           <a href="https://discord.gg/ywzxhNQk6w" target="_blank" rel="noopener noreferrer">Discord</a>
           <a href="mailto:city-sync@pm.me">Email</a>
           <a href="https://paragraph.com/@city-sync" target="_blank" rel="noopener noreferrer">Essays</a>
-          <a href="https://github.com/natenatesoo/CitySync" target="_blank" rel="noopener noreferrer">GitHub</a>
         </div>
       </div>
     </footer>
   </div>
+  <script>
+    // Hero canvas: floating civic node network (brand blue + brand gold)
+    (function () {
+      const canvas = document.getElementById('pitch-hero-canvas');
+      if (!canvas) return;
+
+      const heroSection = canvas.closest('.hero');
+      if (!heroSection) return;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = 0;
+      let height = 0;
+      let dpr = Math.max(1, window.devicePixelRatio || 1);
+      let mouse = { x: -9999, y: -9999 };
+
+      function resize() {
+        dpr = Math.max(1, window.devicePixelRatio || 1);
+        width = heroSection.clientWidth;
+        height = heroSection.clientHeight;
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function getEventPoint(event) {
+        const rect = canvas.getBoundingClientRect();
+        return {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        };
+      }
+
+      heroSection.addEventListener('mousemove', event => {
+        const point = getEventPoint(event);
+        mouse.x = point.x;
+        mouse.y = point.y;
+      });
+
+      heroSection.addEventListener('mouseleave', () => {
+        mouse.x = -9999;
+        mouse.y = -9999;
+      });
+
+      const isMobile = window.matchMedia('(max-width: 860px)').matches;
+      const COUNT = isMobile ? 90 : 170;
+      const CONNECT_DIST = isMobile ? 120 : 150;
+      const MOUSE_RADIUS = isMobile ? 100 : 130;
+      const GOLD_RATIO = 0.24;
+
+      class Node {
+        constructor() {
+          this.reset();
+        }
+
+        reset() {
+          this.x = Math.random() * width;
+          this.y = Math.random() * height;
+          this.vx = (Math.random() - 0.5) * 0.32;
+          this.vy = (Math.random() - 0.5) * 0.32;
+          this.r = Math.random() * 1.9 + 0.8;
+          this.baseOpacity = Math.random() * 0.42 + 0.26;
+          this.opacity = this.baseOpacity;
+          this.gold = Math.random() < GOLD_RATIO;
+          this.pulseSpeed = Math.random() * 0.015 + 0.005;
+          this.pulseOffset = Math.random() * Math.PI * 2;
+        }
+
+        update(tick) {
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < MOUSE_RADIUS && dist > 0) {
+            const force = (1 - dist / MOUSE_RADIUS) * 0.015;
+            this.vx += (dx / dist) * force;
+            this.vy += (dy / dist) * force;
+          }
+
+          this.vx *= 0.992;
+          this.vy *= 0.992;
+          this.x += this.vx;
+          this.y += this.vy;
+
+          if (this.x < 0) {
+            this.x = 0;
+            this.vx *= -1;
+          }
+          if (this.x > width) {
+            this.x = width;
+            this.vx *= -1;
+          }
+          if (this.y < 0) {
+            this.y = 0;
+            this.vy *= -1;
+          }
+          if (this.y > height) {
+            this.y = height;
+            this.vy *= -1;
+          }
+
+          this.opacity = this.baseOpacity + Math.sin(tick * this.pulseSpeed + this.pulseOffset) * 0.11;
+        }
+
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+          ctx.fillStyle = this.gold
+            ? `rgba(221,158,51,${this.opacity})`
+            : `rgba(21,21,30,${this.opacity})`;
+          ctx.fill();
+        }
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+
+      const nodes = Array.from({ length: COUNT }, () => new Node());
+      let tick = 0;
+
+      function draw() {
+        ctx.clearRect(0, 0, width, height);
+        tick += 1;
+
+        for (let i = 0; i < nodes.length; i++) {
+          for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < CONNECT_DIST) {
+              const alpha = (1 - dist / CONNECT_DIST) * 0.22;
+              const bothGold = nodes[i].gold && nodes[j].gold;
+              const eitherGold = nodes[i].gold || nodes[j].gold;
+
+              ctx.strokeStyle = bothGold
+                ? `rgba(221,158,51,${alpha * 1.35})`
+                : eitherGold
+                  ? `rgba(146,110,48,${alpha})`
+                  : `rgba(21,21,30,${alpha})`;
+
+              ctx.lineWidth = 0.7;
+              ctx.beginPath();
+              ctx.moveTo(nodes[i].x, nodes[i].y);
+              ctx.lineTo(nodes[j].x, nodes[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        nodes.forEach(node => {
+          node.update(tick);
+          node.draw();
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    })();
+  </script>
 </body>
 </html>
