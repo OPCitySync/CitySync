@@ -135,13 +135,25 @@
 
     .nav-links a:hover { color: var(--brand-gold); }
 
-    .nav-demo-link {
-      color: var(--brand-gold);
+    .nav-links .nav-demo-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 10px 18px;
       font-weight: 700;
+      color: var(--brand-blue);
+      background: var(--brand-gold);
+      border: 1px solid rgba(221, 158, 51, 0.9);
+      box-shadow: 0 8px 18px rgba(221, 158, 51, 0.28);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease;
     }
 
-    .nav-demo-link:hover {
-      color: #f3d596;
+    .nav-links .nav-demo-link:hover {
+      color: var(--brand-blue);
+      background: #f3d596;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(221, 158, 51, 0.35);
     }
 
     .brand-nav {
@@ -377,7 +389,7 @@
     .problem-grid {
       margin-top: 28px;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
     }
 
@@ -671,13 +683,13 @@
             <div>
               <div class="eyebrow">Civic Coordination Infrastructure</div>
               <h1>
-                <span class="thin">From fragmented civic effort to a</span>
+                <span class="thin">from fragmented civic effort to a</span>
                 shared public operating system.
               </h1>
               <p class="hero-copy">
-                <strong>City/Sync helps cities coordinate civic capacity as real operating infrastructure.</strong>
-                It is designed to make public contribution legible, governable, and repeatable so local institutions can
-                align around shared priorities, execute with greater reliability, and continuously improve over time.
+                City/Sync helps cities coordinate latent civic capacity into real operating infrastructure. It is designed
+                to make public contribution legible and accessible so local institutions can align around shared priorities,
+                execute with greater reliability, and continuously improve over time.
               </p>
               <div class="hero-actions">
                 <a class="btn btn-primary" href="#purpose">Explore the Model</a>
@@ -687,7 +699,7 @@
 
             <div class="hero-image-stack" aria-hidden="true">
               <div class="hero-main-image">
-                <img src="assets/pitch/image-1.png" alt="City/scale civic activity connected through shared public infrastructure" />
+                <img src="assets/pitch/image-3.png" alt="City/Sync civic coordination vision" />
               </div>
             </div>
           </div>
@@ -715,9 +727,10 @@
             <div class="eyebrow">Purpose</div>
             <h2 class="section-title">Build the missing coordination layer for public life.</h2>
             <p class="section-lead">
-              City/Sync exists to help public-sector organizations coordinate distributed civic capacity without forcing
-              institutional replacement. The long-term mission is to provide a shared operating framework that cities can
-              adopt, adapt, and govern locally while preserving transparent standards for accountability and learning.
+              City/Sync exists to help public-sector organizations integrate distributed civic capacity into existing
+              systems and workflows, strengthening coordination without requiring institutional replacement. The long-term
+              mission is to provide a shared operating framework that cities can adopt, adapt, and govern locally while
+              preserving transparent standards for accountability and learning.
             </p>
             <ul class="bullet-list">
               <li><span class="dot"></span><span>Establish shared coordination infrastructure across civic actors and institutions.</span></li>
@@ -726,7 +739,7 @@
             </ul>
           </div>
           <div class="glass-card">
-            <img src="assets/pitch/image-6.png" alt="System pressures converging into coordinated public action" style="border-radius: 14px;" />
+            <img src="assets/pitch/image-7.png" alt="Purpose context for integrating civic capacity into public systems" style="border-radius: 14px;" />
           </div>
         </div>
       </section>
@@ -736,30 +749,39 @@
           <div class="eyebrow">Problem</div>
           <h2 class="section-title">Civic energy exists. Coordination infrastructure does not.</h2>
           <p class="section-lead">
-            Cities are full of contribution, but the systems that govern service delivery still treat most civic labor as invisible or incidental.
-            The result is fragmentation, low accountability, and missed public value.
+            Our local public-sector institutions are responsible for delivering essential services that communities rely on
+            every day. Yet the operating systems they use to coordinate people, allocate resources, and maintain
+            accountability were built for a different era and are increasingly mismatched to the scale and complexity of
+            21st-century challenges. Even the most capable local governments and nonprofits are held back by these outdated
+            mechanisms, making public service delivery slower, more expensive, harder to measure, and less empowering for
+            the communities they serve.
           </p>
 
           <div class="problem-grid">
             <article class="problem-card">
               <div class="number">01</div>
-              <h3>Invisible Value</h3>
-              <p>Non-market care and civic work are real inputs to city function, but they are rarely measured in operational systems.</p>
+              <h3>Siloed Coordination</h3>
+              <p>Agencies and nonprofits work on the same problems with disconnected systems, duplicating effort and losing shared visibility.</p>
             </article>
             <article class="problem-card">
               <div class="number">02</div>
-              <h3>Disconnected Capacity</h3>
-              <p>Community effort is high but not routable through shared standards, making execution brittle and one-off.</p>
+              <h3>Hard to Replicate What Works</h3>
+              <p>Even successful programs are difficult to standardize and reuse across neighborhoods or cities because processes are not portable.</p>
             </article>
             <article class="problem-card">
               <div class="number">03</div>
-              <h3>Legacy Governance Friction</h3>
-              <p>Top-down coordination alone struggles to adapt quickly to local context, urgency, and distributed contributors.</p>
+              <h3>Accountability Is Opaque</h3>
+              <p>It is hard for residents to see what is happening, what is working, and who is responsible across a fragmented service ecosystem.</p>
+            </article>
+            <article class="problem-card">
+              <div class="number">04</div>
+              <h3>Lack of Engagement Pathways</h3>
+              <p>Most residents do not have clear, low-friction ways to contribute to their cities.</p>
             </article>
           </div>
 
           <div class="glass-card" style="margin-top: 18px;">
-            <img src="assets/pitch/image-6.png" alt="Arrows converging to represent coordination pressure" style="border-radius: 14px;" />
+            <img src="assets/pitch/problem.png" alt="Public-sector coordination challenges and fragmentation" style="border-radius: 14px;" />
           </div>
         </div>
       </section>
@@ -767,16 +789,25 @@
       <section id="solution" class="section alt">
         <div class="container grid-2">
           <div class="glass-card">
-            <img src="assets/pitch/image-3.png" alt="Interconnected civic districts linked through a shared coordination framework" style="border-radius: 14px;" />
+            <img src="assets/pitch/solution.png" alt="City/Sync shared coordination infrastructure solution" style="border-radius: 14px;" />
           </div>
 
           <div>
             <div class="eyebrow">Solution</div>
             <h2 class="section-title">A shared coordination framework cities can govern and grow.</h2>
             <p class="section-lead">
-              City/Sync proposes a civic coordination layer that combines shared standards, local administrative pathways,
-              and governance feedback loops into one repeatable public framework. The objective is to make coordination
-              reliable across institutions while preserving local control over implementation choices.
+              City/Sync seeks to create a permanent piece of digital public infrastructure that provides cities a shared
+              coordination substrate that establishes a common set of rules, roles, and data standards for organizing public
+              work across institutions and communities. The protocol's foundation is an accessible contribution layer that
+              enables agencies and organizations to mobilize participation around local initiatives and solve community
+              challenges through structured, incentivized coordination. On top of that foundation, the protocol can support
+              portable coordination modules that standardize how tasks are defined, how participation is validated, how
+              responsibility is assigned, and how performance is measured across different organizations and jurisdictions.
+            </p>
+            <p class="section-lead" style="margin-top: 14px;">
+              By developing this infrastructure, City/Sync helps communities cultivate self-reliance by giving them the
+              tools and infrastructure that allows for collective action to become accessible, normalized, rewarded, and
+              capable of scaling beyond the limits of any single institution.
             </p>
 
             <div class="flow-strip">
@@ -801,23 +832,22 @@
         <div class="container grid-2">
           <div>
             <div class="eyebrow">Pilot Execution</div>
-            <h2 class="section-title">Berkeley and Mexico City as proving grounds.</h2>
+            <h2 class="section-title">Establishing a Public-Sector Economy</h2>
             <p class="section-lead">
-              The pilot validates whether this mechanism can operate under real-world constraints,
-              with real organizations, participants, and redemption behaviors.
-              The goal is not a concept demo. The goal is a procedural artifact cities can actually adopt.
+              The City/Sync pilot will seek to validate the foundational mechanism for a shared public operating system.
+              The pilot will seek to facilitate a unique public-sector economy that can operate under real-world
+              constraints, expanding the impact and mission of real organizations by rewarding civic participants through
+              a civic-credit system that will allow them to access local goods and services. The purpose of this pilot is
+              to generate a procedural artifact that will allow other cities to adopt and adapt the protocol according to
+              their needs.
             </p>
 
             <div class="glass-card" style="margin-top: 18px;">
               <h3 style="margin: 0 0 6px; font-size: 1.02rem;">Pilot-Ready Architecture</h3>
               <p style="margin: 0; color: var(--ink-soft); font-size: 0.92rem; line-height: 1.45;">
-                Built for real use in Berkeley and Mexico City, then designed to replicate across cities with local variation and shared standards.
+                For the initial pilot, City/Sync will be implemented in Berkeley, California and Mexico City, Mexico. It
+                is designed to replicate across cities with local variation and shared standards.
               </p>
-            </div>
-
-            <div class="pilot-cities">
-              <span class="city-pill">Berkeley, California</span>
-              <span class="city-pill">Mexico City, CDMX</span>
             </div>
 
             <div class="timeline">
@@ -831,28 +861,34 @@
               </div>
               <div class="timeline-item">
                 <strong>Phase 3: Codify Replication Standards</strong>
-                <span>Package governance and process logic for broader rollout and dPAN expansion.</span>
+                <span>Package governance and process logic for broader rollout to other cities.</span>
               </div>
             </div>
 
             <div class="flow-strip" style="margin-top: 22px;">
               <div class="flow-step">
-                <h3>Issuers</h3>
-                <p>Define, issue, and verify mission-aligned civic tasks.</p>
+                <h3>Issuer Organizations</h3>
+                <p>Issuer organizations define mission-aligned task functions, maintain local task catalogs, and issue
+                  time-bound opportunities under shared public standards. They verify completion quality, publish feedback,
+                  and maintain operational accountability so civic work translates into measurable public outcomes.</p>
               </div>
               <div class="flow-step">
-                <h3>Participants</h3>
-                <p>Claim and execute verified work; earn CITY and VOTE through completion.</p>
+                <h3>Civic Participants</h3>
+                <p>Civic participants browse and claim available tasks, execute approved civic labor, and submit proof for
+                  verification. Verified completion mints CITY and VOTE, turning contribution into usable access to local
+                  goods and services while building participatory influence in governance processes.</p>
               </div>
               <div class="flow-step">
-                <h3>Redeemers</h3>
-                <p>Honor offerings and burn CITY through redemption to close the loop.</p>
+                <h3>Redeemer Organizations</h3>
+                <p>Redeemer organizations maintain offering catalogs, commit live offerings each Epoch, and honor
+                  redemptions through QR-enabled point-of-service flows. Their participation closes the earn-to-burn loop,
+                  provides real utility for civic credits, and helps stabilize circulation in the public-sector economy.</p>
               </div>
             </div>
           </div>
 
           <div class="glass-card">
-            <img src="assets/pitch/image-4.png" alt="Pilot deployment context in Berkeley and Mexico City" style="border-radius: 14px;" />
+            <img src="assets/pitch/image-5.png" alt="Pilot role lifecycle and coordination dynamics" style="border-radius: 14px;" />
           </div>
         </div>
       </section>
@@ -860,15 +896,18 @@
       <section id="vision" class="section alt">
         <div class="container grid-2">
           <div class="glass-card">
-            <img src="assets/pitch/image-8.png" alt="Grid of civic participation and interoperable local ecosystems" style="border-radius: 14px;" />
+            <img src="assets/pitch/image-6.png" alt="Long-term decentralized public administration ecosystem" style="border-radius: 14px;" />
           </div>
           <div>
             <div class="eyebrow">Long-Term Vision</div>
-            <h2 class="section-title">From pilot validation to decentralized Public Administration Networks (dPANs).</h2>
+            <h2 class="section-title">Pilot validation to decentralized Public Administration Networks (dPANs).</h2>
             <p class="section-lead">
-              Once the base mechanism is validated, City/Sync can support local-chain implementations, domain-specific
-              decentralized Public Administration Network (<a href="https://www.city-sync.org/demo/citysync-framework" target="_blank" rel="noopener noreferrer">dPAN</a>)
-              applications, and eventually a broader market for exporting tested civic models and public-service delivery methods.
+              Once the base mechanism is validated through the Pilot Program, City/Sync will support the development of
+              local-chain implementations, and the creation of modular, domain-specific dPAN applications that can be
+              validated and integrated alongside local governments and institutions. Eventually, a broader market for
+              exporting these tested civic models and public-service delivery methods will be created and the formation of
+              a decentralized Public Administration marketplace can begin to share best practices for collective action with
+              cities around the world.
             </p>
             <ul class="bullet-list">
               <li><span class="dot"></span><span>Local chains that preserve city-level governance while retaining interoperability.</span></li>
