@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>City/Sync — Documentation</title>
+  <meta name="description" content="City/Sync documentation hub for foundation, pilot, technical, legal, and FAQ resources." />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Newsreader:opsz,wght@6..72,400;6..72,700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #fcfaf4;
+      --bg-soft: #f4efe4;
+      --paper: #ffffff;
+      --ink: #213238;
+      --ink-soft: #4d6067;
+      --brand-blue: #15151e;
+      --brand-gold: #dd9e33;
+      --line: #dfd7c7;
+      --radius-xl: 28px;
+      --radius-lg: 18px;
+      --shadow-lg: 0 26px 70px rgba(31, 50, 56, 0.14);
+      --shadow-md: 0 12px 30px rgba(31, 50, 56, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, var(--bg) 0%, #fffdf8 38%, var(--bg) 100%);
+      color: var(--ink);
+      font-family: "Space Grotesk", "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .container {
+      width: min(1240px, 94vw);
+      margin-inline: auto;
+    }
+
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--brand-blue);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .nav-row {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .brand-nav {
+      gap: 0;
+      font-size: 0;
+      font-weight: 400;
+    }
+
+    .brand-wordmark {
+      height: 34px;
+      width: auto;
+      display: block;
+    }
+
+    .header-label {
+      color: var(--brand-gold);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .docs-main {
+      padding: clamp(22px, 3vw, 34px) 0 clamp(66px, 8vw, 94px);
+    }
+
+    .docs-layout {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: clamp(18px, 2vw, 26px);
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 96px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(33, 50, 56, 0.12);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 14px;
+      max-height: calc(100vh - 130px);
+      overflow: auto;
+    }
+
+    .search-wrap {
+      position: sticky;
+      top: -14px;
+      z-index: 2;
+      margin: -14px -14px 10px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.9));
+      border-bottom: 1px solid rgba(33, 50, 56, 0.08);
+      border-top-left-radius: var(--radius-lg);
+      border-top-right-radius: var(--radius-lg);
+    }
+
+    .search-wrap input {
+      width: 100%;
+      border: 1px solid rgba(33, 50, 56, 0.2);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.94rem;
+      color: var(--ink);
+      background: #fff;
+      outline: none;
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--brand-gold);
+      box-shadow: 0 0 0 3px rgba(221, 158, 51, 0.14);
+    }
+
+    .tree-node + .tree-node {
+      margin-top: 3px;
+    }
+
+    .tree-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 34px;
+      border-radius: 9px;
+    }
+
+    .tree-row:hover {
+      background: rgba(244, 239, 228, 0.72);
+    }
+
+    .tree-toggle {
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: transparent;
+      color: var(--ink-soft);
+      border-radius: 6px;
+      cursor: pointer;
+      flex: 0 0 auto;
+      position: relative;
+    }
+
+    .tree-toggle::before {
+      content: "▸";
+      display: block;
+      line-height: 1;
+      font-size: 0.8rem;
+      transform: translateY(1px);
+      transition: transform 0.15s ease;
+    }
+
+    .tree-toggle.is-open::before {
+      transform: rotate(90deg) translateY(0);
+      transform-origin: center;
+    }
+
+    .tree-label {
+      border: none;
+      background: transparent;
+      color: var(--ink);
+      font-size: 0.9rem;
+      text-align: left;
+      padding: 7px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      font-weight: 500;
+    }
+
+    .tree-label.group {
+      font-weight: 700;
+      color: #2d4047;
+    }
+
+    .tree-label.selected {
+      background: rgba(221, 158, 51, 0.14);
+      color: #7a4f10;
+      box-shadow: inset 0 0 0 1px rgba(221, 158, 51, 0.35);
+    }
+
+    .tree-children {
+      margin-top: 2px;
+    }
+
+    .no-results {
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      padding: 10px;
+    }
+
+    .content-col {
+      min-width: 0;
+    }
+
+    .title-card,
+    .content-card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(33, 50, 56, 0.12);
+      border-radius: 20px;
+      box-shadow: var(--shadow-md);
+      padding: clamp(18px, 2.8vw, 30px);
+    }
+
+    .content-card {
+      margin-top: 14px;
+    }
+
+    .doc-path {
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .doc-title {
+      margin: 0;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+    }
+
+    .doc-summary {
+      margin: 12px 0 0;
+      color: var(--ink-soft);
+      max-width: 80ch;
+      font-size: 1.02rem;
+    }
+
+    .doc-section + .doc-section {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px dashed rgba(33, 50, 56, 0.18);
+    }
+
+    .doc-section h3 {
+      margin: 0 0 9px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .doc-section p {
+      margin: 0;
+      color: var(--ink-soft);
+    }
+
+    .doc-section p + p {
+      margin-top: 10px;
+    }
+
+    .doc-list {
+      margin: 10px 0 0;
+      padding-left: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .doc-list li {
+      display: grid;
+      grid-template-columns: 16px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--ink-soft);
+    }
+
+    .doc-list li::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 6px;
+      background: linear-gradient(120deg, var(--brand-gold), #f3d596);
+      box-shadow: 0 0 0 3px rgba(221, 158, 51, 0.12);
+    }
+
+    .footer {
+      padding: 38px 0 44px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.9rem;
+      background: var(--brand-blue);
+    }
+
+    .footer-row {
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      padding-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .links a:hover { color: var(--brand-gold); }
+
+    @media (max-width: 1000px) {
+      .docs-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-row">
+      <a class="brand brand-nav" href="/" aria-label="City/Sync Home">
+        <img class="brand-wordmark" src="assets/citysync-wordmark-frame3.png" alt="City/Sync" />
+      </a>
+      <div class="header-label">Documentation</div>
+    </div>
+  </header>
+
+  <main class="docs-main">
+    <div class="container docs-layout">
+      <aside class="sidebar" aria-label="Documentation Navigation">
+        <div class="search-wrap">
+          <input id="doc-search" type="search" placeholder="Search docs, sections, keywords..." aria-label="Search documentation" />
+        </div>
+        <div id="doc-tree"></div>
+      </aside>
+
+      <section class="content-col" aria-live="polite">
+        <article class="title-card">
+          <div id="doc-path" class="doc-path"></div>
+          <h1 id="doc-title" class="doc-title"></h1>
+          <p id="doc-summary" class="doc-summary"></p>
+        </article>
+
+        <article id="doc-content" class="content-card"></article>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-row">
+      <a class="brand brand-nav" href="/" aria-label="City/Sync Home">
+        <img class="brand-wordmark" src="assets/citysync-wordmark-frame3.png" alt="City/Sync" />
+      </a>
+      <div>© City/Sync. A nonprofit 501(c)3.</div>
+      <div class="links">
+        <a href="https://x.com/city_sync_" target="_blank" rel="noopener noreferrer">X</a>
+        <a href="https://discord.gg/ywzxhNQk6w" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="mailto:city-sync@pm.me">Email</a>
+        <a href="https://paragraph.com/@city-sync" target="_blank" rel="noopener noreferrer">Essays</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const DOCS_TREE = [
+      {
+        id: "foundation",
+        title: "City/Sync Foundation",
+        children: [
+          {
+            id: "foundation-overview",
+            title: "Mission and Framing",
+            keywords: ["public operating system", "coordination", "civic infrastructure"],
+            summary: "City/Sync is designed as civic coordination infrastructure that helps cities organize latent civic capacity into repeatable public-service operations.",
+            sections: [
+              {
+                heading: "Core Premise",
+                paragraphs: [
+                  "City/Sync treats civic contribution as operating input, not just community sentiment. The system exists to make contribution legible, measurable, and routable into institutional workflows.",
+                  "The long-term objective is to offer cities a shared public operating framework that can be adopted locally while preserving transparent standards."
+                ]
+              },
+              {
+                heading: "What This Foundation Covers",
+                bullets: [
+                  "The mission-level reason City/Sync exists.",
+                  "How the framework differs from one-off civic engagement tools.",
+                  "The operating assumptions that inform pilot design."
+                ]
+              }
+            ]
+          },
+          {
+            id: "foundation-economy",
+            title: "Public-Sector Economy",
+            keywords: ["city", "vote", "redeem", "credits"],
+            summary: "The public-sector economy converts verified civic labor into usable civic credits and aligns those credits with local service delivery.",
+            sections: [
+              {
+                heading: "Mechanism",
+                paragraphs: [
+                  "Issuer organizations publish verifiable civic work. Civic Participants execute that work. Redeemer organizations provide access to goods/services in exchange for civic credits.",
+                  "This loop is designed to increase institutional throughput while preserving controls around quality and accountability."
+                ]
+              }
+            ],
+            children: [
+              {
+                id: "foundation-economy-loop",
+                title: "Earn-to-Burn Loop",
+                keywords: ["issuance", "redemption", "burn"],
+                summary: "Credits are issued on verified task completion and removed from circulation through redemptions, creating an operational feedback loop.",
+                sections: [
+                  {
+                    heading: "Loop Stages",
+                    bullets: [
+                      "Verified civic work mints CITY.",
+                      "CITY is redeemed for local offerings.",
+                      "Burn events remove CITY and reveal utilization demand."
+                    ]
+                  },
+                  {
+                    heading: "Why It Matters",
+                    paragraphs: [
+                      "This mechanism ties civic production to real access and provides measurable data for tuning issuance policy over time."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "foundation-economy-controls",
+                title: "Economic Controls",
+                keywords: ["issuance cap", "equilibrium", "epoch"],
+                summary: "The pilot uses issuance caps and role-based controls to keep credit issuance aligned with redemption capacity.",
+                sections: [
+                  {
+                    heading: "Control Levers",
+                    bullets: [
+                      "Epoch-level issuance caps.",
+                      "Role-level permissions and governance checkpoints.",
+                      "Operational metrics to evaluate expansion or tightening."
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "foundation-governance",
+            title: "Governance Direction",
+            keywords: ["polycentric", "committee", "vote"],
+            summary: "Governance starts with City/Sync defaults and progressively shifts toward committee-led, role-aware decision authority.",
+            sections: [
+              {
+                heading: "Transition Model",
+                paragraphs: [
+                  "Early operations run on explicit defaults so workflow quality can be validated quickly. As reliability matures, committees assume more direct control over process decisions.",
+                  "The governance direction is polycentric: local units manage local context while maintaining shared standards across the framework."
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "general",
+        title: "General",
+        children: [
+          {
+            id: "general-getting-started",
+            title: "Getting Started",
+            keywords: ["roles", "demo", "onboarding"],
+            summary: "Start by selecting a role and understanding how shared state works across Issuer, Civic Participant, and Redeemer experiences.",
+            sections: [
+              {
+                heading: "First Steps",
+                bullets: [
+                  "Pick a role and complete profile setup.",
+                  "Review role dashboards and core tabs.",
+                  "Run the tutorial walkthrough to see end-to-end flow."
+                ]
+              }
+            ]
+          },
+          {
+            id: "general-role-overview",
+            title: "Role Overview",
+            keywords: ["issuer", "participant", "redeemer"],
+            summary: "Each role represents a functional actor in the public-sector economy and operates with specific responsibilities.",
+            sections: [
+              {
+                heading: "Role Responsibilities",
+                bullets: [
+                  "Issuer: issue and verify mission-aligned civic tasks.",
+                  "Civic Participant: execute tasks and redeem credits.",
+                  "Redeemer: honor offerings and close the utility loop."
+                ]
+              }
+            ]
+          },
+          {
+            id: "general-ui-model",
+            title: "Navigation and UI Model",
+            keywords: ["tabs", "learn more", "activity"],
+            summary: "The interface is organized around role tabs, contextual information panels, and event-driven updates.",
+            sections: [
+              {
+                heading: "Interaction Pattern",
+                paragraphs: [
+                  "Major operations are tab-driven. Transactional actions trigger onchain writes and activity updates. Learn More cards provide contextual guidance for each role surface."
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "pilot",
+        title: "Pilot",
+        children: [
+          {
+            id: "pilot-program",
+            title: "Pilot Program Overview",
+            keywords: ["berkeley", "mexico city", "pilot"],
+            summary: "The pilot validates the foundational mechanism for City/Sync under real-world operational constraints.",
+            sections: [
+              {
+                heading: "Pilot Goals",
+                bullets: [
+                  "Prove throughput and reliability of role workflows.",
+                  "Validate issuance/redemption equilibrium controls.",
+                  "Generate a procedural artifact other cities can adapt."
+                ]
+              }
+            ]
+          },
+          {
+            id: "pilot-epochs",
+            title: "Epoch Operations",
+            keywords: ["epoch", "cadence", "cycle"],
+            summary: "Pilot operations run in Epoch cycles that coordinate issuance, verification, redemption, and governance checkpoints.",
+            sections: [
+              {
+                heading: "Epoch Cadence",
+                paragraphs: [
+                  "Epochs provide a bounded learning window. Performance data from each epoch is used to tune policy, rates, and operational standards for the next cycle."
+                ]
+              }
+            ]
+          },
+          {
+            id: "pilot-mce",
+            title: "MCE Lifecycle",
+            keywords: ["mass coordination events", "vote", "proposal"],
+            summary: "MCEs align city-scale priorities with executable task planning and coordinated redemption incentives.",
+            sections: [
+              {
+                heading: "Lifecycle",
+                bullets: [
+                  "Proposal creation and committee selection.",
+                  "Participant voting and final proposal activation.",
+                  "Planning, execution, closeout, and iteration."
+                ]
+              }
+            ],
+            children: [
+              {
+                id: "pilot-mce-voting",
+                title: "MCE Voting",
+                keywords: ["vote token", "selection"],
+                summary: "Civic Participants use VOTE to prioritize proposals, creating a visible bridge between contribution and governance.",
+                sections: [
+                  {
+                    heading: "Voting Controls",
+                    bullets: [
+                      "Epoch-bound voting windows.",
+                      "Transparent tally display and proposal ordering.",
+                      "Role-aware participation constraints."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "pilot-mce-closeout",
+                title: "MCE Closeout",
+                keywords: ["kpi", "lessons", "iteration"],
+                summary: "Closeout captures KPI outcomes, lessons learned, and carryover opportunities for the next cycle.",
+                sections: [
+                  {
+                    heading: "Outputs",
+                    bullets: [
+                      "Completion metrics and verification quality.",
+                      "Redemption utilization and capacity signal.",
+                      "Operational recommendations for next epoch."
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "technical",
+        title: "Technical",
+        children: [
+          {
+            id: "technical-architecture",
+            title: "System Architecture",
+            keywords: ["contracts", "frontend", "state"],
+            summary: "City/Sync combines role-based application workflows with onchain state for critical lifecycle events.",
+            sections: [
+              {
+                heading: "Architecture Layers",
+                bullets: [
+                  "Client role applications and tutorial flows.",
+                  "Onchain contracts for issuance and redemption events.",
+                  "Local storage for profile and UI persistence."
+                ]
+              }
+            ],
+            children: [
+              {
+                id: "technical-onchain",
+                title: "Onchain Write Model",
+                keywords: ["wallet", "preparecalls", "paymaster"],
+                summary: "Critical actions write onchain while sponsorship policies absorb user-facing gas complexity.",
+                sections: [
+                  {
+                    heading: "Write Lifecycle",
+                    bullets: [
+                      "Action trigger from role workflow.",
+                      "Transaction pending state and confirmation surfacing.",
+                      "Post-write refresh of role activity/state panels."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "technical-local-chain-path",
+                title: "Local-Chain Path",
+                keywords: ["local chains", "dpan", "future"],
+                summary: "Post-pilot expansion supports local-chain implementations for municipal customization with shared standards.",
+                sections: [
+                  {
+                    heading: "Expansion Direction",
+                    paragraphs: [
+                      "Local-chain deployments create room for jurisdiction-specific governance while preserving interoperability and portable civic models."
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "technical-data-sync",
+            title: "Data and Sync",
+            keywords: ["sync", "activity panel", "state refresh"],
+            summary: "The UI favors action-triggered refresh over continuous polling to reduce unnecessary infrastructure load.",
+            sections: [
+              {
+                heading: "Current Behavior",
+                bullets: [
+                  "Role entry performs initial load.",
+                  "Onchain actions trigger follow-up refresh.",
+                  "Activity panel follows role context and global state updates."
+                ]
+              }
+            ]
+          },
+          {
+            id: "technical-security",
+            title: "Security and Reliability",
+            keywords: ["validation", "sanctions", "abuse controls"],
+            summary: "Operational controls combine role permissions, verification standards, and graduated sanctions.",
+            sections: [
+              {
+                heading: "Control Surface",
+                bullets: [
+                  "Role-gated action availability.",
+                  "Task lifecycle verification checkpoints.",
+                  "RD/RS internal control metrics and sanctions policy hooks."
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "legal",
+        title: "Legal",
+        children: [
+          {
+            id: "legal-nonprofit",
+            title: "Entity and Program Structure",
+            keywords: ["501c3", "nonprofit", "operations"],
+            summary: "City/Sync is framed as nonprofit civic infrastructure with governance pathways designed for public accountability.",
+            sections: [
+              {
+                heading: "Scope",
+                paragraphs: [
+                  "This section will host legal framing for the nonprofit operating model, pilot governance obligations, and jurisdictional partnership structure."
+                ]
+              }
+            ]
+          },
+          {
+            id: "legal-terms",
+            title: "Terms and Participation",
+            keywords: ["terms", "acceptable use", "participation"],
+            summary: "Defines participation expectations across roles, including acceptable use and enforcement boundaries.",
+            sections: [
+              {
+                heading: "Policy Areas",
+                bullets: [
+                  "Role-specific participant obligations.",
+                  "Task verification and dispute posture.",
+                  "Platform misuse and sanctions pathways."
+                ]
+              }
+            ]
+          },
+          {
+            id: "legal-privacy",
+            title: "Privacy and Data Handling",
+            keywords: ["privacy", "data", "retention"],
+            summary: "Outlines how user and activity data are handled across local storage, operational records, and onchain events.",
+            sections: [
+              {
+                heading: "Topics to Cover",
+                bullets: [
+                  "Data minimization and retention standards.",
+                  "Onchain transparency vs personal data boundaries.",
+                  "Administrative access and disclosure policy."
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "faq",
+        title: "FAQ",
+        children: [
+          {
+            id: "faq-participants",
+            title: "For Civic Participants",
+            keywords: ["claim", "execute", "redeem", "wallet"],
+            summary: "Common participant questions about claiming tasks, submitting proof, rewards, and redemption behavior.",
+            sections: [
+              {
+                heading: "Typical Questions",
+                bullets: [
+                  "How many tasks can I claim at once?",
+                  "What happens if my task is rejected?",
+                  "Where do I see CITY and VOTE balances?"
+                ]
+              }
+            ]
+          },
+          {
+            id: "faq-issuers",
+            title: "For Issuers",
+            keywords: ["catalog", "verification", "issuance"],
+            summary: "Issuer-focused questions about catalog management, issuance limits, verification workflows, and no-show handling.",
+            sections: [
+              {
+                heading: "Typical Questions",
+                bullets: [
+                  "How are task types approved into catalog?",
+                  "How does issuance cap enforcement work?",
+                  "When should I use Reject & Mint vs Verify & Mint?"
+                ]
+              }
+            ]
+          },
+          {
+            id: "faq-redeemers",
+            title: "For Redeemers",
+            keywords: ["offerings", "qr", "redemption"],
+            summary: "Redeemer-oriented questions covering offering catalogs, commitment rules, QR flow, and capacity planning.",
+            sections: [
+              {
+                heading: "Typical Questions",
+                bullets: [
+                  "Can offering rates be modified after commit?",
+                  "How does QR redemption confirmation work?",
+                  "How should redeemers tune offering capacity?"
+                ]
+              }
+            ]
+          },
+          {
+            id: "faq-support",
+            title: "Troubleshooting and Support",
+            keywords: ["support", "issues", "session", "onchain"],
+            summary: "Common operational issues and where to route support requests during demo and pilot phases.",
+            sections: [
+              {
+                heading: "Support Flow",
+                bullets: [
+                  "Session readiness and sign-in troubleshooting.",
+                  "Onchain write failures and sponsorship policy checks.",
+                  "How to report role-specific UX defects."
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const state = {
+      query: "",
+      selectedId: "",
+      expanded: new Set(DOCS_TREE.map(node => node.id)),
+    };
+
+    const index = new Map();
+
+    function walk(nodes, path = []) {
+      nodes.forEach(node => {
+        const nextPath = [...path, node];
+        index.set(node.id, { node, path: nextPath });
+        if (node.children?.length) {
+          walk(node.children, nextPath);
+        }
+      });
+    }
+
+    walk(DOCS_TREE);
+
+    function firstDocumentId(nodes = DOCS_TREE) {
+      for (const node of nodes) {
+        if (Array.isArray(node.sections)) return node.id;
+        if (node.children?.length) {
+          const nested = firstDocumentId(node.children);
+          if (nested) return nested;
+        }
+      }
+      return "";
+    }
+
+    function includesText(value, query) {
+      return String(value || "").toLowerCase().includes(query);
+    }
+
+    function collectSearchText(node) {
+      const sectionText = (node.sections || [])
+        .flatMap(section => [section.heading, ...(section.paragraphs || []), ...(section.bullets || [])])
+        .join(" ");
+      const keyText = (node.keywords || []).join(" ");
+      return `${node.title || ""} ${node.summary || ""} ${sectionText} ${keyText}`.toLowerCase();
+    }
+
+    function matchesSubtree(node, query) {
+      if (!query) return true;
+      if (includesText(collectSearchText(node), query)) return true;
+      return (node.children || []).some(child => matchesSubtree(child, query));
+    }
+
+    function toggleNode(id) {
+      if (state.expanded.has(id)) {
+        state.expanded.delete(id);
+      } else {
+        state.expanded.add(id);
+      }
+      renderTree();
+    }
+
+    function selectDocument(id, updateHash = true) {
+      const entry = index.get(id);
+      if (!entry) return;
+      if (!Array.isArray(entry.node.sections)) return;
+
+      state.selectedId = id;
+      renderTree();
+      renderContent();
+
+      if (updateHash) {
+        history.replaceState(null, "", `#${id}`);
+      }
+    }
+
+    function renderTree() {
+      const tree = document.getElementById("doc-tree");
+      tree.innerHTML = "";
+
+      const query = state.query.trim().toLowerCase();
+
+      function renderNode(node, depth) {
+        if (!matchesSubtree(node, query)) return null;
+
+        const hasChildren = Array.isArray(node.children) && node.children.length > 0;
+        const isDoc = Array.isArray(node.sections);
+        const isExpanded = query ? true : state.expanded.has(node.id);
+
+        const wrap = document.createElement("div");
+        wrap.className = "tree-node";
+
+        const row = document.createElement("div");
+        row.className = "tree-row";
+        row.style.paddingLeft = `${depth * 12}px`;
+
+        if (hasChildren) {
+          const toggle = document.createElement("button");
+          toggle.className = `tree-toggle${isExpanded ? " is-open" : ""}`;
+          toggle.type = "button";
+          toggle.setAttribute("aria-label", isExpanded ? `Collapse ${node.title}` : `Expand ${node.title}`);
+          toggle.addEventListener("click", event => {
+            event.stopPropagation();
+            toggleNode(node.id);
+          });
+          row.appendChild(toggle);
+        } else {
+          const spacer = document.createElement("span");
+          spacer.style.width = "22px";
+          spacer.style.height = "22px";
+          spacer.style.display = "inline-block";
+          row.appendChild(spacer);
+        }
+
+        const label = document.createElement("button");
+        label.type = "button";
+        label.className = `tree-label${hasChildren ? " group" : ""}${state.selectedId === node.id ? " selected" : ""}`;
+        label.textContent = node.title;
+
+        if (isDoc) {
+          label.addEventListener("click", () => selectDocument(node.id));
+        } else if (hasChildren) {
+          label.addEventListener("click", () => toggleNode(node.id));
+        } else {
+          label.disabled = true;
+        }
+
+        row.appendChild(label);
+        wrap.appendChild(row);
+
+        if (hasChildren && isExpanded) {
+          const childrenWrap = document.createElement("div");
+          childrenWrap.className = "tree-children";
+
+          node.children.forEach(child => {
+            const childNode = renderNode(child, depth + 1);
+            if (childNode) childrenWrap.appendChild(childNode);
+          });
+
+          if (childrenWrap.childElementCount > 0) {
+            wrap.appendChild(childrenWrap);
+          }
+        }
+
+        return wrap;
+      }
+
+      DOCS_TREE.forEach(node => {
+        const element = renderNode(node, 0);
+        if (element) tree.appendChild(element);
+      });
+
+      if (!tree.childElementCount) {
+        const none = document.createElement("div");
+        none.className = "no-results";
+        none.textContent = "No matching documentation topics found.";
+        tree.appendChild(none);
+      }
+    }
+
+    function renderContent() {
+      const entry = index.get(state.selectedId);
+      if (!entry) return;
+
+      const { node, path } = entry;
+      const docPath = document.getElementById("doc-path");
+      const docTitle = document.getElementById("doc-title");
+      const docSummary = document.getElementById("doc-summary");
+      const docContent = document.getElementById("doc-content");
+
+      const pathTitles = path.map(step => step.title);
+      docPath.textContent = `Documentation / ${pathTitles.join(" / ")}`;
+      docTitle.textContent = node.title;
+      docSummary.textContent = node.summary || "";
+
+      docContent.innerHTML = "";
+
+      (node.sections || []).forEach(section => {
+        const sectionEl = document.createElement("section");
+        sectionEl.className = "doc-section";
+
+        const heading = document.createElement("h3");
+        heading.textContent = section.heading;
+        sectionEl.appendChild(heading);
+
+        (section.paragraphs || []).forEach(text => {
+          const paragraph = document.createElement("p");
+          paragraph.textContent = text;
+          sectionEl.appendChild(paragraph);
+        });
+
+        if (Array.isArray(section.bullets) && section.bullets.length > 0) {
+          const list = document.createElement("ul");
+          list.className = "doc-list";
+
+          section.bullets.forEach(item => {
+            const listItem = document.createElement("li");
+            const text = document.createElement("span");
+            text.textContent = item;
+            listItem.appendChild(text);
+            list.appendChild(listItem);
+          });
+
+          sectionEl.appendChild(list);
+        }
+
+        docContent.appendChild(sectionEl);
+      });
+    }
+
+    function initSelection() {
+      const hashId = decodeURIComponent(window.location.hash.replace("#", "")).trim();
+      const hashEntry = index.get(hashId);
+      if (hashEntry && Array.isArray(hashEntry.node.sections)) {
+        state.selectedId = hashId;
+      } else {
+        state.selectedId = firstDocumentId();
+      }
+    }
+
+    function bindEvents() {
+      const search = document.getElementById("doc-search");
+      search.addEventListener("input", event => {
+        state.query = event.target.value || "";
+        renderTree();
+      });
+    }
+
+    initSelection();
+    bindEvents();
+    renderTree();
+    renderContent();
+
+    window.addEventListener("hashchange", () => {
+      const hashId = decodeURIComponent(window.location.hash.replace("#", "")).trim();
+      if (!hashId) return;
+      const entry = index.get(hashId);
+      if (entry && Array.isArray(entry.node.sections)) {
+        state.selectedId = hashId;
+        renderTree();
+        renderContent();
+      }
+    });
+  </script>
+</body>
+</html>
