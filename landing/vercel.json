@@ -1,6 +1,7 @@
 {
   "rewrites": [
+    { "source": "/legacy", "destination": "/index.html" },
     { "source": "/pitch", "destination": "/index-pitch.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)", "destination": "/index-pitch.html" }
   ]
 }
