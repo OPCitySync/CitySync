@@ -1021,14 +1021,16 @@ export default function AppShell({
               background: redesignSkin
                 ? "linear-gradient(145deg, rgba(249,244,234,0.99) 0%, rgba(245,237,221,0.98) 55%, rgba(239,230,210,0.96) 100%)"
                 : `linear-gradient(145deg, ${accentColor}90 0%, rgba(130,100,240,0.6) 45%, rgba(52,238,182,0.5) 100%)`,
-              boxShadow: redesignSkin
-                ? "0 0 0 1px rgba(72,56,30,0.16), 0 14px 28px rgba(76,58,28,0.2)"
-                : `
-                  0 0 0 1px rgba(0,0,0,0.6),
-                  0 0 60px ${accentColor}28,
-                  0 0 120px rgba(100,80,220,0.15),
-                  0 40px 80px rgba(0,0,0,0.8)
-                `,
+              boxShadow: embedMode
+                ? "none"
+                : redesignSkin
+                  ? "0 0 0 1px rgba(72,56,30,0.16), 0 14px 28px rgba(76,58,28,0.2)"
+                  : `
+                    0 0 0 1px rgba(0,0,0,0.6),
+                    0 0 60px ${accentColor}28,
+                    0 0 120px rgba(100,80,220,0.15),
+                    0 40px 80px rgba(0,0,0,0.8)
+                  `,
               height: "100%",
               display: "flex",
             }}
