@@ -135,27 +135,6 @@
 
     .nav-links a:hover { color: var(--brand-gold); }
 
-    .nav-links .nav-demo-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: 10px 18px;
-      font-weight: 700;
-      color: var(--brand-blue);
-      background: var(--brand-gold);
-      border: 1px solid rgba(221, 158, 51, 0.9);
-      box-shadow: 0 8px 18px rgba(221, 158, 51, 0.28);
-      transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease, color 0.18s ease;
-    }
-
-    .nav-links .nav-demo-link:hover {
-      color: var(--brand-blue);
-      background: #f3d596;
-      transform: translateY(-1px);
-      box-shadow: 0 10px 20px rgba(221, 158, 51, 0.35);
-    }
-
     .brand-nav {
       gap: 0;
       font-size: 0;
@@ -758,10 +737,6 @@
         color: var(--accent);
       }
 
-      .mobile-menu .nav-demo-link {
-        color: var(--brand-gold);
-        font-weight: 700;
-      }
     }
   </style>
 </head>
@@ -779,7 +754,6 @@
           <a href="#solution">Solution</a>
           <a href="#pilot">Pilot</a>
           <a href="#vision">Vision</a>
-          <a class="nav-demo-link" href="https://demo.city-sync.org/demo/login">Explore the Demo</a>
         </nav>
 
         <details class="mobile-nav">
@@ -790,7 +764,6 @@
             <a href="#solution">Solution</a>
             <a href="#pilot">Pilot</a>
             <a href="#vision">Vision</a>
-            <a class="nav-demo-link" href="https://demo.city-sync.org/demo/login">Explore the Demo</a>
           </div>
         </details>
       </div>
@@ -813,7 +786,7 @@
                 execute with greater reliability, and continuously improve over time.
               </p>
               <div class="hero-actions">
-                <a class="btn btn-primary" href="#purpose">Explore the Model</a>
+                <a class="btn btn-primary" href="https://demo.city-sync.org/demo/login">Explore the Demo</a>
                 <a class="btn btn-ghost" href="#join">Get Involved</a>
               </div>
             </div>
@@ -1042,7 +1015,7 @@
               </p>
             </div>
             <div class="cta-actions">
-              <a class="btn btn-primary" href="https://www.city-sync.org" target="_blank" rel="noopener noreferrer">Visit Main City/Sync Site</a>
+              <button class="btn btn-primary" type="button">Read our Docs</button>
               <a class="btn btn-ghost" href="https://artizen.fund/index/p/citysync?season=6" target="_blank" rel="noopener noreferrer">Support the Work</a>
             </div>
           </div>
