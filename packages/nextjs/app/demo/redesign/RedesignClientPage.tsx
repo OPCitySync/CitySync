@@ -21,8 +21,10 @@ const roleAccentByKey: Record<RoleKey, string> = {
   redeemer: "#34eeb6",
 };
 
-const EMBED_SRC = "/demo/issuer?embed=1&skin=classic";
 const BOX_STEP_PATTERN = /^box(\d+)$/;
+
+const isRoleKey = (value: string | null): value is RoleKey =>
+  value === "issuer" || value === "participant" || value === "redeemer";
 
 type TutorialContent = {
   stepLabel: string;
@@ -174,7 +176,14 @@ const getTutorialContent = (step: string): TutorialContent => {
 export default function RedesignClientPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeRole, setActiveRole] = React.useState<RoleKey>("issuer");
+  const [activeRole, setActiveRole] = React.useState<RoleKey>(() => {
+    if (typeof window !== "undefined") {
+      const requestedRole = new URLSearchParams(window.location.search).get("role");
+      if (isRoleKey(requestedRole)) return requestedRole;
+    }
+    return "issuer";
+  });
+  const initialEmbedRoleRef = React.useRef<RoleKey>(activeRole);
   const [isTourStarted, setIsTourStarted] = React.useState(false);
   const [tutorialStep, setTutorialStep] = React.useState<string>("dismissed");
   const [learnMoreByRole, setLearnMoreByRole] = React.useState<LearnMoreStateByRole>({
@@ -183,10 +192,11 @@ export default function RedesignClientPage() {
     redeemer: { cards: [], relatedLinks: [] },
   });
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
+  const embedSrc = React.useMemo(() => `/demo/${initialEmbedRoleRef.current}?embed=1&skin=classic`, []);
 
   React.useEffect(() => {
     const requestedRole = searchParams?.get("role");
-    if (requestedRole === "issuer" || requestedRole === "participant" || requestedRole === "redeemer") {
+    if (isRoleKey(requestedRole)) {
       setActiveRole(requestedRole);
     }
   }, [searchParams]);
@@ -418,18 +428,25 @@ export default function RedesignClientPage() {
       <header className={styles.topNav}>
         <div className={styles.topNavInner}>
           <div className={styles.brandWrap}>
-            <Image
-              src="/citysync-wordmark-frame3.png"
-              alt="City/Sync"
-              width={192}
-              height={44}
-              className={styles.wordmark}
-            />
+            <a href="https://www.city-sync.org" aria-label="Go to city-sync.org">
+              <Image
+                src="/citysync-wordmark-frame3.png"
+                alt="City/Sync"
+                width={192}
+                height={44}
+                className={styles.wordmark}
+              />
+            </a>
           </div>
           <div className={styles.topActions}>
-            <button className={styles.primaryBtn} type="button">
+            <a
+              className={styles.primaryBtn}
+              href="https://forms.gle/sgaA7mNAbaxsSmAA9"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Request Pilot for your City
-            </button>
+            </a>
           </div>
         </div>
       </header>
@@ -474,7 +491,7 @@ export default function RedesignClientPage() {
             <div className={styles.embedFrame}>
               <iframe
                 ref={iframeRef}
-                src={EMBED_SRC}
+                src={embedSrc}
                 title="AppShell Preview"
                 className={styles.embedIframe}
                 loading="lazy"

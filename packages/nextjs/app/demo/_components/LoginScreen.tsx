@@ -24,7 +24,11 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
     >
       {/* Logo */}
       <div style={{ marginBottom: 48, textAlign: "center" }}>
-        <div style={{ marginBottom: 16, display: "inline-flex", justifyContent: "center" }}>
+        <a
+          href="https://www.city-sync.org"
+          style={{ marginBottom: 16, display: "inline-flex", justifyContent: "center", textDecoration: "none" }}
+          aria-label="Go to city-sync.org"
+        >
           <Image
             src="/citysync-wordmark-frame3.png"
             alt="City/Sync"
@@ -33,7 +37,7 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
             style={{ width: "min(240px, 72vw)", height: "auto" }}
             priority
           />
-        </div>
+        </a>
 
         <p
           style={{

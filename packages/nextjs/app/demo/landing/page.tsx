@@ -134,9 +134,13 @@ export default function DemoLandingPage() {
           borderBottom: "1px solid rgba(255,255,255,0.07)",
         }}
       >
-        <Link href="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 12 }}>
+        <a
+          href="https://www.city-sync.org"
+          style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 12 }}
+          aria-label="Go to city-sync.org"
+        >
           <Image src="/citysync-wordmark-frame3.png" alt="City/Sync" width={170} height={40} priority />
-        </Link>
+        </a>
 
         <button
           onClick={() => logout()}
