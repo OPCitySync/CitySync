@@ -528,9 +528,41 @@
         ]
       },
       {
-        id: "general",
-        title: "General",
+        id: "protocol",
+        title: "City/Sync Protocol",
         children: [
+          {
+            id: "technical-infrastructure",
+            title: "Technical Infrastructure",
+            keywords: ["mobile first", "smart contracts", "gas sponsorship", "chain abstraction", "wallet"],
+            summary:
+              "City/Sync is a mobile-first application built around smart-contract infrastructure, sponsored gas, and an intentionally abstracted user experience that hides chain complexity while preserving verifiable state.",
+            sections: [
+              {
+                heading: "Mobile-First by Design",
+                paragraphs: [
+                  "The pilot is designed around a mobile-first application because the most likely user behavior in real deployments will happen on phones: discovering tasks, claiming work, showing QR redemption flows, reviewing balances, and receiving guidance while moving through the city.",
+                  "That does not mean the protocol is conceptually limited to mobile. It means the initial experience is built around the device and behavior pattern most likely to support broad real-world use."
+                ]
+              },
+              {
+                heading: "Smart Contracts and Sponsored Gas",
+                bullets: [
+                  "Critical lifecycle events are recorded through smart-contract interactions.",
+                  "Gas is sponsored so users do not need to hold crypto or understand transaction costs.",
+                  "Wallets are abstracted into the onboarding flow so users are not treated like blockchain operators.",
+                  "The chain layer exists to provide verifiable shared state, not to burden participants with technical overhead."
+                ]
+              },
+              {
+                heading: "Why Chain Behavior Is Highly Abstracted",
+                paragraphs: [
+                  "City/Sync is not trying to teach public-sector organizations or community members how to use blockchain infrastructure. It is trying to give them a better coordination tool. That is why chain behavior is intentionally hidden behind normal application actions such as claiming a task, verifying completion, or redeeming an offering.",
+                  "Users should understand what they are doing in civic and operational terms, not in RPC methods, gas policies, or wallet internals. The technical system is there to support integrity, transparency, and shared state while remaining mostly invisible to end users."
+                ]
+              }
+            ]
+          },
           {
             id: "general-issuer-organizations",
             title: "Issuer Organizations",
@@ -894,7 +926,7 @@
       },
       {
         id: "pilot",
-        title: "Pilot",
+        title: "City/Sync Pilot Program",
         children: [
           {
             id: "pilot-overview",
@@ -1023,44 +1055,6 @@
                 paragraphs: [
                   "The pilot is the first step toward a larger ecosystem of local coordination infrastructure. Once validated, City/Sync can expand into other areas, other cities, and eventually other public-service domains through a shared but adaptable operating model.",
                   "That is how the protocol moves from pilot to precedent, and from precedent to broader public adoption."
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: "technical",
-        title: "Technical",
-        children: [
-          {
-            id: "technical-infrastructure",
-            title: "Technical Infrastructure",
-            keywords: ["mobile first", "smart contracts", "gas sponsorship", "chain abstraction", "wallet"],
-            summary:
-              "City/Sync is a mobile-first application built around smart-contract infrastructure, sponsored gas, and an intentionally abstracted user experience that hides chain complexity while preserving verifiable state.",
-            sections: [
-              {
-                heading: "Mobile-First by Design",
-                paragraphs: [
-                  "The pilot is designed around a mobile-first application because the most likely user behavior in real deployments will happen on phones: discovering tasks, claiming work, showing QR redemption flows, reviewing balances, and receiving guidance while moving through the city.",
-                  "That does not mean the protocol is conceptually limited to mobile. It means the initial experience is built around the device and behavior pattern most likely to support broad real-world use."
-                ]
-              },
-              {
-                heading: "Smart Contracts and Sponsored Gas",
-                bullets: [
-                  "Critical lifecycle events are recorded through smart-contract interactions.",
-                  "Gas is sponsored so users do not need to hold crypto or understand transaction costs.",
-                  "Wallets are abstracted into the onboarding flow so users are not treated like blockchain operators.",
-                  "The chain layer exists to provide verifiable shared state, not to burden participants with technical overhead."
-                ]
-              },
-              {
-                heading: "Why Chain Behavior Is Highly Abstracted",
-                paragraphs: [
-                  "City/Sync is not trying to teach public-sector organizations or community members how to use blockchain infrastructure. It is trying to give them a better coordination tool. That is why chain behavior is intentionally hidden behind normal application actions such as claiming a task, verifying completion, or redeeming an offering.",
-                  "Users should understand what they are doing in civic and operational terms, not in RPC methods, gas policies, or wallet internals. The technical system is there to support integrity, transparency, and shared state while remaining mostly invisible to end users."
                 ]
               }
             ]

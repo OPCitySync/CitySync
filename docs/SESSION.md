@@ -9,6 +9,9 @@ Type **"Start Session"** at the beginning of any new Cowork session. Claude will
 ## Maintenance Rule
 When major product, contract-integration, or deployment-impacting changes are made, update this `SESSION.md` in the same working session before commit.
 
+## User Workflow Preference
+When the user asks for a code or content change based on a prompt, make the change and commit it in the same turn unless the user explicitly says not to commit.
+
 ---
 
 ## Last Updated
