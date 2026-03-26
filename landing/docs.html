@@ -587,63 +587,97 @@
               {
                 id: "foundation-issuance-cap",
                 title: "The Issuance Cap",
-                keywords: ["issuance cap", "epoch", "city issuance", "cap", "economic control", "credit supply"],
+                keywords: ["issuance cap", "epoch", "city issuance", "cap", "economic control", "credit supply", "allocation", "redeemer capacity", "issuer budget"],
                 summary:
-                  "The Issuance Cap is the economic control lever that limits how much CITY can enter circulation during a given Epoch. It exists to protect the value of civic credits by keeping issuance tethered to redemption capacity and real operating conditions.",
+                  "The Issuance Cap is the governance-set ceiling on how much CITY can enter circulation during an Epoch. It is the protocol's primary supply control, keeping civic-credit issuance tied to redemption capacity, system health, and disciplined growth.",
                 sections: [
                   {
-                    heading: "What the Issuance Cap Is",
+                    heading: "Overview",
                     paragraphs: [
-                      "The Issuance Cap is the maximum amount of CITY that can be distributed during an Epoch. In the City/Sync pilot, an Epoch lasts three months. Rather than allowing unlimited credit creation, the protocol sets a boundary around how much civic credit can enter the system during that period.",
-                      "This cap is one of the main ways City/Sync treats the economy as a governed public system instead of an open-ended rewards program. It gives governance a hard mechanism for ensuring that credit creation remains disciplined."
+                      "In any economy, the supply of currency matters. Too much money chasing too few goods produces inflation. Too little circulating produces stagnation. A civic-credit economy faces the same structural challenge even if it is not a monetary economy in the traditional sense.",
+                      "The Issuance Cap is City/Sync's answer to that problem. It is the governance-set ceiling on how many credits can enter the system in a given period. It is the single most important economic control tool in the protocol because its calibration determines whether the civic-credit economy feels alive, useful, and sustainable."
                     ]
                   },
                   {
-                    heading: "Why the Cap Exists",
+                    heading: "How the Cap Is Determined",
                     paragraphs: [
-                      "CITY only retains meaning if participants can actually use what they earn. If credits are issued too quickly, balances pile up in wallets faster than the redeemer side can absorb them. At that point, the reward begins to lose force and redeemer organizations may start to feel burdened by the system.",
-                      "The cap exists to protect against that outcome. It ensures that issuance stays connected to what the economy can realistically support, helping preserve trust for Issuer Organizations, Civic-Participants, and Redeemer Organizations alike."
+                      "The Issuance Cap is not an arbitrary number. It follows a simple principle: the system cannot sustainably issue more credits than it can absorb. Absorption happens through redemption. The total amount of credits that Redeemer Organizations can realistically absorb defines the system's redemption capacity.",
+                      "That capacity is shaped by real-world constraints: how many transit rides, class seats, museum tickets, or other offerings exist, and how much of that capacity redeemers are willing to commit to the civic-credit program. Governance then applies a safety margin so the system does not operate at the edge of failure."
                     ],
                     bullets: [
-                      "It prevents over-issuance from weakening the value of CITY.",
-                      "It protects redeemer capacity from becoming overwhelmed.",
-                      "It keeps governance anchored to real economic limits rather than optimism alone.",
-                      "It creates a repeatable rule structure that other cities can eventually adopt."
+                      "The cap is derived from redemption capacity, not aspiration.",
+                      "A safety margin of roughly 25-30% protects the system from uncertainty in participant behavior and seasonal variation.",
+                      "Governance does not rely on dormant-credit expiry as its primary source of headroom.",
+                      "A system operating around 70-75% of estimated capacity is far safer than one operating at 100%."
                     ]
                   },
                   {
-                    heading: "How the Cap Relates to the Epoch",
+                    heading: "How the Cap Functions During an Epoch",
                     paragraphs: [
-                      "The cap is not adjusted every day. It is reviewed on an Epoch basis so the system has enough time to generate meaningful operating data before decisions are made. This rhythm gives governance a stable decision window instead of forcing constant reactive changes.",
-                      "At the end of each Epoch, governance can review circulation, redemption behavior, active balances, redeemer pressure, and retention. Based on those conditions, the next Epoch's issuance cap can be expanded, tightened, or held steady."
+                      "In the pilot, the cap is reviewed on an Epoch basis, with each Epoch lasting three months. This creates a stable decision window instead of forcing governance to make constant reactive changes. At the end of each Epoch, the Issuer Committee can review updated data on redemption capacity, participant behavior, backlog, and system health.",
+                      "The cap can rise when redemption capacity expands and conditions remain healthy. It can contract when credits are accumulating, services are getting crowded, or redeemer capacity shrinks. In that sense, the cap is not just a limit. It is a feedback mechanism that helps the economy respond to actual conditions."
                     ]
                   },
                   {
-                    heading: "What the Cap Responds To",
+                    heading: "Setting the Cap at the Start of the Pilot",
                     paragraphs: [
-                      "The Issuance Cap should respond to the actual condition of the public-sector economy. If credits are circulating well, redemption options have room, and participants are using what they earn, the cap may be able to grow. If credits are accumulating, services are getting crowded, or retention is weakening, the cap may need to tighten.",
-                      "In that sense, the cap is less like a fixed number and more like a feedback mechanism. It helps the system respond to reality rather than continue issuing on autopilot."
+                      "The pilot begins with a cold-start problem: there is no live historical data on redemption speed, participant churn, or actual redeemer throughput. The responsible response is to start conservatively and let the data teach the system how to grow.",
+                      "City/Sync therefore begins with work that already exists. Issuer Organizations in the pilot already run volunteer programs. Libraries already facilitate tutoring. Parks departments already run cleanups. Nonprofits already coordinate food distribution, mentorship, or elder support. The initial cap is pegged to the scale of this existing civic activity rather than to aspirational future demand."
+                    ]
+                  },
+                  {
+                    heading: "Beginning With What Already Exists",
+                    paragraphs: [
+                      "This starting logic accomplishes two things. First, it grounds the first cap in real throughput rather than theory alone. Second, it makes onboarding more compelling for organizations and volunteers. The system is not asking people to behave in entirely new ways on day one. It is recognizing civic work that is already happening and giving that work economic form.",
+                      "Once the system is live and generating real data, governance can gradually raise the cap. But expansion follows a strict sequence: expand redeemer capacity first, confirm that the economy absorbs it, and only then increase issuance."
+                    ]
+                  },
+                  {
+                    heading: "How Credits Are Allocated Among Issuers",
+                    paragraphs: [
+                      "The cap defines how many total credits can enter the system each Epoch. But because there are multiple Issuer Organizations, the system also needs a clear allocation model. For the pilot, City/Sync uses equal allocation per Epoch. The total cap is divided evenly among all active Issuer Organizations.",
+                      "If the quarterly cap is 1,800 credits and there are six active Issuers, each receives 300 credits for the Epoch. This choice is deliberate. Equal allocation is legible, transparent, and low-friction. It gives each Issuer a known budget while avoiding opaque weighting formulas, favoritism, and governance overhead during the early pilot stage."
                     ],
                     bullets: [
-                      "Redemption capacity across the redeemer network",
-                      "How quickly issued credits are being redeemed",
-                      "How large active participant backlogs are becoming",
-                      "Whether participants are staying engaged or drifting into dormancy",
-                      "Whether new organizational growth can be supported without destabilizing the system"
+                      "Equal allocation reinforces parity across institutions of different size and prestige.",
+                      "It gives smaller grassroots organizations the same initial economic voice as larger institutions.",
+                      "It simplifies governance during the pilot while trust and operating routines are still forming.",
+                      "It can evolve later if governance decides weighted allocation is needed, but parity is the default starting point."
                     ]
                   },
                   {
-                    heading: "What the Cap Means for Issuer Organizations",
+                    heading: "Budgets Enable Planning",
                     paragraphs: [
-                      "Issuer Organizations do not operate in a vacuum. Their task issuance exists within a larger public economy shared with other issuers and redeemers. The Issuance Cap is what keeps that shared environment fair and stable. It ensures that one organization's growth does not undermine the broader legitimacy of the system.",
-                      "For issuers, this means task distribution should always be understood as part of a governed pool of issuance capacity. Strong issuer performance, strong redemption behavior, and healthy circulation can support expansion. But expansion has to remain coordinated with the broader economy."
+                      "The most important operational effect of the cap is that it gives Issuer Organizations a real budget to plan against. When an issuer knows how many credits it can distribute over the next three months, it can make thoughtful decisions about task pricing, task mix, and task volume.",
+                      "This budget constraint introduces useful discipline. An issuer cannot simply price everything generously and flood the system with credits. If it wants to increase incentives in one area, it must make tradeoffs somewhere else. That is exactly what turns issuance into thoughtful coordination instead of indiscriminate distribution."
                     ]
                   },
                   {
-                    heading: "Why It Matters for Replication",
+                    heading: "Rate Setting Within a Budget",
                     paragraphs: [
-                      "The Issuance Cap is one of the features that makes City/Sync portable. Other cities will only adopt this model if they can see that economic growth is managed through clear rules and review periods, not through improvised judgment alone.",
-                      "A well-governed cap demonstrates that civic-credit issuance can scale responsibly. That is essential not just for pilot stability, but for proving that City/Sync can function as durable public infrastructure."
+                      "Each Issuer Organization has autonomy over how it prices tasks within its budget. The broader protocol can provide guidance on relative pricing, but the issuer ultimately decides how to allocate its credits across task categories. This allows organizations to align pricing with real civic need, actual volunteer behavior, and observed demand.",
+                      "The three-month Epoch makes this especially powerful. At the start of a new Epoch, an issuer can look back at prior data, see which tasks were oversubscribed, which went unfilled, which led to repeat participation, and which generated visible value. It can then recalibrate its task pricing accordingly."
+                    ]
+                  },
+                  {
+                    heading: "Why Existing Issuers Grow Before the Network Expands",
+                    paragraphs: [
+                      "When the economy has room to grow, City/Sync does not default to adding more issuers immediately. The first response is to increase the budgets of existing Issuer Organizations so they can deepen their impact. This is a strategic choice. The protocol needs participating institutions to feel that City/Sync materially increases what they can accomplish over time.",
+                      "An issuer whose budget grows across successive Epochs experiences the protocol as a tool for expanding civic output. It can coordinate more tutoring, more cleanups, more outreach, and more public-serving work. That experience turns an organization from a cautious participant into an advocate. If all growth were constantly absorbed by new entrants, existing issuers would see their budgets remain flat and the protocol would feel static rather than generative."
+                    ]
+                  },
+                  {
+                    heading: "When New Issuers Should Join",
+                    paragraphs: [
+                      "This does not mean the network never grows. It means new issuers are added after per-issuer growth, not instead of it. New issuers should join when existing issuers are using their budgets effectively, the economy has room to grow, and a structural gap exists that the current network cannot fill.",
+                      "Those gaps may be geographic, domain-specific, or equity-related. A neighborhood without issuer presence, a type of civic work not currently represented, or a community that is underserved by the current network may all justify onboarding a new issuer. The general rule is simple: grow existing issuers by default, add new issuers by exception, and tie that exception to a real gap in the civic landscape."
+                    ]
+                  },
+                  {
+                    heading: "Why It Matters",
+                    paragraphs: [
+                      "The Issuance Cap is not a bureaucratic constraint. It is the economic immune system of the civic-credit economy. It ensures that each credit issued carries real value because there is a credible path to spending it. It gives Issuer Organizations the predictability they need to plan well. And it creates the conditions for disciplined growth that strengthens institutional commitment to the protocol.",
+                      "This approach will not produce the fastest possible expansion of the City/Sync network. But it is designed to produce the most durable one: a network where every issuer has experienced the protocol as a tool that increased its impact, where every credit issued still feels meaningful, and where the economy earns permanence through demonstrated value rather than ambition alone."
                     ]
                   }
                 ]
