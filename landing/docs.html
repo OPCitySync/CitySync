@@ -394,94 +394,133 @@
         title: "City/Sync Foundation",
         children: [
           {
-            id: "foundation-overview",
-            title: "Mission and Framing",
-            keywords: ["public operating system", "coordination", "civic infrastructure"],
-            summary: "City/Sync is designed as civic coordination infrastructure that helps cities organize latent civic capacity into repeatable public-service operations.",
+            id: "foundation-public-sector-economy",
+            title: "Public-Sector Economy",
+            keywords: ["city", "vote", "credits", "issuance", "redemption", "civic-credit loop"],
+            summary:
+              "The public-sector economy is the operational heart of City/Sync: verified civic labor produces civic credits, those credits unlock real local access, and redemption data feeds back into policy and coordination decisions.",
             sections: [
               {
-                heading: "Core Premise",
+                heading: "What the Public-Sector Economy Is",
                 paragraphs: [
-                  "City/Sync treats civic contribution as operating input, not just community sentiment. The system exists to make contribution legible, measurable, and routable into institutional workflows.",
-                  "The long-term objective is to offer cities a shared public operating framework that can be adopted locally while preserving transparent standards."
+                  "City/Sync proposes a bounded coordination economy for public life. It does not try to replace private markets, public budgets, or philanthropy. Instead, it creates a structured way to recognize civic contribution that markets routinely fail to price and that public institutions often struggle to organize at scale.",
+                  "In this model, Issuer Organizations publish verifiable civic work, Civic-Participants perform that work, and Redeemer Organizations accept civic credits in exchange for goods and services. The result is a repeatable loop where contribution becomes legible, reward becomes useful, and institutions gain a clearer operating pathway for mobilizing local capacity."
                 ]
               },
               {
-                heading: "What This Foundation Covers",
+                heading: "How the Civic-Credit Loop Works",
                 bullets: [
-                  "The mission-level reason City/Sync exists.",
-                  "How the framework differs from one-off civic engagement tools.",
-                  "The operating assumptions that inform pilot design."
+                  "An Issuer Organization creates or issues a task that serves a public good or public service objective.",
+                  "A Civic-Participant claims the task, completes it, and submits evidence or proof for review.",
+                  "The Issuer verifies the work and mints CITY and VOTE according to the approved rate and workflow.",
+                  "The Civic-Participant can redeem CITY with Redeemer Organizations offering local goods or services.",
+                  "When redemption happens, CITY is burned and removed from circulation, creating a visible record of utility and demand."
+                ]
+              },
+              {
+                heading: "Why This Loop Matters",
+                paragraphs: [
+                  "The system only works if contribution is connected to real use. Issuance without redemption produces weak signals and idle balances. Redemption without meaningful contribution turns the system into subsidy without coordination value. City/Sync is built around the idea that the public-sector economy must be useful, measurable, and operationally stable.",
+                  "That is why the protocol treats issuance and redemption as two sides of the same mechanism. Verified work expands civic capacity; redemption closes the loop by proving that the reward is functionally meaningful in local life."
                 ]
               }
             ]
           },
           {
-            id: "foundation-economy",
-            title: "Public-Sector Economy",
-            keywords: ["city", "vote", "redeem", "credits"],
-            summary: "The public-sector economy converts verified civic labor into usable civic credits and aligns those credits with local service delivery.",
+            id: "foundation-public-economy-models",
+            title: "Public Economy Models",
+            keywords: ["bounded coordination economy", "model", "incentive design", "public economy"],
+            summary:
+              "City/Sync is not a generic rewards program and not a charity layer. It is a public coordination model designed to organize contribution, institutional participation, and civic legitimacy around measurable outcomes.",
             sections: [
               {
-                heading: "Mechanism",
+                heading: "How the Model Differs from Familiar Systems",
                 paragraphs: [
-                  "Issuer organizations publish verifiable civic work. Civic Participants execute that work. Redeemer organizations provide access to goods/services in exchange for civic credits.",
-                  "This loop is designed to increase institutional throughput while preserving controls around quality and accountability."
-                ]
-              }
-            ],
-            children: [
-              {
-                id: "foundation-economy-loop",
-                title: "Earn-to-Burn Loop",
-                keywords: ["issuance", "redemption", "burn"],
-                summary: "Credits are issued on verified task completion and removed from circulation through redemptions, creating an operational feedback loop.",
-                sections: [
-                  {
-                    heading: "Loop Stages",
-                    bullets: [
-                      "Verified civic work mints CITY.",
-                      "CITY is redeemed for local offerings.",
-                      "Burn events remove CITY and reveal utilization demand."
-                    ]
-                  },
-                  {
-                    heading: "Why It Matters",
-                    paragraphs: [
-                      "This mechanism ties civic production to real access and provides measurable data for tuning issuance policy over time."
-                    ]
-                  }
+                  "Traditional volunteer systems rely heavily on goodwill, fragmented administration, and weak feedback loops. Traditional market systems only reward labor when private demand can price it. Traditional public-sector systems often recognize the need for civic contribution but lack a portable operational structure for managing it consistently across organizations.",
+                  "City/Sync sits in the gap between those models. It creates a civic-credit economy that is bounded by governance, rate logic, verification standards, and redemption capacity. That bounded structure is what makes the model operational rather than symbolic."
                 ]
               },
               {
-                id: "foundation-economy-controls",
-                title: "Economic Controls",
-                keywords: ["issuance cap", "equilibrium", "epoch"],
-                summary: "The pilot uses issuance caps and role-based controls to keep credit issuance aligned with redemption capacity.",
-                sections: [
-                  {
-                    heading: "Control Levers",
-                    bullets: [
-                      "Epoch-level issuance caps.",
-                      "Role-level permissions and governance checkpoints.",
-                      "Operational metrics to evaluate expansion or tightening."
-                    ]
-                  }
+                heading: "Core Design Assumptions",
+                bullets: [
+                  "Civic labor has real public value even when markets do not price it well.",
+                  "Institutions need standardized operating pathways, not just more enthusiasm or more outreach.",
+                  "Credits must remain tied to verifiable work and usable redemption pathways to stay meaningful.",
+                  "Governance must tune the model as a real system, not treat it like a one-time app launch.",
+                  "Replication requires portable procedures and standards, not just software."
+                ]
+              },
+              {
+                heading: "Why the Model Is Bounded",
+                paragraphs: [
+                  "A public economy cannot be left open-ended if it is expected to retain legitimacy. Rates, issuance, task approval, redemption commitments, and governance checkpoints all exist to ensure that civic credits remain credible. The goal is not infinite issuance or unconstrained participation. The goal is a stable operating environment that can expand responsibly.",
+                  "That bounded structure is what allows City/Sync to function as civic infrastructure rather than just another incentive layer."
+                ]
+              }
+            ]
+          },
+          {
+            id: "foundation-decision-triggers",
+            title: "Decision Triggers",
+            keywords: ["triggers", "metrics", "policy", "expansion", "governance"],
+            summary:
+              "Decision triggers are the operational signals that tell City/Sync when a policy, rate, governance, or workflow adjustment is needed. They turn observation into action and prevent the pilot from drifting without response.",
+            sections: [
+              {
+                heading: "What a Decision Trigger Is",
+                paragraphs: [
+                  "A decision trigger is not a fully automated government of the system. It is a defined signal that prompts review or intervention. City/Sync uses these triggers to keep the pilot responsive to actual behavior instead of intuition alone.",
+                  "Triggers matter because the public-sector economy is dynamic. Issuance can outrun redemption. Redeemers can experience uneven demand. Task quality can vary. Participation can grow in ways that are healthy or unhealthy. Governance needs a disciplined way to know when to intervene."
+                ]
+              },
+              {
+                heading: "Examples of Trigger Conditions",
+                bullets: [
+                  "CITY balances begin accumulating faster than participants are redeeming them.",
+                  "Redemption demand concentrates on too few offerings or overwhelms available capacity.",
+                  "No Show rates or rejected work increase beyond acceptable operating ranges.",
+                  "Verification quality falls or issuer response times become unreliable.",
+                  "An MCE receives strong voting support but lacks sufficient execution readiness.",
+                  "A city or neighborhood shows enough issuer and redeemer density to justify expansion."
+                ]
+              },
+              {
+                heading: "What Triggers Are Used For",
+                paragraphs: [
+                  "When triggers fire, governance can slow or tighten issuance, ask for rate changes, adjust sanctions settings, pause certain expansion plans, or require more operational support for specific organizations. In other words, triggers help move the pilot from reactive improvisation to managed iteration.",
+                  "This is one of the reasons City/Sync is framed as infrastructure. It is not just a user interface for tasks and rewards. It is a system for making higher-quality civic coordination decisions over time."
                 ]
               }
             ]
           },
           {
             id: "foundation-governance",
-            title: "Governance Direction",
-            keywords: ["polycentric", "committee", "vote"],
-            summary: "Governance starts with City/Sync defaults and progressively shifts toward committee-led, role-aware decision authority.",
+            title: "How Governance Works",
+            keywords: ["governance", "committee", "roles", "issuer committee", "policy"],
+            summary:
+              "City/Sync governance is designed as operational governance: who approves what, how standards are maintained, when rules change, and how the pilot stays accountable while it evolves.",
             sections: [
               {
-                heading: "Transition Model",
+                heading: "Governance Is About Operating Rules",
                 paragraphs: [
-                  "Early operations run on explicit defaults so workflow quality can be validated quickly. As reliability matures, committees assume more direct control over process decisions.",
-                  "The governance direction is polycentric: local units manage local context while maintaining shared standards across the framework."
+                  "Governance in City/Sync is not just voting or community sentiment. It is the structure through which task rules, rate logic, catalog standards, sanctions, MCE proposal pathways, and expansion decisions are maintained. The pilot begins with explicit defaults and oversight, then progressively codifies those decisions into more durable processes.",
+                  "The basic principle is simple: the system should evolve through legible procedures, not ad hoc exceptions. That gives organizations confidence that participation is bounded by standards rather than personalities."
+                ]
+              },
+              {
+                heading: "Who Governance Serves",
+                bullets: [
+                  "Issuer Organizations need clear approval and verification standards.",
+                  "Redeemer Organizations need confidence that issuance remains tethered to real utility and demand.",
+                  "Civic-Participants need fair treatment, understandable expectations, and predictable consequences.",
+                  "Cities and institutions need evidence that the model can be administered responsibly."
+                ]
+              },
+              {
+                heading: "How Governance Evolves",
+                paragraphs: [
+                  "At the beginning of the pilot, City/Sync and designated committees provide the strongest structure: approving task types, reviewing offerings, tuning issuance logic, and defining sanctions and reporting expectations. As the pilot matures, these governance patterns become more portable and can be localized without abandoning shared standards.",
+                  "The long-term goal is not centralized micromanagement. It is a governance architecture that lets cities adapt the model while preserving transparency, comparability, and accountability."
                 ]
               }
             ]
@@ -493,47 +532,360 @@
         title: "General",
         children: [
           {
-            id: "general-getting-started",
-            title: "Getting Started",
-            keywords: ["roles", "demo", "onboarding"],
-            summary: "Start by selecting a role and understanding how shared state works across Issuer, Civic Participant, and Redeemer experiences.",
+            id: "general-issuer-organizations",
+            title: "Issuer Organizations",
+            keywords: ["issuer", "volunteer programs", "impact", "public service"],
+            summary:
+              "Issuer Organizations are the institutional engine of City/Sync. They use the protocol to expand mission impact, reward civic participation, and become visible leaders in how their category organizes public contribution.",
             sections: [
               {
-                heading: "First Steps",
-                bullets: [
-                  "Pick a role and complete profile setup.",
-                  "Review role dashboards and core tabs.",
-                  "Run the tutorial walkthrough to see end-to-end flow."
-                ]
-              }
-            ]
-          },
-          {
-            id: "general-role-overview",
-            title: "Role Overview",
-            keywords: ["issuer", "participant", "redeemer"],
-            summary: "Each role represents a functional actor in the public-sector economy and operates with specific responsibilities.",
-            sections: [
-              {
-                heading: "Role Responsibilities",
-                bullets: [
-                  "Issuer: issue and verify mission-aligned civic tasks.",
-                  "Civic Participant: execute tasks and redeem credits.",
-                  "Redeemer: honor offerings and close the utility loop."
-                ]
-              }
-            ]
-          },
-          {
-            id: "general-ui-model",
-            title: "Navigation and UI Model",
-            keywords: ["tabs", "learn more", "activity"],
-            summary: "The interface is organized around role tabs, contextual information panels, and event-driven updates.",
-            sections: [
-              {
-                heading: "Interaction Pattern",
+                heading: "Why Issuers Participate",
                 paragraphs: [
-                  "Major operations are tab-driven. Transactional actions trigger onchain writes and activity updates. Learn More cards provide contextual guidance for each role surface."
+                  "City/Sync gives Issuer Organizations a structured way to expand volunteer and civic-labor programs without turning them into informal or chaotic side channels. The platform helps issuers turn mission-aligned contribution into something legible, repeatable, and rewardable.",
+                  "That means issuers do not just get more volunteer energy. They gain a clearer operating model for identifying useful civic work, issuing it responsibly, verifying outcomes, and building a reputation as a leader in their domain."
+                ]
+              },
+              {
+                heading: "What Issuers Gain",
+                bullets: [
+                  "Expanded organizational impact through a larger and more visible civic workforce.",
+                  "The ability to reward participants for meaningful contributions to public outcomes.",
+                  "Control over task design, issuance timing, verification standards, and participant feedback loops.",
+                  "A public leadership position within their category as standards-setters for mission-aligned civic work."
+                ]
+              },
+              {
+                heading: "Why Control Matters",
+                paragraphs: [
+                  "Issuers retain control over what work is issued, how it is described, how it is verified, and how it is managed over time. City/Sync is not designed to strip away operational judgment from organizations. It is designed to give that judgment a stronger framework.",
+                  "That balance is important. Issuers need enough autonomy to align tasks with mission, but enough shared standards to keep the broader public-sector economy coherent and trustworthy."
+                ]
+              }
+            ],
+            children: [
+              {
+                id: "general-issuer-task-issuance",
+                title: "Task Issuance",
+                keywords: ["task issuance", "catalog", "submit task", "remove from catalog", "unissue"],
+                summary:
+                  "Task issuance is the process through which Issuer Organizations define, approve, publish, distribute, and manage civic work inside the protocol.",
+                sections: [
+                  {
+                    heading: "Task Rules",
+                    paragraphs: [
+                      "City/Sync does not allow unrestricted task creation. Every task type needs to fit the protocol's operating rules. The initial ruleset is intentionally clear: tasks cannot replace existing paid functions of the organization, and tasks must facilitate the delivery of a public good or public service.",
+                      "These rules exist to keep the protocol mission-aligned and politically defensible. They help ensure that civic labor expands institutional capacity rather than being used to undercut paid work or create ambiguous task categories."
+                    ]
+                  },
+                  {
+                    heading: "Catalog Logic and Distribution",
+                    bullets: [
+                      "New task ideas are proposed through Submit Task for Approval using a standardized template.",
+                      "Approved task types are added to the issuer's task catalog so they can be issued repeatedly without redefining the work each time.",
+                      "Tasks can be removed from the catalog when an issuer no longer wants that task type available for future issuance.",
+                      "Issuers can issue multiple instances of an approved task, creating claimable opportunities for participants.",
+                      "Unissue removes open task instances from circulation when operational needs change."
+                    ]
+                  },
+                  {
+                    heading: "Why the Catalog Matters",
+                    paragraphs: [
+                      "The catalog is what turns tasks into infrastructure rather than one-off listings. It creates consistency in rates, language, scope, and operational expectations. Over time, it also creates institutional memory about which task types work well and which ones need refinement.",
+                      "For issuers, this means task issuance becomes easier to manage. For the broader protocol, it means civic labor becomes more legible and comparable across organizations."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "general-issuer-task-verification",
+                title: "Task Verification",
+                keywords: ["verify and mint", "reject and mint", "no show", "verification"],
+                summary:
+                  "Task verification is the issuer-side trust layer. It is where organizations confirm work quality, respond to attendance failures, and maintain credibility in the public-sector economy.",
+                sections: [
+                  {
+                    heading: "Why Verification Exists",
+                    paragraphs: [
+                      "Issuers are responsible for determining whether a task was actually completed and whether the work was satisfactory. This is one of the most important functions in the protocol because issuance only retains legitimacy if organizations are willing to verify responsibly.",
+                      "Verification is not just about catching abuse. It is about preserving quality standards, giving useful feedback, and ensuring that civic credits remain tied to real contribution."
+                    ]
+                  },
+                  {
+                    heading: "Verification Actions in the App",
+                    bullets: [
+                      "Verify & Mint confirms satisfactory completion and distributes the approved reward.",
+                      "Reject & Mint records that the work did not meet expectations, still processes minting in the current workflow, and creates an accountability signal through feedback and scoring impact.",
+                      "No Show handling lets issuers mark a claimed task as unattended when a participant fails to appear, removing that task from the claim state and preserving operational clarity."
+                    ]
+                  },
+                  {
+                    heading: "Operational Importance",
+                    paragraphs: [
+                      "These actions help issuers manage real-world uncertainty. Some participants do excellent work. Some fail to show. Some complete the work but not to standard. The protocol needs a structured way to record all three realities without collapsing the larger trust model.",
+                      "Good verification protects issuers, gives participants clearer expectations, and produces better data for governance and future rate-setting."
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "general-redeemer-organizations",
+            title: "Redeemer Organizations",
+            keywords: ["redeemer", "capacity", "offerings", "local support"],
+            summary:
+              "Redeemer Organizations make civic credits real. They turn verified public contribution into practical access to goods and services, while gaining a structured way to support civic labor and make better use of underutilized capacity.",
+            sections: [
+              {
+                heading: "Why Redeemers Participate",
+                paragraphs: [
+                  "Redeemers occupy a critical role in the City/Sync loop because they provide the utility that makes civic credits meaningful. Their participation signals that civic work is not just recognized symbolically, but honored in everyday life through real access.",
+                  "For many organizations, the protocol creates a new way to incentivize impact while utilizing capacity that might otherwise remain underused. That could mean empty seats, off-peak service slots, lightly used programs, or mission-aligned offerings that can be made available without severe operational disruption."
+                ]
+              },
+              {
+                heading: "What Redeemers Gain",
+                bullets: [
+                  "A structured way to support civic labor and local nonprofit or public-sector work.",
+                  "A new channel for public visibility, community goodwill, and brand alignment with civic impact.",
+                  "The ability to turn underused capacity into a meaningful public contribution mechanism.",
+                  "Participation in a local ecosystem where offerings are discovered inside a civic workflow rather than generic advertising channels."
+                ]
+              },
+              {
+                heading: "Why Their Role Matters",
+                paragraphs: [
+                  "Without redeemers, issuance remains one-sided and credits risk losing practical meaning. Redeemers are what close the loop. They make it possible for participants to experience the protocol not just as work and verification, but as a real exchange between contribution and local value.",
+                  "That is why Redeemer Organizations are not an add-on to the system. They are a central part of how the public-sector economy proves usefulness."
+                ]
+              }
+            ],
+            children: [
+              {
+                id: "general-redeemer-offerings",
+                title: "Offerings",
+                keywords: ["offerings", "committed offerings", "mce offerings", "catalog"],
+                summary:
+                  "Offerings are the redemption-side inventory of the protocol. They allow Redeemer Organizations to define what they will honor, at what rate, and under what conditions.",
+                sections: [
+                  {
+                    heading: "How Offerings Work",
+                    paragraphs: [
+                      "Redeemers maintain an offering catalog that stores possible redemption options. They can add offerings to the catalog, update the allowed fields in that flow, and then commit active offerings for the current epoch. A committed offering is not just a listing. It is an operational promise to honor that rate during the period in which it is active.",
+                      "This distinction matters because it lets redeemers prepare offerings thoughtfully before making them visible as live redemption opportunities."
+                    ]
+                  },
+                  {
+                    heading: "Committed and MCE Offerings",
+                    bullets: [
+                      "Committed offerings are standard epoch offerings that participants can browse and redeem during normal protocol use.",
+                      "MCE offerings are tied to active Mass Coordination Events and reinforce city-scale participation around specific shared priorities.",
+                      "Offerings can be used to highlight services, products, or access opportunities that organizations want the public to notice and engage with.",
+                      "The platform functions as a form of civic advertising because offerings appear inside a contribution and redemption journey rather than a generic marketplace."
+                    ]
+                  },
+                  {
+                    heading: "Why Offerings Are Strategically Valuable",
+                    paragraphs: [
+                      "Offerings give Redeemer Organizations a way to shape public attention around what they provide. A museum, transit provider, nonprofit program, venue, or local business can use the platform to create a direct relationship between public contribution and access.",
+                      "That gives offerings a dual role: they are both redemption infrastructure and a high-trust engagement surface for the organization."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "general-redeemer-redemption",
+                title: "Redemption",
+                keywords: ["redemption", "qr", "checkout", "burn", "point of sale"],
+                summary:
+                  "Redemption is the moment when civic credits become local access. City/Sync begins with a QR-based redemption model because it is the most pragmatic way to integrate with real service delivery and checkout behavior.",
+                sections: [
+                  {
+                    heading: "How Redemption Works",
+                    paragraphs: [
+                      "A participant chooses an offering and presents the relevant QR flow at checkout or point of service. When the QR code is scanned, the protocol calls the burn function for the priced amount of CITY and records the redemption event. That burn is the economic closeout of the reward side of the loop.",
+                      "The key design choice here is simplicity. Staff do not need to understand smart contracts, gas, or wallets. They only need a clear confirmation flow that tells them whether the redemption succeeded."
+                    ]
+                  },
+                  {
+                    heading: "Employee Checkout Process",
+                    bullets: [
+                      "The participant selects the offering they want to redeem.",
+                      "The redeemer presents the QR code associated with that offering.",
+                      "The participant scans or completes the redemption flow in their wallet experience.",
+                      "Visual and audible confirmation signals let staff know the burn succeeded.",
+                      "Staff complete the delivery of the good or service just as they would in a normal checkout process."
+                    ]
+                  },
+                  {
+                    heading: "Why the QR Model Is a Strong Starting Point",
+                    paragraphs: [
+                      "The QR-based point-of-sale model avoids heavy infrastructure replacement, reduces staff training requirements, and keeps the redemption experience legible in real-world environments. That makes it a practical pilot mechanism for public and mission-aligned organizations that cannot absorb major systems change just to participate.",
+                      "Over time, City/Sync can evolve redemption infrastructure, but the starting point is intentionally operationally lightweight."
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            id: "general-civic-participants",
+            title: "Civic-Participants",
+            keywords: ["civic participants", "impact", "credits", "resilience"],
+            summary:
+              "Civic-Participants are the people who transform the protocol from software into civic capacity. They contribute on their own time, create visible local impact, and are rewarded with credits and access that reinforce continued engagement.",
+            sections: [
+              {
+                heading: "Why Civic-Participants Join",
+                paragraphs: [
+                  "City/Sync gives people a way to contribute to their city on a schedule that works for them while still being part of a larger, structured public effort. Instead of asking people to volunteer into disconnected systems, the protocol makes opportunities easier to discover, easier to act on, and easier to connect to visible outcomes.",
+                  "That contribution is rewarded through CITY and VOTE. CITY creates access to local offerings. VOTE gives participants a voice in deciding which Mass Coordination Events should become city execution priorities."
+                ]
+              },
+              {
+                heading: "What Participants Gain",
+                bullets: [
+                  "A more direct way to turn local effort into visible impact.",
+                  "Rewards tied to real local goods and services rather than abstract points.",
+                  "Flexible participation that can fit around work, school, or family schedules.",
+                  "A stronger relationship to the public-sector institutions and community organizations operating in their city."
+                ]
+              },
+              {
+                heading: "Why This Matters Beyond Rewards",
+                paragraphs: [
+                  "The protocol is not just about individual incentives. It is about helping people become part of a more resilient public-sector. When contribution becomes easier to organize and more visibly useful, communities can mobilize faster, institutions can learn faster, and civic capacity can become a real operating resource instead of an invisible one.",
+                  "That is what makes Civic-Participants more than app users. They are co-producers of public value."
+                ]
+              }
+            ],
+            children: [
+              {
+                id: "general-participant-onboarding",
+                title: "Onboarding",
+                keywords: ["onboarding", "starter tasks", "activation", "entry"],
+                summary:
+                  "Onboarding exists to introduce participants to the protocol safely and clearly before they enter the broader task ecosystem.",
+                sections: [
+                  {
+                    heading: "Why Onboarding Exists",
+                    paragraphs: [
+                      "The onboarding process helps participants learn how the system works before they take on broader responsibilities. It teaches the basic workflow for claiming tasks, completing work, submitting proof, and understanding how verification happens.",
+                      "It also helps establish a minimum level of trust. City/Sync is easier to scale when new participants first move through a structured, understandable entry pathway rather than entering the full system with no orientation."
+                    ]
+                  },
+                  {
+                    heading: "What Onboarding Does",
+                    bullets: [
+                      "Introduces task claiming and task completion behavior.",
+                      "Explains how evidence and verification work.",
+                      "Creates a low-friction way to demonstrate intent and readiness.",
+                      "Activates broader access to the protocol after baseline engagement is established."
+                    ]
+                  },
+                  {
+                    heading: "Why This Helps Everyone",
+                    paragraphs: [
+                      "Participants benefit because expectations are clearer. Issuers benefit because entry-level mistakes and confusion are reduced. Redeemers benefit because the broader system becomes more trustworthy and stable.",
+                      "Onboarding is therefore not just an educational feature. It is a structural part of keeping participation high quality."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "general-participant-tasks",
+                title: "Tasks",
+                keywords: ["claim", "unclaim", "task limit", "browse tasks"],
+                summary:
+                  "The participant task experience is designed to balance access, responsibility, and flexibility. Participants should be able to claim meaningful work without monopolizing opportunity or destabilizing issuer operations.",
+                sections: [
+                  {
+                    heading: "Claiming Tasks",
+                    paragraphs: [
+                      "Participants browse available issued tasks and choose work that fits their time, interests, and availability. Once claimed, the task moves into their active queue and becomes part of their immediate responsibility set.",
+                      "The protocol limits how many tasks can be claimed at once so that access remains broadly distributed. This is one of the ways City/Sync prevents a small number of users from capturing too much of the opportunity space."
+                    ]
+                  },
+                  {
+                    heading: "Unclaiming Tasks",
+                    bullets: [
+                      "Unclaiming exists because life happens and flexibility matters.",
+                      "At the same time, late unclaims can damage issuer operations and crowd out other participants.",
+                      "For that reason, unclaim behavior is monitored and, when necessary, folded into the graduated sanctions framework.",
+                      "The system aims to preserve flexibility without rewarding unreliable reservation behavior."
+                    ]
+                  },
+                  {
+                    heading: "Why the Task Model Is Structured",
+                    paragraphs: [
+                      "City/Sync does not treat tasks like a casual feed of things to click. Each task has real operational consequences for issuers and real implications for credit issuance. The task model therefore balances discoverability with accountability.",
+                      "That structure is what lets participants engage in their own time while still being part of a reliable public coordination system."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "general-participant-verification-feedback",
+                title: "Task Verification + Feedback",
+                keywords: ["proof", "feedback", "verification", "evidence"],
+                summary:
+                  "When participants submit proof and feedback, they do more than complete a workflow. They contribute information that helps issuers improve tasks, helps redeemers understand quality and demand, and helps the protocol learn.",
+                sections: [
+                  {
+                    heading: "Why Participant Verification Matters",
+                    paragraphs: [
+                      "Participants are the people closest to the actual execution experience. Their evidence helps issuers verify whether the work happened. Their feedback helps organizations understand whether the task design, instructions, environment, and support structures were actually functional.",
+                      "This makes participant verification a positive contribution rather than a bureaucratic burden. It strengthens the quality of the whole system."
+                    ]
+                  },
+                  {
+                    heading: "What Participants Contribute",
+                    bullets: [
+                      "Proof that the task was performed.",
+                      "Context about obstacles, confusion, or successes in the field.",
+                      "Signals that help issuers refine task descriptions, success criteria, and operational expectations.",
+                      "Information that can help redeemers and governance better understand where real civic demand is emerging."
+                    ]
+                  },
+                  {
+                    heading: "Why Feedback Helps the Broader Protocol",
+                    paragraphs: [
+                      "High-quality feedback helps distinguish between participant failure and weak task design. That matters because not every unsuccessful outcome reflects bad intent. Sometimes it reflects unclear instructions, poor support, or unrealistic issuer assumptions.",
+                      "The better the feedback loop, the better City/Sync can become at tuning its own public operating logic."
+                    ]
+                  }
+                ]
+              },
+              {
+                id: "general-participant-graduated-sanctions",
+                title: "Graduated Sanctions",
+                keywords: ["sanctions", "abuse", "no show", "gaming", "rd", "rs"],
+                summary:
+                  "Graduated sanctions exist to prevent abuse without turning the system into a permanent exclusion machine. City/Sync responds to behavior by adjusting access and restrictions, not by defaulting to bans or appeals theater.",
+                sections: [
+                  {
+                    heading: "Why Sanctions Exist",
+                    paragraphs: [
+                      "Any incentive system can be gamed. Participants can overclaim, repeatedly no-show, drop tasks at the last minute, submit low-quality evidence, or use the protocol opportunistically without supporting its underlying purpose. City/Sync takes that risk seriously because even small abuse patterns can damage issuer trust and shrink real opportunity for everyone else.",
+                      "Graduated sanctions are the mechanism for handling that behavior without immediately treating people as disposable or permanently unfit."
+                    ]
+                  },
+                  {
+                    heading: "How City/Sync Responds",
+                    bullets: [
+                      "Restrictions are based on observed behavior and issuer feedback signals.",
+                      "The system can reduce claim access, tighten participation freedom, or impose other bounded limitations as behavior worsens.",
+                      "No Shows, last-minute unclaims, and poor completion quality are all relevant inputs.",
+                      "The goal is to protect system integrity while still allowing room for people to improve."
+                    ]
+                  },
+                  {
+                    heading: "Why We Reject Bans and Appeals as the Default Model",
+                    paragraphs: [
+                      "City/Sync does not treat mistakes as automatic justification for expulsion. People can miss tasks, misunderstand workflows, or fail in ways that should trigger restriction and learning rather than permanent exclusion. Likewise, formal appeals structures often create administrative theater without materially improving coordination quality.",
+                      "Instead, the system uses bounded restrictions and performance signals. The emphasis is not on punishment for its own sake. The emphasis is on maintaining fair access, protecting issuers, and giving participants a path to remain in the system without pretending that unreliable behavior has no consequences."
+                    ]
+                  }
                 ]
               }
             ]
@@ -545,81 +897,132 @@
         title: "Pilot",
         children: [
           {
-            id: "pilot-program",
+            id: "pilot-overview",
             title: "Pilot Program Overview",
-            keywords: ["berkeley", "mexico city", "pilot"],
-            summary: "The pilot validates the foundational mechanism for City/Sync under real-world operational constraints.",
+            keywords: ["pilot", "overview", "public operating system", "city pilot"],
+            summary:
+              "The City/Sync Pilot Program is the first real-world validation of the protocol's core mechanism: a public-sector economy that turns civic contribution into organized local operating capacity.",
             sections: [
               {
-                heading: "Pilot Goals",
-                bullets: [
-                  "Prove throughput and reliability of role workflows.",
-                  "Validate issuance/redemption equilibrium controls.",
-                  "Generate a procedural artifact other cities can adapt."
-                ]
-              }
-            ]
-          },
-          {
-            id: "pilot-epochs",
-            title: "Epoch Operations",
-            keywords: ["epoch", "cadence", "cycle"],
-            summary: "Pilot operations run in Epoch cycles that coordinate issuance, verification, redemption, and governance checkpoints.",
-            sections: [
-              {
-                heading: "Epoch Cadence",
+                heading: "What the Pilot Is",
                 paragraphs: [
-                  "Epochs provide a bounded learning window. Performance data from each epoch is used to tune policy, rates, and operational standards for the next cycle."
-                ]
-              }
-            ]
-          },
-          {
-            id: "pilot-mce",
-            title: "MCE Lifecycle",
-            keywords: ["mass coordination events", "vote", "proposal"],
-            summary: "MCEs align city-scale priorities with executable task planning and coordinated redemption incentives.",
-            sections: [
-              {
-                heading: "Lifecycle",
-                bullets: [
-                  "Proposal creation and committee selection.",
-                  "Participant voting and final proposal activation.",
-                  "Planning, execution, closeout, and iteration."
-                ]
-              }
-            ],
-            children: [
-              {
-                id: "pilot-mce-voting",
-                title: "MCE Voting",
-                keywords: ["vote token", "selection"],
-                summary: "Civic Participants use VOTE to prioritize proposals, creating a visible bridge between contribution and governance.",
-                sections: [
-                  {
-                    heading: "Voting Controls",
-                    bullets: [
-                      "Epoch-bound voting windows.",
-                      "Transparent tally display and proposal ordering.",
-                      "Role-aware participation constraints."
-                    ]
-                  }
+                  "The pilot is not just a product demo. It is a deployment model designed to test whether City/Sync can help public-sector organizations, civic participants, and redeemer organizations coordinate around real public work under real-world conditions.",
+                  "Its purpose is to validate the operating logic of the protocol: task issuance, verification, reward distribution, redemption, governance, and Mass Coordination Event coordination all working together as one civic system."
                 ]
               },
               {
-                id: "pilot-mce-closeout",
-                title: "MCE Closeout",
-                keywords: ["kpi", "lessons", "iteration"],
-                summary: "Closeout captures KPI outcomes, lessons learned, and carryover opportunities for the next cycle.",
-                sections: [
-                  {
-                    heading: "Outputs",
-                    bullets: [
-                      "Completion metrics and verification quality.",
-                      "Redemption utilization and capacity signal.",
-                      "Operational recommendations for next epoch."
-                    ]
-                  }
+                heading: "What the Pilot Seeks to Accomplish",
+                bullets: [
+                  "Validate the core civic-credit loop and prove that verified contribution can be tied to real local access.",
+                  "Expand issuer and redeemer participation through real operational value rather than speculative interest.",
+                  "Test whether MCEs can coordinate city-scale effort around shared priorities.",
+                  "Generate a procedural artifact that other cities can adopt, adapt, and govern locally."
+                ]
+              },
+              {
+                heading: "How the Pilot Does It",
+                paragraphs: [
+                  "The pilot does this by recruiting real organizations into defined roles, running the economy in bounded epochs, applying governance and operational standards, and tracking outcomes that can inform iteration. In other words, the pilot is a learning environment with real consequences, not a sandbox detached from implementation.",
+                  "If successful, it will demonstrate that City/Sync is not just a compelling idea, but a deployable model for public coordination."
+                ]
+              }
+            ]
+          },
+          {
+            id: "pilot-mces-governance",
+            title: "MCEs & Governance",
+            keywords: ["mce", "vote", "governance", "mass coordination events"],
+            summary:
+              "MCE governance is where City/Sync begins to show how civic participation can shape city execution priorities. VOTE is the first governance tool in that process.",
+            sections: [
+              {
+                heading: "The Role of VOTE",
+                paragraphs: [
+                  "In the pilot, VOTE is used to help decide which Mass Coordination Event proposals should become active execution priorities. This creates a direct link between contribution and governance influence: participants earn through civic work and then use that governance weight to help shape where city-scale coordination should go next.",
+                  "This matters because it gives the protocol an early form of participatory direction-setting without overwhelming the system with premature complexity."
+                ]
+              },
+              {
+                heading: "How Governance Works Around MCEs",
+                bullets: [
+                  "Proposals are created and scoped as possible city-scale initiatives.",
+                  "A committee or governance process narrows the field into a manageable selection slate.",
+                  "Civic-Participants use VOTE to signal which proposals should advance.",
+                  "The winning or selected initiative is translated into planning, task design, and coordinated offerings.",
+                  "Execution data and outcomes feed back into the next governance cycle."
+                ]
+              },
+              {
+                heading: "What VOTE Can Become Over Time",
+                paragraphs: [
+                  "MCE selection is only the beginning. In the future, VOTE can support broader governance functions such as task priority signaling, planning guidance, structured policy preference input, app-specific governance modules, and other role-aware public decision layers.",
+                  "The pilot keeps VOTE focused so it can prove a clear use case first. But the long-term direction is much broader."
+                ]
+              }
+            ]
+          },
+          {
+            id: "pilot-mces",
+            title: "MCEs",
+            keywords: ["mass coordination events", "proposal", "planning", "closeout"],
+            summary:
+              "Mass Coordination Events are city-scale operating cycles that align civic priority setting, task execution, and redemption incentives around a shared public objective.",
+            sections: [
+              {
+                heading: "What MCEs Are",
+                paragraphs: [
+                  "MCEs are the mechanism City/Sync uses to coordinate collective effort around a visible shared goal. Instead of treating tasks as only isolated issuer activities, an MCE organizes many actors around a city-relevant outcome such as a cleanup, backlog reduction, hazard reporting effort, or another high-need public initiative.",
+                  "They exist because City/Sync is not only trying to reward isolated acts of contribution. It is trying to demonstrate that civic labor can be coordinated at a meaningful scale."
+                ]
+              },
+              {
+                heading: "How City/Sync Implements MCEs",
+                bullets: [
+                  "Proposal: organizations introduce candidate initiatives.",
+                  "Selection: governance narrows proposals to a practical set for participant review.",
+                  "Voting: participants allocate VOTE to signal priorities.",
+                  "Planning: the selected initiative is translated into executable tasks and standards.",
+                  "Execution: issuers issue work, participants complete it, and redeemers support the incentive side.",
+                  "Closeout: outcomes are measured and lessons are carried into the next cycle."
+                ]
+              },
+              {
+                heading: "Why MCEs Matter",
+                paragraphs: [
+                  "MCEs create visible legitimacy for the protocol because they show how community preference can become coordinated public execution. They also help bootstrap the network by making the value of issuers, participants, and redeemers easier to understand within one concrete event cycle.",
+                  "That visibility is important for both local trust and future city adoption."
+                ]
+              }
+            ]
+          },
+          {
+            id: "pilot-expansion",
+            title: "Expanding the Pilot",
+            keywords: ["expansion", "replication", "other cities", "local adaptation"],
+            summary:
+              "The long-term objective of the pilot is not to remain a one-city experiment. It is to produce a tested, portable model that can expand into new neighborhoods, institutions, and cities without losing coherence.",
+            sections: [
+              {
+                heading: "Why Expansion Matters",
+                paragraphs: [
+                  "A coordination model only becomes infrastructure when it can move beyond its origin context. City/Sync therefore treats the pilot as both a live implementation and a standard-setting process. The aim is to learn enough from the first deployment that expansion becomes disciplined rather than improvised.",
+                  "Expansion is not only geographic. It also includes deeper penetration into new institutional categories, additional task domains, and richer redemption ecosystems within existing cities."
+                ]
+              },
+              {
+                heading: "What Expansion Requires",
+                bullets: [
+                  "A procedural artifact that explains how to recruit and organize issuers, redeemers, and participants.",
+                  "Clear governance and reporting standards that preserve legitimacy across sites.",
+                  "Evidence that the civic-credit loop can operate under real constraints.",
+                  "Portable task, verification, and offering standards that cities can adapt without starting from zero."
+                ]
+              },
+              {
+                heading: "The Broader Goal",
+                paragraphs: [
+                  "The pilot is the first step toward a larger ecosystem of local coordination infrastructure. Once validated, City/Sync can expand into other areas, other cities, and eventually other public-service domains through a shared but adaptable operating model.",
+                  "That is how the protocol moves from pilot to precedent, and from precedent to broader public adoption."
                 ]
               }
             ]
@@ -631,81 +1034,33 @@
         title: "Technical",
         children: [
           {
-            id: "technical-architecture",
-            title: "System Architecture",
-            keywords: ["contracts", "frontend", "state"],
-            summary: "City/Sync combines role-based application workflows with onchain state for critical lifecycle events.",
+            id: "technical-infrastructure",
+            title: "Technical Infrastructure",
+            keywords: ["mobile first", "smart contracts", "gas sponsorship", "chain abstraction", "wallet"],
+            summary:
+              "City/Sync is a mobile-first application built around smart-contract infrastructure, sponsored gas, and an intentionally abstracted user experience that hides chain complexity while preserving verifiable state.",
             sections: [
               {
-                heading: "Architecture Layers",
-                bullets: [
-                  "Client role applications and tutorial flows.",
-                  "Onchain contracts for issuance and redemption events.",
-                  "Local storage for profile and UI persistence."
-                ]
-              }
-            ],
-            children: [
-              {
-                id: "technical-onchain",
-                title: "Onchain Write Model",
-                keywords: ["wallet", "preparecalls", "paymaster"],
-                summary: "Critical actions write onchain while sponsorship policies absorb user-facing gas complexity.",
-                sections: [
-                  {
-                    heading: "Write Lifecycle",
-                    bullets: [
-                      "Action trigger from role workflow.",
-                      "Transaction pending state and confirmation surfacing.",
-                      "Post-write refresh of role activity/state panels."
-                    ]
-                  }
+                heading: "Mobile-First by Design",
+                paragraphs: [
+                  "The pilot is designed around a mobile-first application because the most likely user behavior in real deployments will happen on phones: discovering tasks, claiming work, showing QR redemption flows, reviewing balances, and receiving guidance while moving through the city.",
+                  "That does not mean the protocol is conceptually limited to mobile. It means the initial experience is built around the device and behavior pattern most likely to support broad real-world use."
                 ]
               },
               {
-                id: "technical-local-chain-path",
-                title: "Local-Chain Path",
-                keywords: ["local chains", "dpan", "future"],
-                summary: "Post-pilot expansion supports local-chain implementations for municipal customization with shared standards.",
-                sections: [
-                  {
-                    heading: "Expansion Direction",
-                    paragraphs: [
-                      "Local-chain deployments create room for jurisdiction-specific governance while preserving interoperability and portable civic models."
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            id: "technical-data-sync",
-            title: "Data and Sync",
-            keywords: ["sync", "activity panel", "state refresh"],
-            summary: "The UI favors action-triggered refresh over continuous polling to reduce unnecessary infrastructure load.",
-            sections: [
-              {
-                heading: "Current Behavior",
+                heading: "Smart Contracts and Sponsored Gas",
                 bullets: [
-                  "Role entry performs initial load.",
-                  "Onchain actions trigger follow-up refresh.",
-                  "Activity panel follows role context and global state updates."
+                  "Critical lifecycle events are recorded through smart-contract interactions.",
+                  "Gas is sponsored so users do not need to hold crypto or understand transaction costs.",
+                  "Wallets are abstracted into the onboarding flow so users are not treated like blockchain operators.",
+                  "The chain layer exists to provide verifiable shared state, not to burden participants with technical overhead."
                 ]
-              }
-            ]
-          },
-          {
-            id: "technical-security",
-            title: "Security and Reliability",
-            keywords: ["validation", "sanctions", "abuse controls"],
-            summary: "Operational controls combine role permissions, verification standards, and graduated sanctions.",
-            sections: [
+              },
               {
-                heading: "Control Surface",
-                bullets: [
-                  "Role-gated action availability.",
-                  "Task lifecycle verification checkpoints.",
-                  "RD/RS internal control metrics and sanctions policy hooks."
+                heading: "Why Chain Behavior Is Highly Abstracted",
+                paragraphs: [
+                  "City/Sync is not trying to teach public-sector organizations or community members how to use blockchain infrastructure. It is trying to give them a better coordination tool. That is why chain behavior is intentionally hidden behind normal application actions such as claiming a task, verifying completion, or redeeming an offering.",
+                  "Users should understand what they are doing in civic and operational terms, not in RPC methods, gas policies, or wallet internals. The technical system is there to support integrity, transparency, and shared state while remaining mostly invisible to end users."
                 ]
               }
             ]
@@ -717,47 +1072,17 @@
         title: "Legal",
         children: [
           {
-            id: "legal-nonprofit",
-            title: "Entity and Program Structure",
-            keywords: ["501c3", "nonprofit", "operations"],
-            summary: "City/Sync is framed as nonprofit civic infrastructure with governance pathways designed for public accountability.",
+            id: "legal-administrative-context",
+            title: "Administrative Context",
+            keywords: ["legal", "administrative", "reporting", "pilot obligations"],
+            summary:
+              "The legal and administrative layer of the pilot exists to support accountability, reporting, and institutional confidence as the protocol moves from concept to deployment.",
             sections: [
               {
-                heading: "Scope",
+                heading: "What This Section Will Cover",
                 paragraphs: [
-                  "This section will host legal framing for the nonprofit operating model, pilot governance obligations, and jurisdictional partnership structure."
-                ]
-              }
-            ]
-          },
-          {
-            id: "legal-terms",
-            title: "Terms and Participation",
-            keywords: ["terms", "acceptable use", "participation"],
-            summary: "Defines participation expectations across roles, including acceptable use and enforcement boundaries.",
-            sections: [
-              {
-                heading: "Policy Areas",
-                bullets: [
-                  "Role-specific participant obligations.",
-                  "Task verification and dispute posture.",
-                  "Platform misuse and sanctions pathways."
-                ]
-              }
-            ]
-          },
-          {
-            id: "legal-privacy",
-            title: "Privacy and Data Handling",
-            keywords: ["privacy", "data", "retention"],
-            summary: "Outlines how user and activity data are handled across local storage, operational records, and onchain events.",
-            sections: [
-              {
-                heading: "Topics to Cover",
-                bullets: [
-                  "Data minimization and retention standards.",
-                  "Onchain transparency vs personal data boundaries.",
-                  "Administrative access and disclosure policy."
+                  "This part of the documentation is reserved for program structure, institutional obligations, reporting expectations, and other administrative requirements that become increasingly important as pilot partnerships formalize.",
+                  "As the pilot expands, this section can hold the supporting material cities and partner organizations need for formal adoption decisions."
                 ]
               }
             ]
@@ -769,65 +1094,16 @@
         title: "FAQ",
         children: [
           {
-            id: "faq-participants",
-            title: "For Civic Participants",
-            keywords: ["claim", "execute", "redeem", "wallet"],
-            summary: "Common participant questions about claiming tasks, submitting proof, rewards, and redemption behavior.",
+            id: "faq-common-questions",
+            title: "Common Questions",
+            keywords: ["faq", "questions", "pilot", "roles"],
+            summary:
+              "The FAQ section will consolidate recurring questions across issuers, redeemers, participants, and city operators as the documentation set expands.",
             sections: [
               {
-                heading: "Typical Questions",
-                bullets: [
-                  "How many tasks can I claim at once?",
-                  "What happens if my task is rejected?",
-                  "Where do I see CITY and VOTE balances?"
-                ]
-              }
-            ]
-          },
-          {
-            id: "faq-issuers",
-            title: "For Issuers",
-            keywords: ["catalog", "verification", "issuance"],
-            summary: "Issuer-focused questions about catalog management, issuance limits, verification workflows, and no-show handling.",
-            sections: [
-              {
-                heading: "Typical Questions",
-                bullets: [
-                  "How are task types approved into catalog?",
-                  "How does issuance cap enforcement work?",
-                  "When should I use Reject & Mint vs Verify & Mint?"
-                ]
-              }
-            ]
-          },
-          {
-            id: "faq-redeemers",
-            title: "For Redeemers",
-            keywords: ["offerings", "qr", "redemption"],
-            summary: "Redeemer-oriented questions covering offering catalogs, commitment rules, QR flow, and capacity planning.",
-            sections: [
-              {
-                heading: "Typical Questions",
-                bullets: [
-                  "Can offering rates be modified after commit?",
-                  "How does QR redemption confirmation work?",
-                  "How should redeemers tune offering capacity?"
-                ]
-              }
-            ]
-          },
-          {
-            id: "faq-support",
-            title: "Troubleshooting and Support",
-            keywords: ["support", "issues", "session", "onchain"],
-            summary: "Common operational issues and where to route support requests during demo and pilot phases.",
-            sections: [
-              {
-                heading: "Support Flow",
-                bullets: [
-                  "Session readiness and sign-in troubleshooting.",
-                  "Onchain write failures and sponsorship policy checks.",
-                  "How to report role-specific UX defects."
+                heading: "Current Direction",
+                paragraphs: [
+                  "The primary documentation pages above are intended to answer the foundational questions first. As recurring patterns emerge from actual pilot conversations, this section can be expanded into role-specific quick answers and troubleshooting guidance."
                 ]
               }
             ]
