@@ -459,39 +459,127 @@
               {
                 id: "foundation-managing-the-economy",
                 title: "Managing the Economy",
-                keywords: ["managing the economy", "issuance cap", "redemption capacity", "economic management", "stability"],
+                keywords: ["managing the economy", "issuance cap", "redemption capacity", "economic management", "stability", "dormant credits", "carrying capacity", "retention"],
                 summary:
-                  "Managing the City/Sync economy means preserving the balance between civic-credit issuance, redemption utility, organizational capacity, and governance legitimacy as the system grows.",
+                  "Managing the City/Sync economy means preserving the balance between civic-credit issuance, redemption utility, organizational capacity, and governance legitimacy as the system grows. The goal is to keep civic credits worth earning, worth spending, and capable of scaling responsibly.",
                 sections: [
                   {
-                    heading: "Why the Economy Has to Be Managed",
+                    heading: "Overview",
                     paragraphs: [
-                      "City/Sync is not designed as a free-floating rewards system. It is a governed public economy, which means its usefulness depends on discipline. If too many credits are issued without enough meaningful redemption, balances accumulate and the reward loses force. If redemption demand grows faster than redeemer capacity, the system becomes frustrating and unstable. If governance does not respond to these conditions, the economy becomes less credible over time.",
-                      "Managing the economy therefore means treating issuance, redemption, and participation as interdependent parts of one operating environment rather than separate product features."
+                      "City/Sync is designed to help cities recognize civic labor, reward it with civic credits, and connect those credits to real local goods and services. People complete civic work, earn CITY, and redeem those credits through Redeemer Organizations that provide access to offerings such as transit, cultural institutions, educational access, or other public-serving benefits.",
+                      "Managing the economy means making sure that this loop stays healthy. If credits are issued much faster than they are redeemed, balances begin to pile up and the reward loses meaning. If redemption demand grows faster than redeemer capacity, the system becomes frustrating and unstable. If there are too few meaningful opportunities to earn, participation weakens. The economy therefore has to be governed as a living system rather than treated like a one-time feature launch."
                     ]
                   },
                   {
-                    heading: "The Main Economic Controls",
+                    heading: "Credits Flow Like Water",
+                    paragraphs: [
+                      "A useful way to think about the City/Sync economy is as a bathtub. The faucet represents issuance. Every time an Issuer Organization verifies civic labor and rewards a participant, new credits flow into the system. The drain represents redemption. Every time a participant redeems CITY for an offering, those credits are burned and permanently removed from circulation.",
+                      "The water level in the tub represents the outstanding stock of unspent credits sitting in participant wallets. If issuance runs faster than redemption, the tub fills up and unspent balances accumulate. If redemption runs faster than issuance, the tub empties and credits become too scarce. A healthy public-sector economy seeks to keep the water level stable enough that credits remain meaningful, usable, and trusted."
+                    ]
+                  },
+                  {
+                    heading: "The Issuance Cap and the Epoch",
+                    paragraphs: [
+                      "The main tool used to control the faucet is the issuance cap. This is the maximum amount of CITY that can be issued during a defined operating period. In the pilot, that period is an Epoch, which lasts three months. At the end of each Epoch, the system can be reviewed and recalibrated based on actual behavior.",
+                      "The issuance cap is important because it gives governance a hard boundary. Instead of letting issuance grow without discipline, the cap ensures that the amount of CITY entering the system stays connected to what the redemption side can realistically absorb."
+                    ],
                     bullets: [
-                      "Issuance caps limit how much CITY can be distributed within a given epoch.",
-                      "Task approval and catalog standards determine what kinds of work are even eligible for issuance.",
-                      "Verification standards help ensure that new credits remain tied to real civic contribution.",
-                      "Redeemer commitments and offering rates shape the practical utility and burn side of the system.",
-                      "Decision triggers and governance review determine when policy or rate changes are needed."
+                      "Issuance caps limit how much CITY can be distributed within a given Epoch.",
+                      "Epoch reviews create a regular cadence for evaluating whether the economy should expand, tighten, or hold steady.",
+                      "Governance can use cap adjustments to respond to real conditions rather than assumptions."
                     ]
                   },
                   {
-                    heading: "What Good Management Looks Like",
+                    heading: "Active Credits, Dormant Credits, and Expiry",
                     paragraphs: [
-                      "A healthy City/Sync economy is one where participants can earn through meaningful work and reasonably expect that their credits can be used. It is one where issuers trust that rewards retain value, redeemers trust that commitments remain manageable, and governance has enough visibility to intervene before imbalances become systemic.",
-                      "In practice, this means watching circulation, not just issuance totals. It means paying attention to where credits are accumulating, where offerings are over- or under-utilized, where task demand is strong, and where operational friction is beginning to appear."
+                      "Not everyone who enters the system will remain active forever. Some people move away, get busy, or stop participating. When that happens, their credits may remain in their wallet without being redeemed. Those balances are dormant credits: they still exist on paper, but they are no longer meaningfully circulating through the economy.",
+                      "To keep the model accurate, City/Sync distinguishes between active credits and dormant credits. Active credits are held by people who have earned or spent within the last 12 months. Dormant credits are held by people who have not done either. If someone remains inactive for 12 consecutive months, their credits expire and are removed from the system. If they return before then and earn or redeem even once, their activity clock resets and their balance remains active."
+                    ],
+                    bullets: [
+                      "Active credits help governance understand real economic pressure inside the system.",
+                      "Dormant credits represent balances that are no longer meaningfully circulating.",
+                      "Expiry after 12 months of inactivity prevents abandoned balances from distorting the economic picture.",
+                      "This makes it possible to manage the economy based on real participation rather than stale balances."
                     ]
                   },
                   {
-                    heading: "Why This Matters for Expansion",
+                    heading: "Carrying Capacity and the Safe Zone",
                     paragraphs: [
-                      "The ability to manage the economy well is what makes City/Sync portable. Other cities will not adopt the model simply because the app exists. They will adopt it if the economy demonstrates that it can stay legible, bounded, and useful under real operating conditions.",
-                      "That is why economic management is not an afterthought. It is one of the protocol's core responsibilities."
+                      "There is a practical limit to how many credits the economy can create without causing problems. That limit is determined by redemption capacity: how many credits Redeemer Organizations can actually absorb through their available offerings. If the system can realistically absorb 600 credits per month, issuing 800 credits per month will cause balances to accumulate faster than they can be burned.",
+                      "Because some credits will eventually expire and because demand is never perfectly smooth, City/Sync should not operate at the exact edge of that limit. A safer operating range is below full carrying capacity, leaving enough room for uneven demand, operational surprises, and the need to protect Redeemer Organizations from becoming overburdened."
+                    ],
+                    bullets: [
+                      "Carrying capacity is shaped by the total redemption volume the redeemer side can actually support.",
+                      "Issuance should remain below that ceiling rather than testing the system at its edge.",
+                      "Protecting redeemer capacity is essential because overwhelmed redeemers may withdraw offerings, which shrinks the redemption side of the economy."
+                    ]
+                  },
+                  {
+                    heading: "The Main Economic Dashboard",
+                    paragraphs: [
+                      "City/Sync tracks a small set of core indicators to understand whether the economy is healthy. These indicators function like the gauges on a dashboard. They do not replace judgment, but they make it possible to govern based on legible signals instead of guesswork."
+                    ],
+                    bullets: [
+                      "Earn-spend loop: Are issued credits actually being redeemed at healthy rates?",
+                      "Service capacity: Are redeemer offerings comfortably absorbing demand or nearing their limits?",
+                      "Active backlog: How many months of unspent credits are active participants holding?",
+                      "Retention: Are people staying engaged, or are large portions of the credit base drifting into dormancy?"
+                    ]
+                  },
+                  {
+                    heading: "1. The Earn-Spend Loop",
+                    paragraphs: [
+                      "The first question is whether credits are actually being used. If participants earn CITY and then redeem it for meaningful offerings, the system is doing its job. If large portions of issued credits never get redeemed, something is wrong. The offerings may not be attractive enough, the prices may be too high, the redemption process may be too difficult, or participants may be leaving before they use what they have earned.",
+                      "A healthy earn-spend loop shows that the economy is delivering value on both sides: meaningful recognition for civic labor and meaningful access to real local benefits."
+                    ]
+                  },
+                  {
+                    heading: "2. Service Capacity",
+                    paragraphs: [
+                      "The second question is whether the redemption side can absorb demand. If bus passes, museum tickets, classes, or other offerings are constantly near their limit, the system is approaching a constraint. That does not necessarily mean the economy is failing, but it does mean governance should expand redeemer capacity before allowing much more issuance.",
+                      "This indicator is especially important because some offerings will always be more attractive than others. Economic management therefore has to watch not just overall redemption, but where redemption pressure is concentrating."
+                    ]
+                  },
+                  {
+                    heading: "3. Active Backlog",
+                    paragraphs: [
+                      "The third question is how many unspent credits active participants are holding. Some backlog is normal. People may be saving for a larger redemption or waiting for an offering they value. But if active participants are holding many months' worth of unspent CITY, the system is signaling a mismatch between issuance and practical utility.",
+                      "This measure focuses only on active participants because dormant balances do not create real short-term pressure. The point is to understand whether engaged users feel like the credits they hold can realistically be used."
+                    ]
+                  },
+                  {
+                    heading: "4. Retention",
+                    paragraphs: [
+                      "The fourth question is whether participants stay involved. Retention is not just a community engagement metric; it also affects the economics of the system. When people leave, their balances eventually expire, which changes how much issuance headroom the economy has. Strong retention means the economy is delivering enough value for people to remain active. Weak retention suggests a problem with the overall experience.",
+                      "This is why retention matters to both policy and product. If people are dropping out, governance needs to ask whether the issue is task quality, onboarding friction, weak offerings, poor communication, or something else in the participant journey."
+                    ]
+                  },
+                  {
+                    heading: "How Decisions Get Made",
+                    paragraphs: [
+                      "The purpose of these indicators is to guide action. When credits are circulating well, services have room, active backlogs are modest, and retention is strong, the system has room to grow. Existing Issuer Organizations may be allowed to issue more, and eventually new issuers can be onboarded.",
+                      "When services are getting crowded, governance should focus on expanding the redeemer side before expanding issuance. When credits are piling up but services still have room, the problem is likely on the redemption experience side, which may require better offerings, better pricing, or a simpler redemption process. When people are leaving, the problem may be task quality, onboarding, or participant experience. And when the economy is clearly out of balance, governance may need to contract the issuance cap sharply until conditions stabilize."
+                    ]
+                  },
+                  {
+                    heading: "The Golden Rule of Growth",
+                    paragraphs: [
+                      "The most important growth principle in the City/Sync economy is simple: expand the spending side before expanding the earning side. In practice, this means increasing redeemer capacity before significantly increasing issuance capacity.",
+                      "If the system grows the issuance side too quickly without first deepening redemption options, the result is predictable: credits accumulate faster than participants can use them. Growth is healthiest when new capacity to burn credits is in place before new capacity to mint them."
+                    ]
+                  },
+                  {
+                    heading: "Why the First Year Requires Extra Discipline",
+                    paragraphs: [
+                      "The 12-month expiry rule means the first year of the pilot behaves differently from the long-run system. During that first year, no dormant credits have reached expiry yet. Credits are being issued and redeemed, but the cleanup mechanism has not started removing abandoned balances. That makes Year 1 especially sensitive to over-issuance.",
+                      "For that reason, the system should begin conservatively. It is safer to issue below theoretical capacity early, observe real behavior, and scale from evidence than to overfill the system and spend months correcting a backlog."
+                    ]
+                  },
+                  {
+                    heading: "Why This Matters",
+                    paragraphs: [
+                      "Every control, metric, and governance rule in the City/Sync economy exists to protect one core outcome: the sense that civic credits are worth something. If people earn CITY and cannot use it, the reward becomes symbolic. If redeemers are overwhelmed, the system becomes costly and unstable. If opportunities to earn become too constrained, the value of participation starts to feel arbitrary or inaccessible.",
+                      "Managing the economy well is therefore not an afterthought. It is one of the protocol's core responsibilities. It is also what makes City/Sync portable. Other cities will not adopt the model simply because the software exists. They will adopt it if the economy proves it can stay legible, bounded, and useful under real operating conditions."
                     ]
                   }
                 ]
