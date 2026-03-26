@@ -685,70 +685,154 @@
               {
                 id: "foundation-redemption-capacity",
                 title: "Redemption Capacity",
-                keywords: ["redemption capacity", "redeemers", "offerings", "capacity", "burn side", "redemption supply"],
+                keywords: ["redemption capacity", "redeemers", "offerings", "capacity", "burn side", "redemption supply", "unused capacity", "committed allocation", "marginal capacity"],
                 summary:
-                  "Redemption Capacity is the amount of CITY the redeemer side of the economy can realistically absorb over a given period. It determines how much issuance the system can safely support without weakening the value of civic credits.",
+                  "Redemption Capacity is the amount of CITY the redeemer side of the economy can realistically absorb over a given period. It is the system's primary absorption constraint and one of the main determinants of how much issuance the civic economy can safely sustain.",
                 sections: [
                   {
                     heading: "Overview",
                     paragraphs: [
-                      "Redemption Capacity is one of the core constraints that governs the City/Sync economy. It refers to the amount of CITY that Redeemer Organizations can actually absorb through real offerings such as transit access, museum entry, educational opportunities, or other local goods and services.",
-                      "This matters because the civic-credit economy only works when there is a credible path from earning to spending. If issuance grows faster than redemption capacity, credits accumulate in wallets and begin to lose their practical meaning."
+                      "Every currency needs somewhere to be spent. A civic credit that cannot be redeemed for anything meaningful is not much of a currency at all. Redemption Capacity is what gives CITY economic gravity. It is the amount of credit the redeemer side of the system can actually absorb through access to real public goods and services.",
+                      "This matters because the civic-credit economy only works when there is a credible path from earning to spending. If issuance grows faster than redemption capacity, credits accumulate in wallets and begin to lose their practical meaning. If redemption capacity expands, the system gains room to grow without weakening the value of what participants earn."
                     ]
                   },
                   {
-                    heading: "What Counts as Redemption Capacity",
+                    heading: "What Redeemer Organizations Are",
                     paragraphs: [
-                      "Redemption Capacity is not a theoretical number. It is based on real-world commitments. A redeemer only contributes capacity to the system when it sets aside a defined amount of offering volume that participants can actually redeem.",
-                      "That means capacity depends on what organizations are truly prepared to honor, not on what sounds possible in theory."
+                      "Redeemer Organizations are the institutions that accept civic credits in exchange for access to public goods and services. In doing so, they destroy those credits and remove them from circulation permanently. This burn side of the economy is what prevents credits from simply accumulating forever.",
+                      "Redeemers are typically public-service institutions whose mission already involves extending access: transit agencies, libraries, parks and recreation departments, museums, community colleges, childcare cooperatives, cultural centers, public health clinics, youth sports leagues, and similar organizations. They are not being asked to become retail merchants. They are being asked to recognize verified civic contribution as a legitimate way of granting access to services they already provide."
+                    ]
+                  },
+                  {
+                    heading: "Unused Capacity Is the Asset",
+                    paragraphs: [
+                      "Most public-service institutions operate below their maximum capacity much of the time. Empty bus seats, open museum hours, unfilled class slots, unused recreation space, and partially filled programs all represent latent public value sitting inside infrastructure that has already been funded and built.",
+                      "City/Sync exists, in part, to convert that unused capacity into civic infrastructure. The protocol does not ask Redeemers to build entirely new systems or divert core resources away from their mission. It asks them to identify existing capacity that is going unused and make some of it available through a channel that rewards civic labor."
+                    ]
+                  },
+                  {
+                    heading: "How Redemption Capacity Is Determined",
+                    paragraphs: [
+                      "Redemption Capacity is the most important number in the City/Sync economic model because it determines how much the system can safely issue. Getting this number right requires more than asking organizations whether they 'have capacity.' Capacity is the intersection of several distinct constraints, and the binding constraint will differ by organization and by service.",
+                      "For any specific offering, redemption capacity is determined by the minimum of three things: physical capacity, marginal capacity, and committed allocation."
+                    ]
+                  },
+                  {
+                    heading: "Physical Capacity",
+                    paragraphs: [
+                      "Physical capacity is the hard ceiling. It asks how many units of a service physically exist. A bus has a fixed number of seats. A museum has an occupancy limit. A classroom has a maximum enrollment. A pool has a limited number of lanes and hours of operation. Physical capacity is governed by infrastructure, licensing, safety rules, and the simple realities of the service itself.",
+                      "For each offering, the physical capacity question is straightforward: how many units of this service can be delivered at maximum over a given period?"
+                    ]
+                  },
+                  {
+                    heading: "Marginal Capacity",
+                    paragraphs: [
+                      "Marginal capacity is the realistic ceiling. It asks how much of the total physical capacity is actually available for civic credit redemption without displacing existing users. A bus route that is nearly full during rush hour may have almost no marginal capacity at that time, while the same route in the middle of the day may have substantial room.",
+                      "This is the gap that makes the unused-capacity proposition work. It is the difference between what the institution is already providing and what it could provide without significant disruption or new cost."
+                    ]
+                  },
+                  {
+                    heading: "Committed Allocation",
+                    paragraphs: [
+                      "Committed allocation is the operational ceiling. Even when marginal capacity exists, a Redeemer may choose to allocate only part of it to the civic-credit program. A transit agency with 500 empty seats available in theory may initially commit only 100. A museum with room for far more visitors may still begin cautiously with a small monthly allocation.",
+                      "Committed allocation is therefore not a physical limit. It is a governance and institutional limit. It reflects organizational appetite, political comfort, and the desire to test participation gradually."
+                    ]
+                  },
+                  {
+                    heading: "The Binding Constraint",
+                    paragraphs: [
+                      "For any given service, redemption capacity is the minimum of physical capacity, marginal capacity, and committed allocation. In practice, committed allocation is often the binding constraint during the pilot because institutions tend to begin cautiously while they build familiarity and trust.",
+                      "That caution is appropriate. Allocations can expand as Redeemers gain confidence and as governance learns how demand actually behaves."
+                    ]
+                  },
+                  {
+                    heading: "What We Ask Redeemers to Provide",
+                    paragraphs: [
+                      "When a Redeemer Organization onboards, it provides a structured service profile for each offering it wants to make redeemable through CITY. This information feeds both the economic model and the governance process that determines how offerings should be priced and managed."
                     ],
                     bullets: [
-                      "How many units of an offering exist",
-                      "How much of that offering a redeemer is willing to allocate to the program",
-                      "How frequently that offering can realistically be redeemed",
-                      "Whether the redeemer can absorb demand without operational strain"
+                      "What the participant receives, defined as a specific offering rather than a general organization type",
+                      "Physical capacity per month",
+                      "Current utilization levels",
+                      "When unused capacity exists across time, season, or daypart",
+                      "Committed monthly allocation",
+                      "Marginal cost per unit",
+                      "Whether the offering requires a public backstop or subsidy"
                     ]
                   },
                   {
-                    heading: "Why Redemption Capacity Matters",
+                    heading: "How Redemption Capacity Enters the Model",
                     paragraphs: [
-                      "The redeemer side is the burn side of the civic-credit economy. When participants redeem CITY, those credits are removed from circulation. That burn mechanism is what prevents credits from simply accumulating forever.",
-                      "Because of that, redemption capacity is one of the strongest determinants of whether the economy is healthy. It does not just shape the user experience. It shapes the system's overall carrying capacity and directly informs how high the Issuance Cap can safely rise."
+                      "The economic model measures capacity in credits, not just service units. A bus ride, museum visit, and community college course do not contribute equally to system capacity because they do not necessarily have the same redemption cost in CITY. Total system capacity is therefore calculated by multiplying each offering's committed units by its credit cost and summing those values across the entire redeemer network.",
+                      "That aggregate number becomes one of the key inputs used to set the Issuance Cap. If total system capacity expands, governance may gain room to increase issuance. If it contracts, issuance may need to tighten."
                     ]
                   },
                   {
-                    heading: "How Governance Uses It",
+                    heading: "The Pricing Feedback Loop",
                     paragraphs: [
-                      "Governance uses Redemption Capacity as a leading economic signal. When redeemer capacity expands, the system may gain room to issue more CITY. When redeemer capacity contracts or certain offerings become saturated, governance may need to slow or tighten issuance.",
-                      "This is why the protocol follows a simple discipline: the spending side must lead the earning side. New redemption capacity should come online before the system materially expands issuance."
+                      "This creates an important feedback loop: redemption pricing affects total system capacity, which affects the Issuance Cap, which affects how many credits can be created. Changing the credit cost of a given offering does not only change participant demand for that service. It also changes how much total capacity that service contributes to the overall economy.",
+                      "That means redemption pricing is not just a user-experience decision. It is an economic policy decision. Rate-setting has system-wide consequences and should be treated accordingly."
                     ]
                   },
                   {
-                    heading: "Capacity Is Not Evenly Distributed",
+                    heading: "What Redeemer Organizations Decide During the Pilot",
                     paragraphs: [
-                      "Not all redemption capacity is equally useful. Some offerings will be more attractive than others, and some will absorb demand much faster. That means governance cannot look only at total capacity in the abstract. It also has to pay attention to where participants actually want to spend.",
-                      "A system may appear to have ample total redemption capacity while still having a practical bottleneck if most participant demand is concentrated in a small number of highly desired offerings."
+                      "Redeemer Organizations are not passive recipients of redemptions. They have real operational authority over how their participation works. They help define the scope, price, timing, and commitment level of the offerings they make available."
                     ]
                   },
                   {
-                    heading: "What Expands Capacity",
+                    heading: "Setting Their Own Redemption Rates",
                     paragraphs: [
-                      "Redemption Capacity grows when Redeemer Organizations join the network, when existing redeemers commit more offering volume, or when the redemption universe becomes more diverse and useful to participants. Expanding capacity is not just about adding more offerings. It is also about adding the right offerings in the right places for the right communities.",
-                      "This is one of the reasons redeemers are so important to the protocol. They are not peripheral partners. They are a structural part of the economy's long-term stability."
+                      "Each Redeemer has autonomy over the credit cost of its offerings. Committees may provide guidance or target ranges, but redeemers are best positioned to understand their own service patterns, local demand, and operational realities. A transit agency knows where it has room. A museum knows which exhibits are crowded and which are quiet.",
+                      "This local knowledge is a strength. Redeemers can adjust rates between Epochs based on what they observe. If a service is overwhelmed by credit redemptions, the rate can rise. If an offering is underused, the rate can fall."
                     ]
                   },
                   {
-                    heading: "What Shrinks Capacity",
+                    heading: "Adjusting Committed Allocations",
                     paragraphs: [
-                      "Capacity can also shrink. A redeemer may reduce its allocation, withdraw an offering, or find that demand is exceeding what it can comfortably support. In those moments, governance has to treat the contraction seriously because a reduction on the redemption side changes the amount of issuance the economy can safely carry.",
-                      "This is also why City/Sync cannot treat redeemers as infinitely elastic. Protecting redeemer trust and keeping redemption commitments manageable is essential to the health of the system."
+                      "Redeemers can also increase or decrease their committed allocation at Epoch boundaries. An organization that starts cautiously and finds participation manageable can expand. An organization that experiences unexpected friction can reduce its commitment or redesign the offering.",
+                      "The key rule is predictability. These changes should happen at Epoch boundaries rather than in the middle of an operating period so governance and issuers have stable numbers for planning."
+                    ]
+                  },
+                  {
+                    heading: "Defining Time Restrictions",
+                    paragraphs: [
+                      "A Redeemer can also define when an offering may be redeemed. Off-peak routes, weekday-only access, under-attended hours, or seasonal windows are all legitimate restrictions if they help protect core operations and ensure the system is drawing on unused capacity rather than competing directly with existing demand.",
+                      "These restrictions are often economically sensible, but they come with a tradeoff: the more constrained an offering becomes, the less valuable or attractive it may feel to participants. Governance and redeemers should therefore balance operational protection with redemption usefulness."
+                    ]
+                  },
+                  {
+                    heading: "How Capacity Grows",
+                    paragraphs: [
+                      "Because redemption capacity is the leading absorption constraint in the civic economy, expanding the economy means expanding capacity first. There are three main ways this happens: existing redeemers increase their allocations, new redeemers join the network, or existing redeemers reduce restrictions on already committed offerings."
+                    ]
+                  },
+                  {
+                    heading: "Existing Redeemers Expanding Allocations",
+                    paragraphs: [
+                      "This is often the simplest and most efficient path to growth. A Redeemer that began with a cautious allocation and found the experience manageable can increase its commitment over time. This requires no new institutional relationship and no new governance foundation. It simply deepens participation where trust has already been established.",
+                      "This type of compounding growth can be powerful because it expands system capacity while relying on organizations that already know how the program works."
+                    ]
+                  },
+                  {
+                    heading: "New Redeemers Joining the Network",
+                    paragraphs: [
+                      "New Redeemers matter when they add entirely new capacity or diversify the redemption universe in ways that better reflect participant needs. A childcare provider, educational institution, or recreation offering may serve a different set of users than transit or cultural institutions, and that diversification can increase redemption efficiency across the system.",
+                      "New redeemers are therefore not valuable only for adding more volume. They are also valuable for improving the fit between what participants want and what the economy makes available."
+                    ]
+                  },
+                  {
+                    heading: "Redeemers Reducing Restrictions",
+                    paragraphs: [
+                      "Capacity can also become more usable when Redeemers relax timing or access restrictions. An offering that technically exists but is difficult to use may contribute little to real circulation. Reducing restrictions can improve actual redemption without necessarily changing headline allocation numbers.",
+                      "This is especially important when the economy appears to have enough capacity on paper but credits are still piling up because participants do not find the available offerings sufficiently usable or attractive."
                     ]
                   },
                   {
                     heading: "Why It Matters",
                     paragraphs: [
-                      "Redemption Capacity is what gives civic credits real utility. It is the bridge between recognition and access. Without enough capacity on the redeemer side, the economy may still issue credits, but those credits become less meaningful over time.",
-                      "A healthy City/Sync economy therefore depends on disciplined attention to redemption capacity. It is not a secondary metric. It is one of the main conditions that determines whether the public-sector economy can remain credible, balanced, and expandable."
+                      "Redemption Capacity is what allows the civic economy to absorb what it creates. It is the bridge between recognition and real access, and it is one of the main conditions that determines whether CITY can remain meaningful over time.",
+                      "A healthy City/Sync economy therefore depends on disciplined attention to redeemer commitments, unused capacity, pricing, and growth on the spending side. Redemption Capacity is not a secondary metric. It is one of the foundations of whether the public-sector economy can remain credible, balanced, and expandable."
                     ]
                   }
                 ]
