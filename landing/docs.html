@@ -324,6 +324,32 @@
       box-shadow: 0 0 0 3px rgba(221, 158, 51, 0.12);
     }
 
+    .doc-link-list {
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .doc-link-list a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .doc-link-list a::before {
+      content: "↗";
+      color: var(--brand-gold);
+      font-size: 0.8rem;
+    }
+
+    .doc-link-list a:hover {
+      color: #7a4f10;
+    }
+
     .doc-actions {
       margin-top: 28px;
       padding-top: 22px;
@@ -2951,10 +2977,45 @@
       }
     ];
 
+    function collectDocumentLinks(nodes) {
+      const links = [];
+
+      nodes.forEach(node => {
+        if (Array.isArray(node.sections)) {
+          links.push({ label: node.title, href: `#${node.id}` });
+        }
+        if (Array.isArray(node.children) && node.children.length > 0) {
+          links.push(...collectDocumentLinks(node.children));
+        }
+      });
+
+      return links;
+    }
+
+    const WELCOME_DOC = {
+      id: "welcome",
+      title: "Welcome",
+      summary:
+        "Start here to browse the full City/Sync documentation hub. Use the table of contents below to jump directly into the Foundation, Pilot Program, Protocol, Legal, or FAQ sections.",
+      sections: [
+        {
+          heading: "Welcome to the Documentation Hub",
+          paragraphs: [
+            "This page is the main entry point for the City/Sync docs. It is organized around the five major sections of the project so readers can move between institutional context, pilot mechanics, protocol development, legal positioning, and frequently asked questions without having to guess where material lives.",
+            "Use the grouped links below to jump directly to the page you want. The left navigation starts collapsed by default so the docs open cleanly, but you can expand any branch whenever you want to browse the full tree."
+          ]
+        },
+        ...DOCS_TREE.map(node => ({
+          heading: node.title,
+          links: collectDocumentLinks(Array.isArray(node.children) && node.children.length > 0 ? node.children : [node]),
+        })),
+      ],
+    };
+
     const state = {
       query: "",
-      selectedId: "",
-      expanded: new Set(DOCS_TREE.map(node => node.id)),
+      selectedId: WELCOME_DOC.id,
+      expanded: new Set(),
     };
 
     const index = new Map();
@@ -2970,6 +3031,7 @@
     }
 
     walk(DOCS_TREE);
+    index.set(WELCOME_DOC.id, { node: WELCOME_DOC, path: [WELCOME_DOC] });
 
     function firstDocumentId(nodes = DOCS_TREE) {
       for (const node of nodes) {
@@ -2980,6 +3042,17 @@
         }
       }
       return "";
+    }
+
+    function expandPathForSelection(id) {
+      const entry = index.get(id);
+      if (!entry) return;
+
+      entry.path.forEach(step => {
+        if (Array.isArray(step.children) && step.children.length > 0) {
+          state.expanded.add(step.id);
+        }
+      });
     }
 
     function includesText(value, query) {
@@ -3015,11 +3088,16 @@
       if (!Array.isArray(entry.node.sections)) return;
 
       state.selectedId = id;
+      expandPathForSelection(id);
       renderTree();
       renderContent();
 
       if (updateHash) {
-        history.replaceState(null, "", `#${id}`);
+        if (id === WELCOME_DOC.id) {
+          history.replaceState(null, "", window.location.pathname);
+        } else {
+          history.replaceState(null, "", `#${id}`);
+        }
       }
     }
 
@@ -3154,6 +3232,22 @@
           sectionEl.appendChild(list);
         }
 
+        if (Array.isArray(section.links) && section.links.length > 0) {
+          const linkList = document.createElement("ul");
+          linkList.className = "doc-link-list";
+
+          section.links.forEach(item => {
+            const listItem = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = item.href;
+            link.textContent = item.label;
+            listItem.appendChild(link);
+            linkList.appendChild(listItem);
+          });
+
+          sectionEl.appendChild(linkList);
+        }
+
         docContent.appendChild(sectionEl);
       });
 
@@ -3180,8 +3274,9 @@
       const hashEntry = index.get(hashId);
       if (hashEntry && Array.isArray(hashEntry.node.sections)) {
         state.selectedId = hashId;
+        expandPathForSelection(hashId);
       } else {
-        state.selectedId = firstDocumentId();
+        state.selectedId = WELCOME_DOC.id;
       }
     }
 
@@ -3200,10 +3295,16 @@
 
     window.addEventListener("hashchange", () => {
       const hashId = decodeURIComponent(window.location.hash.replace("#", "")).trim();
-      if (!hashId) return;
+      if (!hashId) {
+        state.selectedId = WELCOME_DOC.id;
+        renderTree();
+        renderContent();
+        return;
+      }
       const entry = index.get(hashId);
       if (entry && Array.isArray(entry.node.sections)) {
         state.selectedId = hashId;
+        expandPathForSelection(hashId);
         renderTree();
         renderContent();
       }
