@@ -2075,29 +2075,102 @@
                 title: "Graduated Sanctions",
                 keywords: ["sanctions", "abuse", "no show", "gaming", "rd", "rs"],
                 summary:
-                  "Graduated sanctions exist to prevent abuse without turning the system into a permanent exclusion machine. City/Sync responds to behavior by adjusting access and restrictions, not by defaulting to bans or appeals theater.",
+                  "Graduated sanctions exist to prevent abuse without turning the system into a permanent exclusion machine. City/Sync uses a recovery-first internal control model built around Risk Debt and Reliability Score to narrow or restore claim permissions over time.",
                 sections: [
                   {
                     heading: "Why Sanctions Exist",
                     paragraphs: [
                       "Any incentive system can be gamed. Participants can overclaim, repeatedly no-show, drop tasks at the last minute, submit low-quality evidence, or use the protocol opportunistically without supporting its underlying purpose. City/Sync takes that risk seriously because even small abuse patterns can damage issuer trust and shrink real opportunity for everyone else.",
-                      "Graduated sanctions are the mechanism for handling that behavior without immediately treating people as disposable or permanently unfit."
+                      "Graduated sanctions are the mechanism for handling that behavior without immediately treating people as disposable or permanently unfit. The design goal is to preserve trust while keeping a recovery path open at all times."
                     ]
                   },
                   {
-                    heading: "How City/Sync Responds",
+                    heading: "Design Objectives",
                     bullets: [
-                      "Restrictions are based on observed behavior and issuer feedback signals.",
-                      "The system can reduce claim access, tighten participation freedom, or impose other bounded limitations as behavior worsens.",
-                      "No Shows, last-minute unclaims, and poor completion quality are all relevant inputs.",
-                      "The goal is to protect system integrity while still allowing room for people to improve."
+                      "Prevent repeated low-quality execution and no-show behavior from degrading shared trust.",
+                      "Ensure sanctions are understandable, predictable, and tied to observable behavior.",
+                      "Maintain participation access at all times while limiting higher-risk claim opportunities.",
+                      "Require sustained good behavior for full restoration rather than one-off reset events."
+                    ]
+                  },
+                  {
+                    heading: "Two Internal Control Signals: RS and RD",
+                    paragraphs: [
+                      "City/Sync uses two internal signals to manage participant abuse risk. Reliability Score, or RS, tracks a participant's longitudinal behavior trend and indicates whether they are moving toward reliable execution or repeated quality failure. Risk Debt, or RD, measures immediate system exposure and functions as the primary access-control signal.",
+                      "The control rule is simple: RD governs permissions. RS supports recovery quality, governance review, and long-term pattern analysis. This allows the system to respond quickly to current risk without losing sight of whether a participant is improving or deteriorating over time."
+                    ]
+                  },
+                  {
+                    heading: "Default Event Weights",
+                    bullets: [
+                      "Successful verified completion: RS +0.5, RD -0.5 with a floor at zero.",
+                      "No-show: RS -1.0, RD +1.0.",
+                      "Rejected verification: RS -1.5, RD +2.0 because rejected work creates the highest integrity risk in this model."
+                    ]
+                  },
+                  {
+                    heading: "Task Commitment Abuse Controls",
+                    bullets: [
+                      "Unclaiming within 30 minutes of claim carries no penalty as a grace window.",
+                      "Unclaiming more than 72 hours before task start carries no penalty because early release is acceptable.",
+                      "Unclaiming 48 to 24 hours before task start is treated as a low-severity reliability event.",
+                      "Unclaiming 24 to 6 hours before task start is treated as elevated risk.",
+                      "Unclaiming less than 6 hours before task start is treated as a high-severity breach, harsher than a standard no-show.",
+                      "Self-unclaim can be disabled inside the final 24 hours except for bounded emergency exceptions.",
+                      "Near-date claim caps and standby queue logic can be used to reduce slot-holding attacks."
+                    ]
+                  },
+                  {
+                    heading: "Sanction Tiers",
+                    bullets: [
+                      "Green: RD below 1.5. Standard claiming permissions.",
+                      "Yellow: RD from 1.5 to below 3. Maximum 1 active claim and no premium or high-rate task claims.",
+                      "Orange: RD from 3 to below 5. Maximum 1 active claim and only short, lower-risk tasks.",
+                      "Red: RD of 5 or higher. Maximum 1 low-risk claim at a time plus mandatory cooldowns between claims."
+                    ]
+                  },
+                  {
+                    heading: "Recovery Logic",
+                    paragraphs: [
+                      "Restrictions are lifted through sustained good behavior, not one isolated success. A participant moves from Red to Orange only when RD falls below 5 and they complete 2 consecutive verified tasks. Orange to Yellow requires RD below 3 and 2 consecutive verified completions. Yellow to Green requires RD below 1.5, 3 consecutive verified completions, and RS above zero.",
+                      "This makes the system strict on behavior but flexible on recovery. A participant is never permanently locked out, but full access has to be earned back through repeated proof of reliability."
+                    ]
+                  },
+                  {
+                    heading: "Anti-Gaming Logic",
+                    paragraphs: [
+                      "The dual-signal model is designed to block obvious gaming strategies. A participant cannot simply cycle through several high-severity failures and then erase the consequences with one small successful task. RD keeps the immediate risk visible, while RS preserves the longer trend.",
+                      "For example, a participant who receives two rejected high-rate task outcomes and then one successful low-risk completion would still remain in an elevated restriction tier. That preserves system integrity and prevents repeated access to high-value opportunities before trust is restored."
+                    ]
+                  },
+                  {
+                    heading: "Epoch Rules",
+                    bullets: [
+                      "RD and RS are tracked continuously during the active Epoch.",
+                      "At Epoch rollover, RD can reset to zero while RS remains as governance history, or both can reset for a bounded pilot configuration.",
+                      "All participants re-enter a new Epoch with at least minimum claim access. Permanent lockout is not part of the model."
+                    ]
+                  },
+                  {
+                    heading: "Governance and Oversight Responsibilities",
+                    bullets: [
+                      "Issuer Committee: define event classifications, verification quality standards, and no-show evidence thresholds.",
+                      "Civic Committee: review sanction equity outcomes and recommend calibration changes.",
+                      "City/Sync in the early phase: maintain core control parameters and publish transparent policy revisions."
                     ]
                   },
                   {
                     heading: "Why We Reject Bans and Appeals as the Default Model",
                     paragraphs: [
                       "City/Sync does not treat mistakes as automatic justification for expulsion. People can miss tasks, misunderstand workflows, or fail in ways that should trigger restriction and learning rather than permanent exclusion. Likewise, formal appeals structures often create administrative theater without materially improving coordination quality.",
-                      "Instead, the system uses bounded restrictions and performance signals. The emphasis is not on punishment for its own sake. The emphasis is on maintaining fair access, protecting issuers, and giving participants a path to remain in the system without pretending that unreliable behavior has no consequences."
+                      "Instead, the system uses bounded restrictions, transparent tiers, and a standing recovery path. The emphasis is not on punishment for its own sake. The emphasis is on maintaining fair access, protecting issuers, and giving participants a way forward without pretending that unreliable behavior has no consequences."
+                    ]
+                  },
+                  {
+                    heading: "Policy Summary",
+                    paragraphs: [
+                      "Graduated Sanctions is designed to preserve trust without excluding people from participation. Participants who create risk are routed into progressively narrower claim windows, while repeated quality execution restores fuller access over time.",
+                      "The system is strict on behavior, flexible on recovery, and always keeps a path forward open."
                     ]
                   }
                 ]
