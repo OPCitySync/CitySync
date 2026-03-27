@@ -2319,6 +2319,159 @@
                 ]
               }
             ]
+          },
+          {
+            id: "legal-pilot-program-liability",
+            title: "Pilot Program Liability",
+            keywords: ["legal", "liability", "waivers", "issuer responsibility", "civic participants"],
+            summary:
+              "The pilot is structured so City/Sync does not operate or assume liability for issuer-run activities. Issuer Organizations remain responsible for their own programs, and participants agree to issuer-specific waivers and operating rules.",
+            sections: [
+              {
+                heading: "Overview",
+                paragraphs: [
+                  "City/Sync is an infrastructure and coordination layer. It is not the operator of the underlying volunteer activities, service sites, transportation systems, or public-facing programs that run through the pilot. The protocol records and coordinates certain actions, but the real-world activity itself remains under the authority and responsibility of the participating Issuer Organization or other operating institution.",
+                  "For that reason, the pilot is designed so City/Sync does not assume operational liability for activities conducted through the network. Liability for the physical activity, program conditions, site supervision, participant safety, and ordinary operational risk remains with the institution that is actually running the program and inviting participation."
+                ]
+              },
+              {
+                heading: "Issuer Organizations Remain the Operating Party",
+                paragraphs: [
+                  "Issuer Organizations are the entities that define tasks, supervise work, determine operating conditions, and decide what safety standards or prerequisites apply to a given task. They are therefore the appropriate party to maintain responsibility for the activity itself, including any ordinary liability waivers, assumption-of-risk forms, conduct standards, or participation acknowledgements that they already use in their normal operations.",
+                  "City/Sync does not replace those procedures. The pilot is structured to layer on top of them. If a library runs a tutoring program, a parks department runs a cleanup, or a nonprofit runs a food distribution shift, that institution continues to operate under its own policies, risk management practices, and legal obligations."
+                ]
+              },
+              {
+                heading: "Onchain Waivers and Standard Waiver Procedures",
+                paragraphs: [
+                  "All pilot participants, and especially Civic-Participants, are expected to agree to issuer-provided participation terms before engaging in issuer-run activities. Over time, this includes the use of onchain waiver acknowledgements or equivalent digital attestations that record a participant's acceptance of issuer-defined participation conditions, safety requirements, and liability language.",
+                  "These onchain acknowledgements do not eliminate the use of standard institutional waivers. Instead, they complement them. Issuer Organizations may continue to require their existing liability waivers, parental consent forms, media releases, background checks, code-of-conduct terms, or other standard participation documents whenever those requirements are appropriate for the task or setting."
+                ]
+              },
+              {
+                heading: "Why the Liability Structure Matters",
+                paragraphs: [
+                  "This allocation of responsibility matters because the protocol should not collapse legal accountability into the software layer. The entity that controls the activity should bear responsibility for the activity. That is cleaner for participants, clearer for institutions, and more compatible with existing public-sector and nonprofit risk management practices.",
+                  "It also allows City/Sync to function as shared coordination infrastructure rather than as the legal operator of every program that runs through the network. The protocol can support verification, waivers, records, and auditability while leaving real-world operational control with the organizations that already possess the authority and competence to manage those functions."
+                ]
+              },
+              {
+                heading: "Pilot Implementation Direction",
+                paragraphs: [
+                  "In practice, the pilot should be implemented so that issuer-facing agreements, participant onboarding flows, and task-level participation screens all reinforce this structure. Participants should understand that they are joining issuer-operated activities under issuer-defined conditions, and Issuer Organizations should understand that they remain responsible for the ordinary legal and administrative obligations attached to those activities.",
+                  "As formal deployments advance, this structure should be reflected in partnership agreements, waiver language, and local counsel review. The legal objective is straightforward: City/Sync provides the coordination network, while participating institutions remain responsible for the activities they themselves operate."
+                ]
+              }
+            ]
+          },
+          {
+            id: "legal-money-transmission-avoidance",
+            title: "Money Transmission Avoidance",
+            keywords: ["legal", "money transmission", "money transmitter", "city", "credits", "regulatory design"],
+            summary:
+              "The civic-credit architecture is designed to avoid money-transmission treatment by keeping CITY bounded, non-cash redeemable, and tied to earned access rather than general-purpose payment or remittance activity.",
+            sections: [
+              {
+                heading: "Overview",
+                paragraphs: [
+                  "The City/Sync pilot is not designed as a general-purpose payments network. It is designed as a bounded civic-credit system in which credits are earned through verified civic contribution and then used for access to specific offerings inside a controlled public-sector economy. That distinction is central to how the system is structured from a regulatory perspective.",
+                  "The legal design objective is to avoid turning City/Sync into a business that accepts and transmits money or money-like value on behalf of users. The protocol is therefore built so that CITY functions as a closed, purpose-specific civic credit rather than as open-loop monetary value circulating freely between parties."
+                ]
+              },
+              {
+                heading: "CITY Is Earned, Not Purchased",
+                paragraphs: [
+                  "CITY enters circulation through verified civic labor. A participant does not buy CITY from City/Sync with cash, deposit funds into a stored-value account, or send money to another user in order to obtain it. Instead, CITY is minted as a reward after an Issuer Organization verifies that a participant completed a civic task under the rules of the pilot.",
+                  "That matters because the protocol is not selling a financial product or operating a cash-in rail. CITY is issued as a purpose-bound recognition and access instrument tied to contribution, not as purchased monetary value."
+                ]
+              },
+              {
+                heading: "CITY Is Not Redeemable for Cash",
+                paragraphs: [
+                  "The system is also designed so CITY is not redeemable by City/Sync for fiat currency and is not positioned as a cash equivalent. Participants spend CITY on defined offerings made available by Redeemer Organizations, such as transit access, admission, classes, or other approved goods and services. When CITY is redeemed, it is used inside the pilot economy rather than converted back into money.",
+                  "This avoids the architecture of a remittance or stored-value system in which users expect to cash out or move monetary value through the platform. The point of the credit is access to local offerings, not convertibility into general money."
+                ]
+              },
+              {
+                heading: "Bounded Acceptance and Burn-on-Redemption",
+                paragraphs: [
+                  "CITY is meant to circulate inside a bounded network with defined roles, approved offerings, and explicit governance constraints. It is not designed as an open merchant acceptance network or a general-purpose consumer payment instrument. The pilot works because credits are issued for contribution, spent within the local offering universe, and then removed from circulation on redemption.",
+                  "That burn-on-redemption structure matters. It reinforces that CITY is not a deposit being held and transmitted onward. It is a governed civic-credit instrument whose lifecycle is linked to contribution, access, and economic balancing inside the pilot."
+                ]
+              },
+              {
+                heading: "City/Sync Does Not Accept and Transmit Funds",
+                paragraphs: [
+                  "City/Sync's operating model is not to receive money from one party and transmit that money or its equivalent to another party. The platform coordinates task issuance, verification, governance, and redemption logic, but it is not intended to sit in the middle of user remittances or custodial value transfer.",
+                  "That is why the architecture focuses on sponsored transactions, bounded roles, closed-loop redemption, and highly abstracted chain behavior instead of user-driven monetary transfer. The protocol records state changes relevant to the civic economy; it is not intended to function as a money movement business."
+                ]
+              },
+              {
+                heading: "Why the Closed Civic-Credit Design Matters",
+                paragraphs: [
+                  "A civic-credit system only remains legally and institutionally viable if it does not drift into behaving like unlicensed financial infrastructure. That is why City/Sync is intentionally designed around contribution, bounded redemption, and economic governance rather than speculation, unrestricted transferability, or cash conversion.",
+                  "The regulatory position is therefore rooted in system design: CITY is intended to operate as a purpose-specific access credit within a governed local network, not as a general substitute for money. Final legal treatment will still depend on jurisdiction, implementation details, and counsel review, but the architecture is expressly optimized to avoid money-transmission treatment rather than invite it."
+                ]
+              }
+            ]
+          },
+          {
+            id: "legal-regulatory-optimization",
+            title: "Regulatory Optimization",
+            keywords: ["legal", "regulatory", "local chains", "government integration", "procurement", "adoptability"],
+            summary:
+              "City/Sync prioritizes local chains because they are the most reliable way to integrate protocol infrastructure into real governments, where adoptability depends on legal compliance, procurement readiness, political legitimacy, and institutional durability.",
+            sections: [
+              {
+                heading: "Overview",
+                paragraphs: [
+                  "The core regulatory question for City/Sync is not whether a global blockchain can technically host the protocol. It is whether public institutions can realistically adopt, operate, and govern the system within their own legal and administrative environments. That is why City/Sync prioritizes local chains. They are the architecture most compatible with the actual constraints of local government.",
+                  "This is a question of regulatory optimization as much as technical design. Public agencies do not adopt systems because they are maximally open in theory. They adopt systems because those systems can fit inside procurement rules, records obligations, political accountability, and risk management frameworks. In this context, adoptability is the controlling variable."
+                ]
+              },
+              {
+                heading: "Why Local Chains Fit Government Better",
+                paragraphs: [
+                  "Local governments are structurally conservative. They are designed to preserve continuity, reduce uncertainty, and avoid unmanaged risk. Any protocol that seeks integration into public administration therefore has to be legible not just to developers, but to attorneys, clerks, procurement officers, auditors, department heads, and elected officials.",
+                  "A local chain gives City/Sync a way to meet those institutions where they actually are. It allows the protocol to operate as city-sovereign or locally governed infrastructure rather than as an application dependent on a remote network whose governance, upgrade path, and operating assumptions sit outside the jurisdictional and political reach of local institutions."
+                ]
+              },
+              {
+                heading: "Legal Compliance and Administrative Control",
+                paragraphs: [
+                  "Public agencies operate under records retention rules, transparency laws, privacy obligations, archiving requirements, and local administrative procedures that cannot be treated as optional. A local chain makes it easier to design compliance directly into the operating environment rather than trying to retrofit compliance through middleware after the fact.",
+                  "That matters because a city cannot credibly tell its own oversight bodies that a core civic system is governed elsewhere and cannot be adapted to local legal requirements. Local chains allow City/Sync to align the protocol with the jurisdictional reach of the institutions actually responsible for the program."
+                ]
+              },
+              {
+                heading: "Risk Framing, Security, and Procurement",
+                paragraphs: [
+                  "Government adoption depends heavily on how risk is framed. Institutions are far more likely to accept a bounded environment with a known validator set, predictable operating assumptions, and clear accountability than they are to rely on a global adversarial environment they do not control. A local chain narrows the attack surface and makes the governance surface easier to explain to auditors and administrators.",
+                  "The same logic applies to procurement. Governments need something they can actually buy, govern, and contract around. A local chain can be described in statements of work, governance documents, compliance addenda, and deployment agreements. That makes it materially easier to integrate City/Sync into public-sector workflows than a vague instruction to 'deploy on a public chain' and hope the institution absorbs the legal complexity."
+                ]
+              },
+              {
+                heading: "Political Legitimacy and Public Trust",
+                paragraphs: [
+                  "City/Sync is not attempting to bypass public institutions. It is attempting to recompose them into more transparent, auditable, and participatory systems. That requires political legitimacy. Local chains support that legitimacy because governance can remain visible and proximate. Validators, stewards, and oversight bodies can be local institutions and trusted civic organizations rather than anonymous or distant actors.",
+                  "For governments, this is not a cosmetic issue. It affects whether elected officials can defend adoption publicly, whether staff can explain the system internally, and whether residents can understand who is actually responsible for the infrastructure that records civic activity and governance decisions."
+                ]
+              },
+              {
+                heading: "Controlled Interoperability and Institutional Resilience",
+                paragraphs: [
+                  "Local chains do not reject interoperability. They sequence it. Governments need the ability to coordinate regionally and eventually connect with broader systems, but they also need to preserve discretion over their own records, governance rules, and operating policies. A local chain allows City/Sync to support interoperability on public-sector terms rather than forcing institutions into a network architecture they cannot realistically govern.",
+                  "That also produces resilience. Once a city adopts a chain aligned to its own laws, governance processes, and institutional partners, the system becomes much harder to unwind across political cycles. That kind of durable embedment is exactly what meaningful public-sector infrastructure requires."
+                ]
+              },
+              {
+                heading: "Why This Is Regulatory Optimization",
+                paragraphs: [
+                  "Regulatory optimization means designing the protocol so it can survive contact with real institutions. City/Sync is not trying to maximize ideological purity about decentralization. It is trying to maximize lawful, durable adoption inside local governments and public-serving organizations.",
+                  "That is why local chains matter so much to the pilot and beyond. They are the architecture most likely to satisfy legal compliance, risk management, cost predictability, procurement operability, political trust, controlled interoperability, and long-term institutional resilience all at once. In practical terms, they are the most reliable path for integrating the City/Sync protocol into government processes and procedures."
+                ]
+              }
+            ]
           }
         ]
       },
