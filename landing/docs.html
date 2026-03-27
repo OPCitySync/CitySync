@@ -304,6 +304,37 @@
       box-shadow: 0 0 0 3px rgba(221, 158, 51, 0.12);
     }
 
+    .doc-actions {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px dashed rgba(33, 50, 56, 0.18);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .doc-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(33, 50, 56, 0.14);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--brand-blue);
+      font-size: 0.92rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .doc-action-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(221, 158, 51, 0.45);
+      color: var(--brand-gold);
+    }
+
     .footer {
       padding: 38px 0 44px;
       color: rgba(255, 255, 255, 0.78);
@@ -842,6 +873,10 @@
                 keywords: ["formal economic model", "model", "equilibrium", "variables", "issuance", "redemption"],
                 summary:
                   "A Formal Economic Model translates the civic-credit economy into a structured set of variables, constraints, and relationships so governance can evaluate balance, growth, and policy decisions with greater precision. It provides the mathematical framework behind issuance, redemption, dormancy, expiry, and expansion in the City/Sync public-sector economy.",
+                pageLinks: [
+                  { label: "Open CitySync Governance Dashboard", href: "https://demo.city-sync.org/demo/citysync-governance-dashboard" },
+                  { label: "Open Civic-Credit Simulator", href: "https://demo.city-sync.org/demo/civic-credit-simulator" }
+                ],
                 sections: [
                   {
                     heading: "Overview",
@@ -1842,6 +1877,23 @@
 
         docContent.appendChild(sectionEl);
       });
+
+      if (Array.isArray(node.pageLinks) && node.pageLinks.length > 0) {
+        const actions = document.createElement("div");
+        actions.className = "doc-actions";
+
+        node.pageLinks.forEach(link => {
+          const action = document.createElement("a");
+          action.className = "doc-action-btn";
+          action.href = link.href;
+          action.target = "_blank";
+          action.rel = "noopener noreferrer";
+          action.textContent = link.label;
+          actions.appendChild(action);
+        });
+
+        docContent.appendChild(actions);
+      }
     }
 
     function initSelection() {
