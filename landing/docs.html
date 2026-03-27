@@ -3055,6 +3055,16 @@
       });
     }
 
+    function scrollDocsToTop() {
+      const target = document.querySelector(".docs-main");
+      if (target && typeof target.scrollIntoView === "function") {
+        target.scrollIntoView({ behavior: "auto", block: "start" });
+        return;
+      }
+
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+
     function includesText(value, query) {
       return String(value || "").toLowerCase().includes(query);
     }
@@ -3091,6 +3101,7 @@
       expandPathForSelection(id);
       renderTree();
       renderContent();
+      requestAnimationFrame(scrollDocsToTop);
 
       if (updateHash) {
         if (id === WELCOME_DOC.id) {
@@ -3299,6 +3310,7 @@
         state.selectedId = WELCOME_DOC.id;
         renderTree();
         renderContent();
+        requestAnimationFrame(scrollDocsToTop);
         return;
       }
       const entry = index.get(hashId);
@@ -3307,6 +3319,7 @@
         expandPathForSelection(hashId);
         renderTree();
         renderContent();
+        requestAnimationFrame(scrollDocsToTop);
       }
     });
   </script>
