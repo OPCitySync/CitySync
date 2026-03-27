@@ -1874,6 +1874,80 @@
                     ]
                   }
                 ]
+              },
+              {
+                id: "general-redeemer-capacity-optimization",
+                title: "Capacity Optimization",
+                keywords: ["capacity optimization", "dynamic pricing", "redeemers", "demand shaping", "post pilot"],
+                summary:
+                  "Capacity Optimization is a post-pilot development goal focused on helping Redeemer Organizations satisfy capacity more consistently by shaping redemption demand across time rather than relying on one static CITY rate.",
+                sections: [
+                  {
+                    heading: "Overview",
+                    paragraphs: [
+                      "Capacity Optimization is an aspirational, iterative development goal for City/Sync. It is not a live pilot feature. The long-term objective is to design a mechanism that helps Redeemers satisfy capacity more consistently across their full operating hours by adjusting redemption costs over time.",
+                      "The core idea is simple: if Redeemer demand is highly uneven across the day, then static pricing may leave some hours underused and others overloaded. A more adaptive redemption model could help redistribute participation into times where more capacity actually exists."
+                    ]
+                  },
+                  {
+                    heading: "Problem Statement",
+                    paragraphs: [
+                      "Many Redeemers face uneven demand across the day. At some hours, capacity goes unused. At others, demand exceeds what can be served smoothly. This creates operational stress, inconsistent participant experience, and missed opportunities to deliver public goods and services at times when organizations could actually serve more people.",
+                      "Static redemption pricing does not help redistribute demand across those windows. That means the protocol may fail to use the full capacity available on the redeemer side of the economy."
+                    ],
+                    bullets: [
+                      "Underutilized hours produce avoidable idle capacity.",
+                      "Peak-time congestion creates service strain and staff pressure.",
+                      "Static redemption pricing does not help shift demand over time."
+                    ]
+                  },
+                  {
+                    heading: "Why Solving This Matters",
+                    paragraphs: [
+                      "Capacity optimization matters because Redeemers are critical service endpoints in the public-sector economy. If Redeemers cannot absorb demand reliably, redemption value weakens and participant trust falls. Solving this problem supports stronger service delivery, better predictability, and healthier earn-to-burn circulation.",
+                      "It also helps institutions align real operating capacity with their mission. Better timing of demand can improve utilization without forcing organizations to expand infrastructure prematurely."
+                    ],
+                    bullets: [
+                      "For public-good and public-service providers: better alignment between mission delivery and actual operating capacity.",
+                      "For high-capacity organizations: improved utilization of underused hours without overwhelming peak periods.",
+                      "For participants: clearer redemption options and more reliable access to offerings."
+                    ]
+                  },
+                  {
+                    heading: "What City/Sync Is Trying to Build After the Pilot",
+                    paragraphs: [
+                      "The target mechanism is bounded dynamic CITY pricing for redemption windows. Instead of one static cost throughout the day, approved offerings could eventually use governance-bounded rate adjustments to shift demand toward underused hours and reduce peak stress.",
+                      "This is not a pilot feature. It is a research-and-development direction that depends on first proving baseline redemption reliability and governance clarity."
+                    ],
+                    bullets: [
+                      "Bounded dynamic pricing: rates move only within governance-approved ranges.",
+                      "Time-aware redemption windows: pricing responds to predictable demand patterns.",
+                      "Operational simplicity: staff workflows should remain straightforward at point of service.",
+                      "Transparency by default: participants can see the current redemption cost before confirming."
+                    ]
+                  },
+                  {
+                    heading: "Implications If Capacity Optimization Works",
+                    bullets: [
+                      "Redeemer operations could see more even demand distribution and fewer overload windows.",
+                      "Participants could gain more usable redemption opportunities across the day.",
+                      "Protocol economics could benefit from healthier and more predictable burn behavior.",
+                      "Mission-driven organizations could serve community needs more effectively without immediate expansion shock."
+                    ]
+                  },
+                  {
+                    heading: "Pilot Boundary and Development Posture",
+                    paragraphs: [
+                      "Capacity Optimization is not a pilot deliverable. The pilot is focused on proving reliable task issuance, verification, and redemption operations first. Dynamic pricing should only be introduced after baseline reliability, policy clarity, and governance controls are established.",
+                      "That sequencing matters. City/Sync should first prove that the redemption system works consistently under static conditions, then model demand patterns, then define bounded pricing rules, and only after that consider deployment of dynamic mechanisms."
+                    ],
+                    bullets: [
+                      "Pilot now: prove stable workflows and trusted redemption execution.",
+                      "Next phase: model demand patterns and define bounded pricing rules.",
+                      "Later phase: deploy and tune dynamic pricing with committee oversight."
+                    ]
+                  }
+                ]
               }
             ]
           },
