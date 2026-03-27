@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>City/Sync Money Transmission Risk Checklist</title>
+  <style>
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      color: #15151e;
+      line-height: 1.55;
+      margin: 48px;
+      max-width: 860px;
+    }
+    h1, h2, h3 {
+      color: #15151e;
+      margin-top: 1.3em;
+      margin-bottom: 0.4em;
+    }
+    h1 {
+      font-size: 28px;
+      border-bottom: 2px solid #dd9e33;
+      padding-bottom: 8px;
+    }
+    h2 {
+      font-size: 20px;
+    }
+    h3 {
+      font-size: 16px;
+    }
+    p, li {
+      font-size: 12pt;
+    }
+    .note {
+      background: #f7f8fc;
+      border-left: 4px solid #dd9e33;
+      padding: 12px 14px;
+      margin: 20px 0;
+    }
+    .green {
+      color: #1f6f43;
+      font-weight: 700;
+    }
+    .yellow {
+      color: #9a6a00;
+      font-weight: 700;
+    }
+    .red {
+      color: #9c2f2f;
+      font-weight: 700;
+    }
+    ul {
+      margin-top: 0.35em;
+    }
+    .small {
+      font-size: 10.5pt;
+      color: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <h1>City/Sync Money Transmission Risk Checklist</h1>
+
+  <p><strong>Prepared for:</strong> City/Sync internal planning and pilot design review</p>
+  <p><strong>Date:</strong> March 26, 2026</p>
+
+  <div class="note">
+    <p><strong>Important:</strong> This document is not legal advice and should not be treated as a formal legal opinion. It is a practical architecture and risk-positioning memo designed to help City/Sync maintain a strong regulatory posture while preparing the Pilot Program. Formal deployment decisions should still be reviewed by qualified counsel in the relevant jurisdictions.</p>
+  </div>
+
+  <h2>Working Conclusion</h2>
+  <p>Based on the current pilot architecture, City/Sync does <strong>not</strong> appear to be clearly operating as a money transmitter under the ordinary federal framework used by FinCEN, because the system is structured as a <strong>non-transferable, earned, closed-loop civic credit</strong> rather than a business that accepts and transmits money or convertible value on behalf of users.</p>
+  <p>That conclusion depends heavily on the system continuing to operate as designed. The stronger the protocol remains as a bounded civic-credit model, the stronger the regulatory position. The more it begins to resemble open-loop payments, stored value, or cash conversion, the weaker that position becomes.</p>
+
+  <h2>Why the Current Architecture Is Favorable</h2>
+  <ul>
+    <li><strong>CITY is earned, not purchased.</strong> Credits are minted after verified civic contribution rather than sold for fiat or crypto.</li>
+    <li><strong>CITY is non-transferable.</strong> Users cannot send it peer-to-peer or use it as a freely circulating payment instrument.</li>
+    <li><strong>CITY is not cash redeemable.</strong> It is spent on defined offerings inside the pilot rather than converted back into money.</li>
+    <li><strong>Redemption burns the credit.</strong> The token lifecycle is tied to contribution and access, not monetary settlement between users.</li>
+    <li><strong>City/Sync is not a custodial remittance layer.</strong> The platform is not intended to receive funds from one party and transmit them to another party as part of its core model.</li>
+    <li><strong>The network is bounded.</strong> Redeemer participation, offerings, and governance are all restricted by program rules rather than open-market usage.</li>
+  </ul>
+
+  <h2>Green / Yellow / Red Checklist</h2>
+
+  <h3><span class="green">Green</span> — Features That Strongly Support the Current Position</h3>
+  <ul>
+    <li>CITY remains <strong>non-transferable at the contract level</strong>, not merely hidden in the user interface.</li>
+    <li>No one can <strong>buy CITY</strong> with fiat, stablecoins, or other cryptoassets.</li>
+    <li>No user can <strong>cash out CITY</strong> for dollars, USDC, or other monetary value.</li>
+    <li>Participants redeem CITY only for <strong>specific goods or services</strong> offered by approved Redeemer Organizations.</li>
+    <li>Redemptions <strong>burn CITY</strong> rather than route value onward to another user.</li>
+    <li>City/Sync does not hold customer balances for later transfer.</li>
+    <li>The protocol and all public-facing materials consistently describe CITY as a <strong>civic-program credit</strong> or access instrument, not as money.</li>
+    <li>Redeemer relationships are documented as <strong>program participation arrangements</strong>, not payment processing arrangements.</li>
+  </ul>
+
+  <h3><span class="yellow">Yellow</span> — Features That Create Legal Ambiguity and Need Counsel Review</h3>
+  <ul>
+    <li>Redeemers are reimbursed off-chain in a way that starts to resemble settlement of monetary obligations through the platform.</li>
+    <li>Credits begin to function as a de facto general-purpose medium of exchange within a large merchant network.</li>
+    <li>Users can indirectly transfer value by using CITY to purchase transferrable or resellable benefits.</li>
+    <li>Third-party integrations create a practical market price for CITY, even if City/Sync itself does not sell it.</li>
+    <li>The protocol allows broad interoperability before legal treatment is mapped jurisdiction by jurisdiction.</li>
+    <li>Public communications begin describing CITY as equivalent to cash, spending power, compensation, or wages.</li>
+  </ul>
+
+  <h3><span class="red">Red</span> — Design Choices That Would Materially Increase Money-Transmission Risk</h3>
+  <ul>
+    <li>Users can <strong>transfer CITY to each other</strong>.</li>
+    <li>Users can <strong>swap CITY for fiat, USDC, or other crypto</strong>.</li>
+    <li>City/Sync or an affiliate offers to <strong>buy back</strong> or redeem CITY for money.</li>
+    <li>City/Sync <strong>accepts customer funds</strong> and settles value onward to participants or redeemers.</li>
+    <li>CITY becomes a widely usable merchant token outside the bounded program environment.</li>
+    <li>Wrapped, bridged, or synthetic versions of CITY are allowed to circulate in secondary markets.</li>
+  </ul>
+
+  <h2>What Must Stay True for the Strongest Position</h2>
+  <ol>
+    <li>CITY must remain <strong>earned rather than sold</strong>.</li>
+    <li>CITY must remain <strong>non-transferable</strong>.</li>
+    <li>CITY must remain <strong>non-cash redeemable</strong>.</li>
+    <li>The pilot must remain a <strong>closed, governed, role-based network</strong>.</li>
+    <li>City/Sync must avoid becoming a <strong>custodian of customer monetary value</strong>.</li>
+    <li>Redeemer access should remain tied to <strong>specific offerings and program rules</strong>.</li>
+    <li>All contracts, terms, accounting treatment, and public messaging should reinforce that CITY is a <strong>limited civic credit</strong>, not a general monetary instrument.</li>
+    <li>Any expansion in scope should be reviewed before launch for both <strong>federal</strong> and <strong>state</strong> implications.</li>
+  </ol>
+
+  <h2>Why State Law Still Matters</h2>
+  <p>Even if the federal position is reasonably favorable, state law may be broader or more aggressive. That is especially true in jurisdictions with distinct virtual-currency or money-transmission regimes. The practical takeaway is simple: the current architecture gives City/Sync a stronger federal argument, but it does not eliminate the need for state-level analysis before a scaled deployment.</p>
+
+  <h2>Recommended Pilot Guardrails</h2>
+  <ul>
+    <li>Keep the smart-contract restrictions that prevent transfer and approval.</li>
+    <li>Do not introduce any fiat purchase flow for CITY.</li>
+    <li>Do not introduce any redemption-to-cash or stablecoin path.</li>
+    <li>Prohibit secondary-market activity involving CITY in the terms of service and pilot agreements.</li>
+    <li>Keep redeemer offerings narrowly defined and program-bound.</li>
+    <li>Review any off-chain reimbursement or subsidy structure so it does not convert the platform into a settlement business.</li>
+    <li>Maintain clear written descriptions of CITY as a civic credit, access instrument, and governance-controlled program unit.</li>
+    <li>Conduct jurisdiction-specific legal review before moving from bounded pilot to multi-city deployment.</li>
+  </ul>
+
+  <h2>Questions Counsel Should Eventually Answer</h2>
+  <ul>
+    <li>Does any state treat a non-transferable civic-program credit as regulated money transmission or stored value under its own statutes?</li>
+    <li>Would any off-chain reimbursement to redeemers change the legal analysis?</li>
+    <li>Should the pilot rely on additional contractual restrictions to reinforce the non-monetary nature of CITY?</li>
+    <li>Are there labor, tax, consumer protection, or prepaid access issues that should be analyzed separately from money transmission?</li>
+    <li>What deployment changes would require a new legal review before launch?</li>
+  </ul>
+
+  <h2>Bottom Line</h2>
+  <p>City/Sync's strongest legal position is that CITY functions as a <strong>non-transferable, earned, closed-loop civic credit</strong> used to access defined offerings inside a governed local program. On that architecture, the system does <strong>not</strong> look like a conventional money transmission business. The main legal risk is not the current design itself. The main legal risk is <strong>drift</strong>: adding transferability, convertibility, custody, or open-loop payment features that make the system behave more like regulated financial infrastructure.</p>
+
+  <p class="small">Background sources considered for this internal summary include FinCEN guidance on virtual currency and the current City/Sync pilot architecture.</p>
+</body>
+</html>
