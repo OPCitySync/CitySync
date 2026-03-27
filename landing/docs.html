@@ -841,31 +841,143 @@
                 title: "A Formal Economic Model",
                 keywords: ["formal economic model", "model", "equilibrium", "variables", "issuance", "redemption"],
                 summary:
-                  "A Formal Economic Model translates the civic-credit economy into a structured set of variables, constraints, and relationships so governance can evaluate balance, growth, and policy decisions with greater precision.",
+                  "A Formal Economic Model translates the civic-credit economy into a structured set of variables, constraints, and relationships so governance can evaluate balance, growth, and policy decisions with greater precision. It provides the mathematical framework behind issuance, redemption, dormancy, expiry, and expansion in the City/Sync public-sector economy.",
                 sections: [
                   {
                     heading: "Overview",
                     paragraphs: [
-                      "The City/Sync public-sector economy can be described in plain language, but it also benefits from a formal model. A formal model helps clarify what variables matter, how they relate to each other, and what conditions must hold for the economy to remain stable over time.",
-                      "This page exists to define that branch of the documentation and provide a dedicated place for the economic logic behind issuance, redemption, dormancy, capacity, pricing, and governance-triggered adjustment."
+                      "The City/Sync public-sector economy can be described in plain language, but it also benefits from a formal model. A formal model clarifies what variables matter, how they relate to each other, and what conditions must hold for the economy to remain stable over time.",
+                      "The current formal model is built around a dormancy-based expiry system with a 12-month inactivity threshold and no hard cap on credit age. This reflects an important design principle: credits should not disappear simply because time passed. They should only expire when participants have truly become inactive."
                     ]
                   },
                   {
-                    heading: "What the Model Is For",
+                    heading: "Model Variables and Parameters",
                     paragraphs: [
-                      "A formal model is not meant to replace governance judgment. It is meant to support it. By expressing the economy through clearly defined variables and relationships, City/Sync can reason more precisely about whether the system is balanced, where pressure is building, and what policy adjustments are justified.",
-                      "This is especially important for a governed civic economy, where credibility depends on showing that growth and contraction follow legible rules rather than intuition alone."
+                      "The model operates in discrete time periods, typically months, and tracks the movement of credits through the economy using a set of state variables, flow variables, system parameters, and governance control variables.",
+                      "A formal model is not meant to replace governance judgment. It is meant to support it. By expressing the economy through clearly defined variables and relationships, City/Sync can reason more precisely about whether the system is balanced, where pressure is building, and what policy adjustments are justified."
                     ]
                   },
                   {
-                    heading: "Core Areas the Model Will Cover",
+                    heading: "State Variables",
                     bullets: [
-                      "Issuance and the supply of CITY entering circulation",
-                      "Redemption Capacity and the burn side of the economy",
-                      "Outstanding active balances and dormant balances",
-                      "Retention, expiry, and participant churn",
-                      "Pricing effects across both tasks and offerings",
-                      "Governance thresholds and decision triggers"
+                      "`A(t)` — Active stock: credits held by participants who have earned or redeemed within the last 12 months. Only this pool generates redemption demand.",
+                      "`D(t)` — Dormant stock: credits held by participants who have not earned or redeemed for more than 12 months. Dormant credits are inert and pending expiry.",
+                      "`S(t) = A(t) + D(t)` — Total outstanding stock.",
+                      "Dormant stock is tracked as a 12-month queue in which the oldest dormant cohort expires once it reaches the end of the line."
+                    ]
+                  },
+                  {
+                    heading: "Flow Variables",
+                    bullets: [
+                      "`I(t)` — Gross issuance: new credits minted for verified civic labor.",
+                      "`B(t)` — Burns: credits redeemed and destroyed by Redeemer Organizations.",
+                      "`X(t)` — Expiry: dormant credits that complete 12 months of inactivity.",
+                      "`Q(t)` — Churn flow: credits moving from active stock to dormant stock.",
+                      "`R(t)` — Reactivation flow: credits moving from dormant stock back to active stock."
+                    ]
+                  },
+                  {
+                    heading: "System Parameters and Governance Levers",
+                    bullets: [
+                      "`C(t)` — Redemption Capacity: the maximum credits the redeemer universe can absorb per period.",
+                      "`r` — Redemption propensity: the fraction of active stock participants attempt to redeem per period.",
+                      "`delta` — Monthly churn rate: the fraction of active stock whose holders become inactive each month.",
+                      "`rho` — Reactivation rate: the fraction of dormant stock whose holders return to activity each month.",
+                      "`I_bar` — Issuance cap: the governance-set maximum on gross issuance.",
+                      "Governance levers include the issuance cap, task pricing, redemption rates, capacity expansion, and the dormancy threshold."
+                    ]
+                  },
+                  {
+                    heading: "Stock-Flow Dynamics",
+                    paragraphs: [
+                      "The active stock evolves according to `A(t) = A(t-1) + I(t) - B(t) - Q(t) + R(t)`. The dormant stock evolves according to `D(t) = D(t-1) + Q(t) - X(t) - R(t)`. The total stock evolves according to `S(t) = S(t-1) + I(t) - B(t) - X(t)`.",
+                      "Churn is defined as `Q(t) = delta · A(t-1)`, reactivation as `R(t) = rho · D(t-1)`, and expiry as `X(t) = d11(t)`, meaning the oldest dormant cohort in the 12-month queue. Burns equal `B(t) = r · A(t-1)` in an unconstrained regime and `B(t) = min(r · A(t-1), C)` in a constrained regime."
+                    ]
+                  },
+                  {
+                    heading: "The 12-Month Lag Effect",
+                    paragraphs: [
+                      "Dormancy-based expiry creates a structural lag that an age-based expiry model does not. When a participant goes dormant today, their credits do not disappear immediately. They remain outstanding for up to 12 months unless the participant reactivates.",
+                      "This means churn can inflate the total stock temporarily without increasing redemption pressure. The model therefore distinguishes between total stock and active stock because only active balances create live demand on the redemption side."
+                    ]
+                  },
+                  {
+                    heading: "Steady-State Analysis",
+                    paragraphs: [
+                      "For tractable steady-state analysis, the model assumes that reactivation is negligible, or `rho ≈ 0`. Under that assumption, the steady-state active stock is `A* = I / (r + delta)`. The steady-state dormant stock is `D* = 12 · I · delta / (r + delta)`. Total steady-state stock is therefore `S* = I · (1 + 12delta) / (r + delta)`.",
+                      "In steady state, burns are `B* = I · r / (r + delta)` and expiry is `X* = I · delta / (r + delta)`. Those outflows together balance issuance."
+                    ]
+                  },
+                  {
+                    heading: "Effective Expiry Rate and Critical Issuance Boundary",
+                    paragraphs: [
+                      "The model derives an effective expiry rate relative to total stock: `lambda_eff = delta / (1 + 12delta)`. This is important because it shows that effective expiry is driven by participant churn, not by arbitrary governance preference alone.",
+                      "The model also defines a critical issuance boundary: `I_max = C · (r + delta) / r`. This links maximum sustainable issuance directly to Redemption Capacity, redemption behavior, and churn."
+                    ]
+                  },
+                  {
+                    heading: "The Four Health Ratios",
+                    bullets: [
+                      "`eta` — Redemption Efficiency: `eta(t) = B(t) / I(t)` and in steady state `eta* = r / (r + delta)`.",
+                      "`U` — Utilization Rate: `U(t) = B(t) / C(t)`.",
+                      "`SCR` — Stock-to-Capacity Ratio: `SCR(t) = S(t) / C(t)`.",
+                      "`ICR` — Issuance-to-Capacity Ratio: `ICR(t) = I(t) / C(t)`.",
+                      "`DR` — Dormancy Ratio: `DR(t) = D(t) / S(t)`."
+                    ]
+                  },
+                  {
+                    heading: "How to Read the Ratios",
+                    paragraphs: [
+                      "Redemption Efficiency indicates how much issued credit is actually being burned through redemption. In a dormancy model, weak redemption efficiency often signals poor retention rather than credits simply aging out.",
+                      "Utilization shows how full the redeemer side is. Stock-to-Capacity Ratio shows how large the overall stock is relative to capacity, though it should often be paired with active stock analysis because dormant balances can inflate the total. Issuance-to-Capacity shows whether issuance is running safely below the system's carrying threshold."
+                    ]
+                  },
+                  {
+                    heading: "Dormancy Ratio and Retention Alert",
+                    paragraphs: [
+                      "The Dormancy Ratio measures how much of the total stock is sitting dormant rather than active. Because expiry is tied to inactivity, dormancy becomes a meaningful structural signal rather than just leftover accounting noise.",
+                      "The model also introduces a retention alert condition: if `delta` rises for three or more consecutive months while `eta` declines, governance should interpret that as participant attrition. The appropriate response is product and engagement intervention, not just economic tightening."
+                    ]
+                  },
+                  {
+                    heading: "Growth Sequencing",
+                    paragraphs: [
+                      "The formal model preserves the Capacity-Lead Principle: `deltaC ≥ deltaI · eta`. In practical terms, growth in issuance should be supported by sufficient growth in Redemption Capacity.",
+                      "Any headroom produced by more favorable behavioral outcomes should be treated as safety buffer, not as automatic room for more issuance."
+                    ]
+                  },
+                  {
+                    heading: "Dynamic Properties",
+                    paragraphs: [
+                      "The active stock adjusts faster than the total stock. The active stock half-life is approximately `t_half = ln(2) / ln(1/(1-r-delta))`, which is about 3.5 months using illustrative values of `r = 0.15` and `delta = 0.03`.",
+                      "The total stock takes much longer to settle because the dormancy queue takes roughly 12 months to fully populate. This means churn shocks are felt quickly in the active pool, but the expiry response to those shocks arrives with a long lag."
+                    ]
+                  },
+                  {
+                    heading: "Pilot Calibration Protocol",
+                    paragraphs: [
+                      "During Phase 1, the system should start at roughly 50% of Redemption Capacity. No credits will expire yet because the dormancy queue has not had time to fill, so governance should focus on observing redemption behavior and participant activity.",
+                      "During Phase 2, governance should estimate `r` and `delta` from observed data and set the issuance cap conservatively. During Phase 3, starting around month 13, dormancy-triggered expiries begin to appear in observable data, allowing governance to compare actual behavior to the model's predictions."
+                    ]
+                  },
+                  {
+                    heading: "Summary of Key Formulas",
+                    bullets: [
+                      "`A* = I / (r + delta)` — steady-state active stock",
+                      "`D* = 12 · I · delta / (r + delta)` — steady-state dormant stock",
+                      "`S* = I · (1 + 12delta) / (r + delta)` — steady-state total stock",
+                      "`I_max = C · (r + delta) / r` — maximum sustainable issuance",
+                      "`eta* = r / (r + delta)` — steady-state redemption efficiency",
+                      "`lambda_eff = delta / (1 + 12delta)` — effective expiry rate",
+                      "`DR* = 12delta / (1 + 12delta)` — steady-state dormancy ratio",
+                      "`deltaC ≥ deltaI · eta` — minimum capacity growth needed for issuance growth"
+                    ]
+                  },
+                  {
+                    heading: "Dormancy-Based vs. Age-Based Expiry",
+                    paragraphs: [
+                      "The formal model highlights an important difference between dormancy-based expiry and age-based expiry. In an age-based model, all participants eventually lose credits as those credits age. In a dormancy-based model, only inactive participants face expiry.",
+                      "This aligns more closely with the underlying logic of City/Sync. Contribution remains recognized as long as a participant is still part of the community's civic life. Expiry becomes a function of disengagement rather than a shelf life imposed on active contributors."
                     ]
                   },
                   {
