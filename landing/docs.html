@@ -232,6 +232,11 @@
       margin-top: 14px;
     }
 
+    .content-card.cards-layout {
+      display: grid;
+      gap: 14px;
+    }
+
     .doc-path {
       font-size: 0.78rem;
       letter-spacing: 0.12em;
@@ -260,6 +265,21 @@
       margin-top: 22px;
       padding-top: 20px;
       border-top: 1px dashed rgba(33, 50, 56, 0.18);
+    }
+
+    .content-card.cards-layout .doc-section {
+      margin: 0;
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(33, 50, 56, 0.1);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 14px 30px rgba(26, 31, 54, 0.06);
+    }
+
+    .content-card.cards-layout .doc-section + .doc-section {
+      margin-top: 0;
+      padding-top: 18px;
+      border-top: 1px solid rgba(33, 50, 56, 0.1);
     }
 
     .doc-section h3 {
@@ -2482,14 +2502,72 @@
           {
             id: "faq-common-questions",
             title: "Common Questions",
-            keywords: ["faq", "questions", "pilot", "roles"],
+            keywords: ["faq", "questions", "pilot", "roles", "city", "credits", "government", "mce"],
             summary:
-              "The FAQ section will consolidate recurring questions across issuers, redeemers, participants, and city operators as the documentation set expands.",
+              "These are the most likely first questions a reader will ask when trying to understand what City/Sync is, how it works, and why it matters.",
+            sectionLayout: "cards",
             sections: [
               {
-                heading: "Current Direction",
+                heading: "What is City/Sync, exactly?",
                 paragraphs: [
-                  "The primary documentation pages above are intended to answer the foundational questions first. As recurring patterns emerge from actual pilot conversations, this section can be expanded into role-specific quick answers and troubleshooting guidance."
+                  "City/Sync is three things at once: a nonprofit foundation, a protocol for programmable public coordination, and a pilot deployment model for testing that protocol under real administrative conditions. The Foundation develops and stewards the system, the protocol defines the roles, rules, and economic logic, and the Pilot Program shows how those ideas can function in actual cities.",
+                  "The easiest way to think about it is as coordination infrastructure for public life. It is designed to help institutions organize civic participation in a way that is measurable, governed, and connected to real public-service pathways."
+                ]
+              },
+              {
+                heading: "What problem is City/Sync actually solving?",
+                paragraphs: [
+                  "City/Sync is trying to solve a coordination problem. Cities already contain enormous amounts of civic effort, volunteering, mutual aid, and public-minded participation, but most institutions still struggle to recognize that effort, coordinate it, validate it, and build on it in durable ways.",
+                  "The result is that public contribution remains fragmented. Organizations run separate systems, volunteer work is difficult to discover, recognition is inconsistent, and communities have few structured ways to turn civic energy into something operationally useful. City/Sync exists to make that capacity visible, governable, and easier to integrate into real public-sector workflows."
+                ]
+              },
+              {
+                heading: "Why use smart contracts and local chains at all?",
+                paragraphs: [
+                  "Smart contracts are used because City/Sync needs verifiable shared state around task issuance, verification, redemption, and governance. They allow key lifecycle events to be recorded in a way that is auditable and hard to manipulate after the fact, while keeping those records synchronized across roles.",
+                  "Local chains matter because public institutions need systems that fit their legal, political, and administrative reality. City/Sync is optimized for adoptability inside government, not for ideological purity. A local chain is easier to align with compliance, procurement, institutional oversight, and long-term public trust than a system that depends on distant global governance."
+                ]
+              },
+              {
+                heading: "Is this legally and institutionally viable?",
+                paragraphs: [
+                  "That is one of the main reasons the pilot exists. City/Sync is being designed to function inside real institutions rather than around them. The documentation addresses liability structure, money transmission avoidance, regulatory optimization, governance procedures, and the administrative logic required for adoption.",
+                  "The strongest answer is not abstract. It is procedural. The pilot is meant to generate the operational precedent, agreements, governance patterns, and compliance posture that show the model can function under real-world constraints. City/Sync is trying to become institutionally legible, not merely technically possible."
+                ]
+              },
+              {
+                heading: "Why is CITY non-transferable?",
+                paragraphs: [
+                  "CITY is non-transferable because it is intended to function as a civic credit, not as open-loop money. It is earned through verified contribution and then redeemed for access to approved offerings inside a governed local economy. Allowing unrestricted transfer would weaken that design and make the credit behave more like a general-purpose payment instrument.",
+                  "Non-transferability also helps preserve the meaning of the system. The point is to recognize contribution and connect it to access, not to create a tradable asset detached from the civic activity that produced it. That structure supports both the economic design and the legal posture of the pilot."
+                ]
+              },
+              {
+                heading: "How does City/Sync fit into real governments and public institutions?",
+                paragraphs: [
+                  "City/Sync is designed to fit into existing institutions by extending their coordination capacity rather than forcing them to replace their entire operating model. Issuer Organizations can use it to structure and verify civic-labor tasks. Redeemer Organizations can use it to make underused capacity available through the protocol. Governance can be layered on top of real institutions and committees rather than invented from scratch.",
+                  "This is why the project emphasizes onboarding logic, deployment models, local chains, and procurement legibility. The theory of change is recomposition, not disruption. City/Sync is meant to be adopted through recognizable institutional pathways so that participation infrastructure can become part of how cities actually operate."
+                ]
+              },
+              {
+                heading: "What would it take to bring City/Sync to another city?",
+                paragraphs: [
+                  "A new city needs more than technical access. It needs a workable local coalition: credible issuer organizations, redeemer organizations with real capacity, pilot governance support, and enough administrative openness to test a new coordination model under controlled conditions. The city also needs a deployment process that fits its own legal and institutional environment.",
+                  "That is why the Pilot Program is focused on replication as much as demonstration. The goal is to produce a procedural artifact other cities can adopt and adapt. In practice, starting a pilot means aligning local institutions, defining the first deployment scope, and creating enough issuer and redeemer density for the civic-credit loop to function credibly from the beginning."
+                ]
+              },
+              {
+                heading: "What makes this better or more meaningful than ordinary volunteering alone?",
+                paragraphs: [
+                  "Ordinary volunteering is valuable, but it is often fragmented, poorly recognized, and disconnected from a larger system of coordination. City/Sync tries to make civic participation more durable by giving it structure, recognition, and a direct relationship to local institutions and offerings. It turns participation into something that can be tracked, validated, and built upon over time.",
+                  "That makes the experience more meaningful in two ways. First, participants receive real access and recognition for their contribution instead of symbolic appreciation alone. Second, their effort becomes part of a broader public coordination system that helps institutions expand impact, improve responsiveness, and create more visible pathways for community contribution."
+                ]
+              },
+              {
+                heading: "How do Mass Coordination Events help coordinate public action and test governance?",
+                paragraphs: [
+                  "Mass Coordination Events, or MCEs, create time-bound moments in which multiple actors converge around a specific public goal. They allow the protocol to organize civic labor, issuer priorities, redemption pathways, and governance attention around one shared mission rather than leaving all activity diffuse and uncoordinated.",
+                  "They are also useful governance tests. Because they have clear phases, shared objectives, and visible outcomes, they let the pilot observe how institutions make decisions, how participants respond to incentives, and how governance tools like VOTE and committee coordination perform under real operating pressure. In that sense, MCEs are both public action mechanisms and learning environments for the protocol."
                 ]
               }
             ]
@@ -2670,6 +2748,7 @@
       docSummary.textContent = node.summary || "";
 
       docContent.innerHTML = "";
+      docContent.classList.toggle("cards-layout", node.sectionLayout === "cards");
 
       (node.sections || []).forEach(section => {
         const sectionEl = document.createElement("section");
