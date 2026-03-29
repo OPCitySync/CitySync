@@ -10,6 +10,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AppDemoPage() {
-  return <RedesignClientPage />;
+type AppDemoPageProps = {
+  searchParams?: Promise<{
+    role?: string | string[];
+  }>;
+};
+
+const normalizeRole = (value: string | string[] | undefined): "issuer" | "participant" | "redeemer" => {
+  const candidate = Array.isArray(value) ? value[0] : value;
+  if (candidate === "participant" || candidate === "redeemer") return candidate;
+  return "issuer";
+};
+
+export default async function AppDemoPage({ searchParams }: AppDemoPageProps) {
+  const params = await searchParams;
+
+  return <RedesignClientPage initialRole={normalizeRole(params?.role)} />;
 }

@@ -173,17 +173,15 @@ const getTutorialContent = (step: string): TutorialContent => {
   return TUTORIAL_CONTENT_BY_STEP.dismissed;
 };
 
-export default function RedesignClientPage() {
+type RedesignClientPageProps = {
+  initialRole?: RoleKey;
+};
+
+export default function RedesignClientPage({ initialRole = "issuer" }: RedesignClientPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [activeRole, setActiveRole] = React.useState<RoleKey>(() => {
-    if (typeof window !== "undefined") {
-      const requestedRole = new URLSearchParams(window.location.search).get("role");
-      if (isRoleKey(requestedRole)) return requestedRole;
-    }
-    return "issuer";
-  });
-  const initialEmbedRoleRef = React.useRef<RoleKey>(activeRole);
+  const [activeRole, setActiveRole] = React.useState<RoleKey>(initialRole);
+  const initialEmbedRoleRef = React.useRef<RoleKey>(initialRole);
   const [isTourStarted, setIsTourStarted] = React.useState(false);
   const [tutorialStep, setTutorialStep] = React.useState<string>("dismissed");
   const [learnMoreByRole, setLearnMoreByRole] = React.useState<LearnMoreStateByRole>({
