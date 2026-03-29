@@ -1,15 +1,18 @@
-import type { Metadata } from "next";
-import RedesignClientPage from "./RedesignClientPage";
+import { redirect } from "next/navigation";
 
-export const metadata: Metadata = {
-  title: "City/Sync Redesign Prototype (Experimental)",
-  description: "Experimental Civic Wallet OS concept page with an embedded live demo shell.",
-  robots: {
-    index: false,
-    follow: false,
-  },
+type DemoRedesignPageProps = {
+  searchParams?: Promise<{
+    role?: string | string[];
+  }>;
 };
 
-export default function DemoRedesignPage() {
-  return <RedesignClientPage />;
+export default async function DemoRedesignPage({ searchParams }: DemoRedesignPageProps) {
+  const params = await searchParams;
+  const role = Array.isArray(params?.role) ? params.role[0] : params?.role;
+
+  if (role) {
+    redirect(`/app?role=${encodeURIComponent(role)}`);
+  }
+
+  redirect("/app");
 }

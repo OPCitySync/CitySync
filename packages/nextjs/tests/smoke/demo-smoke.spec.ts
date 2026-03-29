@@ -33,8 +33,8 @@ test.describe("City/Sync demo smoke", () => {
     }
   });
 
-  test("experimental redesign page still loads", async ({ page }) => {
-    const response = await page.goto("/demo/redesign");
+  test("demo app page still loads", async ({ page }) => {
+    const response = await page.goto("/app");
     expect(response?.ok()).toBeTruthy();
     await expect(page.getByText("Civic Wallet OS")).toBeVisible();
     await expect(page.getByRole("button", { name: "Start the Guided Tour" })).toBeVisible();
