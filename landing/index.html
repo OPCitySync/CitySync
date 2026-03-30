@@ -421,20 +421,23 @@
 
     .problem-layout {
       display: grid;
-      grid-template-columns: minmax(260px, 0.42fr) minmax(0, 0.58fr);
+      grid-template-columns: minmax(320px, 0.5fr) minmax(0, 0.5fr);
       gap: clamp(18px, 3vw, 34px);
-      align-items: center;
+      align-items: end;
     }
 
     .problem-media {
-      max-width: 520px;
-      width: 100%;
-      margin-right: auto;
+      max-width: none;
+      width: min(760px, 58vw);
+      margin: 0;
+      margin-left: -52px;
       padding: 0;
       background: none;
       border: 0;
       border-radius: 0;
       box-shadow: none;
+      align-self: end;
+      justify-self: start;
     }
 
     .problem-media img {
@@ -715,6 +718,11 @@
         text-align: left;
         justify-self: stretch;
         max-width: none;
+      }
+
+      .problem-media {
+        width: 100%;
+        margin-left: 0;
       }
 
       .problem-content .section-lead {
