@@ -421,15 +421,16 @@
 
     .problem-layout {
       display: grid;
-      grid-template-columns: 520px minmax(0, 1fr);
+      grid-template-columns: minmax(360px, 0.4fr) minmax(0, 0.6fr);
       gap: clamp(18px, 3vw, 34px);
       align-items: start;
     }
 
     .problem-media {
+      width: min(100%, 520px);
       max-width: 520px;
-      width: 100%;
-      margin-right: auto;
+      margin: 0;
+      justify-self: center;
     }
 
     .problem-media img {
