@@ -245,6 +245,44 @@
       margin-bottom: 0.35em;
     }
 
+    .hero h1 .gold-reveal {
+      display: inline-block;
+      color: var(--brand-gold);
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(0.08em);
+      animation: heroInvisibleReveal 1.7s ease 0.45s forwards;
+      will-change: opacity, filter, transform;
+    }
+
+    @keyframes heroInvisibleReveal {
+      0% {
+        opacity: 0;
+        filter: blur(10px);
+        transform: translateY(0.08em);
+      }
+
+      55% {
+        opacity: 0.35;
+        filter: blur(5px);
+      }
+
+      100% {
+        opacity: 1;
+        filter: blur(0);
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero h1 .gold-reveal {
+        opacity: 1;
+        filter: none;
+        transform: none;
+        animation: none;
+      }
+    }
+
     .hero-copy {
       margin-top: 1.2rem;
       color: var(--ink-soft);
@@ -765,7 +803,7 @@
             <div>
               <div class="eyebrow">Civic Coordination Infrastructure</div>
               <h1>
-                <span class="thin">from fragmented civic effort to a</span>
+                <span class="thin">Make the <span class="gold-reveal">Invisible</span>, Visible. We are developing a</span>
                 shared public operating system.
               </h1>
               <p class="hero-copy">
