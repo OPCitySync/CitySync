@@ -224,9 +224,13 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
       gap: clamp(20px, 3vw, 40px);
       align-items: start;
+    }
+
+    .hero-content {
+      max-width: 680px;
     }
 
     .hero h1 {
@@ -297,42 +301,126 @@
       gap: 12px;
     }
 
-    .hero-image-stack {
+    .hero-panel {
       position: relative;
       min-height: 420px;
-    }
-
-    .hero-main-image {
+      padding: clamp(22px, 2.8vw, 30px);
       border-radius: var(--radius-xl);
       border: 1px solid rgba(33, 50, 56, 0.12);
       box-shadow: var(--shadow-lg);
-      background: #fff;
+      background: linear-gradient(145deg, rgba(255,255,255,0.86), rgba(244,239,228,0.96));
       overflow: hidden;
+      display: grid;
+      align-content: start;
+      gap: 18px;
     }
 
-    .hero-card {
+    .hero-panel::before {
+      content: "";
       position: absolute;
-      right: -18px;
-      bottom: -26px;
-      width: min(310px, 76%);
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(33, 50, 56, 0.12);
-      box-shadow: var(--shadow-md);
-      padding: 16px 16px 14px;
+      inset: -16% auto auto -12%;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(65,123,160,0.16), transparent 70%);
+      pointer-events: none;
     }
 
-    .hero-card h3 {
-      margin: 0 0 6px;
-      font-size: 1rem;
-      font-weight: 700;
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      right: -10%;
+      bottom: -12%;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(221,158,51,0.14), transparent 70%);
+      pointer-events: none;
     }
 
-    .hero-card p {
+    .hero-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-panel-kicker {
       margin: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(21, 21, 30, 0.68);
+    }
+
+    .hero-panel-title {
+      margin: 0;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-panel-copy {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .hero-panel-flow {
+      display: grid;
+      gap: 12px;
+    }
+
+    .hero-flow-card {
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(33, 50, 56, 0.1);
+      border-radius: 18px;
+      padding: 15px 16px;
+      box-shadow: 0 12px 24px rgba(33, 50, 56, 0.06);
+    }
+
+    .hero-flow-card strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.98rem;
+    }
+
+    .hero-flow-card span {
+      display: block;
       color: var(--ink-soft);
       font-size: 0.9rem;
       line-height: 1.45;
+    }
+
+    .hero-flow-card.is-gold strong {
+      color: var(--brand-gold);
+    }
+
+    .hero-flow-card.is-blue strong {
+      color: var(--sky);
+    }
+
+    .hero-flow-card.is-forest strong {
+      color: var(--forest);
+    }
+
+    .hero-panel-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-panel-tags span {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(33, 50, 56, 0.1);
+      color: rgba(33, 50, 56, 0.84);
+      font-size: 0.84rem;
+      font-weight: 600;
     }
 
     .stat-ribbon {
@@ -724,13 +812,7 @@
         margin-left: 0;
       }
 
-      .hero-image-stack { min-height: auto; }
-
-      .hero-card {
-        position: static;
-        margin-top: 14px;
-        width: 100%;
-      }
+      .hero-panel { min-height: auto; }
 
       .flow-strip,
       .stat-ribbon {
@@ -821,7 +903,7 @@
         <canvas id="pitch-hero-canvas" class="hero-network" aria-hidden="true"></canvas>
         <div class="container">
           <div class="hero-grid">
-            <div>
+            <div class="hero-content">
               <div class="eyebrow">Civic Coordination Infrastructure</div>
               <h1>
                 <span class="thin">Make the <span class="gold-reveal">Invisible</span>, Visible.</span>
@@ -837,11 +919,33 @@
               </div>
             </div>
 
-            <div class="hero-image-stack" aria-hidden="true">
-              <div class="hero-main-image">
-                <img src="assets/pitch/image-1.png" alt="City/Sync civic coordination vision" />
+            <aside class="hero-panel" aria-label="City/Sync coordination model">
+              <p class="hero-panel-kicker">Public Coordination Loop</p>
+              <h2 class="hero-panel-title">A civic system that turns contribution into operating capacity.</h2>
+              <p class="hero-panel-copy">
+                City/Sync makes public contribution legible, lets institutions coordinate around it, and helps cities
+                build reusable civic infrastructure instead of isolated programs.
+              </p>
+              <div class="hero-panel-flow">
+                <div class="hero-flow-card is-gold">
+                  <strong>Civic Signal</strong>
+                  <span>Volunteer action, local knowledge, and neighborhood effort become visible as usable public input.</span>
+                </div>
+                <div class="hero-flow-card is-blue">
+                  <strong>Institutional Coordination</strong>
+                  <span>Organizations issue, verify, and reward work through shared standards instead of fragmented tools.</span>
+                </div>
+                <div class="hero-flow-card is-forest">
+                  <strong>Portable Public Models</strong>
+                  <span>What works in one city becomes a framework that another city can adopt, adapt, and govern locally.</span>
+                </div>
               </div>
-            </div>
+              <div class="hero-panel-tags" aria-hidden="true">
+                <span>Public contribution</span>
+                <span>Local governance</span>
+                <span>Exportable civic models</span>
+              </div>
+            </aside>
           </div>
 
           <div class="stat-ribbon">
