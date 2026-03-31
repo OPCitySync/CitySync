@@ -267,14 +267,14 @@
       }
     }
 
-    .layer-shell {
+    .ribbon-shell {
       min-height: calc(100vh - 152px);
       display: grid;
       grid-template-rows: auto auto 1fr auto;
-      gap: clamp(12px, 2.1vh, 22px);
+      gap: clamp(14px, 2.2vh, 24px);
     }
 
-    .layer-meta {
+    .ribbon-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -282,7 +282,7 @@
       flex-wrap: wrap;
     }
 
-    .layer-badge {
+    .ribbon-badge {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
@@ -297,16 +297,16 @@
       backdrop-filter: blur(8px);
     }
 
-    .layer-focus {
+    .ribbon-status {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      color: rgba(237, 243, 255, 0.82);
+      color: rgba(237, 243, 255, 0.84);
       font-size: 0.8rem;
       font-weight: 600;
     }
 
-    .layer-focus-dot {
+    .ribbon-status-dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
@@ -314,7 +314,7 @@
       box-shadow: 0 0 0 6px rgba(221, 158, 51, 0.2);
     }
 
-    .layer-headline {
+    .ribbon-headline {
       max-width: 88ch;
       display: grid;
       gap: 12px;
@@ -328,108 +328,108 @@
       max-width: 74ch;
     }
 
-    .layer-stage {
+    .ribbon-stage {
       border: 1px solid rgba(169, 189, 227, 0.24);
       border-radius: 22px;
       background: linear-gradient(160deg, rgba(13, 21, 35, 0.88), rgba(11, 17, 29, 0.84));
       box-shadow: 0 24px 50px rgba(1, 4, 10, 0.45);
       padding: clamp(16px, 2vw, 24px);
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
       gap: 16px;
       min-height: min(56vh, 560px);
       align-items: center;
     }
 
-    .layer-stack-wrap {
-      position: relative;
-      min-height: 280px;
+    .ribbon-rows {
       display: grid;
-      align-items: center;
-      justify-items: center;
+      gap: 12px;
+      align-content: center;
     }
 
-    .layer-stack-wrap::before {
+    .ribbon-track {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(189, 204, 236, 0.24);
+      background: rgba(237, 244, 255, 0.1);
+      color: #ecf2ff;
+      padding: 14px 16px;
+      text-align: left;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
+      opacity: 0.76;
+      --track-rgb: 111, 158, 230;
+    }
+
+    .ribbon-track::before {
       content: "";
       position: absolute;
-      inset: 14% 16%;
-      border-radius: 18px;
-      border: 1px dashed rgba(169, 189, 227, 0.28);
+      inset: 0;
+      background: linear-gradient(90deg, rgba(var(--track-rgb), 0.05), rgba(var(--track-rgb), 0.22));
+      opacity: 0.72;
       pointer-events: none;
     }
 
-    .layer-stack {
-      position: relative;
-      width: min(100%, 440px);
-      height: 290px;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .layer-card {
+    .ribbon-track::after {
+      content: "";
       position: absolute;
-      left: 50%;
-      width: min(88%, 380px);
-      border: 1px solid rgba(189, 204, 236, 0.28);
-      border-radius: 16px;
-      background: rgba(237, 244, 255, 0.18);
-      backdrop-filter: blur(8px);
-      color: #e8efff;
-      padding: 14px 16px;
-      text-align: left;
-      cursor: pointer;
-      box-shadow: 0 18px 34px rgba(4, 9, 18, 0.32);
-      transition: transform 260ms ease, border-color 260ms ease, background-color 260ms ease, box-shadow 260ms ease, opacity 260ms ease;
-      transform: translateX(-50%) scale(0.94);
-      opacity: 0.78;
-      z-index: 1;
+      top: 50%;
+      left: -18%;
+      width: 24%;
+      height: 44%;
+      border-radius: 999px;
+      background: radial-gradient(circle at center, rgba(var(--track-rgb), 0.65), rgba(var(--track-rgb), 0));
+      transform: translateY(-50%);
+      animation: ribbonPulse 2.8s linear infinite;
+      animation-play-state: paused;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .layer-card strong {
+    @keyframes ribbonPulse {
+      0% { left: -18%; }
+      100% { left: 104%; }
+    }
+
+    .ribbon-track strong,
+    .ribbon-track span {
+      position: relative;
+      z-index: 1;
       display: block;
-      font-size: 0.88rem;
-      letter-spacing: 0.06em;
+    }
+
+    .ribbon-track strong {
+      font-size: 0.86rem;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
 
-    .layer-card span {
-      display: block;
+    .ribbon-track span {
       color: rgba(227, 236, 255, 0.84);
       font-size: 0.88rem;
       line-height: 1.42;
     }
 
-    .layer-card.is-residents {
-      top: 12px;
-      border-color: rgba(102, 179, 158, 0.5);
-      background: rgba(95, 188, 164, 0.12);
-      transform: translateX(-50%) translateY(0) scale(0.96);
-    }
+    .ribbon-track.is-signal { --track-rgb: 104, 186, 165; }
+    .ribbon-track.is-execution { --track-rgb: 111, 158, 230; }
+    .ribbon-track.is-governance { --track-rgb: 221, 158, 51; }
 
-    .layer-card.is-institutions {
-      top: 86px;
-      border-color: rgba(111, 158, 230, 0.52);
-      background: rgba(103, 145, 221, 0.14);
-      transform: translateX(-50%) translateY(0) scale(0.96);
-    }
-
-    .layer-card.is-governance {
-      top: 160px;
-      border-color: rgba(221, 158, 51, 0.54);
-      background: rgba(221, 158, 51, 0.14);
-      transform: translateX(-50%) translateY(0) scale(0.96);
-    }
-
-    .layer-card.is-active {
+    .ribbon-track.is-active {
       opacity: 1;
-      z-index: 4;
-      transform: translateX(-50%) translateY(-9px) scale(1.02);
-      box-shadow: 0 24px 48px rgba(5, 11, 22, 0.44);
+      transform: translateX(6px);
+      border-color: rgba(var(--track-rgb), 0.74);
+      box-shadow: 0 18px 34px rgba(4, 9, 18, 0.32);
     }
 
-    .layer-detail {
+    .ribbon-track.is-active::after {
+      opacity: 1;
+      animation-play-state: running;
+    }
+
+    .ribbon-detail {
       border: 1px solid rgba(169, 189, 227, 0.22);
       border-radius: 16px;
       background: rgba(14, 22, 37, 0.74);
@@ -439,7 +439,7 @@
       align-content: start;
     }
 
-    .layer-detail-kicker {
+    .ribbon-detail-kicker {
       margin: 0;
       font-size: 0.73rem;
       text-transform: uppercase;
@@ -448,7 +448,7 @@
       font-weight: 700;
     }
 
-    .layer-detail h2 {
+    .ribbon-detail h2 {
       margin: 0;
       font-family: "Newsreader", Georgia, serif;
       font-size: clamp(1.3rem, 2vw, 1.85rem);
@@ -457,14 +457,14 @@
       line-height: 1.04;
     }
 
-    .layer-detail p {
+    .ribbon-detail p {
       margin: 0;
       color: rgba(228, 237, 255, 0.82);
       font-size: 0.92rem;
       line-height: 1.52;
     }
 
-    .layer-detail ul {
+    .ribbon-detail ul {
       margin: 0;
       padding-left: 16px;
       display: grid;
@@ -474,21 +474,21 @@
       line-height: 1.4;
     }
 
-    .layer-impact {
+    .ribbon-impact {
       border-top: 1px solid rgba(169, 189, 227, 0.22);
       padding-top: 10px;
       display: grid;
       gap: 5px;
     }
 
-    .layer-impact strong {
+    .ribbon-impact strong {
       font-size: 0.74rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: rgba(173, 191, 229, 0.84);
     }
 
-    .layer-impact span {
+    .ribbon-impact span {
       color: rgba(248, 215, 158, 0.94);
       font-size: 0.86rem;
       line-height: 1.45;
@@ -848,20 +848,16 @@
         grid-template-columns: 1fr;
       }
 
-      .layer-shell {
+      .ribbon-shell {
         min-height: auto;
       }
 
-      .layer-stage {
+      .ribbon-stage {
         grid-template-columns: 1fr;
         min-height: auto;
       }
 
-      .layer-stack-wrap {
-        min-height: 260px;
-      }
-
-      .layer-detail {
+      .ribbon-detail {
         margin-top: 4px;
       }
 
@@ -897,12 +893,8 @@
       .hero { min-height: auto; }
       .hero h1 { line-height: 1; }
 
-      .layer-stack {
-        height: 276px;
-      }
-
-      .layer-card {
-        width: min(92%, 360px);
+      .ribbon-track.is-active {
+        transform: translateX(0);
       }
 
       .nav-links { display: none; }
@@ -981,65 +973,57 @@
     <main id="top">
       <section class="hero">
         <div class="container">
-          <div class="layer-shell" data-layer-shell data-layer="residents">
-            <div class="layer-meta">
-              <div class="layer-badge">City Layer Stack</div>
-              <div class="layer-focus">
-                <span class="layer-focus-dot" aria-hidden="true"></span>
-                <span data-layer-focus>Residents Layer Active</span>
+          <div class="ribbon-shell" data-ribbon-shell data-ribbon="signal">
+            <div class="ribbon-meta">
+              <div class="ribbon-badge">Impact Ribbon</div>
+              <div class="ribbon-status">
+                <span class="ribbon-status-dot" aria-hidden="true"></span>
+                <span data-ribbon-status>Signal Acquisition Active</span>
               </div>
             </div>
 
-            <div class="layer-headline">
+            <div class="ribbon-headline">
               <h1>
-                <span class="thin">Three Interlocking Layers</span>
-                <span>Compose the Civic System as One <span class="gold-reveal">Operating Stack</span>.</span>
+                <span class="thin">Civic Coordination Infrastructure</span>
+                <span>Make the <span class="gold-reveal">Invisible</span>, Visible.</span>
               </h1>
               <p class="hero-copy">
-                Move through the Residents, Institutions, and Governance layers to see how City/Sync turns disconnected
-                effort into coordinated public execution.
+                Follow the civic signal from contribution to execution to governance. Each ribbon lane shows how City/Sync
+                turns fragmented effort into measurable, coordinated public outcomes.
               </p>
             </div>
 
-            <div class="layer-stage">
-              <div class="layer-stack-wrap">
-                <ul class="layer-stack" role="tablist" aria-label="City coordination layers">
-                  <li>
-                    <button class="layer-card is-residents is-active" type="button" data-layer-btn="residents">
-                      <strong>Residents</strong>
-                      <span>Everyday civic labor, local trust, and neighborhood signal.</span>
-                    </button>
-                  </li>
-                  <li>
-                    <button class="layer-card is-institutions" type="button" data-layer-btn="institutions">
-                      <strong>Institutions</strong>
-                      <span>Issuers and redeemers translate signal into coordinated operations.</span>
-                    </button>
-                  </li>
-                  <li>
-                    <button class="layer-card is-governance" type="button" data-layer-btn="governance">
-                      <strong>Governance</strong>
-                      <span>Rules, standards, and decisions that keep the system legible.</span>
-                    </button>
-                  </li>
-                </ul>
+            <div class="ribbon-stage">
+              <div class="ribbon-rows" role="tablist" aria-label="City/Sync impact ribbon lanes">
+                <button class="ribbon-track is-signal is-active" type="button" data-ribbon-btn="signal">
+                  <strong>Signal Acquisition</strong>
+                  <span>Civic participation becomes legible and structured as real public contribution.</span>
+                </button>
+                <button class="ribbon-track is-execution" type="button" data-ribbon-btn="execution">
+                  <strong>Institutional Execution</strong>
+                  <span>Issuers and redeemers convert civic signal into operational delivery loops.</span>
+                </button>
+                <button class="ribbon-track is-governance" type="button" data-ribbon-btn="governance">
+                  <strong>Adaptive Governance</strong>
+                  <span>Committees tune policy and economic parameters from observed local conditions.</span>
+                </button>
               </div>
 
-              <aside class="layer-detail" aria-live="polite">
-                <p class="layer-detail-kicker" data-layer-kicker>Layer Focus</p>
-                <h2 data-layer-title>Residents Layer</h2>
-                <p data-layer-copy>
-                  City/Sync makes civic contribution legible so effort that was previously invisible can enter public operations.
+              <aside class="ribbon-detail" aria-live="polite">
+                <p class="ribbon-detail-kicker" data-ribbon-kicker>Lane Focus</p>
+                <h2 data-ribbon-title>Signal Acquisition</h2>
+                <p data-ribbon-copy>
+                  City/Sync captures local civic activity and turns it into structured input institutions can recognize and coordinate.
                 </p>
-                <ul data-layer-points>
-                  <li>Clear participation pathways for local contributions.</li>
-                  <li>Structured recognition through task verification.</li>
-                  <li>Low-friction engagement tied to visible local outcomes.</li>
+                <ul data-ribbon-points>
+                  <li>Contribution pathways are clear and low-friction.</li>
+                  <li>Task verification produces auditable civic records.</li>
+                  <li>Residents can see how participation maps to real outcomes.</li>
                 </ul>
-                <div class="layer-impact">
-                  <strong data-layer-impact-label>What City/Sync changes here</strong>
-                  <span data-layer-impact>
-                    Converts diffuse volunteer energy into measurable civic input institutions can coordinate.
+                <div class="ribbon-impact">
+                  <strong data-ribbon-impact-label>What City/Sync changes here</strong>
+                  <span data-ribbon-impact>
+                    Converts diffuse volunteer effort into a measurable public signal that can feed governance and operations.
                   </span>
                 </div>
               </aside>
@@ -1276,145 +1260,111 @@
     </footer>
   </div>
   <script>
-    // Hero layer stack: hover and scroll activated layer focus
+    // Hero impact ribbon: click or auto-cycle through lanes
     (function () {
-      const shell = document.querySelector('[data-layer-shell]');
+      const shell = document.querySelector('[data-ribbon-shell]');
       if (!shell) return;
 
-      const focusEl = shell.querySelector('[data-layer-focus]');
-      const kickerEl = shell.querySelector('[data-layer-kicker]');
-      const titleEl = shell.querySelector('[data-layer-title]');
-      const copyEl = shell.querySelector('[data-layer-copy]');
-      const pointsEl = shell.querySelector('[data-layer-points]');
-      const impactLabelEl = shell.querySelector('[data-layer-impact-label]');
-      const impactEl = shell.querySelector('[data-layer-impact]');
-      const buttons = Array.from(shell.querySelectorAll('[data-layer-btn]'));
+      const statusEl = shell.querySelector('[data-ribbon-status]');
+      const kickerEl = shell.querySelector('[data-ribbon-kicker]');
+      const titleEl = shell.querySelector('[data-ribbon-title]');
+      const copyEl = shell.querySelector('[data-ribbon-copy]');
+      const pointsEl = shell.querySelector('[data-ribbon-points]');
+      const impactLabelEl = shell.querySelector('[data-ribbon-impact-label]');
+      const impactEl = shell.querySelector('[data-ribbon-impact]');
+      const buttons = Array.from(shell.querySelectorAll('[data-ribbon-btn]'));
 
-      const LAYERS = {
-        residents: {
-          focus: 'Residents Layer Active',
-          kicker: 'Layer Focus: Residents',
-          title: 'Residents Layer',
-          copy: 'City/Sync makes civic contribution legible so effort that was previously invisible can enter public operations.',
+      const LANES = {
+        signal: {
+          status: 'Signal Acquisition Active',
+          kicker: 'Lane Focus: Signal Acquisition',
+          title: 'Signal Acquisition',
+          copy: 'City/Sync captures local civic activity and turns it into structured input institutions can recognize and coordinate.',
           points: [
-            'Clear participation pathways for local contributions.',
-            'Structured recognition through task verification.',
-            'Low-friction engagement tied to visible local outcomes.'
+            'Contribution pathways are clear and low-friction.',
+            'Task verification produces auditable civic records.',
+            'Residents can see how participation maps to real outcomes.'
           ],
           impactLabel: 'What City/Sync changes here',
-          impact: 'Converts diffuse volunteer energy into measurable civic input institutions can coordinate.'
+          impact: 'Converts diffuse volunteer effort into a measurable public signal that can feed governance and operations.'
         },
-        institutions: {
-          focus: 'Institutions Layer Active',
-          kicker: 'Layer Focus: Institutions',
-          title: 'Institutions Layer',
-          copy: 'Issuers and redeemers transform participation into reliable service delivery loops with shared standards.',
+        execution: {
+          status: 'Institutional Execution Active',
+          kicker: 'Lane Focus: Institutional Execution',
+          title: 'Institutional Execution',
+          copy: 'Issuer and redeemer organizations transform participation into a reliable loop of issuance, verification, and redemption.',
           points: [
-            'Task issuance linked to real administrative needs.',
-            'Verification and redemption coordinated across organizations.',
-            'Capacity management and operational feedback built into one loop.'
+            'Task issuance aligns to real local priorities.',
+            'Verification and redemption remain coordinated across organizations.',
+            'Capacity constraints become visible instead of hidden.'
           ],
           impactLabel: 'What City/Sync changes here',
-          impact: 'Replaces fragmented toolchains with a coordinated operating rail for public-sector execution.'
+          impact: 'Replaces disconnected civic programs with one interoperable operating flow.'
         },
         governance: {
-          focus: 'Governance Layer Active',
-          kicker: 'Layer Focus: Governance',
-          title: 'Governance Layer',
-          copy: 'Governance defines how economic signals are interpreted, adjusted, and kept accountable over time.',
+          status: 'Adaptive Governance Active',
+          kicker: 'Lane Focus: Adaptive Governance',
+          title: 'Adaptive Governance',
+          copy: 'Governance committees interpret system behavior and adjust policy with transparent rules and repeatable processes.',
           points: [
-            'Committee-driven parameter and policy adjustment.',
-            'Legible decision triggers tied to observed system behavior.',
-            'Adaptive rules that preserve accountability during growth.'
+            'Decision triggers tie policy changes to measured conditions.',
+            'Parameters can be tuned at clear epoch boundaries.',
+            'Accountability grows alongside coordination capacity.'
           ],
           impactLabel: 'What City/Sync changes here',
-          impact: 'Builds a transparent control layer so cities can adapt in real time without losing legitimacy.'
+          impact: 'Creates a learning system where cities can adapt policy without losing legitimacy.'
         }
       };
 
-      const orderedKeys = ['residents', 'institutions', 'governance'];
-      let hovered = false;
+      const orderedKeys = ['signal', 'execution', 'governance'];
+      let currentIndex = 0;
+      let intervalId = null;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function render(layerKey) {
-        const layer = LAYERS[layerKey];
-        if (!layer) return;
+      function render(laneKey) {
+        const lane = LANES[laneKey];
+        if (!lane) return;
 
-        shell.dataset.layer = layerKey;
-        if (focusEl) focusEl.textContent = layer.focus;
-        if (kickerEl) kickerEl.textContent = layer.kicker;
-        if (titleEl) titleEl.textContent = layer.title;
-        if (copyEl) copyEl.textContent = layer.copy;
-        if (impactLabelEl) impactLabelEl.textContent = layer.impactLabel;
-        if (impactEl) impactEl.textContent = layer.impact;
+        shell.dataset.ribbon = laneKey;
+        if (statusEl) statusEl.textContent = lane.status;
+        if (kickerEl) kickerEl.textContent = lane.kicker;
+        if (titleEl) titleEl.textContent = lane.title;
+        if (copyEl) copyEl.textContent = lane.copy;
+        if (impactLabelEl) impactLabelEl.textContent = lane.impactLabel;
+        if (impactEl) impactEl.textContent = lane.impact;
 
         if (pointsEl) {
-          pointsEl.innerHTML = layer.points.map(item => `<li>${item}</li>`).join('');
+          pointsEl.innerHTML = lane.points.map(item => `<li>${item}</li>`).join('');
         }
 
         buttons.forEach(button => {
-          button.classList.toggle('is-active', button.dataset.layerBtn === layerKey);
+          button.classList.toggle('is-active', button.dataset.ribbonBtn === laneKey);
         });
       }
 
-      function renderByScroll() {
-        if (hovered) return;
-        const rect = shell.getBoundingClientRect();
-        const viewportHeight = window.innerHeight || 1;
-        const center = viewportHeight * 0.5;
-        const progress = (center - rect.top) / Math.max(1, rect.height);
-        const clamped = Math.min(0.999, Math.max(0, progress));
-        const index = Math.floor(clamped * orderedKeys.length);
-        render(orderedKeys[index]);
+      function stepForward() {
+        currentIndex = (currentIndex + 1) % orderedKeys.length;
+        render(orderedKeys[currentIndex]);
       }
 
       buttons.forEach(button => {
-        const key = button.dataset.layerBtn;
+        const key = button.dataset.ribbonBtn;
         if (!key) return;
 
         button.addEventListener('click', () => {
+          currentIndex = orderedKeys.indexOf(key);
+          if (currentIndex < 0) currentIndex = 0;
           render(key);
-        });
-
-        button.addEventListener('mouseenter', () => {
-          hovered = true;
-          render(key);
-        });
-
-        button.addEventListener('focus', () => {
-          hovered = true;
-          render(key);
+          if (!reduceMotion) {
+            window.clearInterval(intervalId);
+            intervalId = window.setInterval(stepForward, 3600);
+          }
         });
       });
 
-      shell.addEventListener('mouseleave', () => {
-        hovered = false;
-        renderByScroll();
-      });
-
-      shell.addEventListener('focusout', event => {
-        if (!shell.contains(event.relatedTarget)) {
-          hovered = false;
-          renderByScroll();
-        }
-      });
-
-      window.addEventListener('scroll', () => {
-        renderByScroll();
-      }, { passive: true });
-
-      window.addEventListener('resize', () => {
-        renderByScroll();
-      });
-
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        hovered = true;
-      }
-
-      render('residents');
-      if (!hovered) {
-        window.requestAnimationFrame(() => {
-          renderByScroll();
-        });
+      render(orderedKeys[currentIndex]);
+      if (!reduceMotion) {
+        intervalId = window.setInterval(stepForward, 3600);
       }
     })();
   </script>
