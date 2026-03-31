@@ -178,15 +178,15 @@
 
     .hero {
       min-height: calc(100vh - 82px);
-      padding: clamp(18px, 3.2vh, 34px) 0;
+      padding: clamp(24px, 4vh, 42px) 0;
       position: relative;
       overflow: hidden;
       isolation: isolate;
       background:
-        radial-gradient(circle at 14% 10%, rgba(65, 123, 160, 0.2), transparent 38%),
-        radial-gradient(circle at 88% 16%, rgba(221, 158, 51, 0.16), transparent 34%),
-        linear-gradient(160deg, #0b111c 0%, #0f1726 52%, #111d31 100%);
-      color: #edf3ff;
+        radial-gradient(circle at 14% 8%, rgba(95, 133, 216, 0.22), transparent 36%),
+        radial-gradient(circle at 86% 14%, rgba(221, 158, 51, 0.16), transparent 34%),
+        linear-gradient(168deg, #0e1422 0%, #121a2c 48%, #151f33 100%);
+      color: #eef3ff;
     }
 
     .hero::before {
@@ -194,10 +194,10 @@
       position: absolute;
       inset: 0;
       background-image:
-        linear-gradient(rgba(111, 133, 181, 0.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(111, 133, 181, 0.08) 1px, transparent 1px);
-      background-size: 34px 34px;
-      opacity: 0.32;
+        linear-gradient(rgba(133, 154, 198, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(133, 154, 198, 0.07) 1px, transparent 1px);
+      background-size: 36px 36px;
+      opacity: 0.34;
       pointer-events: none;
       z-index: 0;
     }
@@ -205,9 +205,9 @@
     .hero::after {
       content: "";
       position: absolute;
-      inset: auto -16% -24% -16%;
+      inset: auto -20% -30% -20%;
       height: 62%;
-      background: radial-gradient(ellipse at center, rgba(6, 8, 12, 0.82), transparent 70%);
+      background: radial-gradient(ellipse at center, rgba(7, 10, 16, 0.86), transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
@@ -221,7 +221,7 @@
     .hero h1 {
       margin: 0;
       font-family: "Newsreader", Georgia, serif;
-      font-size: clamp(2.1rem, 5vw, 4rem);
+      font-size: clamp(2.05rem, 4.8vw, 4rem);
       line-height: 0.95;
       letter-spacing: -0.02em;
       color: #f6f8ff;
@@ -230,8 +230,8 @@
     .hero h1 .thin {
       display: block;
       font-weight: 400;
-      color: rgba(237, 243, 255, 0.72);
-      font-size: clamp(1.25rem, 2.7vw, 2.15rem);
+      color: rgba(238, 243, 255, 0.72);
+      font-size: clamp(1.2rem, 2.6vw, 2.1rem);
       margin-bottom: 0.34em;
     }
 
@@ -267,26 +267,26 @@
       }
     }
 
-    .warroom-shell {
-      min-height: calc(100vh - 140px);
+    .layer-shell {
+      min-height: calc(100vh - 152px);
       display: grid;
       grid-template-rows: auto auto 1fr auto;
       gap: clamp(12px, 2.1vh, 22px);
     }
 
-    .warroom-top {
+    .layer-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    .warroom-badge {
+    .layer-badge {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
-      border: 1px solid rgba(172, 192, 236, 0.34);
+      border: 1px solid rgba(169, 189, 227, 0.34);
       background: rgba(18, 27, 44, 0.64);
       color: rgba(237, 243, 255, 0.86);
       padding: 8px 13px;
@@ -297,24 +297,24 @@
       backdrop-filter: blur(8px);
     }
 
-    .warroom-status {
+    .layer-focus {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
       color: rgba(237, 243, 255, 0.82);
       font-size: 0.8rem;
       font-weight: 600;
     }
 
-    .warroom-status-dot {
+    .layer-focus-dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: #5fd28f;
-      box-shadow: 0 0 0 6px rgba(95, 210, 143, 0.18);
+      background: var(--brand-gold);
+      box-shadow: 0 0 0 6px rgba(221, 158, 51, 0.2);
     }
 
-    .warroom-headline {
+    .layer-headline {
       max-width: 88ch;
       display: grid;
       gap: 12px;
@@ -322,224 +322,175 @@
 
     .hero-copy {
       margin: 0;
-      color: rgba(226, 236, 255, 0.82);
-      font-size: clamp(0.97rem, 1.45vw, 1.1rem);
-      line-height: 1.55;
-      max-width: 70ch;
+      color: rgba(228, 237, 255, 0.84);
+      font-size: clamp(0.98rem, 1.46vw, 1.12rem);
+      line-height: 1.56;
+      max-width: 74ch;
     }
 
-    .warroom-objectives {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .warroom-objective-btn {
-      border: 1px solid rgba(172, 192, 236, 0.28);
-      background: rgba(18, 27, 44, 0.64);
-      border-radius: 999px;
-      color: rgba(226, 236, 255, 0.88);
-      padding: 8px 13px;
-      font-size: 0.78rem;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 150ms ease, border-color 150ms ease, background-color 150ms ease;
-    }
-
-    .warroom-objective-btn:hover {
-      transform: translateY(-1px);
-      border-color: rgba(221, 158, 51, 0.62);
-    }
-
-    .warroom-objective-btn.is-active {
-      background: rgba(221, 158, 51, 0.16);
-      border-color: rgba(221, 158, 51, 0.76);
-      color: #f8dfb3;
-    }
-
-    .warroom-board {
-      border: 1px solid rgba(172, 192, 236, 0.24);
-      border-radius: 20px;
-      background: linear-gradient(160deg, rgba(12, 20, 34, 0.88), rgba(10, 17, 29, 0.82));
-      box-shadow: 0 24px 50px rgba(2, 4, 10, 0.45);
-      padding: clamp(14px, 2vw, 22px);
+    .layer-stage {
+      border: 1px solid rgba(169, 189, 227, 0.24);
+      border-radius: 22px;
+      background: linear-gradient(160deg, rgba(13, 21, 35, 0.88), rgba(11, 17, 29, 0.84));
+      box-shadow: 0 24px 50px rgba(1, 4, 10, 0.45);
+      padding: clamp(16px, 2vw, 24px);
       display: grid;
-      grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
-      gap: 14px;
-      min-height: min(54vh, 520px);
+      grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+      gap: 16px;
+      min-height: min(56vh, 560px);
+      align-items: center;
     }
 
-    .warroom-map-panel {
-      border: 1px solid rgba(172, 192, 236, 0.2);
-      border-radius: 16px;
-      background: rgba(13, 20, 33, 0.7);
-      padding: 14px;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 12px;
-      min-height: 100%;
-    }
-
-    .warroom-map-header h2 {
-      margin: 0;
-      font-family: "Newsreader", Georgia, serif;
-      font-size: clamp(1.28rem, 2vw, 1.8rem);
-      letter-spacing: -0.01em;
-      color: #f5f8ff;
-    }
-
-    .warroom-map-header p {
-      margin: 5px 0 0;
-      color: rgba(214, 226, 252, 0.78);
-      font-size: 0.9rem;
-      line-height: 1.45;
-      max-width: 56ch;
-    }
-
-    .warroom-map {
-      border: 1px solid rgba(172, 192, 236, 0.16);
-      border-radius: 14px;
-      background:
-        radial-gradient(circle at 20% 18%, rgba(65, 123, 160, 0.18), transparent 34%),
-        radial-gradient(circle at 82% 78%, rgba(221, 158, 51, 0.14), transparent 32%),
-        rgba(11, 17, 28, 0.84);
+    .layer-stack-wrap {
       position: relative;
-      overflow: hidden;
-      min-height: 230px;
-    }
-
-    .warroom-map svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .warroom-link {
-      fill: none;
-      stroke: rgba(143, 175, 235, 0.62);
-      stroke-width: 2.3;
-      stroke-linecap: round;
-      stroke-dasharray: 8 7;
-      animation: warroomFlow 7s linear infinite;
-    }
-
-    .warroom-link.is-alt {
-      stroke: rgba(221, 158, 51, 0.74);
-      animation-duration: 8.4s;
-    }
-
-    .warroom-node {
-      fill: rgba(237, 243, 255, 0.88);
-      stroke: rgba(143, 175, 235, 0.4);
-      stroke-width: 1.1;
-    }
-
-    .warroom-node.is-core {
-      fill: rgba(221, 158, 51, 0.9);
-      stroke: rgba(221, 158, 51, 0.32);
-      animation: warroomPulse 2.7s ease-in-out infinite;
-    }
-
-    .warroom-node.is-stress {
-      fill: rgba(188, 79, 58, 0.82);
-      stroke: rgba(188, 79, 58, 0.3);
-    }
-
-    .warroom-label {
-      fill: rgba(221, 231, 252, 0.9);
-      font-size: 11px;
-      letter-spacing: 0.01em;
-      font-family: "Inter", system-ui, sans-serif;
-    }
-
-    .warroom-metrics {
+      min-height: 280px;
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 9px;
+      align-items: center;
+      justify-items: center;
     }
 
-    .warroom-metric {
-      border-radius: 10px;
-      border: 1px solid rgba(172, 192, 236, 0.2);
-      background: rgba(12, 20, 34, 0.7);
-      padding: 8px 9px;
+    .layer-stack-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 14% 16%;
+      border-radius: 18px;
+      border: 1px dashed rgba(169, 189, 227, 0.28);
+      pointer-events: none;
     }
 
-    .warroom-metric span {
-      display: block;
-      color: rgba(173, 191, 229, 0.8);
-      font-size: 0.66rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 3px;
-      font-weight: 700;
-    }
-
-    .warroom-metric strong {
-      display: block;
-      color: #f5f8ff;
-      font-family: "Newsreader", Georgia, serif;
-      font-size: 1.15rem;
-      line-height: 1;
-    }
-
-    .warroom-feed-panel {
-      border: 1px solid rgba(172, 192, 236, 0.2);
-      border-radius: 16px;
-      background: rgba(11, 17, 28, 0.76);
-      padding: 14px;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 10px;
-      min-height: 100%;
-    }
-
-    .warroom-feed-panel h3 {
-      margin: 0;
-      font-size: 0.96rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: rgba(219, 230, 254, 0.84);
-    }
-
-    .warroom-feed {
+    .layer-stack {
+      position: relative;
+      width: min(100%, 440px);
+      height: 290px;
       list-style: none;
       margin: 0;
       padding: 0;
+    }
+
+    .layer-card {
+      position: absolute;
+      left: 50%;
+      width: min(88%, 380px);
+      border: 1px solid rgba(189, 204, 236, 0.28);
+      border-radius: 16px;
+      background: rgba(237, 244, 255, 0.18);
+      backdrop-filter: blur(8px);
+      color: #e8efff;
+      padding: 14px 16px;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 18px 34px rgba(4, 9, 18, 0.32);
+      transition: transform 260ms ease, border-color 260ms ease, background-color 260ms ease, box-shadow 260ms ease, opacity 260ms ease;
+      transform: translateX(-50%) scale(0.94);
+      opacity: 0.78;
+      z-index: 1;
+    }
+
+    .layer-card strong {
+      display: block;
+      font-size: 0.88rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .layer-card span {
+      display: block;
+      color: rgba(227, 236, 255, 0.84);
+      font-size: 0.88rem;
+      line-height: 1.42;
+    }
+
+    .layer-card.is-residents {
+      top: 12px;
+      border-color: rgba(102, 179, 158, 0.5);
+      background: rgba(95, 188, 164, 0.12);
+      transform: translateX(-50%) translateY(0) scale(0.96);
+    }
+
+    .layer-card.is-institutions {
+      top: 86px;
+      border-color: rgba(111, 158, 230, 0.52);
+      background: rgba(103, 145, 221, 0.14);
+      transform: translateX(-50%) translateY(0) scale(0.96);
+    }
+
+    .layer-card.is-governance {
+      top: 160px;
+      border-color: rgba(221, 158, 51, 0.54);
+      background: rgba(221, 158, 51, 0.14);
+      transform: translateX(-50%) translateY(0) scale(0.96);
+    }
+
+    .layer-card.is-active {
+      opacity: 1;
+      z-index: 4;
+      transform: translateX(-50%) translateY(-9px) scale(1.02);
+      box-shadow: 0 24px 48px rgba(5, 11, 22, 0.44);
+    }
+
+    .layer-detail {
+      border: 1px solid rgba(169, 189, 227, 0.22);
+      border-radius: 16px;
+      background: rgba(14, 22, 37, 0.74);
+      padding: 16px;
       display: grid;
-      gap: 8px;
+      gap: 10px;
       align-content: start;
     }
 
-    .warroom-feed li {
-      border-left: 2px solid rgba(221, 158, 51, 0.58);
-      padding-left: 10px;
-      color: rgba(226, 236, 255, 0.84);
-      font-size: 0.84rem;
+    .layer-detail-kicker {
+      margin: 0;
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(173, 191, 229, 0.86);
+      font-weight: 700;
+    }
+
+    .layer-detail h2 {
+      margin: 0;
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(1.3rem, 2vw, 1.85rem);
+      letter-spacing: -0.015em;
+      color: #f4f8ff;
+      line-height: 1.04;
+    }
+
+    .layer-detail p {
+      margin: 0;
+      color: rgba(228, 237, 255, 0.82);
+      font-size: 0.92rem;
+      line-height: 1.52;
+    }
+
+    .layer-detail ul {
+      margin: 0;
+      padding-left: 16px;
+      display: grid;
+      gap: 6px;
+      color: rgba(228, 237, 255, 0.84);
+      font-size: 0.86rem;
       line-height: 1.4;
     }
 
-    .warroom-trigger {
-      border-top: 1px solid rgba(172, 192, 236, 0.2);
+    .layer-impact {
+      border-top: 1px solid rgba(169, 189, 227, 0.22);
       padding-top: 10px;
       display: grid;
-      gap: 6px;
+      gap: 5px;
     }
 
-    .warroom-trigger h4 {
-      margin: 0;
-      font-size: 0.76rem;
-      text-transform: uppercase;
+    .layer-impact strong {
+      font-size: 0.74rem;
       letter-spacing: 0.08em;
-      color: rgba(173, 191, 229, 0.8);
+      text-transform: uppercase;
+      color: rgba(173, 191, 229, 0.84);
     }
 
-    .warroom-trigger p {
-      margin: 0;
-      color: rgba(237, 243, 255, 0.86);
-      font-size: 0.84rem;
+    .layer-impact span {
+      color: rgba(248, 215, 158, 0.94);
+      font-size: 0.86rem;
       line-height: 1.45;
     }
 
@@ -547,56 +498,17 @@
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 0;
     }
 
     .hero .btn-ghost {
-      border-color: rgba(172, 192, 236, 0.3);
+      border-color: rgba(169, 189, 227, 0.32);
       background: rgba(18, 27, 44, 0.68);
-      color: rgba(237, 243, 255, 0.92);
+      color: rgba(237, 243, 255, 0.94);
     }
 
     .hero .btn-ghost:hover {
-      border-color: rgba(221, 158, 51, 0.54);
+      border-color: rgba(221, 158, 51, 0.56);
       color: #f8dfb3;
-    }
-
-    .warroom-shell[data-objective="care"] .warroom-objective-btn.is-active,
-    .warroom-shell[data-objective="care"] .warroom-status-dot {
-      background: #66c3a9;
-      border-color: rgba(102, 195, 169, 0.78);
-      box-shadow: 0 0 0 6px rgba(102, 195, 169, 0.2);
-    }
-
-    .warroom-shell[data-objective="food"] .warroom-objective-btn.is-active,
-    .warroom-shell[data-objective="food"] .warroom-status-dot {
-      background: #72a3f2;
-      border-color: rgba(114, 163, 242, 0.76);
-      box-shadow: 0 0 0 6px rgba(114, 163, 242, 0.2);
-    }
-
-    .warroom-shell[data-objective="safety"] .warroom-objective-btn.is-active,
-    .warroom-shell[data-objective="safety"] .warroom-status-dot {
-      background: #c96a56;
-      border-color: rgba(201, 106, 86, 0.78);
-      box-shadow: 0 0 0 6px rgba(201, 106, 86, 0.2);
-    }
-
-    @keyframes warroomFlow {
-      from { stroke-dashoffset: 0; }
-      to { stroke-dashoffset: -170; }
-    }
-
-    @keyframes warroomPulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.18); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .warroom-link,
-      .warroom-node.is-core {
-        animation: none;
-      }
     }
 
     .section {
@@ -936,17 +848,21 @@
         grid-template-columns: 1fr;
       }
 
-      .warroom-shell {
+      .layer-shell {
         min-height: auto;
       }
 
-      .warroom-board {
+      .layer-stage {
         grid-template-columns: 1fr;
         min-height: auto;
       }
 
-      .warroom-metrics {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .layer-stack-wrap {
+        min-height: 260px;
+      }
+
+      .layer-detail {
+        margin-top: 4px;
       }
 
       .problem-layout {
@@ -978,16 +894,15 @@
     }
 
     @media (max-width: 860px) {
-      .hero {
-        min-height: auto;
+      .hero { min-height: auto; }
+      .hero h1 { line-height: 1; }
+
+      .layer-stack {
+        height: 276px;
       }
 
-      .hero h1 {
-        line-height: 1;
-      }
-
-      .warroom-metrics {
-        grid-template-columns: 1fr;
+      .layer-card {
+        width: min(92%, 360px);
       }
 
       .nav-links { display: none; }
@@ -1066,98 +981,66 @@
     <main id="top">
       <section class="hero">
         <div class="container">
-          <div class="warroom-shell" data-warroom-shell data-objective="mobility">
-            <div class="warroom-top">
-              <div class="warroom-badge">City/Sync Civic War Room</div>
-              <div class="warroom-status">
-                <span class="warroom-status-dot" aria-hidden="true"></span>
-                <span data-warroom-status>Monitoring mobility objective</span>
+          <div class="layer-shell" data-layer-shell data-layer="residents">
+            <div class="layer-meta">
+              <div class="layer-badge">City Layer Stack</div>
+              <div class="layer-focus">
+                <span class="layer-focus-dot" aria-hidden="true"></span>
+                <span data-layer-focus>Residents Layer Active</span>
               </div>
             </div>
 
-            <div class="warroom-headline">
+            <div class="layer-headline">
               <h1>
-                <span class="thin">City/Sync Command Interface</span>
-                <span>Coordinate Public Operations in <span class="gold-reveal">Real Time</span>.</span>
+                <span class="thin">Three Interlocking Layers</span>
+                <span>Compose the Civic System as One <span class="gold-reveal">Operating Stack</span>.</span>
               </h1>
               <p class="hero-copy">
-                Select a mission objective to simulate cross-institution coordination conditions. This interface models how
-                civic signal, task systems, and governance response are composed into operational execution.
+                Move through the Residents, Institutions, and Governance layers to see how City/Sync turns disconnected
+                effort into coordinated public execution.
               </p>
             </div>
 
-            <div class="warroom-objectives" role="tablist" aria-label="Mission objectives">
-              <button class="warroom-objective-btn is-active" type="button" data-objective-btn="mobility">Mobility</button>
-              <button class="warroom-objective-btn" type="button" data-objective-btn="care">Care Network</button>
-              <button class="warroom-objective-btn" type="button" data-objective-btn="food">Food Access</button>
-              <button class="warroom-objective-btn" type="button" data-objective-btn="safety">Neighborhood Safety</button>
-            </div>
-
-            <div class="warroom-board">
-              <section class="warroom-map-panel">
-                <header class="warroom-map-header">
-                  <h2 data-warroom-title>Mobility Continuity Grid</h2>
-                  <p data-warroom-subtitle>
-                    Transit, issuers, and redeemers are synchronized to protect service continuity during demand spikes.
-                  </p>
-                </header>
-                <div class="warroom-map" aria-hidden="true">
-                  <svg viewBox="0 0 860 320" role="presentation">
-                    <path class="warroom-link" d="M86 90 C186 64 278 124 360 110 C454 94 512 58 620 88 C700 110 748 84 812 70" />
-                    <path class="warroom-link is-alt" d="M72 248 C166 206 246 182 346 204 C448 228 538 198 626 214 C706 228 760 210 816 188" />
-                    <path class="warroom-link" d="M108 166 C228 164 278 128 372 166 C462 202 520 162 612 156 C692 152 742 170 808 156" />
-
-                    <circle class="warroom-node" cx="94" cy="88" r="8" />
-                    <circle class="warroom-node" cx="188" cy="66" r="7" />
-                    <circle class="warroom-node" cx="292" cy="118" r="8" />
-                    <circle class="warroom-node is-core" cx="430" cy="158" r="11" />
-                    <circle class="warroom-node" cx="566" cy="92" r="8" />
-                    <circle class="warroom-node" cx="672" cy="112" r="8" />
-                    <circle class="warroom-node" cx="794" cy="76" r="7" />
-                    <circle class="warroom-node" cx="132" cy="232" r="8" />
-                    <circle class="warroom-node" cx="274" cy="214" r="8" />
-                    <circle class="warroom-node" cx="512" cy="216" r="8" />
-                    <circle class="warroom-node" cx="686" cy="220" r="8" />
-                    <circle class="warroom-node is-stress" cx="796" cy="190" r="7" data-warroom-alert-node />
-
-                    <text class="warroom-label" x="66" y="80">Issuer North</text>
-                    <text class="warroom-label" x="404" y="180">Coordination Core</text>
-                    <text class="warroom-label" x="722" y="66">Redeemer East</text>
-                    <text class="warroom-label" x="664" y="245">Community Node</text>
-                  </svg>
-                </div>
-                <div class="warroom-metrics">
-                  <div class="warroom-metric">
-                    <span data-metric-label-a>Transit Reliability</span>
-                    <strong data-metric-value-a>96%</strong>
-                  </div>
-                  <div class="warroom-metric">
-                    <span data-metric-label-b>Task Throughput</span>
-                    <strong data-metric-value-b>91%</strong>
-                  </div>
-                  <div class="warroom-metric">
-                    <span data-metric-label-c>Redeemer Capacity</span>
-                    <strong data-metric-value-c>84%</strong>
-                  </div>
-                  <div class="warroom-metric">
-                    <span data-metric-label-d>Trust Signal</span>
-                    <strong data-metric-value-d>82%</strong>
-                  </div>
-                </div>
-              </section>
-
-              <aside class="warroom-feed-panel">
-                <h3>Live Coordination Feed</h3>
-                <ul class="warroom-feed" data-warroom-feed>
-                  <li>Transit agencies and issuers report synchronized scheduling windows.</li>
-                  <li>Participant routing remains within baseline service latency.</li>
-                  <li>Redeemer capacity supports current reward circulation velocity.</li>
+            <div class="layer-stage">
+              <div class="layer-stack-wrap">
+                <ul class="layer-stack" role="tablist" aria-label="City coordination layers">
+                  <li>
+                    <button class="layer-card is-residents is-active" type="button" data-layer-btn="residents">
+                      <strong>Residents</strong>
+                      <span>Everyday civic labor, local trust, and neighborhood signal.</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="layer-card is-institutions" type="button" data-layer-btn="institutions">
+                      <strong>Institutions</strong>
+                      <span>Issuers and redeemers translate signal into coordinated operations.</span>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="layer-card is-governance" type="button" data-layer-btn="governance">
+                      <strong>Governance</strong>
+                      <span>Rules, standards, and decisions that keep the system legible.</span>
+                    </button>
+                  </li>
                 </ul>
-                <div class="warroom-trigger">
-                  <h4>Decision Trigger</h4>
-                  <p data-warroom-trigger>
-                    If route completion drops below 82%, shift task issuance toward priority corridors.
-                  </p>
+              </div>
+
+              <aside class="layer-detail" aria-live="polite">
+                <p class="layer-detail-kicker" data-layer-kicker>Layer Focus</p>
+                <h2 data-layer-title>Residents Layer</h2>
+                <p data-layer-copy>
+                  City/Sync makes civic contribution legible so effort that was previously invisible can enter public operations.
+                </p>
+                <ul data-layer-points>
+                  <li>Clear participation pathways for local contributions.</li>
+                  <li>Structured recognition through task verification.</li>
+                  <li>Low-friction engagement tied to visible local outcomes.</li>
+                </ul>
+                <div class="layer-impact">
+                  <strong data-layer-impact-label>What City/Sync changes here</strong>
+                  <span data-layer-impact>
+                    Converts diffuse volunteer energy into measurable civic input institutions can coordinate.
+                  </span>
                 </div>
               </aside>
             </div>
@@ -1393,156 +1276,146 @@
     </footer>
   </div>
   <script>
-    // Hero war room: mission objective selector
+    // Hero layer stack: hover and scroll activated layer focus
     (function () {
-      const shell = document.querySelector('[data-warroom-shell]');
+      const shell = document.querySelector('[data-layer-shell]');
       if (!shell) return;
 
-      const statusEl = shell.querySelector('[data-warroom-status]');
-      const titleEl = shell.querySelector('[data-warroom-title]');
-      const subtitleEl = shell.querySelector('[data-warroom-subtitle]');
-      const triggerEl = shell.querySelector('[data-warroom-trigger]');
-      const feedEl = shell.querySelector('[data-warroom-feed]');
-      const metricLabelA = shell.querySelector('[data-metric-label-a]');
-      const metricLabelB = shell.querySelector('[data-metric-label-b]');
-      const metricLabelC = shell.querySelector('[data-metric-label-c]');
-      const metricLabelD = shell.querySelector('[data-metric-label-d]');
-      const metricValueA = shell.querySelector('[data-metric-value-a]');
-      const metricValueB = shell.querySelector('[data-metric-value-b]');
-      const metricValueC = shell.querySelector('[data-metric-value-c]');
-      const metricValueD = shell.querySelector('[data-metric-value-d]');
-      const buttons = Array.from(shell.querySelectorAll('[data-objective-btn]'));
-      const alertNode = shell.querySelector('[data-warroom-alert-node]');
+      const focusEl = shell.querySelector('[data-layer-focus]');
+      const kickerEl = shell.querySelector('[data-layer-kicker]');
+      const titleEl = shell.querySelector('[data-layer-title]');
+      const copyEl = shell.querySelector('[data-layer-copy]');
+      const pointsEl = shell.querySelector('[data-layer-points]');
+      const impactLabelEl = shell.querySelector('[data-layer-impact-label]');
+      const impactEl = shell.querySelector('[data-layer-impact]');
+      const buttons = Array.from(shell.querySelectorAll('[data-layer-btn]'));
 
-      const OBJECTIVES = {
-        mobility: {
-          status: 'Monitoring mobility objective',
-          title: 'Mobility Continuity Grid',
-          subtitle: 'Transit, issuers, and redeemers are synchronized to protect service continuity during demand spikes.',
-          trigger: 'If route completion drops below 82%, shift task issuance toward priority corridors.',
-          metrics: [
-            ['Transit Reliability', '96%'],
-            ['Task Throughput', '91%'],
-            ['Redeemer Capacity', '84%'],
-            ['Trust Signal', '82%']
+      const LAYERS = {
+        residents: {
+          focus: 'Residents Layer Active',
+          kicker: 'Layer Focus: Residents',
+          title: 'Residents Layer',
+          copy: 'City/Sync makes civic contribution legible so effort that was previously invisible can enter public operations.',
+          points: [
+            'Clear participation pathways for local contributions.',
+            'Structured recognition through task verification.',
+            'Low-friction engagement tied to visible local outcomes.'
           ],
-          feed: [
-            'Transit agencies and issuers report synchronized scheduling windows.',
-            'Participant routing remains within baseline service latency.',
-            'Redeemer capacity supports current reward circulation velocity.'
-          ],
-          alert: false
+          impactLabel: 'What City/Sync changes here',
+          impact: 'Converts diffuse volunteer energy into measurable civic input institutions can coordinate.'
         },
-        care: {
-          status: 'Monitoring care network objective',
-          title: 'Care Access Coordination',
-          subtitle: 'Childcare, elder support, and volunteer programs are aligned through shared task orchestration.',
-          trigger: 'If verified care tasks fall below threshold, increase issuer rates in underserved zones.',
-          metrics: [
-            ['Care Slot Fill', '87%'],
-            ['Volunteer Response', '89%'],
-            ['Service Continuity', '85%'],
-            ['Community Trust', '88%']
+        institutions: {
+          focus: 'Institutions Layer Active',
+          kicker: 'Layer Focus: Institutions',
+          title: 'Institutions Layer',
+          copy: 'Issuers and redeemers transform participation into reliable service delivery loops with shared standards.',
+          points: [
+            'Task issuance linked to real administrative needs.',
+            'Verification and redemption coordinated across organizations.',
+            'Capacity management and operational feedback built into one loop.'
           ],
-          feed: [
-            'Care issuers prioritized requests from high-need neighborhoods.',
-            'Redeemers opened additional off-peak service windows.',
-            'Verification latency remains below governance baseline.'
-          ],
-          alert: false
+          impactLabel: 'What City/Sync changes here',
+          impact: 'Replaces fragmented toolchains with a coordinated operating rail for public-sector execution.'
         },
-        food: {
-          status: 'Monitoring food access objective',
-          title: 'Food Security Routing Mesh',
-          subtitle: 'Distribution partners and civic participants are coordinated to maintain stable access pathways.',
-          trigger: 'If redemption concentration exceeds district limits, rebalance task routing to nearby hubs.',
-          metrics: [
-            ['Distribution Uptime', '93%'],
-            ['Routing Efficiency', '86%'],
-            ['Offer Utilization', '90%'],
-            ['Household Reach', '79%']
+        governance: {
+          focus: 'Governance Layer Active',
+          kicker: 'Layer Focus: Governance',
+          title: 'Governance Layer',
+          copy: 'Governance defines how economic signals are interpreted, adjusted, and kept accountable over time.',
+          points: [
+            'Committee-driven parameter and policy adjustment.',
+            'Legible decision triggers tied to observed system behavior.',
+            'Adaptive rules that preserve accountability during growth.'
           ],
-          feed: [
-            'Issuer tasks were repriced for weekend distribution surge.',
-            'Redeemer inventory signals prevented corridor-level shortages.',
-            'Community volunteers filled expired route assignments.'
-          ],
-          alert: false
-        },
-        safety: {
-          status: 'Monitoring neighborhood safety objective',
-          title: 'Neighborhood Safety Coordination',
-          subtitle: 'Incident prevention tasks, community check-ins, and institutional response are operating as one loop.',
-          trigger: 'If completion rate in priority zones falls under 76%, escalate governance response and reallocate tasks.',
-          metrics: [
-            ['Coverage Integrity', '78%'],
-            ['Task Completion', '74%'],
-            ['Response Latency', '68%'],
-            ['Public Confidence', '64%']
-          ],
-          feed: [
-            'Unverified safety tasks have increased in two districts.',
-            'Redeemer support windows are approaching saturation.',
-            'Governance alert raised for targeted issuance rebalance.'
-          ],
-          alert: true
+          impactLabel: 'What City/Sync changes here',
+          impact: 'Builds a transparent control layer so cities can adapt in real time without losing legitimacy.'
         }
       };
 
-      const orderedKeys = ['mobility', 'care', 'food', 'safety'];
-      let current = 0;
-      let autoRotate = window.setInterval(() => {
-        current = (current + 1) % orderedKeys.length;
-        render(orderedKeys[current]);
-      }, 9000);
+      const orderedKeys = ['residents', 'institutions', 'governance'];
+      let hovered = false;
 
-      function render(objectiveKey) {
-        const objective = OBJECTIVES[objectiveKey];
-        if (!objective) return;
+      function render(layerKey) {
+        const layer = LAYERS[layerKey];
+        if (!layer) return;
 
-        shell.dataset.objective = objectiveKey;
-        if (statusEl) statusEl.textContent = objective.status;
-        if (titleEl) titleEl.textContent = objective.title;
-        if (subtitleEl) subtitleEl.textContent = objective.subtitle;
-        if (triggerEl) triggerEl.textContent = objective.trigger;
+        shell.dataset.layer = layerKey;
+        if (focusEl) focusEl.textContent = layer.focus;
+        if (kickerEl) kickerEl.textContent = layer.kicker;
+        if (titleEl) titleEl.textContent = layer.title;
+        if (copyEl) copyEl.textContent = layer.copy;
+        if (impactLabelEl) impactLabelEl.textContent = layer.impactLabel;
+        if (impactEl) impactEl.textContent = layer.impact;
 
-        if (metricLabelA) metricLabelA.textContent = objective.metrics[0][0];
-        if (metricLabelB) metricLabelB.textContent = objective.metrics[1][0];
-        if (metricLabelC) metricLabelC.textContent = objective.metrics[2][0];
-        if (metricLabelD) metricLabelD.textContent = objective.metrics[3][0];
-        if (metricValueA) metricValueA.textContent = objective.metrics[0][1];
-        if (metricValueB) metricValueB.textContent = objective.metrics[1][1];
-        if (metricValueC) metricValueC.textContent = objective.metrics[2][1];
-        if (metricValueD) metricValueD.textContent = objective.metrics[3][1];
-
-        if (feedEl) {
-          feedEl.innerHTML = objective.feed.map(item => `<li>${item}</li>`).join('');
-        }
-
-        if (alertNode) {
-          alertNode.classList.toggle('is-stress', objective.alert);
+        if (pointsEl) {
+          pointsEl.innerHTML = layer.points.map(item => `<li>${item}</li>`).join('');
         }
 
         buttons.forEach(button => {
-          button.classList.toggle('is-active', button.dataset.objectiveBtn === objectiveKey);
+          button.classList.toggle('is-active', button.dataset.layerBtn === layerKey);
         });
       }
 
+      function renderByScroll() {
+        if (hovered) return;
+        const rect = shell.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || 1;
+        const center = viewportHeight * 0.5;
+        const progress = (center - rect.top) / Math.max(1, rect.height);
+        const clamped = Math.min(0.999, Math.max(0, progress));
+        const index = Math.floor(clamped * orderedKeys.length);
+        render(orderedKeys[index]);
+      }
+
       buttons.forEach(button => {
+        const key = button.dataset.layerBtn;
+        if (!key) return;
+
         button.addEventListener('click', () => {
-          const objectiveKey = button.dataset.objectiveBtn;
-          if (!objectiveKey) return;
-          const foundIndex = orderedKeys.indexOf(objectiveKey);
-          if (foundIndex >= 0) current = foundIndex;
-          if (autoRotate) {
-            window.clearInterval(autoRotate);
-            autoRotate = null;
-          }
-          render(objectiveKey);
+          render(key);
+        });
+
+        button.addEventListener('mouseenter', () => {
+          hovered = true;
+          render(key);
+        });
+
+        button.addEventListener('focus', () => {
+          hovered = true;
+          render(key);
         });
       });
 
-      render('mobility');
+      shell.addEventListener('mouseleave', () => {
+        hovered = false;
+        renderByScroll();
+      });
+
+      shell.addEventListener('focusout', event => {
+        if (!shell.contains(event.relatedTarget)) {
+          hovered = false;
+          renderByScroll();
+        }
+      });
+
+      window.addEventListener('scroll', () => {
+        renderByScroll();
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        renderByScroll();
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        hovered = true;
+      }
+
+      render('residents');
+      if (!hovered) {
+        window.requestAnimationFrame(() => {
+          renderByScroll();
+        });
+      }
     })();
   </script>
 </body>
