@@ -267,14 +267,14 @@
       }
     }
 
-    .ribbon-shell {
+    .atlas-shell {
       min-height: calc(100vh - 152px);
       display: grid;
       grid-template-rows: auto auto 1fr auto;
       gap: clamp(14px, 2.2vh, 24px);
     }
 
-    .ribbon-meta {
+    .atlas-meta {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -282,7 +282,7 @@
       flex-wrap: wrap;
     }
 
-    .ribbon-badge {
+    .atlas-badge {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
@@ -297,7 +297,7 @@
       backdrop-filter: blur(8px);
     }
 
-    .ribbon-status {
+    .atlas-status {
       display: inline-flex;
       align-items: center;
       gap: 7px;
@@ -306,7 +306,7 @@
       font-weight: 600;
     }
 
-    .ribbon-status-dot {
+    .atlas-status-dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
@@ -314,7 +314,7 @@
       box-shadow: 0 0 0 6px rgba(221, 158, 51, 0.2);
     }
 
-    .ribbon-headline {
+    .atlas-headline {
       max-width: 88ch;
       display: grid;
       gap: 12px;
@@ -328,108 +328,167 @@
       max-width: 74ch;
     }
 
-    .ribbon-stage {
+    .atlas-stage {
       border: 1px solid rgba(169, 189, 227, 0.24);
       border-radius: 22px;
       background: linear-gradient(160deg, rgba(13, 21, 35, 0.88), rgba(11, 17, 29, 0.84));
       box-shadow: 0 24px 50px rgba(1, 4, 10, 0.45);
       padding: clamp(16px, 2vw, 24px);
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
       gap: 16px;
-      min-height: min(56vh, 560px);
+      min-height: min(58vh, 590px);
       align-items: center;
     }
 
-    .ribbon-rows {
-      display: grid;
-      gap: 12px;
-      align-content: center;
-    }
-
-    .ribbon-track {
+    .atlas-map {
       position: relative;
+      min-height: min(52vh, 520px);
+      border: 1px solid rgba(169, 189, 227, 0.22);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(89, 150, 228, 0.1), transparent 40%),
+        radial-gradient(circle at 84% 80%, rgba(221, 158, 51, 0.1), transparent 36%),
+        rgba(12, 20, 33, 0.72);
       overflow: hidden;
-      border-radius: 16px;
-      border: 1px solid rgba(189, 204, 236, 0.24);
-      background: rgba(237, 244, 255, 0.1);
-      color: #ecf2ff;
-      padding: 14px 16px;
-      text-align: left;
-      width: 100%;
-      cursor: pointer;
-      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
-      opacity: 0.76;
-      --track-rgb: 111, 158, 230;
     }
 
-    .ribbon-track::before {
+    .atlas-map::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, rgba(var(--track-rgb), 0.05), rgba(var(--track-rgb), 0.22));
-      opacity: 0.72;
+      background-image:
+        linear-gradient(rgba(169, 189, 227, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(169, 189, 227, 0.08) 1px, transparent 1px);
+      background-size: 34px 34px;
+      opacity: 0.4;
       pointer-events: none;
     }
 
-    .ribbon-track::after {
-      content: "";
+    .atlas-links {
       position: absolute;
-      top: 50%;
-      left: -18%;
-      width: 24%;
-      height: 44%;
-      border-radius: 999px;
-      background: radial-gradient(circle at center, rgba(var(--track-rgb), 0.65), rgba(var(--track-rgb), 0));
-      transform: translateY(-50%);
-      animation: ribbonPulse 2.8s linear infinite;
-      animation-play-state: paused;
-      opacity: 0;
+      inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
-    }
-
-    @keyframes ribbonPulse {
-      0% { left: -18%; }
-      100% { left: 104%; }
-    }
-
-    .ribbon-track strong,
-    .ribbon-track span {
-      position: relative;
       z-index: 1;
-      display: block;
     }
 
-    .ribbon-track strong {
-      font-size: 0.86rem;
-      letter-spacing: 0.07em;
+    .atlas-link {
+      stroke: rgba(169, 189, 227, 0.38);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-dasharray: 4 6;
+      animation: atlasFlow 3.4s linear infinite;
+      opacity: 0.38;
+      transition: opacity 220ms ease, stroke 220ms ease, stroke-width 220ms ease;
+    }
+
+    .atlas-link.is-active {
+      opacity: 1;
+      stroke: rgba(221, 158, 51, 0.92);
+      stroke-width: 2.3;
+    }
+
+    @keyframes atlasFlow {
+      to { stroke-dashoffset: -42; }
+    }
+
+    .atlas-node {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(189, 204, 236, 0.28);
+      border-radius: 14px;
+      background: rgba(237, 244, 255, 0.12);
+      color: #ecf2ff;
+      padding: 10px 12px;
+      text-align: left;
+      cursor: pointer;
+      width: min(180px, 42%);
+      z-index: 2;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
+      opacity: 0.86;
+      --node-rgb: 111, 158, 230;
+      box-shadow: 0 8px 22px rgba(2, 5, 12, 0.32);
+    }
+
+    .atlas-node strong {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .atlas-node span {
+      display: block;
+      font-size: 0.78rem;
+      color: rgba(231, 239, 255, 0.86);
+      line-height: 1.34;
+    }
+
+    .atlas-node.is-active {
+      transform: translate(-50%, -50%) scale(1.04);
+      border-color: rgba(var(--node-rgb), 0.84);
+      box-shadow: 0 14px 28px rgba(2, 5, 12, 0.42);
+      opacity: 1;
+    }
+
+    .atlas-node.is-residents { --node-rgb: 104, 186, 165; }
+    .atlas-node.is-issuers { --node-rgb: 111, 158, 230; }
+    .atlas-node.is-verification { --node-rgb: 221, 158, 51; }
+    .atlas-node.is-redeemers { --node-rgb: 120, 197, 141; }
+    .atlas-node.is-governance { --node-rgb: 193, 171, 244; }
+    .atlas-node.is-city { --node-rgb: 221, 158, 51; }
+
+    .atlas-hub {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 1px solid rgba(221, 158, 51, 0.55);
+      background:
+        radial-gradient(circle at center, rgba(221, 158, 51, 0.36), rgba(221, 158, 51, 0.1) 58%, rgba(221, 158, 51, 0));
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #fdf3dd;
+      box-shadow: 0 0 0 18px rgba(221, 158, 51, 0.08), 0 0 0 36px rgba(169, 189, 227, 0.06);
+      animation: atlasHubPulse 3s ease-in-out infinite;
+    }
+
+    .atlas-hub strong {
+      display: block;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-bottom: 6px;
     }
 
-    .ribbon-track span {
-      color: rgba(227, 236, 255, 0.84);
-      font-size: 0.88rem;
-      line-height: 1.42;
+    .atlas-hub span {
+      display: block;
+      font-size: 0.92rem;
+      line-height: 1.28;
+      max-width: 13ch;
+      margin: 0 auto;
     }
 
-    .ribbon-track.is-signal { --track-rgb: 104, 186, 165; }
-    .ribbon-track.is-execution { --track-rgb: 111, 158, 230; }
-    .ribbon-track.is-governance { --track-rgb: 221, 158, 51; }
-
-    .ribbon-track.is-active {
-      opacity: 1;
-      transform: translateX(6px);
-      border-color: rgba(var(--track-rgb), 0.74);
-      box-shadow: 0 18px 34px rgba(4, 9, 18, 0.32);
+    @keyframes atlasHubPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 18px rgba(221, 158, 51, 0.08), 0 0 0 36px rgba(169, 189, 227, 0.06);
+      }
+      50% {
+        box-shadow: 0 0 0 22px rgba(221, 158, 51, 0.12), 0 0 0 42px rgba(169, 189, 227, 0.09);
+      }
     }
 
-    .ribbon-track.is-active::after {
-      opacity: 1;
-      animation-play-state: running;
-    }
-
-    .ribbon-detail {
+    .atlas-detail {
       border: 1px solid rgba(169, 189, 227, 0.22);
       border-radius: 16px;
       background: rgba(14, 22, 37, 0.74);
@@ -437,9 +496,10 @@
       display: grid;
       gap: 10px;
       align-content: start;
+      height: 100%;
     }
 
-    .ribbon-detail-kicker {
+    .atlas-detail-kicker {
       margin: 0;
       font-size: 0.73rem;
       text-transform: uppercase;
@@ -448,7 +508,7 @@
       font-weight: 700;
     }
 
-    .ribbon-detail h2 {
+    .atlas-detail h2 {
       margin: 0;
       font-family: "Newsreader", Georgia, serif;
       font-size: clamp(1.3rem, 2vw, 1.85rem);
@@ -457,14 +517,14 @@
       line-height: 1.04;
     }
 
-    .ribbon-detail p {
+    .atlas-detail p {
       margin: 0;
       color: rgba(228, 237, 255, 0.82);
       font-size: 0.92rem;
       line-height: 1.52;
     }
 
-    .ribbon-detail ul {
+    .atlas-detail ul {
       margin: 0;
       padding-left: 16px;
       display: grid;
@@ -474,21 +534,21 @@
       line-height: 1.4;
     }
 
-    .ribbon-impact {
+    .atlas-impact {
       border-top: 1px solid rgba(169, 189, 227, 0.22);
       padding-top: 10px;
       display: grid;
       gap: 5px;
     }
 
-    .ribbon-impact strong {
+    .atlas-impact strong {
       font-size: 0.74rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: rgba(173, 191, 229, 0.84);
     }
 
-    .ribbon-impact span {
+    .atlas-impact span {
       color: rgba(248, 215, 158, 0.94);
       font-size: 0.86rem;
       line-height: 1.45;
@@ -848,17 +908,22 @@
         grid-template-columns: 1fr;
       }
 
-      .ribbon-shell {
+      .atlas-shell {
         min-height: auto;
       }
 
-      .ribbon-stage {
+      .atlas-stage {
         grid-template-columns: 1fr;
         min-height: auto;
       }
 
-      .ribbon-detail {
+      .atlas-map {
+        min-height: 460px;
+      }
+
+      .atlas-detail {
         margin-top: 4px;
+        height: auto;
       }
 
       .problem-layout {
@@ -893,8 +958,21 @@
       .hero { min-height: auto; }
       .hero h1 { line-height: 1; }
 
-      .ribbon-track.is-active {
-        transform: translateX(0);
+      .atlas-map {
+        min-height: 420px;
+      }
+
+      .atlas-node {
+        width: min(170px, 46%);
+      }
+
+      .atlas-node.is-active {
+        transform: translate(-50%, -50%) scale(1.01);
+      }
+
+      .atlas-hub {
+        width: 150px;
+        height: 150px;
       }
 
       .nav-links { display: none; }
@@ -973,57 +1051,85 @@
     <main id="top">
       <section class="hero">
         <div class="container">
-          <div class="ribbon-shell" data-ribbon-shell data-ribbon="signal">
-            <div class="ribbon-meta">
-              <div class="ribbon-badge">Impact Ribbon</div>
-              <div class="ribbon-status">
-                <span class="ribbon-status-dot" aria-hidden="true"></span>
-                <span data-ribbon-status>Signal Acquisition Active</span>
+          <div class="atlas-shell" data-atlas-shell data-focus="residents">
+            <div class="atlas-meta">
+              <div class="atlas-badge">Civic Systems Map</div>
+              <div class="atlas-status">
+                <span class="atlas-status-dot" aria-hidden="true"></span>
+                <span data-atlas-status>Residents are generating civic signal</span>
               </div>
             </div>
 
-            <div class="ribbon-headline">
+            <div class="atlas-headline">
               <h1>
                 <span class="thin">Civic Coordination Infrastructure</span>
                 <span>Make the <span class="gold-reveal">Invisible</span>, Visible.</span>
               </h1>
               <p class="hero-copy">
-                Follow the civic signal from contribution to execution to governance. Each ribbon lane shows how City/Sync
-                turns fragmented effort into measurable, coordinated public outcomes.
+                This map shows one connected system: resident effort, institutional operations, and governance all feeding
+                into shared public outcomes. Select any node to trace what changes there.
               </p>
             </div>
 
-            <div class="ribbon-stage">
-              <div class="ribbon-rows" role="tablist" aria-label="City/Sync impact ribbon lanes">
-                <button class="ribbon-track is-signal is-active" type="button" data-ribbon-btn="signal">
-                  <strong>Signal Acquisition</strong>
-                  <span>Civic participation becomes legible and structured as real public contribution.</span>
+            <div class="atlas-stage">
+              <div class="atlas-map" role="tablist" aria-label="City/Sync civic systems map">
+                <svg class="atlas-links" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                  <line class="atlas-link" data-atlas-link="residents" x1="18" y1="24" x2="50" y2="50"></line>
+                  <line class="atlas-link" data-atlas-link="issuers" x1="26" y1="72" x2="50" y2="50"></line>
+                  <line class="atlas-link" data-atlas-link="verification" x1="49" y1="14" x2="50" y2="50"></line>
+                  <line class="atlas-link" data-atlas-link="redeemers" x1="77" y1="28" x2="50" y2="50"></line>
+                  <line class="atlas-link" data-atlas-link="governance" x1="82" y1="72" x2="50" y2="50"></line>
+                  <line class="atlas-link" data-atlas-link="city" x1="52" y1="86" x2="50" y2="50"></line>
+                </svg>
+
+                <button class="atlas-node is-residents is-active" style="--x:18%;--y:24%;" type="button" data-atlas-node="residents">
+                  <strong>Residents</strong>
+                  <span>Civic effort and local participation</span>
                 </button>
-                <button class="ribbon-track is-execution" type="button" data-ribbon-btn="execution">
-                  <strong>Institutional Execution</strong>
-                  <span>Issuers and redeemers convert civic signal into operational delivery loops.</span>
+                <button class="atlas-node is-issuers" style="--x:26%;--y:72%;" type="button" data-atlas-node="issuers">
+                  <strong>Issuers</strong>
+                  <span>Task programs and contribution pathways</span>
                 </button>
-                <button class="ribbon-track is-governance" type="button" data-ribbon-btn="governance">
-                  <strong>Adaptive Governance</strong>
-                  <span>Committees tune policy and economic parameters from observed local conditions.</span>
+                <button class="atlas-node is-verification" style="--x:49%;--y:14%;" type="button" data-atlas-node="verification">
+                  <strong>Verification</strong>
+                  <span>Proof of work completed and recorded</span>
                 </button>
+                <button class="atlas-node is-redeemers" style="--x:77%;--y:28%;" type="button" data-atlas-node="redeemers">
+                  <strong>Redeemers</strong>
+                  <span>Unused capacity becomes local rewards</span>
+                </button>
+                <button class="atlas-node is-governance" style="--x:82%;--y:72%;" type="button" data-atlas-node="governance">
+                  <strong>Governance</strong>
+                  <span>Policy feedback and economic calibration</span>
+                </button>
+                <button class="atlas-node is-city" style="--x:52%;--y:86%;" type="button" data-atlas-node="city">
+                  <strong>City Systems</strong>
+                  <span>Public institutions and service interfaces</span>
+                </button>
+
+                <div class="atlas-hub" aria-hidden="true">
+                  <div>
+                    <strong>Center</strong>
+                    <span>Shared Public Outcomes</span>
+                  </div>
+                </div>
               </div>
 
-              <aside class="ribbon-detail" aria-live="polite">
-                <p class="ribbon-detail-kicker" data-ribbon-kicker>Lane Focus</p>
-                <h2 data-ribbon-title>Signal Acquisition</h2>
-                <p data-ribbon-copy>
-                  City/Sync captures local civic activity and turns it into structured input institutions can recognize and coordinate.
+              <aside class="atlas-detail" aria-live="polite">
+                <p class="atlas-detail-kicker" data-atlas-kicker>Node Focus</p>
+                <h2 data-atlas-title>Residents</h2>
+                <p data-atlas-copy>
+                  Residents contribute civic labor and local knowledge. City/Sync captures this as structured signal rather than losing it in fragmented channels.
                 </p>
-                <ul data-ribbon-points>
-                  <li>Contribution pathways are clear and low-friction.</li>
-                  <li>Task verification produces auditable civic records.</li>
-                  <li>Residents can see how participation maps to real outcomes.</li>
+                <ul data-atlas-points>
+                  <li>Contribution pathways are clear and easy to enter.</li>
+                  <li>Participation is recognized through auditable verification.</li>
+                  <li>People can see a path from action to local outcomes.</li>
                 </ul>
-                <div class="ribbon-impact">
-                  <strong data-ribbon-impact-label>What City/Sync changes here</strong>
-                  <span data-ribbon-impact>
-                    Converts diffuse volunteer effort into a measurable public signal that can feed governance and operations.
+                <div class="atlas-impact">
+                  <strong data-atlas-impact-label>What City/Sync changes here</strong>
+                  <span data-atlas-impact>
+                    Turns invisible civic effort into a legible system input that institutions can coordinate around.
                   </span>
                 </div>
               </aside>
@@ -1260,85 +1366,129 @@
     </footer>
   </div>
   <script>
-    // Hero impact ribbon: click or auto-cycle through lanes
+    // Hero civic systems map: click nodes or auto-cycle focus
     (function () {
-      const shell = document.querySelector('[data-ribbon-shell]');
+      const shell = document.querySelector('[data-atlas-shell]');
       if (!shell) return;
 
-      const statusEl = shell.querySelector('[data-ribbon-status]');
-      const kickerEl = shell.querySelector('[data-ribbon-kicker]');
-      const titleEl = shell.querySelector('[data-ribbon-title]');
-      const copyEl = shell.querySelector('[data-ribbon-copy]');
-      const pointsEl = shell.querySelector('[data-ribbon-points]');
-      const impactLabelEl = shell.querySelector('[data-ribbon-impact-label]');
-      const impactEl = shell.querySelector('[data-ribbon-impact]');
-      const buttons = Array.from(shell.querySelectorAll('[data-ribbon-btn]'));
+      const statusEl = shell.querySelector('[data-atlas-status]');
+      const kickerEl = shell.querySelector('[data-atlas-kicker]');
+      const titleEl = shell.querySelector('[data-atlas-title]');
+      const copyEl = shell.querySelector('[data-atlas-copy]');
+      const pointsEl = shell.querySelector('[data-atlas-points]');
+      const impactLabelEl = shell.querySelector('[data-atlas-impact-label]');
+      const impactEl = shell.querySelector('[data-atlas-impact]');
+      const nodes = Array.from(shell.querySelectorAll('[data-atlas-node]'));
+      const links = Array.from(shell.querySelectorAll('[data-atlas-link]'));
 
-      const LANES = {
-        signal: {
-          status: 'Signal Acquisition Active',
-          kicker: 'Lane Focus: Signal Acquisition',
-          title: 'Signal Acquisition',
-          copy: 'City/Sync captures local civic activity and turns it into structured input institutions can recognize and coordinate.',
+      const NODES = {
+        residents: {
+          status: 'Residents are generating civic signal',
+          kicker: 'Node Focus: Residents',
+          title: 'Residents',
+          copy: 'Residents contribute civic labor and local knowledge. City/Sync captures this as structured signal rather than losing it in fragmented channels.',
           points: [
-            'Contribution pathways are clear and low-friction.',
-            'Task verification produces auditable civic records.',
-            'Residents can see how participation maps to real outcomes.'
+            'Contribution pathways are clear and easy to enter.',
+            'Participation is recognized through auditable verification.',
+            'People can see a path from action to local outcomes.'
           ],
           impactLabel: 'What City/Sync changes here',
-          impact: 'Converts diffuse volunteer effort into a measurable public signal that can feed governance and operations.'
+          impact: 'Turns invisible civic effort into a legible system input that institutions can coordinate around.'
         },
-        execution: {
-          status: 'Institutional Execution Active',
-          kicker: 'Lane Focus: Institutional Execution',
-          title: 'Institutional Execution',
-          copy: 'Issuer and redeemer organizations transform participation into a reliable loop of issuance, verification, and redemption.',
+        issuers: {
+          status: 'Issuers are translating signal into tasks',
+          kicker: 'Node Focus: Issuers',
+          title: 'Issuers',
+          copy: 'Issuer organizations shape real civic work into structured opportunities with clear rules, rates, and expected outcomes.',
           points: [
-            'Task issuance aligns to real local priorities.',
-            'Verification and redemption remain coordinated across organizations.',
-            'Capacity constraints become visible instead of hidden.'
+            'Task catalogs align incentives to local priorities.',
+            'Issuance makes contribution pathways explicit and repeatable.',
+            'Program managers can tune rates based on observed behavior.'
           ],
           impactLabel: 'What City/Sync changes here',
-          impact: 'Replaces disconnected civic programs with one interoperable operating flow.'
+          impact: 'Moves from ad-hoc volunteer coordination to managed civic production loops.'
+        },
+        verification: {
+          status: 'Verification is establishing trusted records',
+          kicker: 'Node Focus: Verification',
+          title: 'Verification',
+          copy: 'Verification is where civic work becomes trusted public data. It protects system integrity while preserving participation.',
+          points: [
+            'Issued work is validated before reward minting.',
+            'No-show and rejection paths maintain accountability.',
+            'Verified activity creates legible historical signal.'
+          ],
+          impactLabel: 'What City/Sync changes here',
+          impact: 'Builds trust in civic records so governance can act on evidence instead of guesswork.'
+        },
+        redeemers: {
+          status: 'Redeemers are absorbing credits with real services',
+          kicker: 'Node Focus: Redeemers',
+          title: 'Redeemers',
+          copy: 'Redeemer organizations convert unused institutional capacity into meaningful access for participants through civic credits.',
+          points: [
+            'Existing public or partner capacity is made usable.',
+            'Redemption rates create a real spending side of the economy.',
+            'Participation links civic labor to tangible local value.'
+          ],
+          impactLabel: 'What City/Sync changes here',
+          impact: 'Ensures credits retain meaning by anchoring them to credible, useful redemption pathways.'
         },
         governance: {
-          status: 'Adaptive Governance Active',
-          kicker: 'Lane Focus: Adaptive Governance',
-          title: 'Adaptive Governance',
-          copy: 'Governance committees interpret system behavior and adjust policy with transparent rules and repeatable processes.',
+          status: 'Governance is calibrating the economic system',
+          kicker: 'Node Focus: Governance',
+          title: 'Governance',
+          copy: 'Committees use observed system behavior to adjust issuance, pricing, and participation constraints over time.',
           points: [
-            'Decision triggers tie policy changes to measured conditions.',
-            'Parameters can be tuned at clear epoch boundaries.',
-            'Accountability grows alongside coordination capacity.'
+            'Decision triggers keep parameter changes legible.',
+            'Epoch-based adjustments prevent chaotic drift.',
+            'Policy stays accountable while the network scales.'
           ],
           impactLabel: 'What City/Sync changes here',
-          impact: 'Creates a learning system where cities can adapt policy without losing legitimacy.'
+          impact: 'Creates a transparent control layer for adaptive public coordination.'
+        },
+        city: {
+          status: 'City systems are integrating civic execution',
+          kicker: 'Node Focus: City Systems',
+          title: 'City Systems',
+          copy: 'City departments and local institutions gain a coordination substrate they can adapt without replacing every existing process.',
+          points: [
+            'Public institutions can adopt with local variation.',
+            'Operational learning can be shared across programs.',
+            'Integration makes civic capacity visible at system level.'
+          ],
+          impactLabel: 'What City/Sync changes here',
+          impact: 'Turns isolated civic programs into interoperable public infrastructure.'
         }
       };
 
-      const orderedKeys = ['signal', 'execution', 'governance'];
+      const orderedKeys = ['residents', 'issuers', 'verification', 'redeemers', 'governance', 'city'];
       let currentIndex = 0;
       let intervalId = null;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      function render(laneKey) {
-        const lane = LANES[laneKey];
-        if (!lane) return;
+      function render(nodeKey) {
+        const node = NODES[nodeKey];
+        if (!node) return;
 
-        shell.dataset.ribbon = laneKey;
-        if (statusEl) statusEl.textContent = lane.status;
-        if (kickerEl) kickerEl.textContent = lane.kicker;
-        if (titleEl) titleEl.textContent = lane.title;
-        if (copyEl) copyEl.textContent = lane.copy;
-        if (impactLabelEl) impactLabelEl.textContent = lane.impactLabel;
-        if (impactEl) impactEl.textContent = lane.impact;
+        shell.dataset.focus = nodeKey;
+        if (statusEl) statusEl.textContent = node.status;
+        if (kickerEl) kickerEl.textContent = node.kicker;
+        if (titleEl) titleEl.textContent = node.title;
+        if (copyEl) copyEl.textContent = node.copy;
+        if (impactLabelEl) impactLabelEl.textContent = node.impactLabel;
+        if (impactEl) impactEl.textContent = node.impact;
 
         if (pointsEl) {
-          pointsEl.innerHTML = lane.points.map(item => `<li>${item}</li>`).join('');
+          pointsEl.innerHTML = node.points.map(item => `<li>${item}</li>`).join('');
         }
 
-        buttons.forEach(button => {
-          button.classList.toggle('is-active', button.dataset.ribbonBtn === laneKey);
+        nodes.forEach(nodeButton => {
+          nodeButton.classList.toggle('is-active', nodeButton.dataset.atlasNode === nodeKey);
+        });
+
+        links.forEach(link => {
+          link.classList.toggle('is-active', link.dataset.atlasLink === nodeKey);
         });
       }
 
@@ -1347,11 +1497,11 @@
         render(orderedKeys[currentIndex]);
       }
 
-      buttons.forEach(button => {
-        const key = button.dataset.ribbonBtn;
+      nodes.forEach(nodeButton => {
+        const key = nodeButton.dataset.atlasNode;
         if (!key) return;
 
-        button.addEventListener('click', () => {
+        nodeButton.addEventListener('click', () => {
           currentIndex = orderedKeys.indexOf(key);
           if (currentIndex < 0) currentIndex = 0;
           render(key);
@@ -1362,7 +1512,7 @@
         });
       });
 
-      render(orderedKeys[currentIndex]);
+      render('residents');
       if (!reduceMotion) {
         intervalId = window.setInterval(stepForward, 3600);
       }
