@@ -301,22 +301,14 @@
       gap: 12px;
     }
 
-    .hero-field {
+    .hero-blueprint {
       align-self: center;
       display: grid;
-      gap: 16px;
+      gap: 14px;
       padding-top: 20px;
     }
 
-    .hero-field-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .hero-field-kicker {
+    .hero-blueprint-kicker {
       margin: 0;
       font-size: 0.75rem;
       font-weight: 700;
@@ -325,114 +317,143 @@
       color: rgba(21, 21, 30, 0.68);
     }
 
-    .hero-field-phase {
+    .hero-blueprint-title {
       margin: 0;
-      padding: 6px 11px;
-      border-radius: 999px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--brand-gold);
-      background: rgba(255, 255, 255, 0.62);
-      border: 1px solid rgba(221, 158, 51, 0.4);
-      backdrop-filter: blur(8px);
+      font-family: "Newsreader", Georgia, serif;
+      font-size: clamp(1.42rem, 2.3vw, 1.95rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      max-width: 18ch;
     }
 
-    .hero-field-copy {
+    .hero-blueprint-copy {
       margin: 0;
       color: var(--ink-soft);
       font-size: 0.95rem;
-      line-height: 1.58;
-      max-width: 34ch;
+      line-height: 1.56;
+      max-width: 36ch;
     }
 
-    .hero-field-control {
-      display: grid;
-      gap: 9px;
+    .hero-blueprint-card {
+      border: 1px solid rgba(33, 50, 56, 0.14);
+      border-radius: 20px;
+      background: linear-gradient(140deg, rgba(255,255,255,0.9), rgba(248,249,251,0.95));
+      padding: 16px;
+      box-shadow: var(--shadow-md);
     }
 
-    .hero-field-control-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      color: rgba(33, 50, 56, 0.92);
-      font-size: 0.82rem;
+    .hero-blueprint-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .hero-blueprint-svg .bp-link {
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 10 8;
+      animation: blueprintFlow 6.2s linear infinite;
+      opacity: 0.88;
+    }
+
+    .hero-blueprint-svg .bp-link.is-gold {
+      stroke: rgba(221, 158, 51, 0.95);
+    }
+
+    .hero-blueprint-svg .bp-link.is-blue {
+      stroke: rgba(65, 123, 160, 0.95);
+    }
+
+    .hero-blueprint-svg .bp-link.is-forest {
+      stroke: rgba(62, 106, 90, 0.95);
+    }
+
+    .hero-blueprint-svg .bp-node {
+      fill: rgba(255, 255, 255, 0.96);
+      stroke: rgba(33, 50, 56, 0.2);
+      stroke-width: 1.2;
+      rx: 12;
+      ry: 12;
+    }
+
+    .hero-blueprint-svg .bp-node.is-central {
+      fill: rgba(21, 21, 30, 0.95);
+      stroke: rgba(221, 158, 51, 0.46);
+      stroke-width: 1.4;
+    }
+
+    .hero-blueprint-svg .bp-label {
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 11px;
+      fill: rgba(33, 50, 56, 0.88);
+      letter-spacing: 0.01em;
+      font-weight: 600;
+    }
+
+    .hero-blueprint-svg .bp-label.is-central {
+      fill: rgba(255, 255, 255, 0.92);
+      font-size: 10.6px;
       font-weight: 700;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
     }
 
-    .hero-field-control input[type="range"] {
-      width: 100%;
-      margin: 0;
-      accent-color: var(--brand-gold);
-      cursor: pointer;
-    }
-
-    .hero-phase-rail {
+    .hero-blueprint-legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .hero-phase-pill {
-      border: 1px solid rgba(33, 50, 56, 0.14);
-      background: rgba(255, 255, 255, 0.7);
+    .hero-blueprint-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
       border-radius: 999px;
-      color: rgba(33, 50, 56, 0.86);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      padding: 7px 12px;
-      cursor: pointer;
-      transition: all 180ms ease;
-    }
-
-    .hero-phase-pill:hover {
-      border-color: rgba(65, 123, 160, 0.42);
-      color: var(--sky);
-      transform: translateY(-1px);
-    }
-
-    .hero-phase-pill.is-active {
-      background: rgba(21, 21, 30, 0.92);
-      border-color: rgba(21, 21, 30, 0.92);
-      color: #f5f5f7;
-      box-shadow: 0 8px 18px rgba(21, 21, 30, 0.22);
-    }
-
-    .hero-field-readout {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-    }
-
-    .hero-field-readout-item {
-      padding: 11px 10px;
-      border-radius: 14px;
+      padding: 7px 11px;
       border: 1px solid rgba(33, 50, 56, 0.12);
-      background: rgba(255, 255, 255, 0.62);
-      backdrop-filter: blur(8px);
-      min-height: 68px;
+      background: rgba(255, 255, 255, 0.68);
+      color: rgba(33, 50, 56, 0.84);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
     }
 
-    .hero-field-readout-item strong {
+    .hero-blueprint-legend i {
       display: block;
-      font-family: "Newsreader", Georgia, serif;
-      font-size: 1.25rem;
-      line-height: 1;
-      color: var(--accent);
-      margin-bottom: 5px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: rgba(33, 50, 56, 0.4);
     }
 
-    .hero-field-readout-item span {
-      display: block;
-      color: var(--ink-soft);
-      font-size: 0.76rem;
-      line-height: 1.3;
+    .hero-blueprint-legend i.is-gold {
+      background: var(--brand-gold);
+    }
+
+    .hero-blueprint-legend i.is-blue {
+      background: var(--sky);
+    }
+
+    .hero-blueprint-legend i.is-forest {
+      background: var(--forest);
+    }
+
+    @keyframes blueprintFlow {
+      from {
+        stroke-dashoffset: 0;
+      }
+      to {
+        stroke-dashoffset: -180;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-blueprint-svg .bp-link {
+        animation: none;
+      }
     }
 
     .stat-ribbon {
@@ -824,16 +845,12 @@
         margin-left: 0;
       }
 
-      .hero-field {
+      .hero-blueprint {
         padding-top: 0;
       }
 
-      .hero-field-copy {
+      .hero-blueprint-copy {
         max-width: none;
-      }
-
-      .hero-field-readout {
-        grid-template-columns: 1fr;
       }
 
       .flow-strip,
@@ -941,39 +958,44 @@
               </div>
             </div>
 
-            <aside class="hero-field" aria-label="City/Sync coordination model">
-              <div class="hero-field-header">
-                <p class="hero-field-kicker">Civic Signal Field</p>
-                <p class="hero-field-phase" data-hero-phase>Fragmented Effort</p>
-              </div>
-              <p class="hero-field-copy">
-                Shift coordination intensity to see how fragmented civic effort can become structured institutional capacity.
+            <aside class="hero-blueprint" aria-label="City/Sync protocol blueprint">
+              <p class="hero-blueprint-kicker">Protocol Blueprint</p>
+              <h2 class="hero-blueprint-title">A shared coordination stack for city systems.</h2>
+              <p class="hero-blueprint-copy">
+                This schematic maps how civic signal moves through verification and governance into durable public value,
+                using one interoperable protocol architecture.
               </p>
-              <label class="hero-field-control" for="hero-intensity">
-                <div class="hero-field-control-top">
-                  <span>Coordination Intensity</span>
-                  <span data-hero-intensity-value>38%</span>
-                </div>
-                <input id="hero-intensity" data-hero-intensity type="range" min="0" max="100" value="38" />
-              </label>
-              <div class="hero-phase-rail" aria-label="Coordination stages">
-                <button type="button" class="hero-phase-pill" data-phase-target="0.2">Signal</button>
-                <button type="button" class="hero-phase-pill" data-phase-target="0.5">Coordination</button>
-                <button type="button" class="hero-phase-pill" data-phase-target="0.84">Public Value</button>
+              <div class="hero-blueprint-card">
+                <svg class="hero-blueprint-svg" viewBox="0 0 520 320" role="img" aria-label="City/Sync protocol flow map">
+                  <path class="bp-link is-gold" d="M80 66 C150 66 166 94 224 125" />
+                  <path class="bp-link is-blue" d="M80 168 C164 168 172 167 232 167" />
+                  <path class="bp-link is-forest" d="M80 268 C154 268 173 246 226 210" />
+                  <path class="bp-link is-blue" d="M296 152 C347 123 370 95 430 95" />
+                  <path class="bp-link is-forest" d="M296 176 C344 192 378 214 430 226" />
+                  <rect class="bp-node" x="28" y="42" width="108" height="48" />
+                  <rect class="bp-node" x="28" y="144" width="108" height="48" />
+                  <rect class="bp-node" x="28" y="244" width="108" height="48" />
+                  <rect class="bp-node is-central" x="214" y="132" width="104" height="64" />
+                  <rect class="bp-node" x="382" y="72" width="116" height="48" />
+                  <rect class="bp-node" x="382" y="202" width="116" height="48" />
+                  <text class="bp-label" x="82" y="71" text-anchor="middle">Civic</text>
+                  <text class="bp-label" x="82" y="84" text-anchor="middle">Contributions</text>
+                  <text class="bp-label" x="82" y="173" text-anchor="middle">Issuer &amp; Redeemer</text>
+                  <text class="bp-label" x="82" y="186" text-anchor="middle">Verification</text>
+                  <text class="bp-label" x="82" y="269" text-anchor="middle">Governance</text>
+                  <text class="bp-label" x="82" y="282" text-anchor="middle">Committees</text>
+                  <text class="bp-label is-central" x="266" y="167" text-anchor="middle">City/Sync</text>
+                  <text class="bp-label is-central" x="266" y="180" text-anchor="middle">Protocol</text>
+                  <text class="bp-label" x="440" y="101" text-anchor="middle">Local Chain</text>
+                  <text class="bp-label" x="440" y="114" text-anchor="middle">Infrastructure</text>
+                  <text class="bp-label" x="440" y="230" text-anchor="middle">Portable dPAN</text>
+                  <text class="bp-label" x="440" y="243" text-anchor="middle">Public Models</text>
+                </svg>
               </div>
-              <div class="hero-field-readout" aria-live="polite">
-                <div class="hero-field-readout-item">
-                  <strong data-hero-readout-visibility>34%</strong>
-                  <span>Visible civic signal</span>
-                </div>
-                <div class="hero-field-readout-item">
-                  <strong data-hero-readout-cohesion>41%</strong>
-                  <span>Network coherence</span>
-                </div>
-                <div class="hero-field-readout-item">
-                  <strong data-hero-readout-readiness>Emerging</strong>
-                  <span>Portable model readiness</span>
-                </div>
+              <div class="hero-blueprint-legend" aria-hidden="true">
+                <span><i class="is-gold"></i>Contribution Layer</span>
+                <span><i class="is-blue"></i>Coordination Layer</span>
+                <span><i class="is-forest"></i>Governance Layer</span>
               </div>
             </aside>
           </div>
