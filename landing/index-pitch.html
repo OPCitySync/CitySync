@@ -224,13 +224,13 @@
 
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
-      gap: clamp(20px, 3vw, 40px);
+      grid-template-columns: minmax(0, 1.16fr) minmax(280px, 0.84fr);
+      gap: clamp(24px, 3.4vw, 48px);
       align-items: start;
     }
 
     .hero-content {
-      max-width: 680px;
+      max-width: 700px;
     }
 
     .hero h1 {
@@ -301,49 +301,14 @@
       gap: 12px;
     }
 
-    .hero-panel {
-      position: relative;
-      min-height: 420px;
-      padding: clamp(22px, 2.8vw, 30px);
-      border-radius: var(--radius-xl);
-      border: 1px solid rgba(33, 50, 56, 0.12);
-      box-shadow: var(--shadow-lg);
-      background: linear-gradient(145deg, rgba(255,255,255,0.86), rgba(244,239,228,0.96));
-      overflow: hidden;
+    .hero-sequence {
+      align-self: center;
+      padding-top: 28px;
       display: grid;
-      align-content: start;
       gap: 18px;
     }
 
-    .hero-panel::before {
-      content: "";
-      position: absolute;
-      inset: -16% auto auto -12%;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(65,123,160,0.16), transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-panel::after {
-      content: "";
-      position: absolute;
-      right: -10%;
-      bottom: -12%;
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(221,158,51,0.14), transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-panel > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-panel-kicker {
+    .hero-sequence-kicker {
       margin: 0;
       font-size: 0.75rem;
       font-weight: 700;
@@ -352,75 +317,116 @@
       color: rgba(21, 21, 30, 0.68);
     }
 
-    .hero-panel-title {
+    .hero-sequence-title {
       margin: 0;
       font-family: "Newsreader", Georgia, serif;
-      font-size: clamp(1.6rem, 2.6vw, 2.2rem);
-      line-height: 1;
+      font-size: clamp(1.45rem, 2.4vw, 2rem);
+      line-height: 1.04;
       letter-spacing: -0.02em;
+      max-width: 16ch;
     }
 
-    .hero-panel-copy {
+    .hero-sequence-copy {
       margin: 0;
       color: var(--ink-soft);
-      font-size: 0.98rem;
-      line-height: 1.55;
+      font-size: 0.96rem;
+      line-height: 1.6;
+      max-width: 34ch;
     }
 
-    .hero-panel-flow {
+    .hero-sequence-line {
+      position: relative;
       display: grid;
-      gap: 12px;
+      gap: 18px;
+      padding-left: 22px;
     }
 
-    .hero-flow-card {
-      background: rgba(255, 255, 255, 0.78);
-      border: 1px solid rgba(33, 50, 56, 0.1);
-      border-radius: 18px;
-      padding: 15px 16px;
-      box-shadow: 0 12px 24px rgba(33, 50, 56, 0.06);
+    .hero-sequence-line::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 12px;
+      bottom: 12px;
+      width: 1px;
+      background: linear-gradient(
+        180deg,
+        rgba(221, 158, 51, 0.34),
+        rgba(65, 123, 160, 0.26) 52%,
+        rgba(62, 106, 90, 0.28)
+      );
     }
 
-    .hero-flow-card strong {
+    .hero-sequence-step {
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .hero-sequence-step::before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: 7px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.66);
+    }
+
+    .hero-sequence-step strong {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       font-size: 0.98rem;
     }
 
-    .hero-flow-card span {
+    .hero-sequence-step span {
       display: block;
       color: var(--ink-soft);
       font-size: 0.9rem;
       line-height: 1.45;
     }
 
-    .hero-flow-card.is-gold strong {
+    .hero-sequence-step.is-gold::before {
+      border: 2px solid var(--brand-gold);
+    }
+
+    .hero-sequence-step.is-gold strong {
       color: var(--brand-gold);
     }
 
-    .hero-flow-card.is-blue strong {
+    .hero-sequence-step.is-blue::before {
+      border: 2px solid var(--sky);
+    }
+
+    .hero-sequence-step.is-blue strong {
       color: var(--sky);
     }
 
-    .hero-flow-card.is-forest strong {
+    .hero-sequence-step.is-forest::before {
+      border: 2px solid var(--forest);
+    }
+
+    .hero-sequence-step.is-forest strong {
       color: var(--forest);
     }
 
-    .hero-panel-tags {
+    .hero-inline-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
     }
 
-    .hero-panel-tags span {
+    .hero-inline-tags span {
       display: inline-flex;
       align-items: center;
       border-radius: 999px;
-      padding: 8px 12px;
-      background: rgba(255, 255, 255, 0.72);
-      border: 1px solid rgba(33, 50, 56, 0.1);
+      padding: 8px 11px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(33, 50, 56, 0.09);
       color: rgba(33, 50, 56, 0.84);
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 600;
+      backdrop-filter: blur(8px);
     }
 
     .stat-ribbon {
@@ -812,7 +818,14 @@
         margin-left: 0;
       }
 
-      .hero-panel { min-height: auto; }
+      .hero-sequence {
+        padding-top: 0;
+      }
+
+      .hero-sequence-title,
+      .hero-sequence-copy {
+        max-width: none;
+      }
 
       .flow-strip,
       .stat-ribbon {
@@ -919,28 +932,28 @@
               </div>
             </div>
 
-            <aside class="hero-panel" aria-label="City/Sync coordination model">
-              <p class="hero-panel-kicker">Public Coordination Loop</p>
-              <h2 class="hero-panel-title">A civic system that turns contribution into operating capacity.</h2>
-              <p class="hero-panel-copy">
+            <aside class="hero-sequence" aria-label="City/Sync coordination model">
+              <p class="hero-sequence-kicker">Public Coordination Loop</p>
+              <h2 class="hero-sequence-title">A civic system that turns contribution into operating capacity.</h2>
+              <p class="hero-sequence-copy">
                 City/Sync makes public contribution legible, lets institutions coordinate around it, and helps cities
                 build reusable civic infrastructure instead of isolated programs.
               </p>
-              <div class="hero-panel-flow">
-                <div class="hero-flow-card is-gold">
+              <div class="hero-sequence-line">
+                <div class="hero-sequence-step is-gold">
                   <strong>Civic Signal</strong>
                   <span>Volunteer action, local knowledge, and neighborhood effort become visible as usable public input.</span>
                 </div>
-                <div class="hero-flow-card is-blue">
+                <div class="hero-sequence-step is-blue">
                   <strong>Institutional Coordination</strong>
                   <span>Organizations issue, verify, and reward work through shared standards instead of fragmented tools.</span>
                 </div>
-                <div class="hero-flow-card is-forest">
+                <div class="hero-sequence-step is-forest">
                   <strong>Portable Public Models</strong>
                   <span>What works in one city becomes a framework that another city can adopt, adapt, and govern locally.</span>
                 </div>
               </div>
-              <div class="hero-panel-tags" aria-hidden="true">
+              <div class="hero-inline-tags" aria-hidden="true">
                 <span>Public contribution</span>
                 <span>Local governance</span>
                 <span>Exportable civic models</span>
