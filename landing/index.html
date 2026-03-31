@@ -1240,6 +1240,7 @@
       let height = 0;
       let dpr = Math.max(1, window.devicePixelRatio || 1);
       let anchors = [];
+      let centerAnchor = { x: 0, y: 0 };
       let mouse = { x: -9999, y: -9999, active: false };
       let manualIntensity = intensityInput ? Number(intensityInput.value || 38) / 100 : 0.38;
       let scrollBoost = 0;
@@ -1307,6 +1308,7 @@
           { x: width * 0.62, y: height * 0.4 },
           { x: width * 0.82, y: height * 0.66 }
         ];
+        centerAnchor = { x: width * 0.5, y: height * 0.5 };
       }
 
       function getEventPoint(event) {
@@ -1376,9 +1378,17 @@
           }
 
           if (intensity > 0.08 && anchors.length) {
-            const target = anchors[this.anchorIndex % anchors.length];
-            const tx = target.x + Math.sin(tick * 0.01 + this.pulseOffset) * (20 * (1 - intensity));
-            const ty = target.y + Math.cos(tick * 0.008 + this.pulseOffset) * (16 * (1 - intensity));
+            const localTarget = anchors[this.anchorIndex % anchors.length];
+            const merge = Math.pow(intensity, 1.32);
+            const localWeight = 1 - merge;
+            const meshX = centerAnchor.x
+              + Math.sin(tick * 0.004 + this.pulseOffset) * 24
+              + (this.anchorIndex - 1.5) * (width * 0.08 * (1 - merge * 0.92));
+            const meshY = centerAnchor.y
+              + Math.cos(tick * 0.005 + this.pulseOffset * 1.1) * 18
+              + Math.sin(this.pulseOffset * 1.7) * (height * 0.07 * (1 - merge * 0.84));
+            const tx = (localTarget.x * localWeight) + (meshX * merge);
+            const ty = (localTarget.y * localWeight) + (meshY * merge);
             const cdx = tx - this.x;
             const cdy = ty - this.y;
             const cdist = Math.sqrt(cdx * cdx + cdy * cdy) + 1;
@@ -1463,7 +1473,7 @@
         const targetIntensity = clamp(manualIntensity + scrollBoost + pointerBoost, 0, 1);
         coordination += (targetIntensity - coordination) * 0.05;
         if (intensityValue) intensityValue.textContent = Math.round(targetIntensity * 100) + '%';
-        const connectDist = BASE_CONNECT_DIST * (0.72 + coordination * 0.98);
+        const connectDist = BASE_CONNECT_DIST * (0.58 + coordination * 1.35);
         let linkCount = 0;
 
         for (let i = 0; i < nodes.length; i++) {
@@ -1472,9 +1482,16 @@
             const dy = nodes[i].y - nodes[j].y;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < connectDist) {
+            const pairSeed = ((i * 31 + j * 17) % 101) / 101;
+            const bridgeDist = connectDist * 1.42;
+            const bridgeThreshold = clamp((coordination - 0.58) * 0.42, 0, 0.2);
+            const longBridge = coordination > 0.58 && dist < bridgeDist && pairSeed < bridgeThreshold;
+
+            if (dist < connectDist || longBridge) {
               linkCount += 1;
-              const alpha = (1 - dist / connectDist) * (0.1 + coordination * 0.3);
+              const linkLimit = longBridge ? bridgeDist : connectDist;
+              const alphaBase = (1 - dist / linkLimit) * (0.1 + coordination * 0.3);
+              const alpha = longBridge ? alphaBase * 0.5 : alphaBase;
               const bothGold = nodes[i].gold && nodes[j].gold;
               const eitherGold = nodes[i].gold || nodes[j].gold;
 
