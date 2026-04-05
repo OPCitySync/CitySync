@@ -2610,6 +2610,9 @@ function ExploreTab({
     () => myTasks.filter(task => tutorialTaskIdSet.has(task.id)),
     [myTasks, tutorialTaskIdSet],
   );
+  const tutorialBypassesOnboarding = tutorialIsActive && tutorialTaskIdSet.size > 0;
+  const bypassesOnboardingForTask = (task: Task) =>
+    tutorialIsActive && tutorialTaskIdSet.has(task.id) && !task.isOnboarding;
   const tutorialTargetClaimTaskId = React.useMemo(() => {
     if (tutorialStep !== "box11") return undefined;
     for (const group of orderedBrowseTaskGroups) {
@@ -2971,8 +2974,9 @@ function ExploreTab({
         >
           <div style={{ fontSize: 12, fontWeight: 800, color: TEAL, marginBottom: 5 }}>ONBOARDING REQUIRED</div>
           <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 1.55 }}>
-            Complete and execute one in-person onboarding task (0 CITY) to activate your account. Once activated, your
-            account can claim and execute all City/Sync tasks.
+            {tutorialBypassesOnboarding
+              ? "Onboarding is normally required before standard tasks can be claimed. During the guided walkthrough, tutorial tasks temporarily bypass this rule so new users can complete the demo flow."
+              : "Complete and execute one in-person onboarding task (0 CITY) to activate your account. Once activated, your account can claim and execute all City/Sync tasks."}
           </div>
         </div>
       )}
@@ -3289,7 +3293,7 @@ function ExploreTab({
                         key={instance.id}
                         task={instance}
                         isClaimed={myTaskIds.has(instance.id) || localClaimedTaskIdSet.has(instance.id)}
-                        locked={!isOnboarded && !instance.isOnboarding}
+                        locked={!isOnboarded && !instance.isOnboarding && !bypassesOnboardingForTask(instance)}
                         showClaimButton
                         claimDisabled={tutorialIsActive && instance.id === DEMO_LOCAL_ONBOARDING_TASK.id}
                         tutorialAllowClaim={
