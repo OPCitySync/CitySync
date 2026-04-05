@@ -15,9 +15,9 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  const isDemoRoute = pathname?.startsWith("/demo");
+  const hideScaffoldChrome = pathname?.startsWith("/demo") || pathname?.startsWith("/app");
 
-  if (isDemoRoute) {
+  if (hideScaffoldChrome) {
     return (
       <>
         <main className="relative min-h-screen">{children}</main>
