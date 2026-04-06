@@ -507,7 +507,9 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
 
           <aside className={styles.rightRail}>
             {isTourStarted && (
-              <div className={styles.tutorialCard}>
+              <div
+                className={`${styles.tutorialCard} ${tutorialStep === "box14" ? styles.tutorialCardHighlight : ""}`.trim()}
+              >
                 <p className={styles.cardLabel}>{tutorialContent.stepLabel}</p>
                 <h3>{tutorialContent.title}</h3>
                 <p className={styles.cardText} style={{ whiteSpace: "pre-line" }}>
@@ -520,7 +522,7 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
                     </button>
                   )}
                   {tutorialStep === "box14" && (
-                    <button type="button" onClick={continueFromStep10}>
+                    <button type="button" onClick={continueFromStep10} className={styles.tutorialContinueHighlight}>
                       Continue
                     </button>
                   )}
