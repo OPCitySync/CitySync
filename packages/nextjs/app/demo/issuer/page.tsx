@@ -768,8 +768,7 @@ export default function IssuerApp() {
     );
   }, [additionalReadingLinks, hideShellPanels, openInfoCards]);
   const exitIssuerTutorial = React.useCallback(() => {
-    const runTaskIds = readDemoTutorialRun()?.taskIds ?? [];
-    const { hiddenTaskIds, removedCatalogTaskIds } = cleanupDemoTutorialArtifacts({
+    const { taskIds, hiddenTaskIds, removedCatalogTaskIds } = cleanupDemoTutorialArtifacts({
       address,
       clearRun: true,
     });
@@ -783,10 +782,10 @@ export default function IssuerApp() {
       if (catalogModifyTaskId && removedSet.has(catalogModifyTaskId)) setCatalogModifyTaskId(null);
       if (issueTaskId && removedSet.has(issueTaskId)) setIssueTaskId(null);
     }
-    if (runTaskIds.length > 0) {
-      runTaskIds.forEach(taskId => dispatch({ type: "ISSUER_REMOVE_TASK", taskId }));
+    if (taskIds.length > 0) {
+      taskIds.forEach(taskId => dispatch({ type: "ISSUER_REMOVE_TASK", taskId }));
       if (address) {
-        void Promise.allSettled(runTaskIds.map(taskId => issuerSetTaskActive(taskId, false)));
+        void Promise.allSettled(taskIds.map(taskId => issuerSetTaskActive(taskId, false)));
       }
     }
     persistTutorialStep("dismissed");
@@ -902,7 +901,7 @@ export default function IssuerApp() {
         return;
       }
       if (type === "citysync:tutorial-reset") {
-        setTutorialStep("dismissed");
+        exitIssuerTutorial();
       }
     };
 
@@ -912,7 +911,7 @@ export default function IssuerApp() {
       window.removeEventListener("storage", handleStorage);
       window.removeEventListener("message", handleTutorialMessage);
     };
-  }, [address]);
+  }, [address, exitIssuerTutorial]);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;

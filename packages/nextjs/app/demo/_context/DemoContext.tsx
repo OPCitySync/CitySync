@@ -462,16 +462,20 @@ function reducer(state: DemoState, action: Action): DemoState {
     }
 
     case "ISSUER_REMOVE_TASK": {
-      const removedTask = state.issuer.tasks.find(t => t.id === action.taskId);
       return {
         ...state,
         availableTasks: state.availableTasks.filter(t => t.id !== action.taskId),
+        participant: {
+          ...state.participant,
+          claimedTaskIds: state.participant.claimedTaskIds.filter(id => id !== action.taskId),
+        },
         issuer: {
           ...state.issuer,
           tasks: state.issuer.tasks.filter(t => t.id !== action.taskId),
           totalTasksIssued: Math.max(0, state.issuer.totalTasksIssued - 1),
-          totalCreditsIssued: Math.max(0, state.issuer.totalCreditsIssued - (removedTask?.credits ?? 0)),
+          totalCreditsIssued: state.issuer.totalCreditsIssued,
         },
+        verifying: state.verifying?.taskId === action.taskId ? null : state.verifying,
       };
     }
 

@@ -24,6 +24,7 @@ import {
   cleanupDemoTutorialArtifacts,
   consumeDemoTutorialHandoff,
   ISSUER_TUTORIAL_STEP_STORAGE_KEY,
+  readDemoTutorialRun,
   SHARED_TUTORIAL_INTRO_TEXT,
   setDemoTutorialHandoff,
   startDemoTutorialRunForAddress,
@@ -452,7 +453,7 @@ const REDEEMER_LEARN_CARDS: Record<RedeemerLearnCardKey, LearnInfoCard> = {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 
 export default function RedeemerApp() {
-  const { state, setRole, redeemerAddOffer, redeemerUpdateOfferRate, dispatch } = useDemo();
+  const { state, setRole, redeemerAddOffer, redeemerUpdateOfferRate, issuerSetTaskActive, dispatch } = useDemo();
   const router = useRouter();
   const searchParams = useSearchParams();
   const hideShellPanels = searchParams?.get("embed") === "1";
@@ -485,6 +486,19 @@ export default function RedeemerApp() {
       // Ignore storage access failures.
     }
   }, []);
+  const exitTutorial = React.useCallback(() => {
+    const run = readDemoTutorialRun();
+    const { taskIds } = cleanupDemoTutorialArtifacts({ address, clearRun: true });
+    const cleanupTaskIds = taskIds.length > 0 ? taskIds : (run?.taskIds ?? []);
+    if (cleanupTaskIds.length > 0) {
+      cleanupTaskIds.forEach(taskId => dispatch({ type: "ISSUER_REMOVE_TASK", taskId }));
+      if (address) {
+        void Promise.allSettled(cleanupTaskIds.map(taskId => issuerSetTaskActive(taskId, false)));
+      }
+    }
+    persistTutorialStep("dismissed");
+    setTutorialStep("dismissed");
+  }, [address, dispatch, issuerSetTaskActive, persistTutorialStep]);
 
   React.useEffect(() => {
     if (typeof window === "undefined") return;
@@ -494,7 +508,7 @@ export default function RedeemerApp() {
       if (!payload || typeof payload !== "object") return;
       const type = (payload as { type?: string }).type;
       if (type === "citysync:tutorial-reset") {
-        setTutorialStep("dismissed");
+        exitTutorial();
         return;
       }
       if (type === "citysync:tutorial-force-step") {
@@ -506,7 +520,7 @@ export default function RedeemerApp() {
     };
     window.addEventListener("message", handleTutorialMessage);
     return () => window.removeEventListener("message", handleTutorialMessage);
-  }, []);
+  }, [exitTutorial]);
 
   const { redeemer, mces } = state;
   // Only require `address` — the smart-account client can lag behind by
@@ -555,11 +569,6 @@ export default function RedeemerApp() {
       setActiveTab("offerings");
     }
   }, [tutorialStep]);
-  const exitTutorial = React.useCallback(() => {
-    cleanupDemoTutorialArtifacts({ address, clearRun: true });
-    persistTutorialStep("dismissed");
-    setTutorialStep("dismissed");
-  }, [address, persistTutorialStep]);
   const rightPanel = <OnchainActivityPanel role="redeemer" accent={ACCENT} />;
   const additionalReadingLinks = React.useMemo(() => {
     const seen = new Set<string>();

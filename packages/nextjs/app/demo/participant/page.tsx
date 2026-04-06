@@ -36,6 +36,7 @@ import {
   getDemoTutorialHiddenTaskIds,
   getDemoTutorialOfferingIds,
   getDemoTutorialTaskIds,
+  readDemoTutorialRun,
   ISSUER_TUTORIAL_STEP_STORAGE_KEY,
   SHARED_TUTORIAL_INTRO_TEXT,
   setDemoTutorialHandoff,
@@ -4433,7 +4434,7 @@ function RedeemTab({
 // ═════════════════════════════════════════════════════════════════════════════
 
 export default function ParticipantPage() {
-  const { state, setRole } = useDemo();
+  const { state, setRole, dispatch, issuerSetTaskActive } = useDemo();
   const router = useRouter();
   const searchParams = useSearchParams();
   const hideShellPanels = searchParams?.get("embed") === "1";
@@ -4455,6 +4456,20 @@ export default function ParticipantPage() {
       // Ignore storage failures.
     }
   }, []);
+  const exitTutorial = React.useCallback(() => {
+    const run = readDemoTutorialRun();
+    const { taskIds, hiddenTaskIds } = cleanupDemoTutorialArtifacts({ address, clearRun: true });
+    const cleanupTaskIds = taskIds.length > 0 ? taskIds : (run?.taskIds ?? []);
+    if (hiddenTaskIds.length > 0) setHiddenTutorialTaskIds(hiddenTaskIds);
+    if (cleanupTaskIds.length > 0) {
+      cleanupTaskIds.forEach(taskId => dispatch({ type: "ISSUER_REMOVE_TASK", taskId }));
+      if (address) {
+        void Promise.allSettled(cleanupTaskIds.map(taskId => issuerSetTaskActive(taskId, false)));
+      }
+    }
+    persistTutorialStep("dismissed");
+    setTutorialStep("dismissed");
+  }, [address, dispatch, issuerSetTaskActive, persistTutorialStep]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -4464,7 +4479,7 @@ export default function ParticipantPage() {
       if (!payload || typeof payload !== "object") return;
       const type = (payload as { type?: string }).type;
       if (type === "citysync:tutorial-reset") {
-        setTutorialStep("dismissed");
+        exitTutorial();
         return;
       }
       if (type === "citysync:tutorial-force-step") {
@@ -4476,7 +4491,7 @@ export default function ParticipantPage() {
     };
     window.addEventListener("message", handleTutorialMessage);
     return () => window.removeEventListener("message", handleTutorialMessage);
-  }, []);
+  }, [exitTutorial]);
 
   useEffect(() => {
     if (!state.role) setRole("participant");
@@ -4518,13 +4533,6 @@ export default function ParticipantPage() {
     persistTutorialStep("intro");
     setTutorialStep("intro");
   }, [persistTutorialStep]);
-
-  const exitTutorial = React.useCallback(() => {
-    const { hiddenTaskIds } = cleanupDemoTutorialArtifacts({ address, clearRun: true });
-    if (hiddenTaskIds.length > 0) setHiddenTutorialTaskIds(hiddenTaskIds);
-    persistTutorialStep("dismissed");
-    setTutorialStep("dismissed");
-  }, [address, persistTutorialStep]);
 
   useEffect(() => {
     if (tutorialStep === "box10") {

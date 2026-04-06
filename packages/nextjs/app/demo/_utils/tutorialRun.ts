@@ -163,12 +163,12 @@ export const appendDemoTutorialHiddenTaskIds = (taskIds: string[]): string[] => 
 export const cleanupDemoTutorialArtifacts = (opts?: {
   address?: string | null;
   clearRun?: boolean;
-}): { hiddenTaskIds: string[]; removedCatalogTaskIds: string[] } => {
-  if (!isBrowser()) return { hiddenTaskIds: [], removedCatalogTaskIds: [] };
+}): { taskIds: string[]; hiddenTaskIds: string[]; removedCatalogTaskIds: string[] } => {
+  if (!isBrowser()) return { taskIds: [], hiddenTaskIds: [], removedCatalogTaskIds: [] };
   const run = readDemoTutorialRun();
   if (!run) {
     if (opts?.clearRun !== false) clearDemoTutorialRun();
-    return { hiddenTaskIds: getDemoTutorialHiddenTaskIds(), removedCatalogTaskIds: [] };
+    return { taskIds: [], hiddenTaskIds: getDemoTutorialHiddenTaskIds(), removedCatalogTaskIds: [] };
   }
 
   const hiddenTaskIds = appendDemoTutorialHiddenTaskIds(run.taskIds);
@@ -201,6 +201,7 @@ export const cleanupDemoTutorialArtifacts = (opts?: {
 
   if (opts?.clearRun !== false) clearDemoTutorialRun();
   return {
+    taskIds: Array.from(new Set(run.taskIds)),
     hiddenTaskIds,
     removedCatalogTaskIds: Array.from(new Set(removedCatalogTaskIds)),
   };
