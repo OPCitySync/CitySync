@@ -382,7 +382,7 @@ export default function DemoLandingPage() {
             grid-template-columns: 1fr;
           }
 
-          .economy-section {
+          .economy-cards-grid {
             display: none;
           }
         }
