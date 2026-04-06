@@ -343,7 +343,6 @@ export default function DemoLandingPage() {
           <div
             className="economy-cards-grid"
             style={{
-              display: "grid",
               gap: 14,
             }}
           >
@@ -374,6 +373,7 @@ export default function DemoLandingPage() {
         }
 
         .economy-cards-grid {
+          display: grid;
           grid-template-columns: repeat(4, minmax(0, 1fr));
         }
 
