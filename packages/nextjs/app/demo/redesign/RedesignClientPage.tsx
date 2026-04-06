@@ -189,8 +189,33 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
     participant: { cards: [], relatedLinks: [] },
     redeemer: { cards: [], relatedLinks: [] },
   });
+  const [isMobileShell, setIsMobileShell] = React.useState(false);
+  const [viewportReady, setViewportReady] = React.useState(false);
   const iframeRef = React.useRef<HTMLIFrameElement | null>(null);
-  const embedSrc = React.useMemo(() => `/demo/${initialEmbedRoleRef.current}?embed=1&skin=classic`, []);
+  const embedSrc = React.useMemo(
+    () => `/demo/${initialEmbedRoleRef.current}?embed=1&skin=classic${isMobileShell ? "&mobile-shell=1" : ""}`,
+    [isMobileShell],
+  );
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(max-width: 860px)");
+    const syncViewport = () => {
+      setIsMobileShell(mediaQuery.matches);
+      setViewportReady(true);
+    };
+
+    syncViewport();
+
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", syncViewport);
+      return () => mediaQuery.removeEventListener("change", syncViewport);
+    }
+
+    mediaQuery.addListener(syncViewport);
+    return () => mediaQuery.removeListener(syncViewport);
+  }, []);
 
   React.useEffect(() => {
     const requestedRole = searchParams?.get("role");
@@ -494,14 +519,16 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
 
           <div className={styles.deviceStage}>
             <div className={styles.embedFrame}>
-              <iframe
-                ref={iframeRef}
-                src={embedSrc}
-                title="AppShell Preview"
-                className={styles.embedIframe}
-                loading="lazy"
-                onLoad={() => postRoleToEmbed(activeRole)}
-              />
+              {viewportReady ? (
+                <iframe
+                  ref={iframeRef}
+                  src={embedSrc}
+                  title="AppShell Preview"
+                  className={styles.embedIframe}
+                  loading="lazy"
+                  onLoad={() => postRoleToEmbed(activeRole)}
+                />
+              ) : null}
             </div>
           </div>
 

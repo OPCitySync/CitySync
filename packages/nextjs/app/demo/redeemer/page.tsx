@@ -457,6 +457,7 @@ export default function RedeemerApp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hideShellPanels = searchParams?.get("embed") === "1";
+  const mobileEmbedShell = searchParams?.get("mobile-shell") === "1";
   const roleRouteSuffix = searchParams?.toString() ? `?${searchParams.toString()}` : "";
   const withCurrentQuery = React.useCallback((path: string) => `${path}${roleRouteSuffix}`, [roleRouteSuffix]);
   const { address } = useAccount({ type: "ModularAccountV2" });
@@ -1301,7 +1302,7 @@ export default function RedeemerApp() {
                 onDismiss={() => setToast(null)}
               />
             ) : null}
-            {hideShellPanels ? (
+            {mobileEmbedShell ? (
               <MobileLearnMoreSheet
                 keys={openInfoCards}
                 cards={REDEEMER_LEARN_CARDS}

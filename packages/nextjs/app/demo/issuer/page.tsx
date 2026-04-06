@@ -655,6 +655,7 @@ export default function IssuerApp() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hideShellPanels = searchParams?.get("embed") === "1";
+  const mobileEmbedShell = searchParams?.get("mobile-shell") === "1";
   const roleRouteSuffix = searchParams?.toString() ? `?${searchParams.toString()}` : "";
   const withCurrentQuery = React.useCallback((path: string) => `${path}${roleRouteSuffix}`, [roleRouteSuffix]);
   const {
@@ -1322,7 +1323,7 @@ export default function IssuerApp() {
                 onDismiss={() => setToast(null)}
               />
             ) : null}
-            {hideShellPanels ? (
+            {mobileEmbedShell ? (
               <MobileLearnMoreSheet
                 keys={openInfoCards}
                 cards={ISSUER_LEARN_CARDS}
