@@ -3324,6 +3324,7 @@ function ProposeTaskSheet({
   onTutorialSubmitIntent?: () => void;
 }) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
   const [title, setTitle] = useState("");
   const [estimatedTime, setEstimatedTime] = useState("");
   const [location, setLocation] = useState("");
@@ -3365,14 +3366,18 @@ function ProposeTaskSheet({
   }, [tutorialAutofill]);
 
   useEffect(() => {
-    if (!tutorialAutofill) return;
+    if (!tutorialAllowSubmit) return;
+    let frameId = 0;
     const timer = window.setTimeout(() => {
-      const area = scrollAreaRef.current;
-      if (!area) return;
-      area.scrollTo({ top: area.scrollHeight, behavior: "smooth" });
-    }, 100);
-    return () => window.clearTimeout(timer);
-  }, [tutorialAutofill]);
+      frameId = window.requestAnimationFrame(() => {
+        submitButtonRef.current?.scrollIntoView({ block: "end", behavior: "smooth" });
+      });
+    }, 180);
+    return () => {
+      window.clearTimeout(timer);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
+  }, [tutorialAllowSubmit]);
 
   const computedCredits = (() => {
     const rate = parseFloat(creditRate);
@@ -3440,7 +3445,6 @@ function ProposeTaskSheet({
       `}</style>
       <div
         onClick={e => e.stopPropagation()}
-        data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
         style={{
           ...DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
           zIndex: 221,
@@ -3624,6 +3628,7 @@ function ProposeTaskSheet({
           </div>
 
           <button
+            ref={submitButtonRef}
             data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
             onClick={handleSubmit}
             disabled={!canSubmit || wouldExceedCap}
