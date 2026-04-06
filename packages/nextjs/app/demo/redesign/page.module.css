@@ -411,6 +411,17 @@
   border: 1px solid rgba(255, 255, 255, 0.22);
 }
 
+.tutorialExitHighlight {
+  color: #15151e;
+  background: linear-gradient(135deg, #f0a630, #dd8d13);
+  border: 1px solid rgba(255, 226, 162, 0.72);
+  box-shadow:
+    0 8px 18px rgba(221, 142, 23, 0.28),
+    0 0 0 1px rgba(255, 226, 162, 0.34),
+    0 0 20px rgba(221, 158, 51, 0.34);
+  animation: tutorialContinuePulse 1.35s ease-in-out infinite;
+}
+
 .tutorialActions button:hover {
   transform: translateY(-1px);
 }

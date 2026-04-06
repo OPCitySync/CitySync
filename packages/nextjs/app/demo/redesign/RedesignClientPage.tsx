@@ -526,7 +526,11 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
                       Continue
                     </button>
                   )}
-                  <button type="button" className={styles.secondaryAction} onClick={resetTutorial}>
+                  <button
+                    type="button"
+                    className={`${styles.secondaryAction} ${tutorialStep === "box26" ? styles.tutorialExitHighlight : ""}`.trim()}
+                    onClick={resetTutorial}
+                  >
                     Exit Tutorial
                   </button>
                 </div>
