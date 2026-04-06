@@ -750,6 +750,10 @@
         position: relative;
       }
 
+      details.mobile-nav[open] {
+        z-index: 160;
+      }
+
       .mobile-summary {
         list-style: none;
         cursor: pointer;
@@ -764,13 +768,17 @@
       .mobile-summary::-webkit-details-marker { display: none; }
 
       .mobile-menu {
-        margin-top: 8px;
+        position: absolute;
+        top: calc(100% + 10px);
+        right: 0;
+        width: min(260px, 78vw);
         border: 1px solid rgba(33, 50, 56, 0.14);
         border-radius: 14px;
         background: white;
         box-shadow: var(--shadow-md);
         padding: 10px;
         display: grid;
+        gap: 4px;
       }
 
       .mobile-menu a {
@@ -782,6 +790,15 @@
       .mobile-menu a:hover {
         background: var(--bg-soft);
         color: var(--accent);
+      }
+
+      .hero-image-stack,
+      .purpose-media,
+      .problem-media,
+      .solution-media,
+      .pilot-media,
+      .vision-media {
+        display: none;
       }
 
     }
@@ -878,7 +895,7 @@
               <li><span class="dot"></span><span>Enable transferable frameworks that can replicate across cities and service domains.</span></li>
             </ul>
           </div>
-          <div class="glass-card">
+          <div class="glass-card purpose-media">
             <img src="assets/pitch/image-3b.png" alt="Purpose context for integrating civic capacity into public systems" style="border-radius: 14px;" />
           </div>
         </div>
@@ -1087,6 +1104,30 @@
     </footer>
   </div>
   <script>
+    (function () {
+      const mobileNav = document.querySelector('details.mobile-nav');
+      if (!mobileNav) return;
+
+      const menuLinks = mobileNav.querySelectorAll('.mobile-menu a');
+      menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          mobileNav.removeAttribute('open');
+        });
+      });
+
+      document.addEventListener('click', event => {
+        if (!mobileNav.open) return;
+        if (mobileNav.contains(event.target)) return;
+        mobileNav.removeAttribute('open');
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          mobileNav.removeAttribute('open');
+        }
+      });
+    })();
+
     // Hero canvas: floating civic node network (brand blue + brand gold)
     (function () {
       const canvas = document.getElementById('pitch-hero-canvas');
