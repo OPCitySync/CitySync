@@ -3445,6 +3445,8 @@ function ProposeTaskSheet({
       `}</style>
       <div
         onClick={e => e.stopPropagation()}
+        data-tutorial-allow={tutorialAllowSubmit ? "true" : undefined}
+        data-tutorial-silent={tutorialAllowSubmit ? "true" : undefined}
         style={{
           ...DEMO_CONTENT_SHEET_ABSOLUTE_ELEVATED_STYLE,
           zIndex: 221,

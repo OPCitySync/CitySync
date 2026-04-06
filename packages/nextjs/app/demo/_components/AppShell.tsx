@@ -397,6 +397,11 @@ export default function AppShell({
             outline: 2px solid rgba(255,226,162,0.9) !important;
             animation: tutorialAllowedPulse 1.55s ease-in-out infinite !important;
           }
+          .citysync-tutorial-lock-scope [data-tutorial-allow="true"][data-tutorial-silent="true"] {
+            outline: none !important;
+            box-shadow: none !important;
+            animation: none !important;
+          }
           .citysync-tutorial-lock-scope [data-tutorial-wallet-target="true"] {
             z-index: 180 !important;
             outline: 3px solid rgba(255,242,205,0.98) !important;
