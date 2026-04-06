@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import AppShell from "../_components/AppShell";
 import DemoToast from "../_components/DemoToast";
-import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
+import { LearnInfoCard, LearnMoreLink, LearnMorePanel, MobileLearnMoreSheet } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import { RailInfoPlaceholderCard, TutorialWalkthroughButton } from "../_components/RailCards";
 import { useDemo } from "../_context/DemoContext";
@@ -1289,17 +1289,28 @@ export default function RedeemerApp() {
         phoneFrame
         tutorialLocked={tutorialLockActive}
         overlay={
-          toast ? (
-            <DemoToast
-              message={toast}
-              accentColor={ACCENT}
-              borderColor={BORDER}
-              strongTextColor={TEXT_STRONG}
-              dimTextColor={TEXT_DIMMED}
-              shadow={SHADOW}
-              onDismiss={() => setToast(null)}
-            />
-          ) : null
+          <>
+            {toast ? (
+              <DemoToast
+                message={toast}
+                accentColor={ACCENT}
+                borderColor={BORDER}
+                strongTextColor={TEXT_STRONG}
+                dimTextColor={TEXT_DIMMED}
+                shadow={SHADOW}
+                onDismiss={() => setToast(null)}
+              />
+            ) : null}
+            {hideShellPanels ? (
+              <MobileLearnMoreSheet
+                keys={openInfoCards}
+                cards={REDEEMER_LEARN_CARDS}
+                onClose={closeLearnMore}
+                onCloseAll={clearLearnMore}
+                accent={ACCENT}
+              />
+            ) : null}
+          </>
         }
       >
         {activeTab === "profile" && (

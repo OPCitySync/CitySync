@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { BOTTOM_NAV_OFFSET_CSS } from "../_utils/sheetStyles";
 
 export type LearnInfoCard = {
   title: string;
@@ -149,6 +150,245 @@ export function LearnMorePanel<TKey extends string>({
           </div>
         );
       })}
+    </>
+  );
+}
+
+export function MobileLearnMoreSheet<TKey extends string>({
+  keys,
+  cards,
+  onClose,
+  onCloseAll,
+  accent,
+}: {
+  keys: TKey[];
+  cards: Record<TKey, LearnInfoCard>;
+  onClose: (key: TKey) => void;
+  onCloseAll: () => void;
+  accent: string;
+}) {
+  if (keys.length === 0) return null;
+
+  return (
+    <>
+      <style>{`
+        @keyframes citysyncLearnMoreSheetUp {
+          from { opacity: 0; transform: translateY(18px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (min-width: 861px) {
+          .citysync-mobile-learn-more-root {
+            display: none !important;
+          }
+        }
+      `}</style>
+      <div
+        className="citysync-mobile-learn-more-root"
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 48,
+          pointerEvents: "none",
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Close information panel"
+          onClick={onCloseAll}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: BOTTOM_NAV_OFFSET_CSS,
+            background: "rgba(13,13,20,0.42)",
+            border: "none",
+            padding: 0,
+            margin: 0,
+            cursor: "pointer",
+            pointerEvents: "auto",
+          }}
+        />
+
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Learn more information"
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: BOTTOM_NAV_OFFSET_CSS,
+            maxHeight: "min(68%, 560px)",
+            overflowY: "auto",
+            background: "rgba(255,255,255,0.98)",
+            borderTop: "1px solid rgba(31,45,86,0.14)",
+            borderRadius: "18px 18px 0 0",
+            boxShadow: "0 -10px 30px rgba(0,0,0,0.24)",
+            animation: "citysyncLearnMoreSheetUp 0.24s cubic-bezier(0.32, 0.72, 0, 1) both",
+            pointerEvents: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "center", padding: "12px 0 8px" }}>
+            <div
+              style={{
+                width: 34,
+                height: 4,
+                borderRadius: 999,
+                background: "rgba(27,45,95,0.18)",
+              }}
+            />
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              padding: "0 18px 14px",
+              borderBottom: "1px solid rgba(31,45,86,0.08)",
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "rgba(27,45,95,0.46)",
+                }}
+              >
+                Information
+              </div>
+              <div
+                style={{
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: "#1b2e63",
+                  marginTop: 3,
+                }}
+              >
+                Learn More
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={onCloseAll}
+              style={{
+                border: "1px solid rgba(31,45,86,0.14)",
+                borderRadius: 999,
+                background: "rgba(246,249,255,0.95)",
+                color: "#1b2e63",
+                fontSize: 12,
+                fontWeight: 700,
+                padding: "7px 12px",
+                cursor: "pointer",
+              }}
+            >
+              Done
+            </button>
+          </div>
+
+          <div style={{ padding: "14px 14px calc(16px + env(safe-area-inset-bottom, 0px))" }}>
+            {keys.map(key => {
+              const info = cards[key];
+              if (!info) return null;
+
+              return (
+                <div
+                  key={key}
+                  style={{
+                    background: "rgba(255,255,255,0.98)",
+                    border: "1px solid rgba(31,45,86,0.12)",
+                    borderRadius: 16,
+                    padding: 16,
+                    marginBottom: 12,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "start", justifyContent: "space-between", gap: 8 }}>
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 700,
+                          color: "#1b2e63",
+                          marginBottom: 4,
+                        }}
+                      >
+                        {info.title}
+                      </div>
+                      <div style={{ fontSize: 11, color: accent, fontWeight: 600, marginBottom: 8 }}>
+                        {info.subtitle}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onClose(key)}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: "rgba(27,45,95,0.5)",
+                        cursor: "pointer",
+                        fontSize: 16,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div style={{ fontSize: 12, color: "rgba(27,45,95,0.72)", lineHeight: 1.6 }}>{info.body}</div>
+                  {info.relatedLinks && info.relatedLinks.length > 0 ? (
+                    <div style={{ marginTop: 12 }}>
+                      <div
+                        style={{
+                          fontSize: 10,
+                          fontWeight: 700,
+                          letterSpacing: "0.08em",
+                          textTransform: "uppercase",
+                          color: "rgba(27,45,95,0.5)",
+                          marginBottom: 8,
+                        }}
+                      >
+                        Related Pages
+                      </div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                        {info.relatedLinks.map(link => (
+                          <a
+                            key={`${key}-${link.href}`}
+                            href={link.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              textDecoration: "none",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: "rgba(27,45,95,0.92)",
+                              background: "rgba(246,249,255,0.95)",
+                              border: "1px solid rgba(31,45,86,0.16)",
+                              borderRadius: 9,
+                              padding: "6px 8px",
+                            }}
+                          >
+                            <span>{link.label}</span>
+                            <span style={{ color: "rgba(27,45,95,0.5)", fontSize: 10 }}>↗</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
     </>
   );
 }

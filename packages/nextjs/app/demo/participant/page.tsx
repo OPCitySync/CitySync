@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
-import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
+import { LearnInfoCard, LearnMoreLink, LearnMorePanel, MobileLearnMoreSheet } from "../_components/LearnMore";
 import { NavTab } from "../_components/BottomNav";
 import DemoToast from "../_components/DemoToast";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
@@ -4857,17 +4857,28 @@ export default function ParticipantPage() {
         tutorialHighlightWalletButton={tutorialStep === "box23"}
         tutorialHighlightWalletCloseButton={tutorialStep === "box23" && tutorialWalletOpened}
         overlay={
-          toast ? (
-            <DemoToast
-              message={toast}
-              accentColor={TEAL}
-              borderColor={BORDER}
-              strongTextColor={TEXT_STRONG}
-              dimTextColor={DIMMED}
-              shadow={SHADOW}
-              onDismiss={() => setToast(null)}
-            />
-          ) : null
+          <>
+            {toast ? (
+              <DemoToast
+                message={toast}
+                accentColor={TEAL}
+                borderColor={BORDER}
+                strongTextColor={TEXT_STRONG}
+                dimTextColor={DIMMED}
+                shadow={SHADOW}
+                onDismiss={() => setToast(null)}
+              />
+            ) : null}
+            {hideShellPanels ? (
+              <MobileLearnMoreSheet
+                keys={openInfoCards}
+                cards={PARTICIPANT_LEARN_CARDS}
+                onClose={closeLearnMore}
+                onCloseAll={clearLearnMore}
+                accent={ACCENT}
+              />
+            ) : null}
+          </>
         }
         onWalletOpen={() => {
           if (tutorialStep === "box23") setTutorialWalletOpened(true);

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { formatUnits } from "viem";
 import AppShell from "../_components/AppShell";
 import DemoToast from "../_components/DemoToast";
-import { LearnInfoCard, LearnMoreLink, LearnMorePanel } from "../_components/LearnMore";
+import { LearnInfoCard, LearnMoreLink, LearnMorePanel, MobileLearnMoreSheet } from "../_components/LearnMore";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import { RailInfoPlaceholderCard, TutorialWalkthroughButton } from "../_components/RailCards";
 import { baseSepoliaPublicClient } from "../_config/baseSepoliaClient";
@@ -1310,17 +1310,28 @@ export default function IssuerApp() {
         tutorialAllowedTabs={tutorialStep === "box3" ? ["tasks"] : []}
         tutorialHighlightRoleSwitcher={tutorialStep === "box1"}
         overlay={
-          toast ? (
-            <DemoToast
-              message={toast}
-              accentColor={ACCENT}
-              borderColor={BORDER}
-              strongTextColor={TEXT_STRONG}
-              dimTextColor={TEXT_DIMMED}
-              shadow={SHADOW}
-              onDismiss={() => setToast(null)}
-            />
-          ) : null
+          <>
+            {toast ? (
+              <DemoToast
+                message={toast}
+                accentColor={ACCENT}
+                borderColor={BORDER}
+                strongTextColor={TEXT_STRONG}
+                dimTextColor={TEXT_DIMMED}
+                shadow={SHADOW}
+                onDismiss={() => setToast(null)}
+              />
+            ) : null}
+            {hideShellPanels ? (
+              <MobileLearnMoreSheet
+                keys={openInfoCards}
+                cards={ISSUER_LEARN_CARDS}
+                onClose={closeLearnMore}
+                onCloseAll={clearLearnMore}
+                accent={ACCENT}
+              />
+            ) : null}
+          </>
         }
         onTutorialRoleSwitcherCancel={() => {
           if (tutorialStep === "box1") {
