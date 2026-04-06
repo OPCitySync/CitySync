@@ -882,14 +882,58 @@
   }
 }
 
-@media (max-width: 640px) {
-  .main {
-    width: 96vw;
+@media (max-width: 860px) {
+  .topNavInner {
+    width: min(100%, 94vw);
+    min-height: 64px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 0.35rem 0;
   }
 
   .topActions {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+    justify-content: flex-end;
+  }
+
+  .primaryBtn {
+    padding: 0.55rem 0.82rem;
+    font-size: 0.74rem;
+    white-space: nowrap;
+  }
+
+  .main {
+    width: 100vw;
+    padding: 0.75rem 0 0;
+  }
+
+  .hero,
+  .leftRail,
+  .rightRail,
+  .embedCaption {
+    display: none;
+  }
+
+  .workspace {
+    display: block;
+  }
+
+  .deviceStage {
+    gap: 0;
+    padding-top: 0;
+  }
+
+  .embedFrame {
+    max-width: 100%;
+    min-height: calc(100dvh - 84px);
+    height: calc(100dvh - 84px);
+  }
+}
+
+@media (max-width: 640px) {
+  .topActions {
+    width: auto;
+    justify-content: flex-end;
   }
 
   .deviceTabBar {
@@ -903,7 +947,7 @@
 
   .embedFrame {
     max-width: 100%;
-    min-height: 620px;
-    height: 72vh;
+    min-height: calc(100dvh - 84px);
+    height: calc(100dvh - 84px);
   }
 }
