@@ -615,6 +615,12 @@ export default function AppShell({
                 : undefined,
               opacity: walletAllowed ? 1 : 0.55,
               transformOrigin: "center",
+              position: tutorialHighlightWalletButton ? "relative" : undefined,
+              zIndex: tutorialHighlightWalletButton ? 180 : undefined,
+              filter: tutorialHighlightWalletButton ? "saturate(1.2) brightness(1.08)" : undefined,
+              animation: tutorialHighlightWalletButton
+                ? "tutorialWalletBeacon 1.1s cubic-bezier(0.34, 1.56, 0.64, 1) infinite"
+                : undefined,
             }}
             aria-label="Wallet"
             disabled={!walletAllowed}
