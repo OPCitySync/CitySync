@@ -205,9 +205,9 @@ export default function DemoLandingPage() {
         </p>
 
         <div
+          className="role-grid"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
             gap: 16,
           }}
         >
@@ -311,6 +311,7 @@ export default function DemoLandingPage() {
       </section>
 
       <section
+        className="economy-section"
         style={{
           padding: "68px 24px 76px",
           background: "#111120",
@@ -340,9 +341,9 @@ export default function DemoLandingPage() {
           </div>
 
           <div
+            className="economy-cards-grid"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
               gap: 14,
             }}
           >
@@ -366,6 +367,26 @@ export default function DemoLandingPage() {
           </div>
         </div>
       </section>
+
+      <style jsx>{`
+        .role-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .economy-cards-grid {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        @media (max-width: 860px) {
+          .role-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .economy-section {
+            display: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
