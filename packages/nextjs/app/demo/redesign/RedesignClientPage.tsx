@@ -482,6 +482,13 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
 
         <section className={styles.workspace}>
           <aside className={styles.leftRail}>
+            <div className={`${styles.panelCard} ${styles.activityNoteCard}`}>
+              <p className={styles.cardLabel}>Demo Note</p>
+              <p className={styles.cardText}>
+                All onchain activity presented in this demo is for the purpose of highlighting the underlying
+                architecture. In the Pilot, all chain activity will be abstracted away from the user.
+              </p>
+            </div>
             <OnchainActivityPanel role={activeRole} accent={roleAccentByKey[activeRole]} />
           </aside>
 

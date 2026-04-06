@@ -320,6 +320,22 @@
   padding: 0.85rem;
 }
 
+.activityNoteCard {
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(31, 50, 97, 0.1);
+  padding: 0.72rem 0.8rem;
+}
+
+.activityNoteCard .cardLabel {
+  margin-bottom: 0.2rem;
+}
+
+.activityNoteCard .cardText {
+  margin-top: 0.2rem;
+  font-size: 0.79rem;
+  line-height: 1.5;
+}
+
 .issuanceCard h3,
 .tutorialCard h3,
 .panelCard h3 {
