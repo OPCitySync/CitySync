@@ -884,15 +884,20 @@
 
 @media (max-width: 860px) {
   .topNavInner {
-    width: min(100%, 94vw);
-    min-height: 64px;
+    width: min(100%, 96vw);
+    min-height: 52px;
     flex-wrap: nowrap;
     justify-content: space-between;
-    padding: 0.35rem 0;
+    padding: 0.2rem 0;
   }
 
   .topActions {
     display: none;
+  }
+
+  .wordmark {
+    width: 152px;
+    height: auto;
   }
 
   .primaryBtn {
@@ -923,9 +928,10 @@
   }
 
   .embedFrame {
+    width: 100vw;
     max-width: 100%;
-    min-height: calc(100dvh - 84px);
-    height: calc(100dvh - 84px);
+    min-height: calc(100dvh - 52px);
+    height: calc(100dvh - 52px);
   }
 }
 
@@ -944,8 +950,9 @@
   }
 
   .embedFrame {
+    width: 100vw;
     max-width: 100%;
-    min-height: calc(100dvh - 84px);
-    height: calc(100dvh - 84px);
+    min-height: calc(100dvh - 52px);
+    height: calc(100dvh - 52px);
   }
 }

@@ -930,8 +930,8 @@ export default function AppShell({
                 radial-gradient(ellipse 500px 400px at 80% 70%, rgba(52,238,182,0.08), transparent 65%),
                 #08080f
               `,
-          height: embedMode ? "100vh" : undefined,
-          padding: embedMode ? "8px 0" : undefined,
+          height: embedMode ? "100dvh" : undefined,
+          padding: embedMode ? "0" : undefined,
           boxSizing: embedMode ? "border-box" : undefined,
           overflow: embedMode ? "hidden" : undefined,
           fontFamily: "system-ui, -apple-system, sans-serif",
