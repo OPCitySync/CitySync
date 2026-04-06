@@ -1310,6 +1310,19 @@ export default function IssuerApp() {
         tutorialLocked={tutorialLockActive}
         tutorialAllowedTabs={tutorialStep === "box3" ? ["tasks"] : []}
         tutorialHighlightRoleSwitcher={tutorialStep === "box1"}
+        overlay={
+          toast ? (
+            <DemoToast
+              message={toast}
+              accentColor={ACCENT}
+              borderColor={BORDER}
+              strongTextColor={TEXT_STRONG}
+              dimTextColor={TEXT_DIMMED}
+              shadow={SHADOW}
+              onDismiss={() => setToast(null)}
+            />
+          ) : null
+        }
         onTutorialRoleSwitcherCancel={() => {
           if (tutorialStep === "box1") {
             setTutorialStep("box2");
@@ -1503,18 +1516,6 @@ export default function IssuerApp() {
           />
         )}
       </AppShell>
-
-      {toast && (
-        <DemoToast
-          message={toast}
-          accentColor={ACCENT}
-          borderColor={BORDER}
-          strongTextColor={TEXT_STRONG}
-          dimTextColor={TEXT_DIMMED}
-          shadow={SHADOW}
-          onDismiss={() => setToast(null)}
-        />
-      )}
     </>
   );
 }

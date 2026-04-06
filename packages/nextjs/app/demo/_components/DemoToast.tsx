@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { BOTTOM_NAV_OFFSET_CSS } from "../_utils/sheetStyles";
 
 type DemoToastProps = {
   message: string;
@@ -41,48 +42,60 @@ export default function DemoToast({
       `}</style>
       <div
         style={{
-          position: "fixed",
-          bottom: 28,
-          right: 24,
-          animation: "citysyncToastUp 0.2s cubic-bezier(0.34,1.36,0.64,1) both",
-          background: "var(--cs-surface, rgba(20,22,32,0.97))",
-          border: `1px solid ${borderColor}`,
-          borderLeft: `3px solid ${accentBorder}`,
-          borderRadius: 10,
-          padding: "10px 12px 10px 13px",
-          fontSize: 13,
-          fontWeight: 500,
-          zIndex: 400,
-          boxShadow: shadow,
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 9,
-          backdropFilter: "blur(14px)",
-          WebkitBackdropFilter: "blur(14px)",
-          maxWidth: 300,
-          minWidth: 180,
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: `calc(${BOTTOM_NAV_OFFSET_CSS} + 12px)`,
+          padding: "0 14px",
+          zIndex: 46,
+          pointerEvents: "none",
         }}
       >
-        <span style={{ fontSize: 13, color: iconColor, flexShrink: 0, marginTop: 1 }}>
-          {isError ? "✕" : isInfo ? "⋯" : "✓"}
-        </span>
-        <span style={{ color: strongTextColor, lineHeight: 1.45, flex: 1 }}>{message}</span>
-        <button
-          onClick={onDismiss}
+        <div
           style={{
-            background: "none",
-            border: "none",
-            color: dimTextColor,
-            cursor: "pointer",
-            fontSize: 15,
-            padding: 0,
-            flexShrink: 0,
-            lineHeight: 1,
+            animation: "citysyncToastUp 0.2s cubic-bezier(0.34,1.36,0.64,1) both",
+            background: isError ? "rgba(255,107,157,0.08)" : isInfo ? "rgba(65,105,225,0.08)" : "rgba(52,238,182,0.08)",
+            border: `1px solid ${borderColor}`,
+            borderRadius: 12,
+            padding: "12px 14px",
+            fontSize: 13,
+            zIndex: 400,
+            boxShadow: `inset 0 0 0 1px ${accentBorder}, ${shadow}`,
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 10,
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            width: "100%",
+            pointerEvents: "auto",
           }}
-          aria-label="Dismiss"
         >
-          ×
-        </button>
+          <span style={{ fontSize: 13, color: iconColor, flexShrink: 0, marginTop: 18 }}>
+            {isError ? "✕" : isInfo ? "⋯" : "✓"}
+          </span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 11, color: dimTextColor, marginBottom: 6 }}>
+              {isError ? "Action Notice" : isInfo ? "Syncing Status" : "In-App Message"}
+            </div>
+            <div style={{ color: strongTextColor, lineHeight: 1.45, fontWeight: 700 }}>{message}</div>
+          </div>
+          <button
+            onClick={onDismiss}
+            style={{
+              background: "none",
+              border: "none",
+              color: dimTextColor,
+              cursor: "pointer",
+              fontSize: 15,
+              padding: 0,
+              flexShrink: 0,
+              lineHeight: 1,
+            }}
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
       </div>
     </>
   );

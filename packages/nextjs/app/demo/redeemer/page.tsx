@@ -1279,6 +1279,19 @@ export default function RedeemerApp() {
         showRightPanel={!hideShellPanels}
         phoneFrame
         tutorialLocked={tutorialLockActive}
+        overlay={
+          toast ? (
+            <DemoToast
+              message={toast}
+              accentColor={ACCENT}
+              borderColor={BORDER}
+              strongTextColor={TEXT_STRONG}
+              dimTextColor={TEXT_DIMMED}
+              shadow={SHADOW}
+              onDismiss={() => setToast(null)}
+            />
+          ) : null
+        }
       >
         {activeTab === "profile" && (
           <ProfileTab
@@ -1420,18 +1433,6 @@ export default function RedeemerApp() {
           />
         )}
       </AppShell>
-
-      {toast && (
-        <DemoToast
-          message={toast}
-          accentColor={ACCENT}
-          borderColor={BORDER}
-          strongTextColor={TEXT_STRONG}
-          dimTextColor={TEXT_DIMMED}
-          shadow={SHADOW}
-          onDismiss={() => setToast(null)}
-        />
-      )}
     </>
   );
 }

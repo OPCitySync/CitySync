@@ -2153,11 +2153,13 @@ function ExploreTab({
   tutorialStep,
   onTutorialStepChange,
   hiddenTaskIds,
+  onToast,
 }: {
   onLearnMore: (selection: ParticipantLearnMoreSelection) => void;
   tutorialStep: IssuerTutorialStep;
   onTutorialStepChange: (step: IssuerTutorialStep) => void;
   hiddenTaskIds: string[];
+  onToast: (message: string | null) => void;
 }) {
   type OnchainTask = Task & {
     claimedBy?: `0x${string}`;
@@ -2175,7 +2177,6 @@ function ExploreTab({
   const [view, setView] = useState<"browse" | "claimed">("browse");
   const [catFilter, setCatFilter] = useState<TaskCategory | "All">("All");
   const [executeTask, setExecuteTask] = useState<Task | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
   const [onchainTasks, setOnchainTasks] = useState<OnchainTask[]>([]);
   const [search, setSearch] = useState("");
   const [pendingVerificationIds, setPendingVerificationIds] = useState<string[]>([]);
@@ -2840,7 +2841,7 @@ function ExploreTab({
     setUnclaimConfirmTask(null);
     if (task.id === DEMO_LOCAL_ONBOARDING_TASK.id) {
       setLocalOnboardingClaimed(false);
-      setToast("Task returned to Open Tasks");
+      onToast("Task returned to Open Tasks");
       return;
     }
     setTaskWriteStatus({ state: "pending", label: "Unclaim" });
@@ -2856,7 +2857,7 @@ function ExploreTab({
       setTaskWriteStatus({ state: "confirmed", hash: result.hash, label: "Unclaim" });
     } else {
       if ((result.error ?? "").toLowerCase().includes("pending/verified")) {
-        setToast("Cannot unclaim after submission. Await issuer verify/invalidate.");
+        onToast("Cannot unclaim after submission. Await issuer verify/invalidate.");
       } else {
         setTaskWriteStatus({ state: "failed", error: "Unclaim failed", label: "Unclaim" });
       }
@@ -2876,7 +2877,7 @@ function ExploreTab({
         return next;
       });
       setIsOnboarded(true);
-      setToast("Now that you are onboarded your account can now interact with all City/Sync contracts.");
+      onToast("Now that you are onboarded your account can now interact with all City/Sync contracts.");
       return;
     }
     if (tutorialStep === "box13") {
@@ -3355,17 +3356,6 @@ function ExploreTab({
           task={unclaimConfirmTask}
           onConfirm={() => handleUnclaimConfirmed(unclaimConfirmTask)}
           onCancel={() => setUnclaimConfirmTask(null)}
-        />
-      )}
-      {toast && (
-        <DemoToast
-          message={toast}
-          accentColor={TEAL}
-          borderColor={BORDER}
-          strongTextColor={TEXT_STRONG}
-          dimTextColor={DIMMED}
-          shadow={SHADOW}
-          onDismiss={() => setToast(null)}
         />
       )}
     </div>
@@ -4451,6 +4441,7 @@ export default function ParticipantPage() {
   const withCurrentQuery = React.useCallback((path: string) => `${path}${roleRouteSuffix}`, [roleRouteSuffix]);
   const { address } = useAccount({ type: "ModularAccountV2" });
   const [activeTab, setActiveTab] = useState("profile");
+  const [toast, setToast] = useState<string | null>(null);
   const { openInfoCards, openLearnMore, closeLearnMore, clearLearnMore } =
     useLearnMoreCards<ParticipantLearnCardKey>(activeTab);
   const [tutorialStep, setTutorialStep] = useState<IssuerTutorialStep>(() => readIssuerTutorialStepFromStorage());
@@ -4857,6 +4848,19 @@ export default function ParticipantPage() {
         tutorialLocked={tutorialLockActive}
         tutorialHighlightWalletButton={tutorialStep === "box23"}
         tutorialHighlightWalletCloseButton={tutorialStep === "box23" && tutorialWalletOpened}
+        overlay={
+          toast ? (
+            <DemoToast
+              message={toast}
+              accentColor={TEAL}
+              borderColor={BORDER}
+              strongTextColor={TEXT_STRONG}
+              dimTextColor={DIMMED}
+              shadow={SHADOW}
+              onDismiss={() => setToast(null)}
+            />
+          ) : null
+        }
         onWalletOpen={() => {
           if (tutorialStep === "box23") setTutorialWalletOpened(true);
         }}
@@ -4874,6 +4878,7 @@ export default function ParticipantPage() {
             tutorialStep={tutorialStep}
             onTutorialStepChange={setTutorialStep}
             hiddenTaskIds={hiddenTutorialTaskIds}
+            onToast={setToast}
           />
         )}
         {activeTab === "community" && <CommunityTab onLearnMore={openLearnMore} />}

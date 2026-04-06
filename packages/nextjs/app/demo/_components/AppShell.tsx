@@ -55,6 +55,7 @@ interface AppShellProps {
   accentColor: string;
   title: string;
   children: React.ReactNode;
+  overlay?: React.ReactNode;
   leftPanel?: React.ReactNode;
   rightPanel?: React.ReactNode;
   /** When true, renders a phone device bezel around the app */
@@ -203,6 +204,7 @@ export default function AppShell({
   accentColor,
   title: _title,
   children,
+  overlay,
   leftPanel,
   rightPanel,
   phoneFrame = false,
@@ -655,6 +657,8 @@ export default function AppShell({
         locked={tutorialLocked}
         allowedWhenLocked={tutorialAllowedTabs}
       />
+
+      {overlay}
 
       {phoneFrame && <HomeIndicator accentColor={redesignSkin ? "#ffffff" : accentColor} />}
 
