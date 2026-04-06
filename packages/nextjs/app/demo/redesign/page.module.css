@@ -892,8 +892,7 @@
   }
 
   .topActions {
-    width: auto;
-    justify-content: flex-end;
+    display: none;
   }
 
   .primaryBtn {
@@ -932,8 +931,7 @@
 
 @media (max-width: 640px) {
   .topActions {
-    width: auto;
-    justify-content: flex-end;
+    display: none;
   }
 
   .deviceTabBar {
