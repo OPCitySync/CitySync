@@ -46,7 +46,7 @@ citysync/
 │           └── demo/         # Demo contracts (MCE system, identity registries)
 └── docs/
     ├── SESSION.md            # Development session log
-    ├── brand/                # Brand assets and style guide
+    ├── brand/                # Brand assets
     └── references/           # Research essays and source material
 ```
 
