@@ -29,11 +29,21 @@
   display: flex;
   align-items: center;
   gap: 0.85rem;
+  min-width: 0;
+}
+
+.brandWrap a {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
 }
 
 .wordmark {
-  width: auto;
-  height: auto;
+  display: block;
+  width: 146px;
+  height: 43px;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 .prototypeBadge {
@@ -896,8 +906,8 @@
   }
 
   .wordmark {
-    width: 136px;
-    height: auto;
+    width: 122px;
+    height: 36px;
   }
 
   .primaryBtn {

@@ -455,8 +455,8 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
               <Image
                 src="/brand/citysync-wordmark-light.svg"
                 alt="City/Sync"
-                width={168}
-                height={49}
+                width={146}
+                height={43}
                 className={styles.wordmark}
               />
             </a>
