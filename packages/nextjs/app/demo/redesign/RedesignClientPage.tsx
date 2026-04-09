@@ -453,10 +453,10 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
           <div className={styles.brandWrap}>
             <a href="https://www.city-sync.org" aria-label="Go to city-sync.org">
               <Image
-                src="/citysync-wordmark-frame3.png"
+                src="/brand/citysync-wordmark-light.svg"
                 alt="City/Sync"
                 width={192}
-                height={44}
+                height={56}
                 className={styles.wordmark}
               />
             </a>

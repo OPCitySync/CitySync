@@ -30,10 +30,10 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
           aria-label="Go to city-sync.org"
         >
           <Image
-            src="/citysync-wordmark-frame3.png"
+            src="/brand/citysync-wordmark-light.svg"
             alt="City/Sync"
             width={240}
-            height={64}
+            height={70}
             style={{ width: "min(240px, 72vw)", height: "auto" }}
             priority
           />
