@@ -139,7 +139,7 @@ export default function DemoLandingPage() {
           style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 12 }}
           aria-label="Go to city-sync.org"
         >
-          <Image src="/brand/citysync-wordmark-light.svg" alt="City/Sync" width={170} height={50} priority />
+          <Image src="/brand/citysync-wordmark-light.svg" alt="City/Sync" width={150} height={44} priority />
         </a>
 
         <button

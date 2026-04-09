@@ -32,9 +32,9 @@ export function LoginScreen({ onGuest }: { onGuest?: () => void }) {
           <Image
             src="/brand/citysync-wordmark-light.svg"
             alt="City/Sync"
-            width={240}
-            height={70}
-            style={{ width: "min(240px, 72vw)", height: "auto" }}
+            width={210}
+            height={61}
+            style={{ width: "min(210px, 66vw)", height: "auto" }}
             priority
           />
         </a>
