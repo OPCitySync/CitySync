@@ -10,6 +10,7 @@ import {
   setDemoTutorialHandoff,
 } from "../_utils/tutorialRun";
 import { LearnInfoCard, LearnMorePanel } from "../_components/LearnMore";
+import { MobileDemoNotice } from "../_components/MobileDemoNotice";
 import { OnchainActivityPanel } from "../_components/OnchainActivityPanel";
 import styles from "./page.module.css";
 
@@ -587,6 +588,7 @@ export default function RedesignClientPage({ initialRole = "issuer" }: RedesignC
           </aside>
         </section>
       </main>
+      <MobileDemoNotice />
     </div>
   );
 }

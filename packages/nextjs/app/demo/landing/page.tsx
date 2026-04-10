@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAccount, useLogout, useSignerStatus } from "@account-kit/react";
+import { MobileDemoNotice } from "../_components/MobileDemoNotice";
 import { useDemo } from "../_context/DemoContext";
 
 type RoleKey = "issuer" | "participant" | "redeemer";
@@ -387,6 +388,7 @@ export default function DemoLandingPage() {
           }
         }
       `}</style>
+      <MobileDemoNotice />
     </div>
   );
 }
