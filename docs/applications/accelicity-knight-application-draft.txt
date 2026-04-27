@@ -1,0 +1,153 @@
+City/Sync Application Drafts
+
+Prepared as a working draft based on the current City/Sync project framing. Items that require confirmed internal financial data, final upload artifacts, or named partner approvals are marked clearly for later completion.
+
+============================================================
+ACCELICITY
+============================================================
+
+Briefly describe the challenge or opportunity your solution addresses.
+
+Local governments are under increasing pressure to deliver more services with constrained budgets, strained staff capacity, and fragmented systems for coordinating public participation. At the same time, cities already contain significant latent civic capacity in the form of residents, nonprofits, community organizations, and local businesses that are willing to contribute to public outcomes, but there is no shared infrastructure for organizing that contribution in a structured, measurable, and administratively useful way.
+
+The opportunity City/Sync addresses is the creation of a new operating model for local government: one that helps cities convert distributed civic energy into real operating capacity. Rather than treating public participation as informal, episodic, or symbolic, City/Sync makes contribution legible, verifiable, and actionable across institutions, programs, and community priorities. This creates a pathway for local governments to improve coordination, reduce duplication, expand resident participation, and build more adaptive public-service systems.
+
+How does your solution uniquely address this challenge or opportunity?
+
+City/Sync uniquely addresses this challenge by functioning as shared digital public infrastructure for civic coordination. It is not simply a volunteer platform or a civic engagement application. It creates a common operating layer through which local governments, nonprofits, and partner organizations can issue public-facing tasks, validate participation, track outcomes, reward verified contribution, and govern participation through transparent standards and feedback loops.
+
+What makes City/Sync distinct is that it combines several functions that are usually disconnected: structured civic participation, verification of public work, a civic-credit redemption layer tied to local goods and services, and a governance layer that allows institutions to calibrate participation and policy over time. It also introduces the long-term possibility of local chain infrastructure, allowing cities to govern their own digital public systems while preserving transparency, interoperability, and shared standards across institutions and eventually across cities.
+
+In practical terms, City/Sync turns civic participation from something governments encourage rhetorically into something they can actually coordinate operationally.
+
+Describe your solution's Serviceable Available Market (SAM).
+
+City/Sync's initial Serviceable Available Market is the subset of municipal and public-service institutions actively seeking better tools for community coordination, public participation, volunteer management, neighborhood service delivery, and smart-city modernization. In practical terms, this includes city governments, counties, transit agencies, libraries, parks departments, public authorities, and mission-aligned nonprofit partners that already run public-facing programs but lack a shared system for coordinating civic participation at scale.
+
+Our near-term SAM is focused on mid-sized and large municipalities and their partner organizations in regions where digital public infrastructure, civic innovation, and participatory governance are already strategic priorities. This market sits at the intersection of civic technology, public-service modernization, local government innovation, smart-city infrastructure, and community participation systems. Rather than targeting all governments at once, our serviceable market consists of cities and public institutions that are ready to pilot new coordination infrastructure in real operating environments.
+
+Describe your go-to-market/sales strategy.
+
+City/Sync's go-to-market strategy is pilot-led, government-friendly, and designed to reduce adoption risk. We begin by identifying local government champions, public-service departments, and mission-aligned partner organizations around a concrete use case where civic coordination can improve outcomes, such as neighborhood stewardship, public space activation, food distribution, community outreach, local mobility access, or other recurring civic-service functions.
+
+From there, we pursue a land-and-expand model. First, we scope a focused pilot with clear stakeholders, measurable outcomes, and bounded operational risk. Second, we demonstrate value through improved coordination, participation, visibility, and administrative learning. Third, we expand into additional departments, partner institutions, and service domains within the same city. We see accelerators, civic innovation networks, and public-sector partnerships as important channels for early adoption, particularly because they create trust, shorten procurement friction, and help validate the model with governments that are actively looking for practical innovation.
+
+Which of the following best describes where your company is right now? (select all that apply)*
+
+Note: The option list was not provided, so below are the most likely selections based on the current project status. Adjust to the exact application wording.
+
+- Prototype complete
+- Live demo available
+- Pilot-ready
+- Actively seeking pilot partners
+- Pre-revenue or early validation stage (adjust based on actual status)
+
+Why should we choose your Innovation Solution for this year's AcceliCITY Cohort?
+
+City/Sync should be selected for this year's AcceliCITY cohort because it addresses one of the most important structural challenges facing local governments today: how to deliver better public outcomes with limited staff capacity, constrained budgets, and fragmented systems for coordinating community participation. Our solution is not simply another civic engagement tool. It is designed as digital public infrastructure for the next generation of cities, a shared operating layer that helps local governments organize, validate, and learn from civic participation as a real operational asset.
+
+What makes City/Sync especially aligned with AcceliCITY is that it sits at the intersection of smart-city development, civic technology, and public-sector modernization. It helps cities reduce duplication, improve coordination across institutions, activate latent civic capacity, and build more adaptive systems for service delivery and public value creation. AcceliCITY would provide the ideal environment to refine the model alongside public-sector leaders, validate where it creates the most operational value, and accelerate pilot adoption in cities actively looking for credible innovation. In return, City/Sync brings a differentiated vision to the cohort: a smart-city model focused not only on sensors, dashboards, and administrative digitization, but on building a new operating system for collective action and public administration.
+
+Business Plan
+
+Upload separately. Suggested note for internal use: attach the most current City/Sync business plan or a concise operating strategy document oriented around pilot deployment, revenue model, and expansion roadmap.
+
+Pitch Deck
+
+Upload separately. Suggested note for internal use: attach the latest City/Sync pitch deck covering the challenge, solution, public-sector economy model, local chain roadmap, pilot structure, and long-term protocol vision.
+
+Please provide your company's monthly average burn rate in $USD (the average total monthly costs).*
+
+[Insert actual average monthly burn rate in USD]
+
+Note: This should come from your real current monthly expense average. I have not estimated or invented this figure.
+
+============================================================
+KNIGHT FOUNDATION
+============================================================
+
+These responses assume the project is being positioned primarily within a civic participation / local democracy / community coordination focus area.
+
+In one sentence, what is the goal of this project? (required)
+
+The goal of this project is to pilot a new form of digital public infrastructure that helps local governments and community institutions coordinate civic participation as measurable, accountable, and democratically useful public capacity.
+
+Project description. What opportunity or problem do you hope to address, what does this project entail and why is this approach promising?
+
+This project addresses a structural problem in local public life: cities and community institutions face growing pressure to deliver more public value with limited staff capacity, fragmented systems, and weak coordination across government, nonprofits, local organizations, and residents. At the same time, communities already contain significant latent civic capacity, but there is no shared infrastructure for translating that capacity into coordinated public action.
+
+The project entails piloting City/Sync as a new operating system for civic coordination. Through a mobile-first application and shared digital infrastructure, participating organizations will be able to issue public-facing tasks, validate contribution, reward verified civic work through a bounded civic-credit model, and coordinate local participation across institutions. The project is promising because it does not simply ask communities to participate more. It gives communities and local institutions a structured framework through which public contribution can become visible, usable, and governable. In that sense, it is both a practical pilot and a procedural artifact for a more participatory model of public administration.
+
+Considering the Knight Foundation focus area your project most strongly aligns with, what specific change do you expect your project to create in community, and how will you know it worked?
+
+We expect this project to create a more participatory and better coordinated model of community contribution around local public priorities. Specifically, we expect to create clearer pathways for residents to contribute to community life, stronger coordination between local institutions and public-service organizations, and more visible public value generated through structured civic participation.
+
+We will know it worked if we see measurable increases in participation, task completion, institutional coordination, and successful redemption of civic credits through local offerings, along with qualitative evidence that residents and partner organizations found the system more accessible, motivating, and administratively useful than existing fragmented approaches. Success will also be reflected in whether the pilot produces a repeatable governance and operating model that can be adapted by other communities.
+
+How are community members or local organizations actively involved in this project? (required)
+
+Community members and local organizations are not passive stakeholders in this project; they are the operating participants of the pilot itself. Community members participate as civic contributors who claim and execute public-facing tasks, provide feedback, and help shape the lived performance of the system. Local nonprofits, public-service organizations, and mission-aligned institutions participate as issuers of civic work, validators of contribution, and co-designers of how local coordination should function. Local businesses and community-serving organizations can also participate as redeemer partners by offering access to goods or services that give civic contribution real utility.
+
+In this way, the project is designed as a community-embedded coordination system rather than a top-down software deployment.
+
+What about this idea is new or different, or how does it build on prior community efforts? (required)
+
+What is new about City/Sync is not simply that it encourages participation, but that it creates a shared operating framework for coordinating participation across institutions. Most existing civic efforts focus on engagement, volunteer recruitment, or isolated program delivery. City/Sync builds on those efforts by introducing a common infrastructure for issuing work, validating contribution, rewarding participation, and governing the resulting public-sector economy through shared standards.
+
+Rather than replacing community efforts, the project seeks to make them more legible, transferable, and operationally connected. It shifts civic contribution from an informal or fragmented activity into a structured layer of public coordination.
+
+In completing this project, what are you hoping to test or learn? (required)
+
+We hope to test whether a shared coordination infrastructure can make civic participation more visible, more administratively manageable, and more effective as a mechanism for producing public value. Specifically, we want to learn whether public-service organizations can use the system to coordinate work more efficiently, whether residents will engage consistently when participation is clearer and better supported, whether local redemption partnerships create meaningful utility for civic contribution, and how governance should calibrate incentives and standards over time.
+
+More broadly, we want to learn whether this pilot can generate a repeatable foundation for a new model of local public administration that is more participatory, more adaptive, and more institutionally aligned.
+
+Why are you and/or the project team the right people to carry out this work? (required)
+
+The City/Sync team is well positioned to carry out this work because the project combines systems-level thinking about public administration with concrete product development, governance design, and pilot implementation strategy. The team has already developed a functional demo environment, a clear pilot model, and a broader theory of how digital public infrastructure can support decentralized and participatory forms of civic coordination.
+
+Equally important, the team is approaching this work with a strong understanding that the challenge is not only technical, but institutional and social. This project requires people who can think across local government realities, nonprofit coordination, civic participation, digital infrastructure, and governance design. That cross-disciplinary framing is central to why this team is suited to carry the work forward.
+
+Please list any key partner organizations and how they will contribute. (required)
+
+Insert confirmed organization names once approved. Below is a recommended structure.
+
+- Pilot city partners in Berkeley and Mexico City: provide jurisdictional context, pilot alignment, and public-sector use cases.
+- Local nonprofit and public-service organizations: serve as issuer organizations that define tasks, validate contribution, and coordinate civic work.
+- Local businesses and community-serving institutions: serve as redeemer partners that provide local goods and services in exchange for civic credits.
+- Research, policy, or academic partners: support evaluation, documentation, and learning design as the pilot develops.
+- Community-based organizations: help recruit participants, ground the pilot in local needs, and ensure the model remains community-legible and accessible.
+
+What is the status of the project today? (required)
+
+The project is currently in a pilot-ready stage. City/Sync has developed a working public-facing website, a documentation hub, and a live demo of the mobile-first application environment that illustrates the issuer, participant, and redeemer roles within the proposed public-sector economy. The conceptual model, pilot narrative, and core governance logic are already well developed, and the next major step is live pilot validation with local institutional partners.
+
+Describe your project plan. What are your key activities, milestones and timeline? (required)
+
+Phase 1: Pilot Preparation (Months 1-3)
+Finalize pilot partnerships, scope local use cases, refine governance rules, confirm issuer and redeemer participation, and adapt the system to local operating realities.
+
+Phase 2: Pilot Deployment (Months 4-6)
+Launch the pilot in a bounded environment, onboard participants, begin issuing and verifying civic tasks, activate redemption partnerships, and establish baseline governance monitoring.
+
+Phase 3: Evaluation and Calibration (Months 7-9)
+Evaluate participation patterns, redemption behavior, institutional coordination outcomes, and governance performance. Use findings to refine rates, roles, workflows, and standards.
+
+Phase 4: Documentation and Replication Planning (Months 10-12)
+Produce a procedural artifact documenting how the pilot functioned, what was learned, and how the model could be adapted for other cities or domains.
+
+What is one significant risk you see for this project and how will you mitigate it? (required)
+
+One significant risk is that partner institutions may find the model conceptually compelling but operationally difficult to integrate into existing workflows. If the pilot is perceived as adding administrative burden rather than reducing it, adoption could stall.
+
+We would mitigate this by keeping the pilot tightly scoped, selecting use cases where institutional value can be demonstrated clearly, providing strong onboarding and implementation support, and designing the pilot around practical administrative realities rather than abstract system ambitions. The pilot must prove that it helps institutions coordinate work more effectively, not simply that the idea is interesting.
+
+If you expect other funding or in-kind support, or this Knight Foundation grant would be used as a match to unlock other funds, briefly describe the sources.
+
+Potential supplementary support may include in-kind contributions from pilot partners, implementation support from local institutional collaborators, and alignment with additional philanthropic, civic innovation, or accelerator-based funding sources that support local government modernization, participatory infrastructure, and public-interest technology. If this grant is used to help unlock additional support, it would most likely do so by validating the project as a credible pilot-stage model for broader institutional and philanthropic co-investment.
+
+Note: Revise this section to reflect any confirmed funding conversations, matching commitments, or accelerator relationships.
+
+Please complete and upload the Knight Foundation budget template for this project. You can download the template below. (required)
+
+Budget template must be completed separately using your real project numbers. Recommended categories likely include product development, pilot implementation, partner coordination, design/research, community engagement, evaluation/documentation, legal/compliance, and administrative overhead.
