@@ -66,7 +66,7 @@ Note: This should come from your real current monthly expense average. I have no
 KNIGHT FOUNDATION
 ============================================================
 
-These responses assume the project is being positioned primarily within a civic participation / local democracy / community coordination focus area.
+These responses assume the project is being positioned primarily within Knight's focus on cultivating connection through arts, culture, and the places that bring people together, with secondary relevance to creating pathways for economic opportunity.
 
 In one sentence, what is the goal of this project? (required)
 
@@ -80,9 +80,11 @@ The project entails piloting City/Sync as a new operating system for civic coord
 
 Considering the Knight Foundation focus area your project most strongly aligns with, what specific change do you expect your project to create in community, and how will you know it worked?
 
-We expect this project to create a more participatory and better coordinated model of community contribution around local public priorities. Specifically, we expect to create clearer pathways for residents to contribute to community life, stronger coordination between local institutions and public-service organizations, and more visible public value generated through structured civic participation.
+This project most strongly aligns with Knight's focus on cultivating connection through arts, culture, and the places that bring people together, with secondary relevance to creating pathways for economic opportunity. City/Sync is designed to help residents, local organizations, cultural institutions, community-serving businesses, and public-sector partners coordinate around shared public work in the places where civic life happens: parks, libraries, neighborhood corridors, community events, public spaces, and trusted local institutions.
 
-We will know it worked if we see measurable increases in participation, task completion, institutional coordination, and successful redemption of civic credits through local offerings, along with qualitative evidence that residents and partner organizations found the system more accessible, motivating, and administratively useful than existing fragmented approaches. Success will also be reflected in whether the pilot produces a repeatable governance and operating model that can be adapted by other communities.
+The specific change we expect to create is a stronger, more visible network of community participation. Instead of civic contribution remaining scattered across isolated volunteer programs, informal outreach, and disconnected nonprofit efforts, City/Sync gives communities a shared coordination layer for identifying public needs, issuing tasks, validating contribution, and recognizing the people and organizations creating local value. We expect this to make community spaces more active, cared for, and connected while giving residents clearer pathways to participate in shaping the places they use every day.
+
+We will know it worked if we see measurable increases in resident participation, repeat engagement, task completion, verified civic contributions, partner-organization activity, and redemption of civic credits through local offerings. We will also evaluate qualitative outcomes through feedback from participants and partner organizations, including whether residents felt a stronger sense of belonging, whether local organizations found coordination easier, and whether the pilot helped make public contribution more visible and accessible than existing fragmented approaches.
 
 How are community members or local organizations actively involved in this project? (required)
 
