@@ -110,13 +110,15 @@ Equally important, the team is approaching this work with a strong understanding
 
 Please list any key partner organizations and how they will contribute. (required)
 
-Insert confirmed organization names once approved. Below is a recommended structure.
+We have identified an initial set of ideal pilot partner organizations based on project feedback, exploratory conversations, and early expressions of interest. These include:
 
 - Pilot city partners in Berkeley and Mexico City: provide jurisdictional context, pilot alignment, and public-sector use cases.
 - Local nonprofit and public-service organizations: serve as issuer organizations that define tasks, validate contribution, and coordinate civic work.
 - Local businesses and community-serving institutions: serve as redeemer partners that provide local goods and services in exchange for civic credits.
 - Research, policy, or academic partners: support evaluation, documentation, and learning design as the pilot develops.
 - Community-based organizations: help recruit participants, ground the pilot in local needs, and ensure the model remains community-legible and accessible.
+
+As the pilot advances, these relationships will be formalized around specific operational roles, local use cases, and governance needs.
 
 What is the status of the project today? (required)
 
